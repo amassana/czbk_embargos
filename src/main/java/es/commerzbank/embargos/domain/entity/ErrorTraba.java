@@ -23,10 +23,10 @@ public class ErrorTraba implements Serializable {
 	@JoinColumn(name="COD_CONTROL_FICHERO", nullable=false)
 	private ControlFichero controlFichero;
 
-	//bi-directional many-to-one association to Errore
+	//bi-directional many-to-one association to Error
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="COD_ERROR", nullable=false)
-	private Error errore;
+	private Error error;
 
 	//bi-directional many-to-one association to Traba
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -52,12 +52,12 @@ public class ErrorTraba implements Serializable {
 		this.controlFichero = controlFichero;
 	}
 
-	public Error getErrore() {
-		return this.errore;
+	public Error getError() {
+		return this.error;
 	}
 
-	public void setErrore(Error errore) {
-		this.errore = errore;
+	public void setError(Error error) {
+		this.error = error;
 	}
 
 	public Traba getTraba() {

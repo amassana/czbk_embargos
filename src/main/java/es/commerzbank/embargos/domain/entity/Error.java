@@ -11,7 +11,7 @@ import java.util.List;
  */
 @Entity
 @Table(name="ERRORES")
-@NamedQuery(name="Errore.findAll", query="SELECT e FROM Errore e")
+@NamedQuery(name="Error.findAll", query="SELECT e FROM Error e")
 public class Error implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -26,7 +26,7 @@ public class Error implements Serializable {
 	private String numeroError;
 
 	//bi-directional many-to-one association to ErrorTraba
-	@OneToMany(mappedBy="errore")
+	@OneToMany(mappedBy="error")
 	private List<ErrorTraba> errorTrabas;
 
 	public Error() {
@@ -66,14 +66,14 @@ public class Error implements Serializable {
 
 	public ErrorTraba addErrorTraba(ErrorTraba errorTraba) {
 		getErrorTrabas().add(errorTraba);
-		errorTraba.setErrore(this);
+		errorTraba.setError(this);
 
 		return errorTraba;
 	}
 
 	public ErrorTraba removeErrorTraba(ErrorTraba errorTraba) {
 		getErrorTrabas().remove(errorTraba);
-		errorTraba.setErrore(null);
+		errorTraba.setError(null);
 
 		return errorTraba;
 	}

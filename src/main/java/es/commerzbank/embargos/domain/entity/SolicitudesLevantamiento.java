@@ -95,10 +95,10 @@ public class SolicitudesLevantamiento implements Serializable {
 	@JoinColumn(name="COD_ESTADO_RESP_LEVANTAMIENTO")
 	private EstadoRespLevantamiento estadoRespLevantamiento;
 
-	//bi-directional many-to-one association to Peticione
+	//bi-directional many-to-one association to Peticion
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="COD_PETICION")
-	private Peticion peticione;
+	private Peticion peticion;
 
 	//bi-directional many-to-one association to TipoDocumentacion
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -308,12 +308,12 @@ public class SolicitudesLevantamiento implements Serializable {
 		this.estadoRespLevantamiento = estadoRespLevantamiento;
 	}
 
-	public Peticion getPeticione() {
-		return this.peticione;
+	public Peticion getPeticion() {
+		return this.peticion;
 	}
 
-	public void setPeticione(Peticion peticione) {
-		this.peticione = peticione;
+	public void setPeticion(Peticion peticion) {
+		this.peticion = peticion;
 	}
 
 	public TipoDocumentacion getTipoDocumentacion() {

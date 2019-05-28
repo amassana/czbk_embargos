@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Entity
 @Table(name="PETICIONES")
-@NamedQuery(name="Peticione.findAll", query="SELECT p FROM Peticione p")
+@NamedQuery(name="Peticion.findAll", query="SELECT p FROM Peticion p")
 public class Peticion implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -67,19 +67,19 @@ public class Peticion implements Serializable {
 	private EstadoSecundarioResp estadoSecundarioResp;
 
 	//bi-directional many-to-one association to SolicitudesCancelacion
-	@OneToMany(mappedBy="peticione")
+	@OneToMany(mappedBy="peticion")
 	private List<SolicitudesCancelacion> solicitudesCancelacions;
 
 	//bi-directional many-to-one association to SolicitudesEjecucion
-	@OneToMany(mappedBy="peticione")
+	@OneToMany(mappedBy="peticion")
 	private List<SolicitudesEjecucion> solicitudesEjecucions;
 
 	//bi-directional many-to-one association to SolicitudesLevantamiento
-	@OneToMany(mappedBy="peticione")
+	@OneToMany(mappedBy="peticion")
 	private List<SolicitudesLevantamiento> solicitudesLevantamientos;
 
 	//bi-directional many-to-one association to SolicitudesTraba
-	@OneToMany(mappedBy="peticione")
+	@OneToMany(mappedBy="peticion")
 	private List<SolicitudesTraba> solicitudesTrabas;
 
 	public Peticion() {
@@ -199,14 +199,14 @@ public class Peticion implements Serializable {
 
 	public SolicitudesCancelacion addSolicitudesCancelacion(SolicitudesCancelacion solicitudesCancelacion) {
 		getSolicitudesCancelacions().add(solicitudesCancelacion);
-		solicitudesCancelacion.setPeticione(this);
+		solicitudesCancelacion.setPeticion(this);
 
 		return solicitudesCancelacion;
 	}
 
 	public SolicitudesCancelacion removeSolicitudesCancelacion(SolicitudesCancelacion solicitudesCancelacion) {
 		getSolicitudesCancelacions().remove(solicitudesCancelacion);
-		solicitudesCancelacion.setPeticione(null);
+		solicitudesCancelacion.setPeticion(null);
 
 		return solicitudesCancelacion;
 	}
@@ -221,14 +221,14 @@ public class Peticion implements Serializable {
 
 	public SolicitudesEjecucion addSolicitudesEjecucion(SolicitudesEjecucion solicitudesEjecucion) {
 		getSolicitudesEjecucions().add(solicitudesEjecucion);
-		solicitudesEjecucion.setPeticione(this);
+		solicitudesEjecucion.setPeticion(this);
 
 		return solicitudesEjecucion;
 	}
 
 	public SolicitudesEjecucion removeSolicitudesEjecucion(SolicitudesEjecucion solicitudesEjecucion) {
 		getSolicitudesEjecucions().remove(solicitudesEjecucion);
-		solicitudesEjecucion.setPeticione(null);
+		solicitudesEjecucion.setPeticion(null);
 
 		return solicitudesEjecucion;
 	}
@@ -243,14 +243,14 @@ public class Peticion implements Serializable {
 
 	public SolicitudesLevantamiento addSolicitudesLevantamiento(SolicitudesLevantamiento solicitudesLevantamiento) {
 		getSolicitudesLevantamientos().add(solicitudesLevantamiento);
-		solicitudesLevantamiento.setPeticione(this);
+		solicitudesLevantamiento.setPeticion(this);
 
 		return solicitudesLevantamiento;
 	}
 
 	public SolicitudesLevantamiento removeSolicitudesLevantamiento(SolicitudesLevantamiento solicitudesLevantamiento) {
 		getSolicitudesLevantamientos().remove(solicitudesLevantamiento);
-		solicitudesLevantamiento.setPeticione(null);
+		solicitudesLevantamiento.setPeticion(null);
 
 		return solicitudesLevantamiento;
 	}
@@ -265,14 +265,14 @@ public class Peticion implements Serializable {
 
 	public SolicitudesTraba addSolicitudesTraba(SolicitudesTraba solicitudesTraba) {
 		getSolicitudesTrabas().add(solicitudesTraba);
-		solicitudesTraba.setPeticione(this);
+		solicitudesTraba.setPeticion(this);
 
 		return solicitudesTraba;
 	}
 
 	public SolicitudesTraba removeSolicitudesTraba(SolicitudesTraba solicitudesTraba) {
 		getSolicitudesTrabas().remove(solicitudesTraba);
-		solicitudesTraba.setPeticione(null);
+		solicitudesTraba.setPeticion(null);
 
 		return solicitudesTraba;
 	}

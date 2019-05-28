@@ -22,7 +22,7 @@ public class EstadoPrimarioResp implements Serializable {
 	@Column(name="DES_ESTADO_PRIMARIO_RESP", length=60)
 	private String desEstadoPrimarioResp;
 
-	//bi-directional many-to-one association to Peticione
+	//bi-directional many-to-one association to Peticion
 	@OneToMany(mappedBy="estadoPrimarioResp")
 	private List<Peticion> peticiones;
 
@@ -53,18 +53,18 @@ public class EstadoPrimarioResp implements Serializable {
 		this.peticiones = peticiones;
 	}
 
-	public Peticion addPeticione(Peticion peticione) {
-		getPeticiones().add(peticione);
-		peticione.setEstadoPrimarioResp(this);
+	public Peticion addPeticion(Peticion peticion) {
+		getPeticiones().add(peticion);
+		peticion.setEstadoPrimarioResp(this);
 
-		return peticione;
+		return peticion;
 	}
 
-	public Peticion removePeticione(Peticion peticione) {
-		getPeticiones().remove(peticione);
-		peticione.setEstadoPrimarioResp(null);
+	public Peticion removePeticion(Peticion peticion) {
+		getPeticiones().remove(peticion);
+		peticion.setEstadoPrimarioResp(null);
 
-		return peticione;
+		return peticion;
 	}
 
 }
