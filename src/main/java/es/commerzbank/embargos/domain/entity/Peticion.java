@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @Table(name="PETICIONES")
 @NamedQuery(name="Peticione.findAll", query="SELECT p FROM Peticione p")
-public class Peticione implements Serializable {
+public class Peticion implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -82,7 +82,7 @@ public class Peticione implements Serializable {
 	@OneToMany(mappedBy="peticione")
 	private List<SolicitudesTraba> solicitudesTrabas;
 
-	public Peticione() {
+	public Peticion() {
 	}
 
 	public String getCodPeticion() {

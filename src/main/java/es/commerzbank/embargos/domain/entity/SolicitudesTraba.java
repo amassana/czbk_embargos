@@ -98,7 +98,7 @@ public class SolicitudesTraba implements Serializable {
 	//bi-directional many-to-one association to Peticione
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="COD_PETICION")
-	private Peticione peticione;
+	private Peticion peticione;
 
 	//bi-directional many-to-one association to TipoDocumentacion
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -308,11 +308,11 @@ public class SolicitudesTraba implements Serializable {
 		this.estadoRespTraba = estadoRespTraba;
 	}
 
-	public Peticione getPeticione() {
+	public Peticion getPeticione() {
 		return this.peticione;
 	}
 
-	public void setPeticione(Peticione peticione) {
+	public void setPeticione(Peticion peticione) {
 		this.peticione = peticione;
 	}
 

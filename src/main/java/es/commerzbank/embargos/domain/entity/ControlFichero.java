@@ -99,7 +99,7 @@ public class ControlFichero implements Serializable {
 
 	//bi-directional many-to-one association to Peticione
 	@OneToMany(mappedBy="controlFichero")
-	private List<Peticione> peticiones;
+	private List<Peticion> peticiones;
 
 	//bi-directional many-to-one association to PeticionInformacion
 	@OneToMany(mappedBy="controlFichero")
@@ -384,22 +384,22 @@ public class ControlFichero implements Serializable {
 		return levantamientoTraba;
 	}
 
-	public List<Peticione> getPeticiones() {
+	public List<Peticion> getPeticiones() {
 		return this.peticiones;
 	}
 
-	public void setPeticiones(List<Peticione> peticiones) {
+	public void setPeticiones(List<Peticion> peticiones) {
 		this.peticiones = peticiones;
 	}
 
-	public Peticione addPeticione(Peticione peticione) {
+	public Peticion addPeticione(Peticion peticione) {
 		getPeticiones().add(peticione);
 		peticione.setControlFichero(this);
 
 		return peticione;
 	}
 
-	public Peticione removePeticione(Peticione peticione) {
+	public Peticion removePeticione(Peticion peticione) {
 		getPeticiones().remove(peticione);
 		peticione.setControlFichero(null);
 

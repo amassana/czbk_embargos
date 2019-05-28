@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Table(name="ERRORES")
 @NamedQuery(name="Errore.findAll", query="SELECT e FROM Errore e")
-public class Errore implements Serializable {
+public class Error implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -29,7 +29,7 @@ public class Errore implements Serializable {
 	@OneToMany(mappedBy="errore")
 	private List<ErrorTraba> errorTrabas;
 
-	public Errore() {
+	public Error() {
 	}
 
 	public long getCodError() {

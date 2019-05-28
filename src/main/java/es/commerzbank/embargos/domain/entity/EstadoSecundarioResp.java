@@ -24,7 +24,7 @@ public class EstadoSecundarioResp implements Serializable {
 
 	//bi-directional many-to-one association to Peticione
 	@OneToMany(mappedBy="estadoSecundarioResp")
-	private List<Peticione> peticiones;
+	private List<Peticion> peticiones;
 
 	public EstadoSecundarioResp() {
 	}
@@ -45,22 +45,22 @@ public class EstadoSecundarioResp implements Serializable {
 		this.desEstadoSecundarioResp = desEstadoSecundarioResp;
 	}
 
-	public List<Peticione> getPeticiones() {
+	public List<Peticion> getPeticiones() {
 		return this.peticiones;
 	}
 
-	public void setPeticiones(List<Peticione> peticiones) {
+	public void setPeticiones(List<Peticion> peticiones) {
 		this.peticiones = peticiones;
 	}
 
-	public Peticione addPeticione(Peticione peticione) {
+	public Peticion addPeticione(Peticion peticione) {
 		getPeticiones().add(peticione);
 		peticione.setEstadoSecundarioResp(this);
 
 		return peticione;
 	}
 
-	public Peticione removePeticione(Peticione peticione) {
+	public Peticion removePeticione(Peticion peticione) {
 		getPeticiones().remove(peticione);
 		peticione.setEstadoSecundarioResp(null);
 
