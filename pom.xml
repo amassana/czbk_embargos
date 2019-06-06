@@ -59,6 +59,13 @@
             <scope>provided</scope>
         </dependency>
         <!-- -->
+        <!-- Oracle Driver -->
+        <dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>11.2.0.3</version>
+		</dependency>
+		<!--  -->
         <!-- CACHE -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -86,6 +93,17 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+		<dependency>
+		    <groupId>commons-io</groupId>
+		    <artifactId>commons-io</artifactId>
+		    <version>2.6</version>
+		</dependency>  
+        <!-- BeanIO dependency -->
+	    <dependency>
+	      <groupId>org.beanio</groupId>
+	      <artifactId>beanio</artifactId>
+	      <version>2.1.0</version>
+	    </dependency>
 	</dependencies>
 
 	<build>
@@ -96,5 +114,21 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>test</id>
+			<build>
+				<resources>
+					<resource>
+						<directory>profiles/test</directory>
+						<includes>
+							<include>**/*</include>
+						</includes>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+	</profiles>
 
 </project>

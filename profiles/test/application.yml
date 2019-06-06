@@ -1,0 +1,40 @@
+spring:
+  data:
+    rest:
+      default-page-size: 50
+  datasource:
+    initialize: false
+    continue-on-error: false
+    driverClassName: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@localhost:1521:xe
+    username: COMM_EMBARGOS_DES
+    password: PASSWORD
+    sql-script-encoding: UTF-8
+  mvc:
+    favicon:
+      enabled: false
+      
+  jpa:
+    show-sql: true
+    hibernate:
+        ddl-auto: none
+         
+  jta:
+    enable: false
+
+server:
+  servlet-path: /*
+  context-path: /embargos
+  port: 8090
+
+commerzbank:
+  impuestos:
+    files:
+      path:
+        monitoring: /tmp/monitorTest/
+        processed: /tmp/monitorTest/procesados/
+        error: /tmp/monitorTest/erroneos/
+      monitoring-interval-in-seconds: 5
+      suffix-file-filter: csv
+      
+        
