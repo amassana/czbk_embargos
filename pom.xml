@@ -113,15 +113,22 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources/beanio/</directory>
+				<targetPath>beanio/</targetPath>
+			</resource>
+		</resources>
 	</build>
 
 	<profiles>
+	
 		<profile>
-			<id>test</id>
+			<id>LOCAL</id>
 			<build>
 				<resources>
 					<resource>
-						<directory>profiles/test</directory>
+						<directory>profiles/LOCAL</directory>
 						<includes>
 							<include>**/*</include>
 						</includes>
@@ -129,6 +136,21 @@
 				</resources>
 			</build>
 		</profile>
+		
+		<profile>
+			<id>DES</id>
+			<build>
+				<resources>
+					<resource>
+						<directory>profiles/DES</directory>
+						<includes>
+							<include>**/*</include>
+						</includes>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+		
 	</profiles>
 
 </project>

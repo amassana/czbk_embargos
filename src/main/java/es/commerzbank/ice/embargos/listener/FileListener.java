@@ -4,67 +4,83 @@ import java.io.File;
 
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import es.commerzbank.ice.embargos.service.FileManagementService;
 
 public class FileListener extends FileAlterationListenerAdaptor {
-		 
-   private FileManagementService listenerService;
 
-   // Use the constructor injection service
-   public FileListener(FileManagementService listenerService) {
-       this.listenerService = listenerService;
-   }
+	private static final Logger LOG = LoggerFactory.getLogger(FileListener.class);
 
-   // file creation execution
-   @Override
-   public void onFileCreate(File file) {
-	   
-	   System.out.println("NUEVO FICHERO");
-	   listenerService.cargarFicheros();
-   }
+	private FileManagementService listenerService;
 
-   // file creation modification
-   @Override
-   public void onFileChange(File file) {
-                // trigger the business
-	   System.out.println("FICHERO MODIFICADO");
-       listenerService.cargarFicheros();
-   }
+	// Use the constructor injection service
+	public FileListener(FileManagementService listenerService) {
+		this.listenerService = listenerService;
+	}
 
-   // file creation delete
-   @Override
-   public void onFileDelete(File file) {
-	   
-	   System.out.println("FICHERO BORRADO");
-   }
+	// file creation execution
+	@Override
+	public void onFileCreate(File file) {
 
-   // directory creation
-   @Override
-   public void onDirectoryCreate(File directory) {
-   }
+		try {
+			LOG.debug("NUEVO FICHERO");
 
-   // directory modification
-   @Override
-   public void onDirectoryChange(File directory) {
-   }
+			// listenerService.cargarFichero(file);
 
-   // directory deletion
-   @Override
-   public void onDirectoryDelete(File directory) {
-   }
+		} catch (Exception e) {
+			LOG.error("ERROR :" + e.getMessage(), e);
+		}
+	}
 
+	// file creation modification
+	@Override
+	public void onFileChange(File file) {
+		// trigger the business
 
-   // polling starts
-   @Override
-   public void onStart(FileAlterationObserver observer) {
-	   
-	   listenerService.cargarFicheros();
-   }
+		try {
+			LOG.debug("FICHERO MODIFICADO");
 
-   // polling ends
-   @Override
-   public void onStop(FileAlterationObserver observer) {
-   }
+			// listenerService.cargarFichero(file);
+
+		} catch (Exception e) {
+			LOG.error("ERROR :" + e.getMessage(), e);
+		}
+	}
+
+	// file creation delete
+	@Override
+	public void onFileDelete(File file) {
+
+		LOG.debug("FICHERO BORRADO");
+	}
+
+	// directory creation
+	@Override
+	public void onDirectoryCreate(File directory) {
+	}
+
+	// directory modification
+	@Override
+	public void onDirectoryChange(File directory) {
+	}
+
+	// directory deletion
+	@Override
+	public void onDirectoryDelete(File directory) {
+	}
+
+	// polling starts
+	@Override
+	public void onStart(FileAlterationObserver observer) {
+
+		listenerService.cargarFicheros();
+	}
+
+	// polling ends
+	@Override
+	public void onStop(FileAlterationObserver observer) {
+	}
 
 }

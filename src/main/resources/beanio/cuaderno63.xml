@@ -3,9 +3,19 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.beanio.org/2012/03 http://www.beanio.org/2012/03/mapping.xsd">
 	
+	<typeHandler name="importe15Digits" class="es.commerzbank.ice.embargos.formats.cuaderno63.BigDecimalCustomTypeHandler">
+		<property name="numDecimalPositions" value="2" />
+		<property name="length" value="15" />
+	</typeHandler>
+	
+	<typeHandler name="importe12Digits" class="es.commerzbank.ice.embargos.formats.cuaderno63.BigDecimalCustomTypeHandler">
+		<property name="numDecimalPositions" value="2" />
+		<property name="length" value="12" />
+	</typeHandler>
+	
 	<stream name="fase1" format="fixedlength">
 		<record name="cabeceraEmisor"
-			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase1.CabeceraEmisor">
+			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase1.CabeceraEmisorFase1">
 			<field name="codigoRegistro" type="int" rid="true" literal="4" />
 			<field name="libre" ignore="true" length="2" />
 			<field name="codigoNRBE" type="int" length="4" />
@@ -24,7 +34,7 @@
 			<field name="libre" ignore="true" length="534" />
 		</record>
 		<record name="solicitudInformacion"
-			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase1.SolicitudInformacion">
+			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase1.SolicitudInformacionFase1">
 			<field name="codigoRegistro" type="int" rid="true" literal="6" />
 			<field name="nifDeudor" length="9" />
 			<field name="nombreDeudor" length="40" />
@@ -44,7 +54,7 @@
 			<field name="libre" ignore="true" length="323" />
 		</record>
 		<record name="finFichero"
-			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase1.FinFichero">
+			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase1.FinFicheroFase1">
 			<field name="codigoRegistro" type="int" rid="true" literal="8" />
 			<field name="libre" ignore="true" length="2" />
 			<field name="codigoNRBE" type="int" length="4" />
@@ -61,7 +71,7 @@
 	
 	<stream name="fase2" format="fixedlength">
 		<record name="cabeceraEmisor"
-			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase2.CabeceraEmisor">
+			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase2.CabeceraEmisorFase2">
 			<field name="codigoRegistro" type="int" rid="true" literal="4" />
 			<field name="libre" ignore="true" length="2" />
 			<field name="codigoNRBE" type="int" length="4" />
@@ -80,8 +90,8 @@
 			<field name="versionCuaderno" type="int" length="5" />
 			<field name="libre" ignore="true" length="534" />			
 		</record>
-		<record name="respuestaASolicitudInformacion"
-			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase2.RespuestaASolicitudInformacion">
+		<record name="respuestaSolicitudInformacion"
+			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase2.RespuestaSolicitudInformacionFase2">
 			<field name="codigoRegistro" type="int" rid="true" literal="6" />
 			<field name="nifDeudor" length="9" />
 			<field name="nombreDeudor" length="40" />
@@ -123,7 +133,7 @@
 			<field name="libre" ignore="true" length="152" />
 		</record>
 		<record name="finFichero"
-			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase2.FinFichero">
+			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase2.FinFicheroFase2">
 			<field name="codigoRegistro" type="int" rid="true" literal="8" />
 			<field name="libre" ignore="true" length="2" />
 			<field name="codigoNRBE" type="int" length="4" />
@@ -140,7 +150,7 @@
 	
 	<stream name="fase3" format="fixedlength">
 		<record name="cabeceraEmisor"
-			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase3.CabeceraEmisor">
+			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase3.CabeceraEmisorFase3">
 			<field name="codigoRegistro" type="int" rid="true" literal="4" />
 			<field name="libre" ignore="true" length="2" />
 			<field name="codigoNRBE" type="int" length="4" />
@@ -159,7 +169,7 @@
 			<field name="libre" ignore="true" length="534" />	
 		</record>
 		<record name="ordenEjecucionEmbargo"
-			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase3.OrdenEjecucionEmbargo">
+			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase3.OrdenEjecucionEmbargoFase3">
 			<field name="codigoRegistro" type="int" rid="true" literal="6" />
 			<field name="nifDeudor" length="9" />
 			<field name="nombreDeudor" length="40" />
@@ -167,7 +177,7 @@
 			<field name="municipio" length="12" />
 			<field name="codigoPostal" length="5" />
 			<field name="identificadorDeuda" length="13" />
-			<field name="importeTotalAEmbargar" type="bigdecimal" length="15" />
+			<field name="importeTotalAEmbargar" typeHandler="importe15Digits" length="15" />
 			<field name="codigoDeuda" length="8" />
 			<field name="libre" ignore="true" length="15" />
 			<field name="libre" ignore="true" length="1" />
@@ -201,7 +211,7 @@
 			<field name="libre" ignore="true" length="152" />
 		</record>
 		<record name="ordenEjecucionEmbargoComplementario"
-			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase3.OrdenEjecucionEmbargoComplementario">
+			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase3.OrdenEjecucionEmbargoComplementarioFase3">
 			<field name="codigoRegistro" rid="true" literal="7" />
 			<field name="nifDeudor" length="9" />
 			<field name="nombreDeudor" length="40" />
@@ -216,13 +226,13 @@
 			<field name="libre" ignore="true" length="366" />
 		</record>
 		<record name="finFichero"
-			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase3.FinFichero">
+			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase3.FinFicheroFase3">
 			<field name="codigoRegistro" type="int" rid="true" literal="8" />
 			<field name="libre" ignore="true" length="2" />
 			<field name="codigoNRBE" type="int" length="4" />
 			<field name="numeroRegistrosFichero" type="int" length="8" />
 			<field name="libre" ignore="true" length="8" />
-			<field name="importeTotalAEmbargar" type="bigdecimal" length="15" />
+			<field name="importeTotalAEmbargar" typeHandler="importe15Digits" length="15" />
 			<field name="importeACeros" ignore="true" length="15" />
 			<field name="nifOrganismoEmisor" length="9" />
 			<field name="codigoINEOrganismoEmisor" type="int" length="6" />	
@@ -233,7 +243,7 @@
 	
 	<stream name="fase4" format="fixedlength">
 		<record name="cabeceraEmisor"
-			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase4.CabeceraEmisor">
+			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase4.CabeceraEmisorFase4">
 			<field name="codigoRegistro" type="int" rid="true" literal="4" />
 			<field name="libre" ignore="true" length="2" />
 			<field name="codigoNRBE" type="int" length="4" />
@@ -253,7 +263,7 @@
 			<field name="libre" ignore="true" length="534" />	
 		</record>
 		<record name="comunicacionResultadoRetencion"
-			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase4.ComunicacionResultadoRetencion">
+			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase4.ComunicacionResultadoRetencionFase4">
 			<field name="codigoRegistro" type="int" rid="true" literal="6" />
 			<field name="nifDeudor" length="9" />
 			<field name="nombreDeudor" length="40" />
@@ -261,31 +271,31 @@
 			<field name="municipio" length="12" />
 			<field name="codigoPostal" length="5" />
 			<field name="identificadorDeuda" length="13" />
-			<field name="importeTotalAEmbargar" type="bigdecimal" length="15" />
+			<field name="importeTotalAEmbargar" typeHandler="importe15Digits" length="15" />
 			<field name="codigoDeuda" length="8" />
-			<field name="importeTotalRetencionesEfectuadas" type="bigdecimal" length="15" />
+			<field name="importeTotalRetencionesEfectuadas" typeHandler="importe15Digits" length="15" />
 			<field name="libre" ignore="true" length="1" />
 			<field name="fechaEjecucionRetenciones" type="date" length="8"
 				format="yyyyMMdd" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="ibanCuenta1" length="24" />
 			<field name="codigoResultadoRetencionCuenta1" type="int" length="2" />
-			<field name="importeRetenidoCuenta1" type="bigdecimal" length="15" />
+			<field name="importeRetenidoCuenta1" typeHandler="importe15Digits" length="15" />
 			<field name="ibanCuenta2" length="24" />
 			<field name="codigoResultadoRetencionCuenta2" type="int" length="2" />
-			<field name="importeRetenidoCuenta2" type="bigdecimal" length="15" />
+			<field name="importeRetenidoCuenta2" typeHandler="importe15Digits" length="15" />
 			<field name="ibanCuenta3" length="24" />
 			<field name="codigoResultadoRetencionCuenta3" type="int" length="2" />
-			<field name="importeRetenidoCuenta3" type="bigdecimal" length="15" />
+			<field name="importeRetenidoCuenta3" typeHandler="importe15Digits" length="15" />
 			<field name="ibanCuenta4" length="24" />
 			<field name="codigoResultadoRetencionCuenta4" type="int" length="2" />
-			<field name="importeRetenidoCuenta4" type="bigdecimal" length="15" />
+			<field name="importeRetenidoCuenta4" typeHandler="importe15Digits" length="15" />
 			<field name="ibanCuenta5" length="24" />
 			<field name="codigoResultadoRetencionCuenta5" type="int" length="2" />
-			<field name="importeRetenidoCuenta5" type="bigdecimal" length="15" />
+			<field name="importeRetenidoCuenta5" typeHandler="importe15Digits" length="15" />
 			<field name="ibanCuenta6" length="24" />
 			<field name="codigoResultadoRetencionCuenta6" type="int" length="2" />
-			<field name="importeRetenidoCuenta6" type="bigdecimal" length="15" />
+			<field name="importeRetenidoCuenta6" typeHandler="importe15Digits" length="15" />
 			<field name="libre" ignore="true" length="6" />
 			<field name="claveSeguridadIban1" length="12" />
 			<field name="claveSeguridadIban2" length="12" />
@@ -296,14 +306,14 @@
 			<field name="libre" ignore="true" length="152" />		
 		</record>
 		<record name="finFichero"
-			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase4.FinFichero">
+			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase4.FinFicheroFase4">
 			<field name="codigoRegistro" type="int" rid="true" literal="8" />
 			<field name="libre" ignore="true" length="2" />
 			<field name="codigoNRBE" type="int" length="4" />
 			<field name="numeroRegistrosFichero" type="int" length="8" />
 			<field name="libre" ignore="true" length="8" />
-			<field name="importeTotalAEmbargar" type="bigdecimal" length="15" />
-			<field name="importeTotalRetenido" type="bigdecimal" length="15" />
+			<field name="importeTotalAEmbargar" typeHandler="importe15Digits" length="15" />
+			<field name="importeTotalRetenido" typeHandler="importe15Digits" length="15" />
 			<field name="nifOrganismoEmisor" length="9" />
 			<field name="codigoINEOrganismoEmisor" type="int" length="6" />	
 			<field name="nombreOrganismoEmisor" length="40" />
@@ -313,7 +323,7 @@
 	
 	<stream name="fase5" format="fixedlength">
 		<record name="cabeceraEmisor"
-			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase5.CabeceraEmisor">
+			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase5.CabeceraEmisorFase5">
 			<field name="codigoRegistro" rid="true" type="int" literal="4" />
 			<field name="libre" ignore="true" length="2" />
 			<field name="codigoNRBE" type="int" length="4" />
@@ -332,7 +342,7 @@
 			<field name="libre" ignore="true" length="534" />
 		</record>
 		<record name="ordenLevantamientoRetencion"
-			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase5.OrdenLevantamientoRetencion">
+			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase5.OrdenLevantamientoRetencionFase5">
 			<field name="codigoRegistro" type="int" rid="true" literal="6" />
 			<field name="nifDeudor" length="9" />
 			<field name="nombreDeudor" length="40" />
@@ -340,31 +350,31 @@
 			<field name="municipio" length="12" />
 			<field name="codigoPostal" length="5" />
 			<field name="identificadorDeuda" length="13" />
-			<field name="importeTotalAEmbargar" type="bigdecimal" length="15" />
+			<field name="importeTotalAEmbargar" typeHandler="importe15Digits" length="15" />
 			<field name="codigoDeuda" length="8" />
-			<field name="importeTotalRetencionesEfectuadas" type="bigdecimal" length="15" />
+			<field name="importeTotalRetencionesEfectuadas" typeHandler="importe15Digits" length="15" />
 			<field name="libre" ignore="true" length="1" />
 			<field name="fechaEjecucionRetenciones" type="date" length="8"
 				format="yyyyMMdd" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="ibanCuenta1" length="24" />
 			<field name="codigoResultadoRetencionIban1" type="int" length="2" />
-			<field name="importeRetenidoIban1" type="bigdecimal" length="15" />
+			<field name="importeRetenidoIban1" typeHandler="importe15Digits" length="15" />
 			<field name="ibanCuenta2" length="24" />
 			<field name="codigoResultadoRetencionIban2" type="int" length="2" />
-			<field name="importeRetenidoIban2" type="bigdecimal" length="15" />
+			<field name="importeRetenidoIban2" typeHandler="importe15Digits" length="15" />
 			<field name="ibanCuenta3" length="24" />
 			<field name="codigoResultadoRetencionIban3" type="int" length="2" />
-			<field name="importeRetenidoIban3" type="bigdecimal" length="15" />
+			<field name="importeRetenidoIban3" typeHandler="importe15Digits" length="15" />
 			<field name="ibanCuenta4" length="24" />
 			<field name="codigoResultadoRetencionIban4" type="int" length="2" />
-			<field name="importeRetenidoIban4" type="bigdecimal" length="15" />
+			<field name="importeRetenidoIban4" typeHandler="importe15Digits" length="15" />
 			<field name="ibanCuenta5" length="24" />
 			<field name="codigoResultadoRetencionIban5" type="int" length="2" />
-			<field name="importeRetenidoIban5" type="bigdecimal" length="15" />
+			<field name="importeRetenidoIban5" typeHandler="importe15Digits" length="15" />
 			<field name="ibanCuenta6" length="24" />
 			<field name="codigoResultadoRetencionIban6" type="int" length="2" />
-			<field name="importeRetenidoIban6" type="bigdecimal" length="15" />
+			<field name="importeRetenidoIban6" typeHandler="importe15Digits" length="15" />
 			<field name="libre" ignore="true" length="6" />
 			<field name="claveSeguridadIban1" length="12" />
 			<field name="claveSeguridadIban2" length="12" />
@@ -372,30 +382,30 @@
 			<field name="claveSeguridadIban4" length="12" />
 			<field name="claveSeguridadIban5" length="12" />
 			<field name="claveSeguridadIban6" length="12" />
-			<field name="totalImporteALevantar" type="bigdecimal" length="12"/>
+			<field name="totalImporteALevantar" typeHandler="importe12Digits" length="12"/>
 			<field name="codigoTipoLevantamientoARealizar" type="int" length="1"/>
-			<field name="importeALevantarIban1" type="bigdecimal" length="12"/>
+			<field name="importeALevantarIban1" typeHandler="importe12Digits" length="12"/>
 			<field name="codigoTipoLevantamientoIban1" type="int" length="1"/>
-			<field name="importeALevantarIban2" type="bigdecimal" length="12"/>
+			<field name="importeALevantarIban2" typeHandler="importe12Digits" length="12"/>
 			<field name="codigoTipoLevantamientoIban2" type="int" length="1"/>
-			<field name="importeALevantarIban3" type="bigdecimal" length="12"/>
+			<field name="importeALevantarIban3" typeHandler="importe12Digits" length="12"/>
 			<field name="codigoTipoLevantamientoIban3" type="int" length="1"/>
-			<field name="importeALevantarIban4" type="bigdecimal" length="12"/>
+			<field name="importeALevantarIban4" typeHandler="importe12Digits" length="12"/>
 			<field name="codigoTipoLevantamientoIban4" type="int" length="1"/>
-			<field name="importeALevantarIban5" type="bigdecimal" length="12"/>
+			<field name="importeALevantarIban5" typeHandler="importe12Digits" length="12"/>
 			<field name="codigoTipoLevantamientoIban5" type="int" length="1"/>
-			<field name="importeALevantarIban6" type="bigdecimal" length="12"/>
+			<field name="importeALevantarIban6" typeHandler="importe12Digits" length="12"/>
 			<field name="codigoTipoLevantamientoIban6" type="int" length="1"/>
 			<field name="libre" ignore="true" length="61" />
 		</record>
 		<record name="finFichero"
-			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase5.FinFichero">
+			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase5.FinFicheroFase5">
 			<field name="codigoRegistro" type="int" rid="true" literal="8" />
 			<field name="libre" ignore="true" length="2" />
 			<field name="codigoNRBE" type="int" length="4" />
 			<field name="numeroRegistrosFichero" type="int" length="8" />
 			<field name="libre" ignore="true" length="8" />
-			<field name="importeTotalALevantar" type="bigdecimal" length="15" />
+			<field name="importeTotalALevantar" typeHandler="importe15Digits" length="15" />
 			<field name="importeACeros" ignore="true" length="15" />
 			<field name="nifOrganismoEmisor" length="9" />
 			<field name="codigoINEOrganismoEmisor" type="int" length="6" />	
@@ -406,7 +416,7 @@
 	
 	<stream name="fase6" format="fixedlength">
 		<record name="cabeceraEmisor"
-			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase6.CabeceraEmisor">
+			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase6.CabeceraEmisorFase6">
 			<field name="codigoRegistro" type="int" rid="true" literal="4" />
 			<field name="libre" ignore="true" length="2" />
 			<field name="codigoNRBE" type="int" length="4" />
@@ -426,7 +436,7 @@
 			<field name="libre" ignore="true" length="534" />	
 		</record>
 		<record name="resultadoFinalEmbargo"
-			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase6.ResultadoFinalEmbargo">
+			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase6.ResultadoFinalEmbargoFase6">
 			<field name="codigoRegistro" type="int" rid="true" literal="6" />
 			<field name="nifDeudor" length="9" />
 			<field name="nombreDeudor" length="40" />
@@ -434,31 +444,31 @@
 			<field name="municipio" length="12" />
 			<field name="codigoPostal" length="5" />
 			<field name="identificadorDeuda" length="13" />
-			<field name="importeTotalAEmbargar" type="bigdecimal" length="15" />
+			<field name="importeTotalAEmbargar" typeHandler="importe15Digits" length="15" />
 			<field name="codigoDeuda" length="8" />
-			<field name="importeTotalRetencionesEfectuadas" type="bigdecimal" length="15" />
+			<field name="importeTotalRetencionesEfectuadas" typeHandler="importe15Digits" length="15" />
 			<field name="libre" ignore="true" length="1" />
 			<field name="fechaEjecucionRetenciones" type="date" length="8"
 				format="yyyyMMdd" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="ibanCuenta1" length="24" />
 			<field name="codigoResultadoRetencionIban1" type="int" length="2" />
-			<field name="importeRetenidoIban1" type="bigdecimal" length="15" />
+			<field name="importeRetenidoIban1" typeHandler="importe15Digits" length="15" />
 			<field name="ibanCuenta2" length="24" />
 			<field name="codigoResultadoRetencionIban2" type="int" length="2" />
-			<field name="importeRetenidoIban2" type="bigdecimal" length="15" />
+			<field name="importeRetenidoIban2" typeHandler="importe15Digits" length="15" />
 			<field name="ibanCuenta3" length="24" />
 			<field name="codigoResultadoRetencionIban3" type="int" length="2" />
-			<field name="importeRetenidoIban3" type="bigdecimal" length="15" />
+			<field name="importeRetenidoIban3" typeHandler="importe15Digits" length="15" />
 			<field name="ibanCuenta4" length="24" />
 			<field name="codigoResultadoRetencionIban4" type="int" length="2" />
-			<field name="importeRetenidoIban4" type="bigdecimal" length="15" />
+			<field name="importeRetenidoIban4" typeHandler="importe15Digits" length="15" />
 			<field name="ibanCuenta5" length="24" />
 			<field name="codigoResultadoRetencionIban5" type="int" length="2" />
-			<field name="importeRetenidoIban5" type="bigdecimal" length="15" />
+			<field name="importeRetenidoIban5" typeHandler="importe15Digits" length="15" />
 			<field name="ibanCuenta6" length="24" />
 			<field name="codigoResultadoRetencionIban6" type="int" length="2" />
-			<field name="importeRetenidoIban6" type="bigdecimal" length="15" />
+			<field name="importeRetenidoIban6" typeHandler="importe15Digits" length="15" />
 			<field name="libre" ignore="true" length="6" />
 			<field name="claveSeguridadIban1" length="12" />
 			<field name="claveSeguridadIban2" length="12" />
@@ -466,32 +476,32 @@
 			<field name="claveSeguridadIban4" length="12" />
 			<field name="claveSeguridadIban5" length="12" />
 			<field name="claveSeguridadIban6" length="12" />
-			<field name="totalImporteALevantar" type="bigdecimal" length="12"/>
+			<field name="totalImporteALevantar" typeHandler="importe12Digits" length="12"/>
 			<field name="codigoResultadoLevantamiento" type="int" length="1"/>
-			<field name="importeNetoEmbargadoIban1" type="bigdecimal" length="12"/>
+			<field name="importeNetoEmbargadoIban1" typeHandler="importe12Digits" length="12"/>
 			<field name="resultadoLevantamientoIban1" type="int" length="1"/>
-			<field name="importeNetoEmbargadoIban2" type="bigdecimal" length="12"/>
+			<field name="importeNetoEmbargadoIban2" typeHandler="importe12Digits" length="12"/>
 			<field name="resultadoLevantamientoIban2" type="int" length="1"/>
-			<field name="importeNetoEmbargadoIban3" type="bigdecimal" length="12"/>
+			<field name="importeNetoEmbargadoIban3" typeHandler="importe12Digits" length="12"/>
 			<field name="resultadoLevantamientoIban3" type="int" length="1"/>
-			<field name="importeNetoEmbargadoIban4" type="bigdecimal" length="12"/>
+			<field name="importeNetoEmbargadoIban4" typeHandler="importe12Digits" length="12"/>
 			<field name="resultadoLevantamientoIban4" type="int" length="1"/>
-			<field name="importeNetoEmbargadoIban5" type="bigdecimal" length="12"/>
+			<field name="importeNetoEmbargadoIban5" typeHandler="importe12Digits" length="12"/>
 			<field name="resultadoLevantamientoIban5" type="int" length="1"/>
-			<field name="importeNetoEmbargadoIban6" type="bigdecimal" length="12"/>
+			<field name="importeNetoEmbargadoIban6" typeHandler="importe12Digits" length="12"/>
 			<field name="resultadoLevantamientoIban6" type="int" length="1"/>
-			<field name="importeTotalNetoEmbargadoAlDeudor" type="bigdecimal" length="12"/>
+			<field name="importeTotalNetoEmbargadoAlDeudor" typeHandler="importe12Digits" length="12"/>
 			<field name="libre" ignore="true" length="49" />
 		</record>
 		<record name="finFichero"
-			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase6.FinFichero">
+			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase6.FinFicheroFase6">
 			<field name="codigoRegistro" type="int" rid="true" literal="8" />
 			<field name="libre" ignore="true" length="2" />
 			<field name="codigoNRBE" type="int" length="4" />
 			<field name="numeroRegistrosFichero" type="int" length="8" />
 			<field name="libre" ignore="true" length="8" />
-			<field name="importeTotalALevantar" type="bigdecimal" length="15" />
-			<field name="importeNuevoTotalRetenido" type="bigdecimal" length="15" />
+			<field name="importeTotalALevantar" typeHandler="importe15Digits" length="15" />
+			<field name="importeNuevoTotalRetenido" typeHandler="importe15Digits" length="15" />
 			<field name="nifOrganismoEmisor" length="9" />
 			<field name="codigoINEOrganismoEmisor" type="int" length="6" />	
 			<field name="nombreOrganismoEmisor" length="40" />

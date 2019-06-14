@@ -2,22 +2,23 @@ package es.commerzbank.ice.embargos.service.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 
 import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.LineIterator;
-import org.beanio.BeanReader;
-import org.beanio.StreamFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import es.commerzbank.ice.embargos.formats.aeat.diligencias.Diligencia;
+import es.commerzbank.ice.embargos.service.AEATService;
+import es.commerzbank.ice.embargos.service.Cuaderno63Service;
 import es.commerzbank.ice.embargos.service.FileManagementService;
+import es.commerzbank.ice.utils.EmbargosConstants;
 
 @Service
 @Transactional
@@ -26,61 +27,141 @@ public class FileManagementServiceImpl implements FileManagementService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(FileManagementServiceImpl.class);
 	
-	@Value("${commerzbank.impuestos.files.path.monitoring}")
+	@Value("${commerzbank.embargos.files.path.monitoring}")
 	private String pathMonitoring;
 
-	@Value("${commerzbank.impuestos.files.path.processed}")
+	@Value("${commerzbank.embargos.files.path.processed}")
 	private String pathProcessed;
 	
-	@Value("${commerzbank.impuestos.files.path.error}")
+	@Value("${commerzbank.embargos.files.path.generated}")
+	private String pathGenerated;
+	
+	@Value("${commerzbank.embargos.files.path.error}")
 	private String pathError;
+
+	@Autowired
+	Cuaderno63Service cuaderno63Service;
 	
-	//Agregar repositories de DWH ...
-	
+	@Autowired
+	AEATService aeatService;
 	
 	public void cargarFicheros() {
 		
 		try {
 			
-			String[] extensionList = {"csv", "CSV"};
+			//Extensiones de los ficheros a leer:
+			String[] extensionList = {
+					EmbargosConstants.TIPO_FICHERO_PETICIONES,
+					EmbargosConstants.TIPO_FICHERO_PETICIONES.toLowerCase(),
+					EmbargosConstants.TIPO_FICHERO_EMBARGOS,
+					EmbargosConstants.TIPO_FICHERO_EMBARGOS.toLowerCase(),
+					EmbargosConstants.TIPO_FICHERO_LEVANTAMIENTOS,
+					EmbargosConstants.TIPO_FICHERO_LEVANTAMIENTOS.toLowerCase(),
+					EmbargosConstants.TIPO_FICHERO_ERRORES,
+					EmbargosConstants.TIPO_FICHERO_ERRORES.toLowerCase()
+			};
+
 		
-			//1. Obtener ficheros del directorio
+			//1. Obtener ficheros del directorio de monitoreo
 			File dir = new File(pathMonitoring);
 	
-			System.out.println("Getting all files in " + dir.getCanonicalPath() + " including those in subdirectories");
+			LOG.debug("Obteniendo ficheros de la ruta " + dir.getCanonicalPath());
 			List<File> files = (List<File>) FileUtils.listFiles(dir, extensionList, false);
-
-			//2. Procesar ficheros y moverlos a la carpeta al final del procesamiento	
 			
 			for (File file : files) {
-				System.out.println("file: " + file.getCanonicalPath());
-				
 				try {
-					leerFichero(file);
 					
-					parsearFichero(file);
+					cargarFichero(file);
 				
-//					moverFichero(file,pathProcessed);
-					
+					moverFichero(file, pathProcessed);
+					LOG.debug("Se ha movido el fichero " + FilenameUtils.getName(file.getCanonicalPath()) + " a la ruta " + pathProcessed);
+				
 				} catch (Exception e) {
 					
-					LOG.error(e.getMessage());
-					
-//					moverFichero(file,pathError);
+					moverFichero(file, pathError);
+					LOG.debug("Se ha movido el fichero " + FilenameUtils.getName(file.getCanonicalPath()) + " a la ruta " + pathError);
 				}
-			}
-			
+
+			}	
 		
 		} catch(Exception e) {
 			LOG.error("ERROR: " + e.getLocalizedMessage());
 		}
-		
+	}
 
+	public void cargarFichero(File file) throws IOException {
+		
+		LOG.debug("file: " + file.getCanonicalPath());
+		
+		try {
+			
+			//- Quitar linea siguiente de leerFichero(file) (solo para pruebas):
+			leerFichero(file);													
+			
+			//Si fichero es de la AEAT (tiene prefijo "AEAT_")
+			if (FilenameUtils.getBaseName(file.getCanonicalPath()).toLowerCase().contains(EmbargosConstants.AEAT)) {
+
+				parsearFicheroAEAT(file);
+			
+			} else {
+				
+				parsearFicheroCuaderno63(file);	
+			}
+
+		} catch (Exception e) {
+	
+			LOG.error(e.getMessage());
+			throw e;
+		}
+		
 	}
 	
-	public void leerFichero(File file) {
+
+	private void parsearFicheroAEAT(File file) throws IOException {
 		
+		String tipoFichero = FilenameUtils.getExtension(file.getCanonicalPath()).toUpperCase();
+				
+		switch (tipoFichero) {						
+			//- Tipos de ficheros AEAT:	
+			case EmbargosConstants.TIPO_FICHERO_EMBARGOS:
+				aeatService.tratarFicheroDiligenciasEmbargo(file);
+				break;
+			case EmbargosConstants.TIPO_FICHERO_LEVANTAMIENTOS:
+				aeatService.tratarFicheroLevantamientos(file);
+				break;
+			case EmbargosConstants.TIPO_FICHERO_ERRORES:
+				aeatService.tratarFicheroErrores(file);
+				break;	
+			default:
+		}
+	}
+
+	
+	private void parsearFicheroCuaderno63(File file) throws IOException {
 		
+		String tipoFichero = FilenameUtils.getExtension(file.getCanonicalPath()).toUpperCase();
+
+		//Tratamiento segun el tipo de fichero:
+		
+		switch (tipoFichero) {
+			//- Tipos de ficheros del Cuaderno63:
+			case EmbargosConstants.TIPO_FICHERO_PETICIONES:
+				cuaderno63Service.tratarFicheroPeticion(file);
+				break;
+			case EmbargosConstants.TIPO_FICHERO_EMBARGOS:
+				cuaderno63Service.tratarFicheroEmbargos(file);
+				break;	
+			case EmbargosConstants.TIPO_FICHERO_LEVANTAMIENTOS:
+				cuaderno63Service.tratarFicheroLevantamientos(file);
+				break;			
+			default:
+		}
+	}
+
+	
+	
+	private void leerFichero(File file) {
+			
 		if (file==null) {			
 			throw new RuntimeException("Error al obtener el fichero");
 		}
@@ -96,13 +177,12 @@ public class FileManagementServiceImpl implements FileManagementService {
 		        String line = it.nextLine();
 		        // do something with line
 		        
-		        System.out.println("LINEA " + i + ": " + line);
+		        LOG.debug("LINEA " + i + ": " + line);
 		        
 		        i++;
 		    }
 		} catch (Exception e) {  
-		  
-			
+		  	
 			
 		} finally {
 			try {
@@ -112,37 +192,9 @@ public class FileManagementServiceImpl implements FileManagementService {
 			}
 		}
 	}
-
-	public void parsearFichero(File file) {			
-		URL url = getClass().getClassLoader().getResource("beanio/aeat.xml");
-		File file2 = new File(url.getFile());
-		
-        // create a StreamFactory
-        StreamFactory factory = StreamFactory.newInstance();
-        // load the mapping file
-        //factory.load("beanio/aeat.xml");
-        factory.load(file2);
-        
-        // use a StreamFactory to create a BeanReader
-        BeanReader in = factory.createReader("diligencias", file);
-        Object record = null;
-        while ((record = in.read()) != null) {
-            // process the employee...
-        	
-        	if("diligencia".equals(in.getRecordName())) {
-        		
-        		Diligencia diligencia = (Diligencia) record;
-        		System.out.println(diligencia.getNifDeudor());
-        	}
-        	
-        	System.out.println(record.toString());
-        }
-        in.close();
-		
-	}
 	
 	
-	public void moverFichero(File srcFile, String destDir) throws IOException{
+	private void moverFichero(File srcFile, String destDir) throws IOException{
 		
 		try {
 			FileUtils.moveFileToDirectory(srcFile,new File(destDir),true);

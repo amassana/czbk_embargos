@@ -17,6 +17,8 @@ public class ControlFichero implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@SequenceGenerator(name = "control_fichero_seq_gen", sequenceName = "CONTROL_FICHERO_SEQ", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "control_fichero_seq_gen")
 	@Column(name="COD_CONTROL_FICHERO", unique=true, nullable=false)
 	private long codControlFichero;
 

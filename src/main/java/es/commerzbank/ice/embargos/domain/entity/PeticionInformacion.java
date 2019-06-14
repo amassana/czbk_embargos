@@ -16,6 +16,8 @@ public class PeticionInformacion implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+//	@SequenceGenerator(name = "peticion_info_seq_gen", sequenceName = "PETICION_INFO_SEQ", allocationSize = 1)
+//	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "peticion_info_seq_gen")
 	@Column(name="COD_PETICION", unique=true, nullable=false, length=10)
 	private String codPeticion;
 
