@@ -19,19 +19,22 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
+import es.commerzbank.ice.embargos.domain.entity.Embargo;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
 import es.commerzbank.ice.embargos.domain.entity.PeticionInformacion;
 import es.commerzbank.ice.embargos.domain.entity.TipoFichero;
+import es.commerzbank.ice.embargos.domain.mapper.Cuaderno63Mapper;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase1.CabeceraEmisorFase1;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase1.FinFicheroFase1;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase1.SolicitudInformacionFase1;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase2.CabeceraEmisorFase2;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase2.FinFicheroFase2;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase2.RespuestaSolicitudInformacionFase2;
-import es.commerzbank.ice.embargos.repository.ControlFicheroRepository;
-import es.commerzbank.ice.embargos.repository.PeticionInformacionRepository;
+import es.commerzbank.ice.embargos.formats.cuaderno63.fase3.OrdenEjecucionEmbargoComplementarioFase3;
+import es.commerzbank.ice.embargos.formats.cuaderno63.fase3.OrdenEjecucionEmbargoFase3;
+import es.commerzbank.ice.embargos.repository.FileControlRepository;
+import es.commerzbank.ice.embargos.repository.InformationPetitionRepository;
 import es.commerzbank.ice.embargos.service.Cuaderno63Service;
-import es.commerzbank.ice.utils.Cuaderno63Helper;
 import es.commerzbank.ice.utils.EmbargosConstants;
 
 @Service
@@ -48,15 +51,17 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	
 	@Value("${commerzbank.embargos.files.path.generated}")
 	private String pathGenerated;
+
+	@Autowired
+	Cuaderno63Mapper cuaderno63Mapper;
 	
 	//Agregar repositories de DWH ...
 	@Autowired
-	ControlFicheroRepository controlFicheroRepository;
+	FileControlRepository fileControlRepository;
 	
 	@Autowired
-	PeticionInformacionRepository peticionInformacionRepository;
-	
-	
+	InformationPetitionRepository informationPetitionRepository;
+
 	public void tratarFicheroPeticion(File file) throws IOException {	
 
 		// create a StreamFactory
@@ -75,7 +80,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
         controlFicheroPeticion.setTipoFichero(tipoFichero);
         controlFicheroPeticion.setNombreFichero(fileNamePeticion);
         controlFicheroPeticion.setEntidadesComunicadora(entidadesComunicadora);
-        controlFicheroRepository.save(controlFicheroPeticion);
+        fileControlRepository.save(controlFicheroPeticion);
         
         //Fichero salida:
         String fileNameInformacion = FilenameUtils.getBaseName(file.getCanonicalPath()) 
@@ -90,7 +95,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
         controlFicheroInformacion.setTipoFichero(tipoFichero);
         controlFicheroInformacion.setNombreFichero(fileNameInformacion);
         controlFicheroInformacion.setEntidadesComunicadora(entidadesComunicadora);
-        controlFicheroRepository.save(controlFicheroInformacion);
+        fileControlRepository.save(controlFicheroInformacion);
         
         // use a StreamFactory to create a BeanReader
         BeanReader beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_FASE1, file);
@@ -103,18 +108,20 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
         		
         		SolicitudInformacionFase1 solicitudInformacion = (SolicitudInformacionFase1) record;
         		LOG.debug(solicitudInformacion.getNifDeudor());
-        		
+ 		
         		//Se guarda en base de datos:
-        		PeticionInformacion peticionInformacion = Cuaderno63Helper.generatePeticionInformacion(solicitudInformacion, 
+        		PeticionInformacion peticionInformacion = cuaderno63Mapper.generatePeticionInformacion(solicitudInformacion, 
         				controlFicheroPeticion.getCodControlFichero(), controlFicheroInformacion.getCodControlFichero());
-        		peticionInformacionRepository.save(peticionInformacion);
+        		
+        		informationPetitionRepository.save(peticionInformacion);
         		
         		
         		//Escribir en fichero respuesta:
         		Map<String,String> ibanClavesSeguridadMap = new LinkedHashMap<>();
+        		ibanClavesSeguridadMap.put("88888888", "99999999");
         		
         		RespuestaSolicitudInformacionFase2 respuesta = 
-        				Cuaderno63Helper.generateRespuestaSolicitudInformacionFase2(solicitudInformacion, ibanClavesSeguridadMap);
+        				cuaderno63Mapper.generateRespuestaSolicitudInformacionFase2(solicitudInformacion, ibanClavesSeguridadMap);
         		
         		beanWriter.write(EmbargosConstants.RECORD_NAME_RESPUESTASOLICITUDINFORMACION, respuesta);
         	
@@ -125,7 +132,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
         		
         		Date fechaObtencionFicheroEntidadDeDeposito = new Date();
         		
-        		CabeceraEmisorFase2 cabeceraEmisorFase2 = Cuaderno63Helper.generateCabeceraEmisorFase2(cabeceraEmisorFase1, 
+        		CabeceraEmisorFase2 cabeceraEmisorFase2 = cuaderno63Mapper.generateCabeceraEmisorFase2(cabeceraEmisorFase1, 
         				fechaObtencionFicheroEntidadDeDeposito);
         		
         		beanWriter.write(EmbargosConstants.RECORD_NAME_CABECERAEMISOR, cabeceraEmisorFase2);
@@ -135,7 +142,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
         		FinFicheroFase1 finFicheroFase1 = (FinFicheroFase1) record;
         		LOG.debug(finFicheroFase1.getNombreOrganismoEmisor());
         		
-        		FinFicheroFase2 finFicheroFase2 = Cuaderno63Helper.generateFinFicheroFase2(finFicheroFase1);
+        		FinFicheroFase2 finFicheroFase2 = cuaderno63Mapper.generateFinFicheroFase2(finFicheroFase1);
         		
         		beanWriter.write(EmbargosConstants.RECORD_NAME_FINFICHERO, finFicheroFase2);
         	}
@@ -151,6 +158,65 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	}
 	
 	public void tratarFicheroEmbargos(File file) {
+		
+		// create a StreamFactory
+        StreamFactory factory = StreamFactory.newInstance();
+        // load the mapping file
+        factory.loadResource(pathFileConfigCuaderno63);
+        
+        // use a StreamFactory to create a BeanReader
+        BeanReader beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_FASE3, file);
+        
+        Object record = null;
+    	
+        OrdenEjecucionEmbargoFase3 ordenEjecucionEmbargo = null;
+    	OrdenEjecucionEmbargoComplementarioFase3 ordenEjecucionEmbargoComp = null;
+    	boolean isRecordOrdenEjecEmbargo;
+    	
+        while ((record = beanReader.read()) != null) {
+               
+        	isRecordOrdenEjecEmbargo = EmbargosConstants.RECORD_NAME_ORDENEJECUCIONEMBARGO.equals(beanReader.getRecordName());
+        	
+        	if(isRecordOrdenEjecEmbargo) {
+
+        		ordenEjecucionEmbargo = (OrdenEjecucionEmbargoFase3) record;
+        
+        	} else if(EmbargosConstants.RECORD_NAME_ORDENEJECUCIONEMBARGOCOMPLEMENTARIO.equals(beanReader.getRecordName())) {
+        		
+        		ordenEjecucionEmbargoComp = (OrdenEjecucionEmbargoComplementarioFase3) record;
+        		
+        		
+        	} else if(EmbargosConstants.RECORD_NAME_CABECERAEMISOR.equals(beanReader.getRecordName())) {
+        		
+        		
+        	} else if(EmbargosConstants.RECORD_NAME_FINFICHERO.equals(beanReader.getRecordName())) {
+        		
+        	}
+        	
+        	
+        	if (ordenEjecucionEmbargo!=null && !isRecordOrdenEjecEmbargo) {
+        		
+        		Embargo embargo = null;
+        		
+        		if (ordenEjecucionEmbargoComp!=null) {
+        			
+        			//embargo = cuaderno63Mapper.generateEmbargo(ordenEjecucionEmbargo, ordenEjecucionEmbargoComp);
+        			
+        		} else {
+        			//embargo = cuaderno63Mapper.generateEmbargo(ordenEjecucionEmbargo, new OrdenEjecucionEmbargoComplementarioFase3());
+        		}
+        		
+        		
+        		//Tratamiento de embargo.....
+        		
+        		
+        		//inicializar a null:
+        		ordenEjecucionEmbargo = null;
+        		ordenEjecucionEmbargoComp = null;
+        	}
+        	
+        }
+        	
 		
 	}
 	

@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.Diligencia;
-import es.commerzbank.ice.embargos.repository.ControlFicheroRepository;
-import es.commerzbank.ice.embargos.repository.PeticionInformacionRepository;
+import es.commerzbank.ice.embargos.repository.FileControlRepository;
+import es.commerzbank.ice.embargos.repository.InformationPetitionRepository;
 import es.commerzbank.ice.embargos.service.AEATService;
 import es.commerzbank.ice.utils.EmbargosConstants;
 
@@ -29,10 +29,10 @@ public class AEATServiceImpl implements AEATService{
 	
 	//Agregar repositories de DWH ...
 	@Autowired
-	ControlFicheroRepository controlFicheroRepository;
+	FileControlRepository fileControlRepository;
 	
 	@Autowired
-	PeticionInformacionRepository peticionInformacionRepository;
+	InformationPetitionRepository informationPetitionRepository;
 	
 	public void tratarFicheroDiligenciasEmbargo(File file) {
 		

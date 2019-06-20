@@ -13,10 +13,11 @@ import es.commerzbank.ice.embargos.formats.cuaderno63.fase1.SolicitudInformacion
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase2.CabeceraEmisorFase2;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase2.FinFicheroFase2;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase2.RespuestaSolicitudInformacionFase2;
+import es.commerzbank.ice.embargos.formats.cuaderno63.fase3.OrdenEjecucionEmbargoFase3;
 
 public class Cuaderno63Helper {
 
-	
+	@Deprecated
 	public static PeticionInformacion generatePeticionInformacion(SolicitudInformacionFase1 solicitudInfo, 
 			Long codControlFicheroPeticion, Long codControlFicheroInformacion) {
 
@@ -26,7 +27,7 @@ public class Cuaderno63Helper {
 		ControlFichero pendienteCambiarControlFichero = new ControlFichero();
 		pendienteCambiarControlFichero.setCodControlFichero(codControlFicheroPeticion);
 		EntidadesOrdenante pendienteCambiarEntidadesOrdenante  = new EntidadesOrdenante();
-		pendienteCambiarEntidadesOrdenante.setCodEntidadOrdenante(new Long(1));
+		pendienteCambiarEntidadesOrdenante.setCodEntidadOrdenante(Long.valueOf(1));
 		
 		PeticionInformacion peticionInformacion = new PeticionInformacion();
 
@@ -75,6 +76,7 @@ public class Cuaderno63Helper {
 		return peticionInformacion;
 	}
 	
+	@Deprecated
 	public static CabeceraEmisorFase2 generateCabeceraEmisorFase2(CabeceraEmisorFase1 cabeceraEmisorFase1, Date fechaObtencionFicheroEntidadDeDeposito) {
 		
 		CabeceraEmisorFase2 cabeceraEmisorFase2 = new CabeceraEmisorFase2();
@@ -92,6 +94,7 @@ public class Cuaderno63Helper {
 		return cabeceraEmisorFase2;
 	}
 	
+	@Deprecated
 	public static RespuestaSolicitudInformacionFase2 generateRespuestaSolicitudInformacionFase2(
 			SolicitudInformacionFase1 solicitudInformacionFase1,
 			Map<String,String> ibanClavesSeguridadMap) {
@@ -149,7 +152,7 @@ public class Cuaderno63Helper {
 		return respuesta;
 	}
 	
-	
+	@Deprecated
 	public static FinFicheroFase2 generateFinFicheroFase2(FinFicheroFase1 finFicheroFase1) {
 			
 		FinFicheroFase2 finFicheroFase2 = new FinFicheroFase2();
@@ -163,5 +166,10 @@ public class Cuaderno63Helper {
 		
 		return finFicheroFase2;
 		
+	}
+	
+	public static OrdenEjecucionEmbargoFase3 generateOrdenEjecucionEmbargoFase3 () {
+		
+		return null;
 	}
 }
