@@ -1,5 +1,9 @@
 package es.commerzbank.ice.utils;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 public class EmbargosConstants {
 
 	public static final String AEAT = "AEAT";
@@ -14,6 +18,7 @@ public class EmbargosConstants {
 	public static final String TIPO_FICHERO_FINAL = "FIN";
 	public static final String TIPO_FICHERO_APUNTES_CONTABLES = "CON";
 	
+	public static final long COD_TIPO_FICHERO_ALL_TYPES = 0;
 	public static final Integer COD_TIPO_FICHERO_PETICIONES = 1;
 	public static final Integer COD_TIPO_FICHERO_INFORMACION = 2;
 	
@@ -53,6 +58,8 @@ public class EmbargosConstants {
 	public static final String RECORD_NAME_ERRORESTRABA = "erroresTraba";
 	
 	public static final String SEPARADOR_PUNTO = ".";
+	
+	public static final Date VB6_INIT_DATE = new GregorianCalendar(1899,Calendar.DECEMBER,30).getTime();
 	
 	
 }

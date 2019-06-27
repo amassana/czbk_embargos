@@ -35,7 +35,8 @@ public class Peticion implements Serializable {
 	@Column(name="TIEMPO_ESTIMADO_RESPUESTA")
 	private BigDecimal tiempoEstimadoRespuesta;
 
-	@Column(name="\"TIMESTAMP\"", length=29)
+	//Se eliminan comillas ya que hibernate lo trata en minusculas y falla.
+	@Column(name="TIMESTAMP", length=29)
 	private String timestamp;
 
 	@Column(name="USUARIO_ULT_MODIFICACION", length=10)

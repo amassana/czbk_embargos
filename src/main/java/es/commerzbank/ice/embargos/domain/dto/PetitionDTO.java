@@ -4,7 +4,6 @@ public class PetitionDTO {
 
 	private String codePetition;
 	private Long codeStatusPetition;
-	private InformationPetitionDTO informationPetitionDTO;
 	
 	public String getCodePetition() {
 		return codePetition;
@@ -18,12 +17,6 @@ public class PetitionDTO {
 	public void setCodeStatusPetition(Long codeStatusPetition) {
 		this.codeStatusPetition = codeStatusPetition;
 	}
-	public InformationPetitionDTO getInformationPetitionDTO() {
-		return informationPetitionDTO;
-	}
-	public void setInformationPetitionDTO(InformationPetitionDTO informationPetitionDTO) {
-		this.informationPetitionDTO = informationPetitionDTO;
-	}
-	
+
 
 }

@@ -31,10 +31,10 @@ commerzbank:
   embargos:
     files:
       path:
-        monitoring: /ficherosEmbargos/a_tratar/
-        processed: /ficherosEmbargos/procesados/
-        generated: /ficherosEmbargos/generados/
-        error: /ficherosEmbargos/erroneos/
+        monitoring: /Seizure_Files/incoming/
+        processed: /Seizure_Files/processed/
+        generated: /Seizure_Files/generated/
+        error: /Seizure_Files/error/
       monitoring-interval-in-seconds: 5
       suffix-file-filter-pet: pet
       suffix-file-filter-inf: inf
@@ -49,4 +49,8 @@ commerzbank:
         cuaderno63: beanio/cuaderno63.xml
         aeat: beanio/aeat.xml
       
-        
+ds-comun:
+  url: jdbc:oracle:thin:@172.21.0.123:1521:DBADQUIRA
+  username: COMM_COMUNES_DES
+  password: comm_c0mu
+  driver-class-name: oracle.jdbc.driver.OracleDriver

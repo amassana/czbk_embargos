@@ -5,12 +5,12 @@ import java.util.Date;
 public class FileControlDTO {
 
 	private String codeFileControl;
+	private Long codeFileType;
 	private String fileName;
 	private String fileStatus;
 	private String fileTarget;
 	private Date deliveryDate;
 	private Date phase6DeliveryDate;
-	private Long codeFileType;
 	
 	public String getCodeFileControl() {
 		return codeFileControl;

@@ -4,22 +4,22 @@ import java.util.Date;
 
 public class FileControlFiltersDTO {
 
-	private String fileType;
-	private String fileStatus;
+	private Long fileType;
+	private Long fileStatus;
 	private Boolean allDates;
 	private Date startDate;
 	private Date endDate;
 	
-	public String getFileType() {
+	public Long getFileType() {
 		return fileType;
 	}
-	public void setFileType(String fileType) {
+	public void setFileType(Long fileType) {
 		this.fileType = fileType;
 	}
-	public String getFileStatus() {
+	public Long getFileStatus() {
 		return fileStatus;
 	}
-	public void setFileStatus(String fileStatus) {
+	public void setFileStatus(Long fileStatus) {
 		this.fileStatus = fileStatus;
 	}
 	public Boolean getAllDates() {
