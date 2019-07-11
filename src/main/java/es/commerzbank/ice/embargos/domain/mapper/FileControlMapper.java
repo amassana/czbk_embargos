@@ -11,20 +11,18 @@ import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 
 @Mapper(componentModel="spring")
 public abstract class FileControlMapper {
-
+	
 	@Mappings({
-		@Mapping(source = "controlFichero.codControlFichero", target = "codeFileControl"),
+		@Mapping(source = "controlFichero.codControlFichero", target = "code"),
 		@Mapping(source = "controlFichero.nombreFichero", target = "fileName"),
-		@Mapping(source = "estadoTEST", target = "fileStatus"),
+		@Mapping(source = "estadoTEST", target = "codeFileStatus"),
 		@Mapping(source = "targetTEST", target = "fileTarget"),
 		@Mapping(source = "fechaTEST", target = "deliveryDate"),
-		@Mapping(source = "fechaFase6TEST", target = "phase6DeliveryDate"),
 		@Mapping(source = "controlFichero.tipoFichero.codTipoFichero", target = "codeFileType")
 	})
 	public abstract FileControlDTO toFileControlDTO (ControlFichero controlFichero,
-			String estadoTEST,
+			Long estadoTEST,
 			String targetTEST,
-			Date fechaTEST,
-			Date fechaFase6TEST);
+			Date fechaTEST);
 	
 }

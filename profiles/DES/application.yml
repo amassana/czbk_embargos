@@ -22,6 +22,11 @@ spring:
     enable: false
   profiles:
     active: DES
+  ds-comun:
+    url: jdbc:oracle:thin:@172.21.0.123:1521:DBADQUIRA
+    username: COMM_COMUNES_DES
+    password: comm_c0mu
+    driver-class-name: oracle.jdbc.driver.OracleDriver
 
 server:
   servlet-path: /*
@@ -49,8 +54,4 @@ commerzbank:
         cuaderno63: beanio/cuaderno63.xml
         aeat: beanio/aeat.xml
       
-ds-comun:
-  url: jdbc:oracle:thin:@172.21.0.123:1521:DBADQUIRA
-  username: COMM_COMUNES_DES
-  password: comm_c0mu
-  driver-class-name: oracle.jdbc.driver.OracleDriver
+

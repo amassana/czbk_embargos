@@ -4,67 +4,83 @@ import java.util.Date;
 
 public class FileControlDTO {
 
-	private String codeFileControl;
+	private String code;
 	private Long codeFileType;
+	private Long codeFileStatus;
 	private String fileName;
+	private String responseFileName;
+	private Boolean isProcessed;
 	private String fileStatus;
 	private String fileTarget;
 	private Date deliveryDate;
-	private Date phase6DeliveryDate;
+	private Date modifiedDate;
+	private String modifiedUser;
 	
-	public String getCodeFileControl() {
-		return codeFileControl;
+	public String getCode() {
+		return code;
 	}
-
-	public void setCodeFileControl(String codeFileControl) {
-		this.codeFileControl = codeFileControl;
+	public void setCode(String code) {
+		this.code = code;
 	}
-
-	public String getFileName() {
-		return fileName;
-	}
-
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
-
-	public String getFileStatus() {
-		return fileStatus;
-	}
-
-	public void setFileStatus(String fileStatus) {
-		this.fileStatus = fileStatus;
-	}
-
-	public String getFileTarget() {
-		return fileTarget;
-	}
-
-	public void setFileTarget(String fileTarget) {
-		this.fileTarget = fileTarget;
-	}
-
-	public Date getDeliveryDate() {
-		return deliveryDate;
-	}
-
-	public void setDeliveryDate(Date deliveryDate) {
-		this.deliveryDate = deliveryDate;
-	}
-
-	public Date getPhase6DeliveryDate() {
-		return phase6DeliveryDate;
-	}
-
-	public void setPhase6DeliveryDate(Date phase6DeliveryDate) {
-		this.phase6DeliveryDate = phase6DeliveryDate;
-	}
-	
 	public Long getCodeFileType() {
 		return codeFileType;
 	}
-
 	public void setCodeFileType(Long codeFileType) {
 		this.codeFileType = codeFileType;
 	}
+	public Long getCodeFileStatus() {
+		return codeFileStatus;
+	}
+	public void setCodeFileStatus(Long codeFileStatus) {
+		this.codeFileStatus = codeFileStatus;
+	}
+	public String getFileName() {
+		return fileName;
+	}
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+	public String getResponseFileName() {
+		return responseFileName;
+	}
+	public void setResponseFileName(String responseFileName) {
+		this.responseFileName = responseFileName;
+	}
+	public Boolean getIsProcessed() {
+		return isProcessed;
+	}
+	public void setIsProcessed(Boolean isProcessed) {
+		this.isProcessed = isProcessed;
+	}
+	public String getFileStatus() {
+		return fileStatus;
+	}
+	public void setFileStatus(String fileStatus) {
+		this.fileStatus = fileStatus;
+	}
+	public String getFileTarget() {
+		return fileTarget;
+	}
+	public void setFileTarget(String fileTarget) {
+		this.fileTarget = fileTarget;
+	}
+	public Date getDeliveryDate() {
+		return deliveryDate;
+	}
+	public void setDeliveryDate(Date deliveryDate) {
+		this.deliveryDate = deliveryDate;
+	}
+	public Date getModifiedDate() {
+		return modifiedDate;
+	}
+	public void setModifiedDate(Date modifiedDate) {
+		this.modifiedDate = modifiedDate;
+	}
+	public String getModifiedUser() {
+		return modifiedUser;
+	}
+	public void setModifiedUser(String modifiedUser) {
+		this.modifiedUser = modifiedUser;
+	}
+	
 }

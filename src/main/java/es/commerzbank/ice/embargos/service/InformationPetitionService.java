@@ -1,8 +1,20 @@
 package es.commerzbank.ice.embargos.service;
 
-import es.commerzbank.ice.embargos.domain.dto.InformationPetitionDTO;
+import java.util.List;
+
+import es.commerzbank.ice.embargos.domain.dto.PetitionCaseDTO;
+import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 
 public interface InformationPetitionService {
 
-	public InformationPetitionDTO getByCodePetition(Long codePetition);
+	public PetitionCaseDTO getByCodeInformationPetition(String codeInformationPetition);
+	
+	public List<PetitionCaseDTO> getAllByControlFichero(ControlFichero controlFichero);
+	
+	public Integer getCountPendingCases(ControlFichero controlFichero);
+	
+	public boolean saveSelectedAccounts(String codeInformationPetition, String nif, Boolean revised, List<String>codeAccountList);
+	
+	public boolean savePetitionCase(Long codeFileControl, String codePetitionCase, PetitionCaseDTO petitionCase);
+
 }

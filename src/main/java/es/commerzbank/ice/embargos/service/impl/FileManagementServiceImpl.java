@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.embargos.service.AEATService;
 import es.commerzbank.ice.embargos.service.Cuaderno63Service;
 import es.commerzbank.ice.embargos.service.FileManagementService;
@@ -65,7 +66,7 @@ public class FileManagementServiceImpl implements FileManagementService {
 			//1. Obtener ficheros del directorio de monitoreo
 			File dir = new File(pathMonitoring);
 	
-			LOG.debug("Obteniendo ficheros de la ruta " + dir.getCanonicalPath());
+			LOG.debug("Getting files from the path " + dir.getCanonicalPath());
 			List<File> files = (List<File>) FileUtils.listFiles(dir, extensionList, false);
 			
 			for (File file : files) {
@@ -74,12 +75,12 @@ public class FileManagementServiceImpl implements FileManagementService {
 					cargarFichero(file);
 				
 					moverFichero(file, pathProcessed);
-					LOG.debug("Se ha movido el fichero " + FilenameUtils.getName(file.getCanonicalPath()) + " a la ruta " + pathProcessed);
+					LOG.debug("The file " + FilenameUtils.getName(file.getCanonicalPath()) + " has been moved to the path " + pathProcessed);
 				
 				} catch (Exception e) {
 					
 					moverFichero(file, pathError);
-					LOG.debug("Se ha movido el fichero " + FilenameUtils.getName(file.getCanonicalPath()) + " a la ruta " + pathError);
+					LOG.debug("The file " + FilenameUtils.getName(file.getCanonicalPath()) + " has been moved to the path " + pathError);
 				}
 
 			}	
@@ -89,7 +90,7 @@ public class FileManagementServiceImpl implements FileManagementService {
 		}
 	}
 
-	public void cargarFichero(File file) throws IOException {
+	public void cargarFichero(File file) throws IOException, ICEParserException {
 		
 		LOG.debug("file: " + file.getCanonicalPath());
 		
@@ -137,7 +138,7 @@ public class FileManagementServiceImpl implements FileManagementService {
 	}
 
 	
-	private void parsearFicheroCuaderno63(File file) throws IOException {
+	private void parsearFicheroCuaderno63(File file) throws IOException, ICEParserException {
 		
 		String tipoFichero = FilenameUtils.getExtension(file.getCanonicalPath()).toUpperCase();
 
@@ -146,10 +147,10 @@ public class FileManagementServiceImpl implements FileManagementService {
 		switch (tipoFichero) {
 			//- Tipos de ficheros del Cuaderno63:
 			case EmbargosConstants.TIPO_FICHERO_PETICIONES:
-				cuaderno63Service.tratarFicheroPeticion(file);
+				cuaderno63Service.cargarFicheroPeticion(file);
 				break;
 			case EmbargosConstants.TIPO_FICHERO_EMBARGOS:
-				cuaderno63Service.tratarFicheroEmbargos(file);
+				cuaderno63Service.cargarFicheroEmbargos(file);
 				break;	
 			case EmbargosConstants.TIPO_FICHERO_LEVANTAMIENTOS:
 				cuaderno63Service.tratarFicheroLevantamientos(file);
@@ -163,7 +164,7 @@ public class FileManagementServiceImpl implements FileManagementService {
 	private void leerFichero(File file) {
 			
 		if (file==null) {			
-			throw new RuntimeException("Error al obtener el fichero");
+			throw new RuntimeException("Error reading the file: the file is null.");
 		}
 
 		LineIterator it = null;
@@ -177,7 +178,7 @@ public class FileManagementServiceImpl implements FileManagementService {
 		        String line = it.nextLine();
 		        // do something with line
 		        
-		        LOG.debug("LINEA " + i + ": " + line);
+		        LOG.debug("LINE " + i + ": " + line);
 		        
 		        i++;
 		    }
@@ -206,6 +207,7 @@ public class FileManagementServiceImpl implements FileManagementService {
 		}
 		
 	}
+
 
 
 	

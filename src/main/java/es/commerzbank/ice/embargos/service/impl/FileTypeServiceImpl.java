@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import es.commerzbank.ice.embargos.domain.dto.FileTypeDTO;
+import es.commerzbank.ice.embargos.domain.dto.FileControlTypeDTO;
 import es.commerzbank.ice.embargos.domain.entity.TipoFichero;
 import es.commerzbank.ice.embargos.domain.mapper.FileTypeMapper;
 import es.commerzbank.ice.embargos.repository.FileTypeRepository;
@@ -24,18 +24,18 @@ public class FileTypeServiceImpl implements FileTypeService {
 	FileTypeRepository fileTypeRepository;
 	
 	@Override
-	public List<FileTypeDTO> listAllFileType() {
+	public List<FileControlTypeDTO> listAllFileType() {
 
-		List<FileTypeDTO> fileTypeList = new ArrayList<>();	
+		List<FileControlTypeDTO> fileTypeList = new ArrayList<>();	
 		List<TipoFichero> tipoFicheroList = fileTypeRepository.findAll();
 		
-		FileTypeDTO fileTypeDTO = null;
+		FileControlTypeDTO fileControlTypeDTO = null;
 		
 		for(TipoFichero tipoFichero : tipoFicheroList) {
 			
-			fileTypeDTO = fileTypeMapper.toFileTypeDTO(tipoFichero);
+			fileControlTypeDTO = fileTypeMapper.toFileTypeDTO(tipoFichero);
 			
-			fileTypeList.add(fileTypeDTO);
+			fileTypeList.add(fileControlTypeDTO);
 
 		}
 		

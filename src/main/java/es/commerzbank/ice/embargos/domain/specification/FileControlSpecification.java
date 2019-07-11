@@ -50,21 +50,23 @@ public class FileControlSpecification implements Specification<ControlFichero> {
 			predicates.add(predicate);
 		}
 		
+		//Filtro de fechas:
 		Date startDate = fileControlFiltersDTO.getStartDate();
 		Date endDate = fileControlFiltersDTO.getEndDate();
-		
+			
 		if (startDate!=null) {
 			Integer startDateVB = VB6Date.dateToInt(startDate);
 			predicate = criteriaBuilder.ge(root.get(ControlFichero_.FECHA_INCORPORACION), startDateVB);
 			predicates.add(predicate);
 		}
-		
+			
 		if (endDate!=null) {
 			Integer endDateVB = VB6Date.dateToInt(endDate);
 			predicate = criteriaBuilder.le(root.get(ControlFichero_.FECHA_INCORPORACION), endDateVB);
 			predicates.add(predicate);
 		}
 			
+				
 		return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 	}
 

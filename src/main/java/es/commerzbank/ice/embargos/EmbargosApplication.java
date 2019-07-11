@@ -1,6 +1,7 @@
 package es.commerzbank.ice.embargos;
 
 import java.security.Timestamp;
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.springframework.boot.SpringApplication;
@@ -11,16 +12,20 @@ import org.springframework.context.annotation.Bean;
 import com.google.common.base.Predicates;
 
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.AuthorizationCodeGrantBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.GrantType;
+import springfox.documentation.service.SecurityScheme;
+import springfox.documentation.service.TokenEndpoint;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 
-@SpringBootApplication
+@SpringBootApplication (scanBasePackages = {"es.commerzbank.ice.embargos", "es.commerzbank.ice.comun.lib"})
 @EnableAutoConfiguration
 @EnableSwagger2
 public class EmbargosApplication {
@@ -40,7 +45,11 @@ public class EmbargosApplication {
             .directModelSubstitute(Timestamp.class, Long.class)
             .consumes(Collections.singleton("application/json"))
             .produces(Collections.singleton("application/json"))
-            .apiInfo(metaData());
+            .apiInfo(metaData())
+            //.securitySchemes(Arrays.asList(securityScheme()))
+            ;
+            
+        //SecurityScheme yes = 
     }
 	
     private ApiInfo metaData() {
@@ -51,4 +60,19 @@ public class EmbargosApplication {
                 .contact(new Contact("Alten Spain (Barcelona)", "http://www.alten.es", ""))
                 .build();
     }
+    /*
+    private SecurityScheme securityScheme() {
+        GrantType grantType = new AuthorizationCodeGrantBuilder()
+            .tokenEndpoint(new TokenEndpoint(AUTH_SERVER + "/token", "oauthtoken"))
+            .tokenRequestEndpoint(
+              new TokenRequestEndpoint(AUTH_SERVER + "/authorize", CLIENT_ID, CLIENT_ID))
+            .build();
+     
+        SecurityScheme oauth = new OAuthBuilder().name("spring_oauth")
+            .grantTypes(Arrays.asList(grantType))
+            .scopes(Arrays.asList(scopes()))
+            .build();
+        return oauth;
+    }
+    */
 }

@@ -1,9 +1,5 @@
 package es.commerzbank.ice.utils;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-
 public class EmbargosConstants {
 
 	public static final String AEAT = "AEAT";
@@ -19,8 +15,17 @@ public class EmbargosConstants {
 	public static final String TIPO_FICHERO_APUNTES_CONTABLES = "CON";
 	
 	public static final long COD_TIPO_FICHERO_ALL_TYPES = 0;
-	public static final Integer COD_TIPO_FICHERO_PETICIONES = 1;
-	public static final Integer COD_TIPO_FICHERO_INFORMACION = 2;
+	public static final long COD_TIPO_FICHERO_PETICIONES = 1;
+	public static final long COD_TIPO_FICHERO_INFORMACION = 2;
+	public static final long COD_TIPO_FICHERO_EMBARGOS = 3;
+	
+	/** Estados de ControlFichero **/
+	public static final long COD_ESTADO_CTRLFICHERO_ERROR = 0;
+	public static final long COD_ESTADO_CTRLFICHERO_LOADING = 1;
+	public static final long COD_ESTADO_CTRLFICHERO_RECEIVED = 2;
+	public static final long COD_ESTADO_CTRLFICHERO_PROCESSED = 3;
+	public static final long COD_ESTADO_CTRLFICHERO_GENERATED = 4;
+	public static final long COD_ESTADO_CTRLFICHERO_SENT = 5;
 	
 	/** Stream names del cuaderno 63 **/
 	public static final String STREAM_NAME_FASE1 = "fase1";
@@ -57,9 +62,13 @@ public class EmbargosConstants {
 	public static final String RECORD_NAME_TRABA = "traba";
 	public static final String RECORD_NAME_ERRORESTRABA = "erroresTraba";
 	
-	public static final String SEPARADOR_PUNTO = ".";
+	public static final String SEPARADOR_PUNTO = ".";	
 	
-	public static final Date VB6_INIT_DATE = new GregorianCalendar(1899,Calendar.DECEMBER,30).getTime();
+	public static final String SYSTEM_USER = "system";
 	
+	public static final String COD_ESTADO_PRIMARIO_PETICION_ENVIANDO_PETICION_UNICA = "1000";
+	
+	public static final String IND_FLAG_NO = "N";
+	public static final String IND_FLAG_YES = "Y";
 	
 }

@@ -10,4 +10,6 @@ public interface FileControlService {
 
 	public Page<FileControlDTO> fileSearch(FileControlFiltersDTO fileControlFiltersDTO, Pageable pageable) throws Exception;
 	
+	public FileControlDTO getByCodeFileControl(Long codeFileControl);
+		
 }

@@ -1,11 +1,18 @@
 package es.commerzbank.ice.embargos.domain.dto;
 
-public class AccountDTO {
+public class BankAccountDTO {
 
+	private String codeBankAccount;
 	private String iban;
 	private String statusCode;
 	private String statusDescription;
 	
+	public String getCodeBankAccount() {
+		return codeBankAccount;
+	}
+	public void setCodeBankAccount(String codeBankAccount) {
+		this.codeBankAccount = codeBankAccount;
+	}
 	public String getIban() {
 		return iban;
 	}

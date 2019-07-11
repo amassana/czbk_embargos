@@ -3,9 +3,12 @@ package es.commerzbank.ice.embargos.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -26,12 +29,14 @@ import es.commerzbank.ice.embargos.service.FileControlService;
 @Transactional
 public class FileControlServiceImpl implements FileControlService{
 	
+	private static final Logger LOG = LoggerFactory.getLogger(FileControlServiceImpl.class);
+		
+	@Autowired
+	private FileControlMapper fileControlMapper;
+
 	@Autowired
 	private FileControlRepository fileControlRepository;
 	
-	@Autowired
-	private FileControlMapper fileControlMapper;
-		
 	@Override
 	public Page<FileControlDTO> fileSearch(FileControlFiltersDTO fileControlFiltersDTO, Pageable pageable) throws Exception{
 
@@ -58,16 +63,15 @@ public class FileControlServiceImpl implements FileControlService{
 		for (ControlFichero controlFichero : controlFicheroList) {
 		
 			FileControlDTO fileSearchResponseDTO = fileControlMapper.toFileControlDTO(controlFichero, 
-					"estadoTEST", 
+					new Long (1), 
 					"targetTEST", 
-					new Date(),
 					new Date());
 			
 			fileSearchResponseDTOList.add(fileSearchResponseDTO);
 		
 		}
 		
-		return new PageImpl<>(fileSearchResponseDTOList, pageable, fileSearchResponseDTOList.size());
+		return new PageImpl<>(fileSearchResponseDTOList, pageable, controlFicheroList.getTotalElements());
 		
 	}
 	
@@ -75,5 +79,22 @@ public class FileControlServiceImpl implements FileControlService{
 		
 		return (startDate != null && endDate!=null && startDate.compareTo(endDate) <= 0);
 	}
+
+	@Override
+	public FileControlDTO getByCodeFileControl(Long codeFileControl) {
+
+		Optional<ControlFichero> controlFicheroOpt = fileControlRepository.findById(codeFileControl);
+		
+		if(!controlFicheroOpt.isPresent()) {
+			return null;
+		}
+		
+		return fileControlMapper.toFileControlDTO(controlFicheroOpt.get(), 
+				new Long (1), 
+				"targetTEST", 
+				new Date());
+	}
+
+
 	
 }

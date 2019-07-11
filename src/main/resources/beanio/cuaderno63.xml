@@ -219,7 +219,7 @@
 			<field name="municipio" length="12" />
 			<field name="codigoPostal" length="5" />
 			<field name="identificadorDeuda" length="13" />
-			<field name="importeTotalAEmbargar" length="15" />
+			<field name="importeTotalAEmbargar" typeHandler="importe15Digits" length="15" />
 			<field name="textoLibre1" length="50" />
 			<field name="textoLibre2" length="50" />
 			<field name="textoLibre3" length="50" />

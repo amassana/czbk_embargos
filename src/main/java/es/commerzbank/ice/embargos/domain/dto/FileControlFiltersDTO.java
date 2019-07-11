@@ -6,7 +6,7 @@ public class FileControlFiltersDTO {
 
 	private Long fileType;
 	private Long fileStatus;
-	private Boolean allDates;
+	private Boolean isProcessed;
 	private Date startDate;
 	private Date endDate;
 	
@@ -22,11 +22,11 @@ public class FileControlFiltersDTO {
 	public void setFileStatus(Long fileStatus) {
 		this.fileStatus = fileStatus;
 	}
-	public Boolean getAllDates() {
-		return allDates;
+	public Boolean getIsProcessed() {
+		return isProcessed;
 	}
-	public void setAllDates(Boolean allDates) {
-		this.allDates = allDates;
+	public void setIsProcessed(Boolean isProcessed) {
+		this.isProcessed = isProcessed;
 	}
 	public Date getStartDate() {
 		return startDate;
@@ -40,6 +40,8 @@ public class FileControlFiltersDTO {
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
+	
+
 	
 	
 }

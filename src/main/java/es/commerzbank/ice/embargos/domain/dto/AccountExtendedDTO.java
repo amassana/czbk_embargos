@@ -2,7 +2,7 @@ package es.commerzbank.ice.embargos.domain.dto;
 
 import java.math.BigDecimal;
 
-public class AccountExtendedDTO extends AccountDTO {
+public class AccountExtendedDTO extends BankAccountDTO {
 
 	private BigDecimal amount;
 	private BigDecimal change;

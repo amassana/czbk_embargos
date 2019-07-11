@@ -70,6 +70,14 @@ public class ControlFichero implements Serializable {
 	@JoinColumn(name="COD_ENTIDAD_PRESENTADORA", nullable=false)
 	private EntidadesComunicadora entidadesComunicadora;
 
+	//bi-directional many-to-one association to EstadoCtrlfichero
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumns({
+		@JoinColumn(name="COD_ESTADO", referencedColumnName="COD_ESTADO", nullable=false, insertable=false, updatable=false),
+		@JoinColumn(name="COD_TIPO_FICHERO", referencedColumnName="COD_TIPO_FICHERO", nullable=false, insertable=false, updatable=false)
+		})
+	private EstadoCtrlfichero estadoCtrlfichero;
+	
 	//bi-directional many-to-one association to TipoFichero
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="COD_TIPO_FICHERO", nullable=false)
@@ -260,6 +268,14 @@ public class ControlFichero implements Serializable {
 		this.entidadesComunicadora = entidadesComunicadora;
 	}
 
+	public EstadoCtrlfichero getEstadoCtrlfichero() {
+		return this.estadoCtrlfichero;
+	}
+
+	public void setEstadoCtrlfichero(EstadoCtrlfichero estadoCtrlfichero) {
+		this.estadoCtrlfichero = estadoCtrlfichero;
+	}
+	
 	public TipoFichero getTipoFichero() {
 		return this.tipoFichero;
 	}
