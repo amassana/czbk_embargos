@@ -8,5 +8,4 @@ public interface PetitionService {
 
 	public PetitionDTO getByCodeFileControl(Long codeFileControl);
 		
-	public boolean tramitarFicheroInformacion(String codePetition) throws IOException;
 }

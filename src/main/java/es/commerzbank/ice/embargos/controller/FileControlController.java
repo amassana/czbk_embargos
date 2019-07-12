@@ -13,11 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,6 +27,7 @@ import es.commerzbank.ice.embargos.domain.dto.FileControlTypeDTO;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.FileControlStatusService;
 import es.commerzbank.ice.embargos.service.FileTypeService;
+import io.swagger.annotations.ApiOperation;
 
 @CrossOrigin("*")
 @RestController
@@ -49,6 +48,7 @@ public class FileControlController {
 	@PostMapping(value = "/filter",
 			produces = { "application/json" },
 			consumes = { "application/json" })
+	@ApiOperation(value="Busca en CONTROL_FICHERO las entradas que cumplan el filtro especificado.")
 	public ResponseEntity<Page<FileControlDTO>> filter(Authentication authentication,
 													   @RequestBody FileControlFiltersDTO fileControlFilters,
 													   Pageable pageable){
@@ -77,10 +77,8 @@ public class FileControlController {
 	}
 	
 	@GetMapping(value = "/filetype")
-	//		,
-	//		produces = { "application/json" },
-	//		consumes = { "application/json" })
-	public ResponseEntity<List<FileControlTypeDTO>> getFileTypeList(@RequestHeader(value="token",required=true) String token){
+	@ApiOperation(value="Devuelve la lista de tipos de ficheros admitidos en TIPO_FICHERO.")
+	public ResponseEntity<List<FileControlTypeDTO>> getFileTypeList(Authentication authentication){
 		
 		ResponseEntity<List<FileControlTypeDTO>> response = null;
 		List<FileControlTypeDTO> result = null;
@@ -93,10 +91,8 @@ public class FileControlController {
 
 	
 	@GetMapping(value = "/filetype/{idFileType}/status")
-	//		,
-	//		produces = { "application/json" },
-	//		consumes = { "application/json" })
-	public ResponseEntity<List<FileControlStatusDTO>> getFileTypeStatusList(@RequestHeader(value="token",required=true) String token,
+	@ApiOperation(value="Devuelve la lista de estados para un determinado tipo de archivo de ESTADO_CTRLFICHERO.")
+	public ResponseEntity<List<FileControlStatusDTO>> getFileTypeStatusList(Authentication authentication,
 			@PathVariable("idFileType") Long idFileType){
 		
 		ResponseEntity<List<FileControlStatusDTO>> response = null;
@@ -122,7 +118,7 @@ public class FileControlController {
 	//		,
 	//		produces = { "application/json" },
 	//		consumes = { "application/json" })
-	public ResponseEntity<List<FileControlDTO>> getAuditByFileControl(@RequestHeader(value="token",required=true) String token,
+	public ResponseEntity<List<FileControlDTO>> getAuditByFileControl(Authentication authentication,
 			@PathVariable("codeFileControl") Long codeFileControl){
 		
 		ResponseEntity<List<FileControlDTO>> response = null;
@@ -146,17 +142,16 @@ public class FileControlController {
 	}
 	
 	@PostMapping(value = "/{codeFileControl}/process")
-	public ResponseEntity<String> tramitar (@RequestHeader(value="token",required=true) String token,
-			 @PathVariable("codeFileControl") String codeFileControl){
+	@ApiOperation(value = "Tramitacion de un archivo de peticion.")
+	public ResponseEntity<String> tramitar (Authentication authentication,
+			 @PathVariable("codeFileControl") Long codeFileControl){
 	
 		ResponseEntity<String> response = null;
 		boolean result = true;
 		
 		try {
 			
-			//TODO falta implementar el result:
-			//result = petitionService.tramitarFicheroInformacion(codePetition);
-			result = false;
+			result = fileControlService.tramitarFicheroInformacion(codeFileControl);
 			
 			if (result) {
 				response = new ResponseEntity<>(HttpStatus.OK);
@@ -175,11 +170,9 @@ public class FileControlController {
 		
 	}
 	
-	@PatchMapping(value = "/{codeFileControl}")
-	//		,
-	//		produces = { "application/json" },
-	//		consumes = { "application/json" })
-	public ResponseEntity<String> updateFileControl(@RequestHeader(value="token",required=true) String token,
+	@PostMapping(value = "/{codeFileControl}")
+	@ApiOperation(value = "Cambia los datos del CONTROL_FICHERO segun lo especificado. Usado para el cambio de estado.")
+	public ResponseEntity<String> updateFileControl(Authentication authentication,
 																  @PathVariable("codeFileControl") Long codeFileControl,
 																  @RequestBody FileControlDTO fileControl){
 		
@@ -189,6 +182,7 @@ public class FileControlController {
 		try {
 			
 			//TODO: implementar el result:
+			result = fileControlService.updateFileControl(codeFileControl,fileControl);
 			result = false;
 			
 			if (result) {
@@ -207,29 +201,28 @@ public class FileControlController {
 		return response;
 	}
 	
-	
-	///////////////MIRAR SI SE UTILIZARA:
-	
-//	@GetMapping(value = "/{codeFileControl}")
-//	public ResponseEntity<FileControlDTO> getByCodeFileControl(@RequestHeader(value="token",required=true) String token,
-//			 @PathVariable("codeFileControl") Long codeFileControl){
-//		
-//		ResponseEntity<FileControlDTO> response = null;
-//		FileControlDTO result = null;
-//		
-//		try {
-//		
-//			result = fileControlService.getByCodeFileControl(codeFileControl);
-//			response = new ResponseEntity<>(result, HttpStatus.OK);
-//		
-//		} catch (Exception e) {
-//			
-//			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-//			
-//			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
-//		}	
-//			
-//		return response;
-//	}
+		
+	@GetMapping(value = "/{codeFileControl}")
+	@ApiOperation(value="Devuelve el detalle de un CONTROL_FICHERO.")
+	public ResponseEntity<FileControlDTO> getByCodeFileControl(Authentication authentication,
+			 @PathVariable("codeFileControl") Long codeFileControl){
+		
+		ResponseEntity<FileControlDTO> response = null;
+		FileControlDTO result = null;
+		
+		try {
+		
+			result = fileControlService.getByCodeFileControl(codeFileControl);
+			response = new ResponseEntity<>(result, HttpStatus.OK);
+		
+		} catch (Exception e) {
+			
+			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			
+			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
+		}	
+			
+		return response;
+	}
 
 }

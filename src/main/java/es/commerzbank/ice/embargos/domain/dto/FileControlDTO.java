@@ -6,7 +6,7 @@ public class FileControlDTO {
 
 	private String code;
 	private Long codeFileType;
-	private Long codeFileStatus;
+	private FileControlStatusDTO status;
 	private String fileName;
 	private String responseFileName;
 	private Boolean isProcessed;
@@ -28,11 +28,11 @@ public class FileControlDTO {
 	public void setCodeFileType(Long codeFileType) {
 		this.codeFileType = codeFileType;
 	}
-	public Long getCodeFileStatus() {
-		return codeFileStatus;
+	public FileControlStatusDTO getStatus() {
+		return status;
 	}
-	public void setCodeFileStatus(Long codeFileStatus) {
-		this.codeFileStatus = codeFileStatus;
+	public void setStatus(FileControlStatusDTO status) {
+		this.status = status;
 	}
 	public String getFileName() {
 		return fileName;
@@ -82,5 +82,7 @@ public class FileControlDTO {
 	public void setModifiedUser(String modifiedUser) {
 		this.modifiedUser = modifiedUser;
 	}
+	
+
 	
 }

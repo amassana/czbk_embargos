@@ -70,35 +70,4 @@ public class PetitionServiceImpl implements PetitionService{
 		return petitionDTO;
 	}
 
-	
-	@Override
-	public boolean tramitarFicheroInformacion(String codePetition) throws IOException {
-
-		//Obtener el codigo del fichero de control:
-		Optional<Peticion> peticionOpt = petitionRepository.findById(codePetition);
-		
-		if(!peticionOpt.isPresent()) {
-			return false;
-		}
-		
-		Long codeFileControl = peticionOpt.get().getControlFichero().getCodControlFichero();
-		
-		//Solo se puede tramitar si no hay peticiones de informacion pendientes de ser revisadas:
-		
-		Integer countInformationPetitionInPendingCase = 
-				informationPetitionService.getCountPendingCases(peticionOpt.get().getControlFichero());
-		
-		if (countInformationPetitionInPendingCase == 0) {
-			cuaderno63Service.tramitarFicheroInformacion(codeFileControl);
-		} else {
-			
-			LOG.debug("No se puede tramitar: quedan " + countInformationPetitionInPendingCase 
-					+ " de peticiones de informacion pendientes de ser revisadas.");
-			
-			return false;
-		}
-		
-		return true;
-	}
-
 }

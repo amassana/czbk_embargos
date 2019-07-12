@@ -15,7 +15,8 @@ public abstract class FileControlMapper {
 	@Mappings({
 		@Mapping(source = "controlFichero.codControlFichero", target = "code"),
 		@Mapping(source = "controlFichero.nombreFichero", target = "fileName"),
-		@Mapping(source = "estadoTEST", target = "codeFileStatus"),
+		@Mapping(source = "estadoTEST", target = "status.status"),
+		@Mapping(source = "estadoTEST", target = "status.description"),
 		@Mapping(source = "targetTEST", target = "fileTarget"),
 		@Mapping(source = "fechaTEST", target = "deliveryDate"),
 		@Mapping(source = "controlFichero.tipoFichero.codTipoFichero", target = "codeFileType")

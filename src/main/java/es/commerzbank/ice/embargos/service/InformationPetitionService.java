@@ -11,10 +11,14 @@ public interface InformationPetitionService {
 	
 	public List<PetitionCaseDTO> getAllByControlFichero(ControlFichero controlFichero);
 	
-	public Integer getCountPendingCases(ControlFichero controlFichero);
+	public Integer getCountPendingPetitionCases(ControlFichero controlFichero);
+	
+	public Integer getCountReviewedPetitionCases(ControlFichero controlFichero);
+	
+	public Integer getCountPetitionCases(ControlFichero controlFichero);
 	
 	public boolean saveSelectedAccounts(String codeInformationPetition, String nif, Boolean revised, List<String>codeAccountList);
 	
-	public boolean savePetitionCase(Long codeFileControl, String codePetitionCase, PetitionCaseDTO petitionCase);
+	public boolean savePetitionCase(Long codeFileControl, String codePetitionCase, PetitionCaseDTO petitionCase, String userModif);
 
 }

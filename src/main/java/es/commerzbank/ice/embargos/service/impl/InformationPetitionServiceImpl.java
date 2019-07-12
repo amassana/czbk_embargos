@@ -1,5 +1,6 @@
 package es.commerzbank.ice.embargos.service.impl;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -190,14 +191,28 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 	}
 
 	@Override
-	public Integer getCountPendingCases(ControlFichero controlFichero) {
+	public Integer getCountPendingPetitionCases(ControlFichero controlFichero) {
 		
 		return informationPetitionRepository.countByControlFicheroAndIndCasoRevisadoOrIndCasoRevisadoNull(controlFichero, EmbargosConstants.IND_FLAG_NO);
 
 	}
 
 	@Override
-	public boolean savePetitionCase(Long codeFileControl, String codePetitionCase, PetitionCaseDTO petitionCase) {
+	public Integer getCountReviewedPetitionCases(ControlFichero controlFichero) {
+		
+		return informationPetitionRepository.countByControlFicheroAndIndCasoRevisado(controlFichero, EmbargosConstants.IND_FLAG_YES);
+
+	}
+	
+	@Override
+	public Integer getCountPetitionCases(ControlFichero controlFichero) {
+		
+		return informationPetitionRepository.countByControlFichero(controlFichero);
+
+	}
+	
+	@Override
+	public boolean savePetitionCase(Long codeFileControl, String codePetitionCase, PetitionCaseDTO petitionCase, String userModif) {
 
 		
 		Optional<PeticionInformacion> peticionInformacionOpt = informationPetitionRepository.findById(codePetitionCase);
@@ -212,28 +227,51 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 		resetPetitionCustomerAccounts(peticionInformacion);
 		
 		//Seteo de las cuentas seleccionadas:
-		peticionInformacion.setCuenta1(petitionCase.getBankAccount1().getCodeBankAccount());
-		peticionInformacion.setCuenta2(petitionCase.getBankAccount2().getCodeBankAccount());
-		peticionInformacion.setCuenta3(petitionCase.getBankAccount3().getCodeBankAccount());
-		peticionInformacion.setCuenta4(petitionCase.getBankAccount4().getCodeBankAccount());
-		peticionInformacion.setCuenta5(petitionCase.getBankAccount5().getCodeBankAccount());
-		peticionInformacion.setCuenta6(petitionCase.getBankAccount6().getCodeBankAccount());
+		if (petitionCase.getBankAccount1()!=null) {
+			peticionInformacion.setCuenta1(petitionCase.getBankAccount1().getCodeBankAccount());
+			peticionInformacion.setIban1(petitionCase.getBankAccount1().getIban());
+			peticionInformacion.setClaveSeguridad1(generateClaveSeguridad(petitionCase.getBankAccount1().getIban()));
+		}
+		if (petitionCase.getBankAccount2()!=null) {
+			peticionInformacion.setCuenta2(petitionCase.getBankAccount2().getCodeBankAccount());
+			peticionInformacion.setIban2(petitionCase.getBankAccount2().getIban());
+			peticionInformacion.setClaveSeguridad2(generateClaveSeguridad(petitionCase.getBankAccount2().getIban()));
+		}
+		if (petitionCase.getBankAccount3()!=null) {
+			peticionInformacion.setCuenta3(petitionCase.getBankAccount3().getCodeBankAccount());
+			peticionInformacion.setIban3(petitionCase.getBankAccount3().getIban());
+			peticionInformacion.setClaveSeguridad3(generateClaveSeguridad(petitionCase.getBankAccount3().getIban()));
+		}
+		if (petitionCase.getBankAccount4()!=null) {
+			peticionInformacion.setCuenta4(petitionCase.getBankAccount4().getCodeBankAccount());
+			peticionInformacion.setIban4(petitionCase.getBankAccount4().getIban());
+			peticionInformacion.setClaveSeguridad4(generateClaveSeguridad(petitionCase.getBankAccount4().getIban()));
+		}
+		if (petitionCase.getBankAccount5()!=null) {
+			peticionInformacion.setCuenta5(petitionCase.getBankAccount5().getCodeBankAccount());
+			peticionInformacion.setIban5(petitionCase.getBankAccount5().getIban());
+			peticionInformacion.setClaveSeguridad5(generateClaveSeguridad(petitionCase.getBankAccount5().getIban()));
+		}
+		if (petitionCase.getBankAccount6()!=null) {
+			peticionInformacion.setCuenta6(petitionCase.getBankAccount6().getCodeBankAccount());
+			peticionInformacion.setIban6(petitionCase.getBankAccount6().getIban());
+			peticionInformacion.setClaveSeguridad6(generateClaveSeguridad(petitionCase.getBankAccount6().getIban()));
+		}
 		
-		peticionInformacion.setIban1(petitionCase.getBankAccount1().getIban());
-		peticionInformacion.setIban2(petitionCase.getBankAccount2().getIban());
-		peticionInformacion.setIban3(petitionCase.getBankAccount3().getIban());
-		peticionInformacion.setIban4(petitionCase.getBankAccount4().getIban());
-		peticionInformacion.setIban5(petitionCase.getBankAccount5().getIban());
-		peticionInformacion.setIban6(petitionCase.getBankAccount6().getIban());
+		//Flag de revisado:
+		if (petitionCase.getIsReviewed()!=null && petitionCase.getIsReviewed()) {
+			peticionInformacion.setIndCasoRevisado(EmbargosConstants.IND_FLAG_YES);
+		} else {
+			peticionInformacion.setIndCasoRevisado(EmbargosConstants.IND_FLAG_NO);
+		}
 		
-		peticionInformacion.setClaveSeguridad1(generateClaveSeguridad(petitionCase.getBankAccount1().getIban()));
-		peticionInformacion.setClaveSeguridad2(generateClaveSeguridad(petitionCase.getBankAccount2().getIban()));
-		peticionInformacion.setClaveSeguridad3(generateClaveSeguridad(petitionCase.getBankAccount3().getIban()));
-		peticionInformacion.setClaveSeguridad4(generateClaveSeguridad(petitionCase.getBankAccount4().getIban()));
-		peticionInformacion.setClaveSeguridad5(generateClaveSeguridad(petitionCase.getBankAccount5().getIban()));
-		peticionInformacion.setClaveSeguridad6(generateClaveSeguridad(petitionCase.getBankAccount6().getIban()));
+        //Usuario y fecha ultima modificacion:
+		peticionInformacion.setUsuarioUltModificacion(userModif);
+        peticionInformacion.setFUltimaModificacion(BigDecimal.valueOf(System.currentTimeMillis()));
 		
-		return false;
+		informationPetitionRepository.save(peticionInformacion);
+		
+		return true;
 	}
 
 }

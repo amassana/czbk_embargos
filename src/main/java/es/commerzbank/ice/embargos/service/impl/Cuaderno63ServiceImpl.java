@@ -177,7 +177,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        		
 	        		
 	        		//Si entidadComunicadora es NULL -> Exception...
-	        		if (entidadComunicadora != null) {
+	        		if (entidadComunicadora == null) {
 	        			throw new ICEParserException("01", "No se puede procesar el fichero '" + file.getName() +
 	        					"': Entidad Comunicadora con NIF " + nifOrganismoEmisor + " no encontrada.");
 	        		}

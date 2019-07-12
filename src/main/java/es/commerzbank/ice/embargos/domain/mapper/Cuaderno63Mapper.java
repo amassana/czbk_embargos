@@ -7,6 +7,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -134,7 +135,7 @@ public abstract class Cuaderno63Mapper {
 	protected void setPeticionInformacionAfterMapping(@MappingTarget PeticionInformacion peticionInformacion) {
 		
 		//eliminar en el futuro, debe ser por sequence cuando no sea un char(10):
-		long aleatorio = DoubleMath.roundToLong(Math.random()*10000000000L, RoundingMode.DOWN) ;
+		long aleatorio = (DoubleMath.roundToLong(Math.random()*1000000000L, RoundingMode.DOWN)) + 1000000000L;
 		peticionInformacion.setCodPeticion(Long.toString(aleatorio));
 		
 		

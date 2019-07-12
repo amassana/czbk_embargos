@@ -123,6 +123,15 @@ public class ControlFichero implements Serializable {
 	@OneToMany(mappedBy="controlFichero")
 	private List<TareasRealizada> tareasRealizadas;
 
+	@Column(name="FICHERO_RESPUESTA", length=100)
+	private String ficheroRespuesta;
+	
+	@Column(name="FECHA_MAXIMA_RESPUESTA")
+	private BigDecimal fechaMaximaRespuesta;
+	
+	@Column(name="FECHA_GENERACION_RESPUESTA")
+	private BigDecimal fechaGeneracionRespuesta;
+
 	public ControlFichero() {
 	}
 
@@ -488,6 +497,30 @@ public class ControlFichero implements Serializable {
 		tareasRealizada.setControlFichero(null);
 
 		return tareasRealizada;
+	}
+
+	public String getFicheroRespuesta() {
+		return ficheroRespuesta;
+	}
+
+	public void setFicheroRespuesta(String ficheroRespuesta) {
+		this.ficheroRespuesta = ficheroRespuesta;
+	}
+
+	public BigDecimal getFechaMaximaRespuesta() {
+		return fechaMaximaRespuesta;
+	}
+
+	public void setFechaMaximaRespuesta(BigDecimal fechaMaximaRespuesta) {
+		this.fechaMaximaRespuesta = fechaMaximaRespuesta;
+	}
+
+	public BigDecimal getFechaGeneracionRespuesta() {
+		return fechaGeneracionRespuesta;
+	}
+
+	public void setFechaGeneracionRespuesta(BigDecimal fechaGeneracionRespuesta) {
+		this.fechaGeneracionRespuesta = fechaGeneracionRespuesta;
 	}
 
 }

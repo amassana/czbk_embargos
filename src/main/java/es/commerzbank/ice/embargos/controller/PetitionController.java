@@ -7,10 +7,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ import es.commerzbank.ice.embargos.domain.dto.PetitionCaseDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.service.InformationPetitionBankAccountService;
 import es.commerzbank.ice.embargos.service.InformationPetitionService;
+import io.swagger.annotations.ApiOperation;
 
 @CrossOrigin("*")
 @RestController
@@ -36,7 +38,8 @@ public class PetitionController {
 	private InformationPetitionBankAccountService informationPetitionBankAccountService;
 	
 	@GetMapping(value = "/{codeFileControl}")
-	public ResponseEntity<List<PetitionCaseDTO>> getPetitionCaseListByCodeFileControl(@RequestHeader(value="token",required=true) String token,
+	@ApiOperation(value="Devuelve la lista de casos para una peticion de informacion.")
+	public ResponseEntity<List<PetitionCaseDTO>> getPetitionCaseListByCodeFileControl(Authentication authentication,
 			  												   @PathVariable("codeFileControl") Long codeFileControl){
 		ResponseEntity<List<PetitionCaseDTO>> response = null;
 		List<PetitionCaseDTO> result = null;
@@ -61,7 +64,8 @@ public class PetitionController {
 	}
 	
 	@GetMapping(value = "/{codeFileControl}/petitioncase/{codePetitionCase}/bankAccounts")
-	public ResponseEntity<List<BankAccountDTO>> getBankAccountistByCodeFileControlAndPetitionCase(@RequestHeader(value="token",required=true) String token,
+	@ApiOperation(value="Devuelve la lista de cuentas disponibles para el caso indicado de PETICION_INFORMACION_CUENTAS.")
+	public ResponseEntity<List<BankAccountDTO>> getBankAccountListByCodeFileControlAndPetitionCase(Authentication authentication,
 			  												   @PathVariable("codeFileControl") Long codeFileControl,
 			  												   @PathVariable("codePetitionCase") String codePetitionCase){
 		ResponseEntity<List<BankAccountDTO>> response = null;
@@ -84,10 +88,11 @@ public class PetitionController {
 		return response;
 	}
 	
-	@PatchMapping(value = "/{codeFileControl}/petitioncase/{codePetitionCase}",
+	@PostMapping(value = "/{codeFileControl}/petitioncase/{codePetitionCase}",
 			produces = { "application/json" }, 
 	        consumes = { "application/json" })
-	public ResponseEntity<String> savePetitionCase(@RequestHeader(value="token",required=true) String token,
+	@ApiOperation(value="Actualiza el caso de PETICION_INFORMACION indicado, guardando los datos que se traspasen")
+	public ResponseEntity<String> savePetitionCase(Authentication authentication,
 			@PathVariable("codeFileControl") Long codeFileControl,
 			@PathVariable("codePetitionCase") String codePetitionCase,
 			@RequestBody PetitionCaseDTO petitionCase){
@@ -98,8 +103,9 @@ public class PetitionController {
 		
 		try {
 			
-			//TODO falta implementar el result:
-			result = informationPetitionService.savePetitionCase(codeFileControl,codePetitionCase,petitionCase);
+			String userModif = authentication.getName(); 
+			
+			result = informationPetitionService.savePetitionCase(codeFileControl, codePetitionCase, petitionCase, userModif);
 			
 			if (result) {
 				response = new ResponseEntity<>(HttpStatus.OK);
@@ -121,7 +127,7 @@ public class PetitionController {
 	@GetMapping(value = "/{codeFileControl}/petitioncase/{codePetitionCase}/audit",
 			produces = { "application/json" }, 
 	        consumes = { "application/json" })
-	public ResponseEntity<List<PetitionCaseDTO>> getAuditPetitionCase(@RequestHeader(value="token",required=true) String token,
+	public ResponseEntity<List<PetitionCaseDTO>> getAuditPetitionCase(Authentication authentication,
 			@PathVariable("codeFileControl") Long codeFileControl,
 			@PathVariable("codePetitionCase") String codePetitionCase){
 		
