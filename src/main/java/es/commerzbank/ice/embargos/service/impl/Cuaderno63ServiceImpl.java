@@ -27,6 +27,8 @@ import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
+import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
+import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlficheroPK;
 import es.commerzbank.ice.embargos.domain.entity.PeticionInformacion;
 import es.commerzbank.ice.embargos.domain.entity.PeticionInformacionCuenta;
 import es.commerzbank.ice.embargos.domain.mapper.Cuaderno63Mapper;
@@ -247,6 +249,16 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        //Se guarda el registro de ControlFichero del fichero de salida:
 	        ControlFichero controlFicheroInformacion = 
 	        		cuaderno63Mapper.generateControlFichero(ficheroSalida, EmbargosConstants.COD_TIPO_FICHERO_INFORMACION);
+	        
+	        //TODO: no hay registros en ESTADO_CTRLFICHERO con tipoFichero 2, eliminar el siguiente codigo de cambio de estado cuando se resuelva:
+	        //Actualizacion estado del fichero: tramitado
+	        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero();
+	        EstadoCtrlficheroPK estadoCtrlficheroPK = new EstadoCtrlficheroPK();
+	        estadoCtrlficheroPK.setCodEstado(EmbargosConstants.COD_ESTADO_CTRLFICHERO_PROCESSED);
+	        //TODO revisar, deberia ser fichero de embargos en lugar de peticiones (registros tabla ESTADO_CTRLFICHERO):
+	        estadoCtrlficheroPK.setCodTipoFichero(EmbargosConstants.COD_TIPO_FICHERO_PETICIONES);
+	        estadoCtrlfichero.setId(estadoCtrlficheroPK);
+	        controlFicheroInformacion.setEstadoCtrlfichero(estadoCtrlfichero);
 	        
 	        fileControlRepository.save(controlFicheroInformacion);
 	                
