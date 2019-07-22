@@ -1,7 +1,8 @@
 package es.commerzbank.ice.embargos;
 
 import java.security.Timestamp;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Collections;
 
 import org.springframework.boot.SpringApplication;
@@ -12,14 +13,9 @@ import org.springframework.context.annotation.Bean;
 import com.google.common.base.Predicates;
 
 import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.AuthorizationCodeGrantBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
-import springfox.documentation.service.GrantType;
-import springfox.documentation.service.SecurityScheme;
-import springfox.documentation.service.TokenEndpoint;
+import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -29,6 +25,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableAutoConfiguration
 @EnableSwagger2
 public class EmbargosApplication {
+
+    public static final String AUTHORIZATION_HEADER = "Authorization";
 
 	public static void main(String[] args) {
 		SpringApplication.run(EmbargosApplication.class, args);
@@ -46,10 +44,9 @@ public class EmbargosApplication {
             .consumes(Collections.singleton("application/json"))
             .produces(Collections.singleton("application/json"))
             .apiInfo(metaData())
-            //.securitySchemes(Arrays.asList(securityScheme()))
+                .securityContexts(generateSecurityContexts())
+                .securitySchemes(generateSecuritySchemes())
             ;
-            
-        //SecurityScheme yes = 
     }
 	
     private ApiInfo metaData() {
@@ -60,19 +57,34 @@ public class EmbargosApplication {
                 .contact(new Contact("Alten Spain (Barcelona)", "http://www.alten.es", ""))
                 .build();
     }
-    /*
-    private SecurityScheme securityScheme() {
-        GrantType grantType = new AuthorizationCodeGrantBuilder()
-            .tokenEndpoint(new TokenEndpoint(AUTH_SERVER + "/token", "oauthtoken"))
-            .tokenRequestEndpoint(
-              new TokenRequestEndpoint(AUTH_SERVER + "/authorize", CLIENT_ID, CLIENT_ID))
-            .build();
-     
-        SecurityScheme oauth = new OAuthBuilder().name("spring_oauth")
-            .grantTypes(Arrays.asList(grantType))
-            .scopes(Arrays.asList(scopes()))
-            .build();
-        return oauth;
+
+    private List<SecurityScheme> generateSecuritySchemes() {
+        List<SecurityScheme> securitySchemes = new ArrayList<SecurityScheme>();
+        securitySchemes.add(new ApiKey("JWT", AUTHORIZATION_HEADER, "header"));
+        return securitySchemes;
     }
-    */
+
+    private List<springfox.documentation.spi.service.contexts.SecurityContext> generateSecurityContexts()
+    {
+        List<springfox.documentation.spi.service.contexts.SecurityContext> securityContexts = new ArrayList<springfox.documentation.spi.service.contexts.SecurityContext>();
+
+        securityContexts.add(springfox.documentation.spi.service.contexts.SecurityContext.builder()
+                .securityReferences(defaultAuth())
+                .forPaths(PathSelectors.regex("./*"))
+                .build());
+
+        return securityContexts;
+    }
+
+    List<SecurityReference> defaultAuth() {
+        AuthorizationScope authorizationScope
+                = new AuthorizationScope("global", "accessEverything");
+        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
+        authorizationScopes[0] = authorizationScope;
+
+        List<SecurityReference> securityReferences = new ArrayList<SecurityReference>();
+        securityReferences.add(new SecurityReference("JWT", authorizationScopes));
+
+        return securityReferences;
+    }
 }
