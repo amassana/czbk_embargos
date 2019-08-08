@@ -2,9 +2,13 @@ package es.commerzbank.ice.embargos.controller;
 
 import java.util.List;
 
+import es.commerzbank.ice.embargos.service.PetitionService;
+import es.commerzbank.ice.utils.DownloadReportFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -36,7 +40,13 @@ public class PetitionController {
 
 	@Autowired
 	private InformationPetitionBankAccountService informationPetitionBankAccountService;
-	
+
+	@Autowired
+	private PetitionService petitionService;
+
+	@Value("${commerzbank.jasper.temp}")
+	private String pdfSavedPath;
+
 	@GetMapping(value = "/{codeFileControl}")
 	@ApiOperation(value="Devuelve la lista de casos para una peticion de informacion.")
 	public ResponseEntity<List<PetitionCaseDTO>> getPetitionCaseListByCodeFileControl(Authentication authentication,
@@ -176,8 +186,28 @@ public class PetitionController {
 //		
 //		return response;
 //	}
-	
-	
 
+
+	@GetMapping("/{codeFileControl}/report")
+	public ResponseEntity<InputStreamResource> petitionReport(
+			@PathVariable("codeFileControl") Integer codeFileControl) {
+
+		DownloadReportFile.setTempFileName("petitionReport");
+
+		DownloadReportFile.setFileTempPath(pdfSavedPath);
+
+		try {
+
+			DownloadReportFile.writeFile(petitionService.generateJasperPDF(codeFileControl));
+
+			return DownloadReportFile.returnToDownloadFile();
+
+		} catch (Exception e) {
+			LOG.error("Error in petitionReport", e);
+
+			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
 	
 }

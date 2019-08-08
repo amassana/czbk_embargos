@@ -28,6 +28,10 @@ import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.FileControlStatusService;
 import es.commerzbank.ice.embargos.service.FileTypeService;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.web.bind.annotation.RequestParam;
+import es.commerzbank.ice.utils.DownloadReportFile;
 
 @CrossOrigin("*")
 @RestController
@@ -35,6 +39,9 @@ import io.swagger.annotations.ApiOperation;
 public class FileControlController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(FileControlController.class);
+
+	@Value("${commerzbank.jasper.temp}")
+	private String pdfSavedPath;
 
 	@Autowired
 	private FileControlService fileControlService;
@@ -44,7 +51,7 @@ public class FileControlController {
 	
 	@Autowired
 	private FileControlStatusService fileControlStatusService;
-		
+
 	@PostMapping(value = "/filter",
 			produces = { "application/json" },
 			consumes = { "application/json" })
@@ -225,4 +232,27 @@ public class FileControlController {
 		return response;
 	}
 
+	@GetMapping("/reports/files")
+	public ResponseEntity<InputStreamResource> generarReportLista(
+			@RequestParam(name = "codTipoFichero", required = false) Integer codTipoFichero,
+			@RequestParam(name = "codEstado", required = false) Integer codEstado,
+			@RequestParam(name = "fechaInicio", required = false) Integer fechaInicio,
+			@RequestParam(name = "fechaFin", required = false) Integer fechaFin) throws Exception {
+
+		DownloadReportFile.setTempFileName("reportList");
+
+		DownloadReportFile.setFileTempPath(pdfSavedPath);
+
+		try {
+
+			DownloadReportFile.writeFile(
+					fileControlService.generarReporteListado(codTipoFichero, codEstado, fechaInicio, fechaFin));
+
+			return DownloadReportFile.returnToDownloadFile();
+		} catch (Exception e) {
+			LOG.error("Error in generarReportLista", e);
+			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
 }

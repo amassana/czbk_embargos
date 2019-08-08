@@ -17,5 +17,6 @@ public interface FileControlService {
 	public boolean tramitarFicheroInformacion(Long codeFileControl) throws IOException;
 	
 	public boolean updateFileControl(Long codeFileControl, FileControlDTO fileControlDTO);
-		
+
+	public byte[] generarReporteListado(Integer codTipoFichero, Integer codEstado, Integer fechaInicio, Integer fechaFin) throws Exception;
 }

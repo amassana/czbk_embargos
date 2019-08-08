@@ -1,16 +1,23 @@
 package es.commerzbank.ice.embargos.service.impl;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.*;
 
 import javax.transaction.Transactional;
 
+import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.util.JRLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -51,7 +58,10 @@ public class FileControlServiceImpl implements FileControlService{
 	
 	@Autowired
 	private FileControlStatusRepository fileControlStatusRepository;
-	
+
+	@Autowired
+	private OracleDataSourceEmbargosConfig oracleDataSourceEmbargosConfig;
+
 	@Override
 	public Page<FileControlDTO> fileSearch(FileControlFiltersDTO fileControlFiltersDTO, Pageable pageable) throws Exception{
 
@@ -192,5 +202,69 @@ public class FileControlServiceImpl implements FileControlService{
 	}
 
 
-	
+	@Override
+	public byte[] generarReporteListado(Integer codTipoFichero, Integer codEstado, Integer fechaInicio,
+										Integer fechaFin) throws Exception {
+
+		System.out.println("codTipoFichero: " + codTipoFichero + " codEstado: " + codEstado + " fechaInicio: "
+				+ fechaInicio + " fechaFin: " + fechaFin);
+
+		HashMap<String, Object> parameters = new HashMap<String, Object>();
+
+		String query = "WHERE";
+
+		if (codTipoFichero != null) {
+			query = query + " c.COD_TIPO_FICHERO=" + codTipoFichero.toString() + " AND";
+		}
+
+		if (codEstado != null) {
+			query = query + " c.COD_ESTADO=" + codEstado.toString() + " AND";
+		}
+
+		if (fechaInicio != null) {
+			query = query + " c.FECHA_INCORPORACION=" + fechaInicio.toString() + " AND";
+		}
+
+		if (fechaFin != null) {
+			query = query + " c.FECHA_GENERACION_RESPUESTA=" + fechaFin.toString() + " AND";
+		}
+
+		if (codTipoFichero == null && codEstado == null && fechaInicio == null && fechaFin == null) {
+			query = "";
+		} else {
+			query = query.substring(0, query.length() - 4);
+		}
+
+		parameters.put("query_param", query);
+		//parameters.put("cod_user", 3);
+
+		try (
+				Connection connEmbargos = oracleDataSourceEmbargosConfig.getEmbargosConnection();
+				Connection connComunes = oracleDataSourceEmbargosConfig.getComunesConnection()
+		) {
+
+			parameters.put("conn_param", connComunes);
+
+			Resource imageReport = new ClassPathResource("jasper/images/commerce_bank_logo.png");
+			File image = imageReport.getFile();
+			parameters.put("img_param", image.toString());
+
+			Resource subResource = new ClassPathResource("jasper/header_sucursal.jasper");
+			InputStream subResourceInputStream = subResource.getInputStream();
+
+			JasperReport subReport = (JasperReport) JRLoader.loadObject(subResourceInputStream);
+			parameters.put("file_param", subReport);
+
+			Resource resource = new ClassPathResource("jasper/control_ficheros.jasper");
+			InputStream resourceInputStream = resource.getInputStream();
+
+
+			JasperPrint reporteLleno = JasperFillManager.fillReport(resourceInputStream, parameters,
+					connEmbargos);
+
+			return JasperExportManager.exportReportToPdf(reporteLleno);
+		} catch (JRException | SQLException ex) {
+			throw new Exception("Error in generarReporteListado()", ex);
+		}
+	}
 }

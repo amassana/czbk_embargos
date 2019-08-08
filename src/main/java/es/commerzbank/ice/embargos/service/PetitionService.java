@@ -7,5 +7,6 @@ import es.commerzbank.ice.embargos.domain.dto.PetitionDTO;
 public interface PetitionService {
 
 	public PetitionDTO getByCodeFileControl(Long codeFileControl);
-		
+
+	public byte[] generateJasperPDF(Integer codeFileControl) throws Exception;
 }

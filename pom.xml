@@ -133,10 +133,16 @@
            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <!--  -->
+		<!-- Jasper report jrxml to jasper compiler plugin -->
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>6.1.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
-		
+		<finalName>embargos</finalName>
 			<plugins>
 				<plugin>
 					<groupId>org.springframework.boot</groupId>
@@ -184,13 +190,60 @@
 				            <version>5.3.10.Final</version>
 				        </dependency>
 				    </dependencies>
-				</plugin>  
+				</plugin>
+				<!-- Plugin to compile from jxrml file to .jasper -->
+				<plugin>
+					<groupId>com.alexnederlof</groupId>
+					<artifactId>jasperreports-plugin</artifactId>
+					<version>2.6</version>
+					<executions>
+						<execution>
+							<phase>process-sources</phase>
+							<goals>
+								<goal>jasper</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<!-- These are the default configurations: -->
+						<compiler>net.sf.jasperreports.engine.design.JRJdtCompiler</compiler>
+						<sourceDirectory>src/main/resources/jasper</sourceDirectory>
+						<outputDirectory>${project.build.directory}/jasper</outputDirectory>
+						<outputFileExt>.jasper</outputFileExt>
+						<xmlValidation>true</xmlValidation>
+						<verbose>false</verbose>
+						<numberOfThreads>4</numberOfThreads>
+						<failOnMissingSourceDirectory>true</failOnMissingSourceDirectory>
+						<sourceScanner>org.codehaus.plexus.compiler.util.scan.StaleSourceScanner</sourceScanner>
+					</configuration>
+				</plugin>
 			</plugins>
 
 		<resources>
 			<resource>
 				<directory>src/main/resources/beanio/</directory>
 				<targetPath>beanio/</targetPath>
+			</resource>
+			<resource>
+				<directory>src/main/resources/jasper/</directory>
+				<targetPath>jasper/</targetPath>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources/jasper/images/</directory>
+				<targetPath>images/</targetPath>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>${project.build.directory}/jasper/</directory>
+				<targetPath>jasper/</targetPath>
+				<includes>
+					<include>**/*</include>
+				</includes>
 			</resource>
 		</resources>
 	</build>
