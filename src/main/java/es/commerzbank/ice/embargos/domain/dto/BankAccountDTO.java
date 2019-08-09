@@ -4,8 +4,7 @@ public class BankAccountDTO {
 
 	private String codeBankAccount;
 	private String iban;
-	private String statusCode;
-	private String statusDescription;
+	private String status;
 	
 	public String getCodeBankAccount() {
 		return codeBankAccount;
@@ -19,18 +18,11 @@ public class BankAccountDTO {
 	public void setIban(String iban) {
 		this.iban = iban;
 	}
-	public String getStatusCode() {
-		return statusCode;
+	public String getStatus() {
+		return status;
 	}
-	public void setStatusCode(String statusCode) {
-		this.statusCode = statusCode;
+	public void setStatus(String status) {
+		this.status = status;
 	}
-	public String getStatusDescription() {
-		return statusDescription;
-	}
-	public void setStatusDescription(String statusDescription) {
-		this.statusDescription = statusDescription;
-	}
-	
 	
 }

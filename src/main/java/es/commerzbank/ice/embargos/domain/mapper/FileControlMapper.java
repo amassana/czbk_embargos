@@ -15,14 +15,13 @@ public abstract class FileControlMapper {
 	@Mappings({
 		@Mapping(source = "controlFichero.codControlFichero", target = "code"),
 		@Mapping(source = "controlFichero.nombreFichero", target = "fileName"),
-		@Mapping(source = "estadoTEST", target = "status.status"),
-		@Mapping(source = "estadoTEST", target = "status.description"),
+		@Mapping(source = "controlFichero.estadoCtrlfichero.id.codEstado", target = "status.code"),
+		@Mapping(source = "controlFichero.estadoCtrlfichero.descripcion", target = "status.description"),
 		@Mapping(source = "targetTEST", target = "fileTarget"),
 		@Mapping(source = "fechaTEST", target = "deliveryDate"),
 		@Mapping(source = "controlFichero.tipoFichero.codTipoFichero", target = "codeFileType")
 	})
 	public abstract FileControlDTO toFileControlDTO (ControlFichero controlFichero,
-			Long estadoTEST,
 			String targetTEST,
 			Date fechaTEST);
 	

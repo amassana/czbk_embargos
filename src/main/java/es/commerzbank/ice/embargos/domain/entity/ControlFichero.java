@@ -73,14 +73,14 @@ public class ControlFichero implements Serializable {
 	//bi-directional many-to-one association to EstadoCtrlfichero
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumns({
-		@JoinColumn(name="COD_ESTADO", referencedColumnName="COD_ESTADO", nullable=false, insertable=false, updatable=false),
-		@JoinColumn(name="COD_TIPO_FICHERO", referencedColumnName="COD_TIPO_FICHERO", nullable=false, insertable=false, updatable=false)
+		@JoinColumn(name="COD_ESTADO", referencedColumnName="COD_ESTADO", nullable=false),
+		@JoinColumn(name="COD_TIPO_FICHERO", referencedColumnName="COD_TIPO_FICHERO", nullable=false)
 		})
 	private EstadoCtrlfichero estadoCtrlfichero;
 	
 	//bi-directional many-to-one association to TipoFichero
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="COD_TIPO_FICHERO", nullable=false)
+	@JoinColumn(name="COD_TIPO_FICHERO", nullable=false, insertable=false, updatable=false)
 	private TipoFichero tipoFichero;
 
 	//bi-directional many-to-many association to Traba

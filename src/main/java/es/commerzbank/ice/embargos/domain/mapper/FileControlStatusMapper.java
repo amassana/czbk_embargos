@@ -11,7 +11,7 @@ import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
 public abstract class FileControlStatusMapper {
 
 	@Mappings({
-		@Mapping(source = "id.codEstado", target = "status"),
+		@Mapping(source = "id.codEstado", target = "code"),
 		@Mapping(source = "descripcion", target = "description")
 	})
 	public abstract FileControlStatusDTO toFileControlStatusDTO (EstadoCtrlfichero estadoCtrlfichero);

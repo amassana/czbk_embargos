@@ -2,6 +2,7 @@ package es.commerzbank.ice.embargos.service;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +15,8 @@ public interface FileControlService {
 	public Page<FileControlDTO> fileSearch(FileControlFiltersDTO fileControlFiltersDTO, Pageable pageable) throws Exception;
 	
 	public FileControlDTO getByCodeFileControl(Long codeFileControl);
+	
+	public List<FileControlDTO> getAuditByCodeFileControl(Long codeFileControl);
 	
 	public boolean tramitarFicheroInformacion(Long codeFileControl) throws IOException;
 	

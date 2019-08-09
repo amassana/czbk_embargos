@@ -27,8 +27,7 @@ public class CustomerServiceImpl implements CustomerService{
 			
 			account.setCodeBankAccount("1");
 			account.setIban("01591111111100010001");
-			account.setStatusCode("02");
-			account.setStatusDescription("Activa");
+			account.setStatus("NORMAL");
 	
 			accountList.add(account);
 			
@@ -36,8 +35,7 @@ public class CustomerServiceImpl implements CustomerService{
 			
 			account.setCodeBankAccount("2");
 			account.setIban("01592111111100020002");
-			account.setStatusCode("03");
-			account.setStatusDescription("Bloqueada");
+			account.setStatus("BLOCKED");
 			
 			accountList.add(account);
 		}
@@ -48,8 +46,7 @@ public class CustomerServiceImpl implements CustomerService{
 			
 			account.setCodeBankAccount("3");
 			account.setIban("01593222222200010001");
-			account.setStatusCode("02");
-			account.setStatusDescription("Activa");
+			account.setStatus("NORMAL");
 	
 			accountList.add(account);
 			
@@ -57,8 +54,7 @@ public class CustomerServiceImpl implements CustomerService{
 			
 			account.setCodeBankAccount("4");
 			account.setIban("01594222222200020002");
-			account.setStatusCode("03");
-			account.setStatusDescription("Bloqueada");
+			account.setStatus("CANCELLED");
 			
 			accountList.add(account);
 		}
@@ -69,8 +65,7 @@ public class CustomerServiceImpl implements CustomerService{
 			
 			account.setCodeBankAccount("5");
 			account.setIban("01595333333300010001");
-			account.setStatusCode("02");
-			account.setStatusDescription("Activa");
+			account.setStatus("NORMAL");
 	
 			accountList.add(account);
 			
@@ -78,8 +73,7 @@ public class CustomerServiceImpl implements CustomerService{
 			
 			account.setCodeBankAccount("6");
 			account.setIban("01596333333300020002");
-			account.setStatusCode("03");
-			account.setStatusDescription("Bloqueada");
+			account.setStatus("BLOCKED");
 			
 			accountList.add(account);
 		}
@@ -92,8 +86,7 @@ public class CustomerServiceImpl implements CustomerService{
 			
 			account.setCodeBankAccount("10");
 			account.setIban("01590411361900010010");
-			account.setStatusCode("02");
-			account.setStatusDescription("Activa");
+			account.setStatus("NORMAL");
 	
 			accountList.add(account);
 			
@@ -101,8 +94,7 @@ public class CustomerServiceImpl implements CustomerService{
 			
 			account.setCodeBankAccount("11");
 			account.setIban("015960411361900020011");
-			account.setStatusCode("03");
-			account.setStatusDescription("Bloqueada");
+			account.setStatus("BLOCKED");
 			
 			accountList.add(account);
 		}
@@ -112,8 +104,7 @@ public class CustomerServiceImpl implements CustomerService{
 			
 			account.setCodeBankAccount("12");
 			account.setIban("01590843109000010012");
-			account.setStatusCode("02");
-			account.setStatusDescription("Activa");
+			account.setStatus("NORMAL");
 	
 			accountList.add(account);
 			
@@ -121,8 +112,7 @@ public class CustomerServiceImpl implements CustomerService{
 			
 			account.setCodeBankAccount("13");
 			account.setIban("01590843109000020013");
-			account.setStatusCode("03");
-			account.setStatusDescription("Bloqueada");
+			account.setStatus("CANCELLED");
 			
 			accountList.add(account);
 		}
@@ -132,8 +122,7 @@ public class CustomerServiceImpl implements CustomerService{
 			
 			account.setCodeBankAccount("14");
 			account.setIban("01591800855700010014");
-			account.setStatusCode("02");
-			account.setStatusDescription("Activa");
+			account.setStatus("NORMAL");
 	
 			accountList.add(account);
 			
@@ -141,8 +130,7 @@ public class CustomerServiceImpl implements CustomerService{
 			
 			account.setCodeBankAccount("15");
 			account.setIban("01591800855700020015");
-			account.setStatusCode("03");
-			account.setStatusDescription("Bloqueada");
+			account.setStatus("BLOCKED");
 			
 			accountList.add(account);
 		}

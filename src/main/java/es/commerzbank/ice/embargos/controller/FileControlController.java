@@ -7,6 +7,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.commerzbank.ice.comun.lib.security.Permissions;
@@ -28,11 +31,8 @@ import es.commerzbank.ice.embargos.domain.dto.FileControlTypeDTO;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.FileControlStatusService;
 import es.commerzbank.ice.embargos.service.FileTypeService;
-import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.web.bind.annotation.RequestParam;
 import es.commerzbank.ice.utils.DownloadReportFile;
+import io.swagger.annotations.ApiOperation;
 
 @CrossOrigin("*")
 @RestController
@@ -134,10 +134,9 @@ public class FileControlController {
 	
 		try {
 		
-		//TODO implementar:
-		result = null;
-				
-		response = new ResponseEntity<>(result, HttpStatus.OK);
+			result = fileControlService.getAuditByCodeFileControl(codeFileControl);
+					
+			response = new ResponseEntity<>(result, HttpStatus.OK);
 		
 		} catch (Exception e) {
 			
