@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.transaction.Transactional;
@@ -201,15 +202,14 @@ public class FileControlServiceImpl implements FileControlService{
 		return true;
 	}
 
-
 	@Override
-	public byte[] generarReporteListado(Integer codTipoFichero, Integer codEstado, Integer fechaInicio,
-										Integer fechaFin) throws Exception {
-
+	public byte[] generarReporteListado(Integer codTipoFichero, Date codEstado, Date fechaInicio, Integer fechaFin) throws Exception {
 		System.out.println("codTipoFichero: " + codTipoFichero + " codEstado: " + codEstado + " fechaInicio: "
 				+ fechaInicio + " fechaFin: " + fechaFin);
 
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmSS");
 
 		String query = "WHERE";
 
@@ -222,11 +222,11 @@ public class FileControlServiceImpl implements FileControlService{
 		}
 
 		if (fechaInicio != null) {
-			query = query + " c.FECHA_INCORPORACION=" + fechaInicio.toString() + " AND";
+			query = query + " c.FECHA_INCORPORACION>=" + sdf.format(fechaInicio) + " AND";
 		}
 
 		if (fechaFin != null) {
-			query = query + " c.FECHA_GENERACION_RESPUESTA=" + fechaFin.toString() + " AND";
+			query = query + " c.FECHA_GENERACION_RESPUESTA<=" + sdf.format(fechaFin) + " AND";
 		}
 
 		if (codTipoFichero == null && codEstado == null && fechaInicio == null && fechaFin == null) {

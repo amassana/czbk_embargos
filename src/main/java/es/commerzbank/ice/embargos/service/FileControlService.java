@@ -1,6 +1,7 @@
 package es.commerzbank.ice.embargos.service;
 
 import java.io.IOException;
+import java.util.Date;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,5 +19,5 @@ public interface FileControlService {
 	
 	public boolean updateFileControl(Long codeFileControl, FileControlDTO fileControlDTO);
 
-	public byte[] generarReporteListado(Integer codTipoFichero, Integer codEstado, Integer fechaInicio, Integer fechaFin) throws Exception;
+	public byte[] generarReporteListado(Integer codTipoFichero, Date codEstado, Date fechaInicio, Integer fechaFin) throws Exception;
 }

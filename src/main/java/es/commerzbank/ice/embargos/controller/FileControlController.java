@@ -236,8 +236,8 @@ public class FileControlController {
 	public ResponseEntity<InputStreamResource> generarReportLista(
 			@RequestParam(name = "codTipoFichero", required = false) Integer codTipoFichero,
 			@RequestParam(name = "codEstado", required = false) Integer codEstado,
-			@RequestParam(name = "fechaInicio", required = false) Integer fechaInicio,
-			@RequestParam(name = "fechaFin", required = false) Integer fechaFin) throws Exception {
+			@RequestParam(name = "fechaInicio", required = false) Date fechaInicio,
+			@RequestParam(name = "fechaFin", required = false) Date fechaFin) throws Exception {
 
 		DownloadReportFile.setTempFileName("reportList");
 
