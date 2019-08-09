@@ -234,7 +234,7 @@ public class FileControlController {
 
 	@GetMapping("/reports/files")
 	public ResponseEntity<InputStreamResource> generarReportLista(
-			@RequestParam(name = "codTipoFichero", required = false) Integer codTipoFichero,
+			@RequestParam(name = "codTipoFichero", required = false) Integer [] codTipoFichero,
 			@RequestParam(name = "codEstado", required = false) Integer codEstado,
 			@RequestParam(name = "fechaInicio", required = false) Date fechaInicio,
 			@RequestParam(name = "fechaFin", required = false) Date fechaFin) throws Exception {

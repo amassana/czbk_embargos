@@ -6,11 +6,8 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -253,7 +250,7 @@ public class FileControlServiceImpl implements FileControlService{
 	}
 
 	@Override
-	public byte[] generarReporteListado(Integer codTipoFichero, Integer codEstado, Date fechaInicio, Date fechaFin) throws Exception {
+	public byte[] generarReporteListado(Integer [] codTipoFichero, Integer codEstado, Date fechaInicio, Date fechaFin) throws Exception {
 		System.out.println("codTipoFichero: " + codTipoFichero + " codEstado: " + codEstado + " fechaInicio: "
 				+ fechaInicio + " fechaFin: " + fechaFin);
 
@@ -264,11 +261,12 @@ public class FileControlServiceImpl implements FileControlService{
 		String query = "WHERE";
 
 		if (codTipoFichero != null) {
-			query = query + " c.COD_TIPO_FICHERO=" + codTipoFichero.toString() + " AND";
-		}
+			String fileTypes = String.join(", ", Arrays.asList(codTipoFichero).stream().map(i -> String.valueOf(i)).collect(Collectors.toList()) );
+			query = query + " c.COD_TIPO_FICHERO IN (" + fileTypes + ") AND";
 
-		if (codEstado != null) {
-			query = query + " c.COD_ESTADO=" + codEstado.toString() + " AND";
+			if (codEstado != null) {
+				query = query + " c.COD_ESTADO=" + codEstado.toString() + " AND";
+			}
 		}
 
 		if (fechaInicio != null) {
