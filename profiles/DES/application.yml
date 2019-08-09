@@ -53,5 +53,6 @@ commerzbank:
       config-path:
         cuaderno63: beanio/cuaderno63.xml
         aeat: beanio/aeat.xml
-      
+  jasper:
+    temp: C:/temp/
 

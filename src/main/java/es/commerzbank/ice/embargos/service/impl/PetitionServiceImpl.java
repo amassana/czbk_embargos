@@ -1,14 +1,24 @@
 package es.commerzbank.ice.embargos.service.impl;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.util.JRLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
@@ -28,7 +38,10 @@ import es.commerzbank.ice.embargos.service.PetitionService;
 public class PetitionServiceImpl implements PetitionService{
 
 	private static final Logger LOG = LoggerFactory.getLogger(PetitionServiceImpl.class);
-	
+
+	@Autowired
+	private OracleDataSourceEmbargosConfig oracleDataSourceEmbargosConfig;
+
 	@Autowired
 	private FileControlService fileControlService;
 	
@@ -70,4 +83,38 @@ public class PetitionServiceImpl implements PetitionService{
 		return petitionDTO;
 	}
 
+	@Override
+	public byte[] generateJasperPDF(Integer codeFileControl) throws Exception {
+
+		HashMap<String, Object> parameters = new HashMap<String, Object>();
+
+		try (
+				Connection connEmbargos = oracleDataSourceEmbargosConfig.getEmbargosConnection();
+				Connection connComunes = oracleDataSourceEmbargosConfig.getComunesConnection();
+		) {
+
+			Resource jrxmlResource = new ClassPathResource("jasper/peticiones_informacion.jasper");
+			Resource subReportResource = new ClassPathResource("jasper/header_sucursal.jasper");
+			Resource imageReport = new ClassPathResource("jasper/images/commerce_bank_logo.png");
+
+			File image = imageReport.getFile();
+			InputStream subResourceInputStream = subReportResource.getInputStream();
+
+			JasperReport subReport = (JasperReport) JRLoader.loadObject(subResourceInputStream);
+
+			parameters.put("img_param", image.toString());
+			parameters.put("cod_control_fichero", codeFileControl);
+			// parameters.put("cod_user", 3);
+			parameters.put("file_param", subReport);
+			parameters.put("conn_param", connComunes);
+
+			InputStream resourceInputStream = jrxmlResource.getInputStream();
+
+			JasperPrint reporteLleno = JasperFillManager.fillReport(resourceInputStream, parameters, connEmbargos);
+
+			return JasperExportManager.exportReportToPdf(reporteLleno);
+		} catch (JRException | SQLException ex) {
+			throw new Exception("Error in generarReporteListado()", ex);
+		}
+	}
 }

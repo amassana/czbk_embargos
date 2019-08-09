@@ -1,11 +1,14 @@
 package es.commerzbank.ice.embargos.controller;
 
 
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.commerzbank.ice.comun.lib.security.Permissions;
@@ -27,6 +31,7 @@ import es.commerzbank.ice.embargos.domain.dto.FileControlTypeDTO;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.FileControlStatusService;
 import es.commerzbank.ice.embargos.service.FileTypeService;
+import es.commerzbank.ice.utils.DownloadReportFile;
 import io.swagger.annotations.ApiOperation;
 
 @CrossOrigin("*")
@@ -36,6 +41,9 @@ public class FileControlController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(FileControlController.class);
 
+	@Value("${commerzbank.jasper.temp}")
+	private String pdfSavedPath;
+
 	@Autowired
 	private FileControlService fileControlService;
 	
@@ -44,7 +52,7 @@ public class FileControlController {
 	
 	@Autowired
 	private FileControlStatusService fileControlStatusService;
-		
+
 	@PostMapping(value = "/filter",
 			produces = { "application/json" },
 			consumes = { "application/json" })
@@ -224,4 +232,27 @@ public class FileControlController {
 		return response;
 	}
 
+	@GetMapping("/reports/files")
+	public ResponseEntity<InputStreamResource> generarReportLista(
+			@RequestParam(name = "codTipoFichero", required = false) Integer codTipoFichero,
+			@RequestParam(name = "codEstado", required = false) Integer codEstado,
+			@RequestParam(name = "fechaInicio", required = false) Date fechaInicio,
+			@RequestParam(name = "fechaFin", required = false) Date fechaFin) throws Exception {
+
+		DownloadReportFile.setTempFileName("reportList");
+
+		DownloadReportFile.setFileTempPath(pdfSavedPath);
+
+		try {
+
+			DownloadReportFile.writeFile(
+					fileControlService.generarReporteListado(codTipoFichero, codEstado, fechaInicio, fechaFin));
+
+			return DownloadReportFile.returnToDownloadFile();
+		} catch (Exception e) {
+			LOG.error("Error in generarReportLista", e);
+			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
 }
