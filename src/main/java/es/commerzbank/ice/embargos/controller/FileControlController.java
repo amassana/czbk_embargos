@@ -126,10 +126,9 @@ public class FileControlController {
 	
 		try {
 		
-		//TODO implementar:
-		result = null;
-				
-		response = new ResponseEntity<>(result, HttpStatus.OK);
+			result = fileControlService.getAuditByCodeFileControl(codeFileControl);
+					
+			response = new ResponseEntity<>(result, HttpStatus.OK);
 		
 		} catch (Exception e) {
 			

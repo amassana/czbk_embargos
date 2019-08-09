@@ -20,14 +20,32 @@ public class EntidadesComunicadora implements Serializable {
 	@Column(name="COD_ENTIDAD_PRESENTADORA", unique=true, nullable=false)
 	private long codEntidadPresentadora;
 
+	@Column(length=100)
+	private String bic;
+
 	@Column(name="CODIGO_INE", length=6)
 	private String codigoIne;
+
+	@Column(length=100)
+	private String cuenta;
 
 	@Column(name="DES_ENTIDAD", length=40)
 	private String desEntidad;
 
+	@Column(name="DIAS_RESPUESTA_F1")
+	private BigDecimal diasRespuestaF1;
+
+	@Column(name="DIAS_RESPUESTA_F3")
+	private BigDecimal diasRespuestaF3;
+
+	@Column(name="DIAS_RESPUESTA_F6")
+	private BigDecimal diasRespuestaF6;
+
 	@Column(name="F_ULTIMA_MODIFICACION", precision=14)
 	private BigDecimal fUltimaModificacion;
+
+	@Column(length=100)
+	private String iban;
 
 	@Column(name="IDENTIFICADOR_ENTIDAD", length=2)
 	private String identificadorEntidad;
@@ -74,12 +92,28 @@ public class EntidadesComunicadora implements Serializable {
 		this.codEntidadPresentadora = codEntidadPresentadora;
 	}
 
+	public String getBic() {
+		return this.bic;
+	}
+
+	public void setBic(String bic) {
+		this.bic = bic;
+	}
+
 	public String getCodigoIne() {
 		return this.codigoIne;
 	}
 
 	public void setCodigoIne(String codigoIne) {
 		this.codigoIne = codigoIne;
+	}
+
+	public String getCuenta() {
+		return this.cuenta;
+	}
+
+	public void setCuenta(String cuenta) {
+		this.cuenta = cuenta;
 	}
 
 	public String getDesEntidad() {
@@ -90,12 +124,44 @@ public class EntidadesComunicadora implements Serializable {
 		this.desEntidad = desEntidad;
 	}
 
+	public BigDecimal getDiasRespuestaF1() {
+		return this.diasRespuestaF1;
+	}
+
+	public void setDiasRespuestaF1(BigDecimal diasRespuestaF1) {
+		this.diasRespuestaF1 = diasRespuestaF1;
+	}
+
+	public BigDecimal getDiasRespuestaF3() {
+		return this.diasRespuestaF3;
+	}
+
+	public void setDiasRespuestaF3(BigDecimal diasRespuestaF3) {
+		this.diasRespuestaF3 = diasRespuestaF3;
+	}
+
+	public BigDecimal getDiasRespuestaF6() {
+		return this.diasRespuestaF6;
+	}
+
+	public void setDiasRespuestaF6(BigDecimal diasRespuestaF6) {
+		this.diasRespuestaF6 = diasRespuestaF6;
+	}
+
 	public BigDecimal getFUltimaModificacion() {
 		return this.fUltimaModificacion;
 	}
 
 	public void setFUltimaModificacion(BigDecimal fUltimaModificacion) {
 		this.fUltimaModificacion = fUltimaModificacion;
+	}
+
+	public String getIban() {
+		return this.iban;
+	}
+
+	public void setIban(String iban) {
+		this.iban = iban;
 	}
 
 	public String getIdentificadorEntidad() {

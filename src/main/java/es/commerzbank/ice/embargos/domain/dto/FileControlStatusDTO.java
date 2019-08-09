@@ -2,14 +2,14 @@ package es.commerzbank.ice.embargos.domain.dto;
 
 public class FileControlStatusDTO {
 
-	private Long status;
+	private Long code;
 	private String description;
 	
-	public Long getStatus() {
-		return status;
+	public Long getCode() {
+		return code;
 	}
-	public void setStatus(Long status) {
-		this.status = status;
+	public void setCode(Long code) {
+		this.code = code;
 	}
 	public String getDescription() {
 		return description;

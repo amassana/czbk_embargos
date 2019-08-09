@@ -7,7 +7,6 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -20,6 +19,7 @@ import org.mapstruct.Mappings;
 import com.google.common.math.DoubleMath;
 
 import es.commerzbank.ice.comun.lib.typeutils.VB6Date;
+import es.commerzbank.ice.embargos.domain.dto.BankAccountDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
@@ -81,7 +81,7 @@ public abstract class Cuaderno63Mapper {
         //Estado del fichero: cargando
         EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero();
         EstadoCtrlficheroPK estadoCtrlficheroPK = new EstadoCtrlficheroPK();
-        estadoCtrlficheroPK.setCodEstado(EmbargosConstants.COD_ESTADO_CTRLFICHERO_LOADING);
+        estadoCtrlficheroPK.setCodEstado(EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_LOADING);
         estadoCtrlficheroPK.setCodTipoFichero(tipoFichero.getCodTipoFichero());
         estadoCtrlfichero.setId(estadoCtrlficheroPK);
         controlFichero.setEstadoCtrlfichero(estadoCtrlfichero);
@@ -129,10 +129,10 @@ public abstract class Cuaderno63Mapper {
 		@Mapping(source = "codControlFicheroPeticion", target = "controlFichero.codControlFichero")
 	})
 	public abstract PeticionInformacion generatePeticionInformacion(SolicitudInformacionFase1 solicitudInfo, 
-			Long codControlFicheroPeticion);
+			Long codControlFicheroPeticion, List<BankAccountDTO> listBankAccount);
 	
 	@AfterMapping
-	protected void setPeticionInformacionAfterMapping(@MappingTarget PeticionInformacion peticionInformacion) {
+	protected void setPeticionInformacionAfterMapping(@MappingTarget PeticionInformacion peticionInformacion, List<BankAccountDTO> listBankAccount) {
 		
 		//eliminar en el futuro, debe ser por sequence cuando no sea un char(10):
 		long aleatorio = (DoubleMath.roundToLong(Math.random()*1000000000L, RoundingMode.DOWN)) + 1000000000L;
@@ -147,10 +147,59 @@ public abstract class Cuaderno63Mapper {
 		peticionInformacion.setCodSucursal(pendienteCambiarBigDec);
 		peticionInformacion.setEntidadesOrdenante(pendienteCambiarEntidadesOrdenante);
 		
+		//Se guardaran las primeras cuentas en estado NORMAL del listado de cuentas, hasta un maximo de 6 cuentas:
+		setPreloadedBankAccounts(peticionInformacion,listBankAccount);
+		
         //Usuario y fecha ultima modificacion:
 		peticionInformacion.setUsuarioUltModificacion(EmbargosConstants.SYSTEM_USER);
         peticionInformacion.setFUltimaModificacion(BigDecimal.valueOf(System.currentTimeMillis()));
 		
+	}
+	
+	/**
+	 * Setea las primeras cuentas en estado NORMAL del listado de cuentas 'listBankAccount', hasta un maximo de seis cuentas.
+	 * 
+	 * @param peticionInformacion
+	 * @param listBankAccount
+	 */
+	private void setPreloadedBankAccounts(PeticionInformacion peticionInformacion, List<BankAccountDTO> listBankAccount) {
+	
+		//Iterating by the bank accounts:
+		int i=1;
+		for (BankAccountDTO bankAccountDTO : listBankAccount) {
+				
+			//Solo se setean las cuentas que tengan estado NORMAL:
+			if (EmbargosConstants.BANK_ACCOUNT_STATUS_NORMAL.equals(bankAccountDTO.getStatus())) {
+				switch(i) {
+					case 1:
+						peticionInformacion.setCuenta1(bankAccountDTO.getCodeBankAccount());
+						peticionInformacion.setIban1(bankAccountDTO.getIban());
+						break;
+					case 2:
+						peticionInformacion.setCuenta2(bankAccountDTO.getCodeBankAccount());
+						peticionInformacion.setIban2(bankAccountDTO.getIban());
+						break;
+					case 3:
+						peticionInformacion.setCuenta3(bankAccountDTO.getCodeBankAccount());
+						peticionInformacion.setIban3(bankAccountDTO.getIban());
+						break;
+					case 4:
+						peticionInformacion.setCuenta4(bankAccountDTO.getCodeBankAccount());
+						peticionInformacion.setIban4(bankAccountDTO.getIban());
+						break;
+					case 5:
+						peticionInformacion.setCuenta5(bankAccountDTO.getCodeBankAccount());
+						peticionInformacion.setIban5(bankAccountDTO.getIban());
+						break;
+					case 6:
+						peticionInformacion.setCuenta6(bankAccountDTO.getCodeBankAccount());
+						peticionInformacion.setIban6(bankAccountDTO.getIban());
+						break;
+					default:
+				}
+				i++;
+			}
+		}
 	}
 	
 	public abstract CabeceraEmisorFase2 generateCabeceraEmisorFase2(CabeceraEmisorFase1 cabeceraEmisorFase1, Date fechaObtencionFicheroEntidadDeDeposito);

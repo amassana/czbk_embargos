@@ -28,18 +28,12 @@ public abstract class InformationPetitionMapper {
 		@Mapping(source = "peticionInformacion.iban4", target = "bankAccount4.iban"),
 		@Mapping(source = "peticionInformacion.iban5", target = "bankAccount5.iban"),
 		@Mapping(source = "peticionInformacion.iban6", target = "bankAccount6.iban"),
-		@Mapping(source = "statusCodeTEST", target = "bankAccount1.statusCode"),
-		@Mapping(source = "statusCodeTEST", target = "bankAccount2.statusCode"),
-		@Mapping(source = "statusCodeTEST", target = "bankAccount3.statusCode"),
-		@Mapping(source = "statusCodeTEST", target = "bankAccount4.statusCode"),
-		@Mapping(source = "statusCodeTEST", target = "bankAccount5.statusCode"),
-		@Mapping(source = "statusCodeTEST", target = "bankAccount6.statusCode"),
-		@Mapping(source = "statusDescTEST", target = "bankAccount1.statusDescription"),
-		@Mapping(source = "statusDescTEST", target = "bankAccount2.statusDescription"),
-		@Mapping(source = "statusDescTEST", target = "bankAccount3.statusDescription"),
-		@Mapping(source = "statusDescTEST", target = "bankAccount4.statusDescription"),
-		@Mapping(source = "statusDescTEST", target = "bankAccount5.statusDescription"),
-		@Mapping(source = "statusDescTEST", target = "bankAccount6.statusDescription")
+		@Mapping(source = "statusCodeTEST", target = "bankAccount1.status"),
+		@Mapping(source = "statusCodeTEST", target = "bankAccount2.status"),
+		@Mapping(source = "statusCodeTEST", target = "bankAccount3.status"),
+		@Mapping(source = "statusCodeTEST", target = "bankAccount4.status"),
+		@Mapping(source = "statusCodeTEST", target = "bankAccount5.status"),
+		@Mapping(source = "statusCodeTEST", target = "bankAccount6.status")
 	})
 	public abstract PetitionCaseDTO toInformationPetitionDTO(PeticionInformacion peticionInformacion,
 			String statusCodeTEST, String statusDescTEST);

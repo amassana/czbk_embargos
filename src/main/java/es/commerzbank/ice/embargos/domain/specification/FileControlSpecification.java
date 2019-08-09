@@ -15,6 +15,8 @@ import es.commerzbank.ice.comun.lib.typeutils.VB6Date;
 import es.commerzbank.ice.embargos.domain.dto.FileControlFiltersDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero_;
+import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
+import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlficheroPK;
 import es.commerzbank.ice.embargos.domain.entity.TipoFichero;
 import es.commerzbank.ice.utils.EmbargosConstants;
 
@@ -36,9 +38,12 @@ public class FileControlSpecification implements Specification<ControlFichero> {
 				
 		Predicate predicate = null;
 		
+		long codTipoFichero = 0;
+		
+		//Filtro por tipo de fichero:
 		if (fileControlFiltersDTO.getFileType()!=null) {
 			TipoFichero tipoFichero = new TipoFichero();
-			long codTipoFichero = fileControlFiltersDTO.getFileType()!=null ? Long.valueOf(fileControlFiltersDTO.getFileType()) : 0;
+			codTipoFichero = fileControlFiltersDTO.getFileType()!=null ? Long.valueOf(fileControlFiltersDTO.getFileType()) : 0;
 			tipoFichero.setCodTipoFichero(codTipoFichero);
 			
 			if (codTipoFichero != EmbargosConstants.COD_TIPO_FICHERO_ALL_TYPES) {
@@ -47,6 +52,23 @@ public class FileControlSpecification implements Specification<ControlFichero> {
 			}
 		} else {
 			predicate = criteriaBuilder.equal(root.get(ControlFichero_.TIPO_FICHERO), -1);
+			predicates.add(predicate);
+		}
+
+		//Filtro de estado (no aplicar filtro si tipo de Fichero es COD_TIPO_FICHERO_ALL_TYPES (Todos) ):
+		if(fileControlFiltersDTO.getStatus()!=null && fileControlFiltersDTO.getStatus().getCode()!=null 
+				&& codTipoFichero != EmbargosConstants.COD_TIPO_FICHERO_ALL_TYPES) {
+			
+			EstadoCtrlfichero estadoCtrlFichero = new EstadoCtrlfichero();
+			
+			EstadoCtrlficheroPK estadoCtrlFicheroPK = new EstadoCtrlficheroPK();
+			
+			estadoCtrlFicheroPK.setCodEstado(fileControlFiltersDTO.getStatus().getCode());
+			estadoCtrlFicheroPK.setCodTipoFichero(codTipoFichero);
+			
+			estadoCtrlFichero.setId(estadoCtrlFicheroPK);
+			
+			predicate = criteriaBuilder.equal(root.get(ControlFichero_.ESTADO_CTRLFICHERO), estadoCtrlFichero);
 			predicates.add(predicate);
 		}
 		
@@ -65,7 +87,7 @@ public class FileControlSpecification implements Specification<ControlFichero> {
 			predicate = criteriaBuilder.le(root.get(ControlFichero_.FECHA_INCORPORACION), endDateVB);
 			predicates.add(predicate);
 		}
-			
+		
 				
 		return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 	}

@@ -124,9 +124,7 @@ public class PetitionController {
 		
 	}
 	
-	@GetMapping(value = "/{codeFileControl}/petitioncase/{codePetitionCase}/audit",
-			produces = { "application/json" }, 
-	        consumes = { "application/json" })
+	@GetMapping(value = "/{codeFileControl}/petitioncase/{codePetitionCase}/audit")
 	public ResponseEntity<List<PetitionCaseDTO>> getAuditPetitionCase(Authentication authentication,
 			@PathVariable("codeFileControl") Long codeFileControl,
 			@PathVariable("codePetitionCase") String codePetitionCase){
@@ -137,8 +135,7 @@ public class PetitionController {
 		
 		try {
 			
-			//TODO implementar:
-			result = null;
+			result = informationPetitionService.getAuditByCodeInformationPetition(codePetitionCase);
 					
 			response = new ResponseEntity<>(result, HttpStatus.OK);
 		

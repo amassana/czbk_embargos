@@ -1,5 +1,7 @@
 package es.commerzbank.ice.embargos.domain.dto;
 
+import java.util.Date;
+
 public class PetitionCaseDTO {
 
 	private String codePetitionCase;
@@ -7,13 +9,14 @@ public class PetitionCaseDTO {
 	private String name;
 	private String nameInternal;
 	private Boolean isReviewed;
+	private Date modifiedDate;
+	private String modifiedUser;
 	private BankAccountDTO bankAccount1;
 	private BankAccountDTO bankAccount2;
 	private BankAccountDTO bankAccount3;
 	private BankAccountDTO bankAccount4;
 	private BankAccountDTO bankAccount5;
 	private BankAccountDTO bankAccount6;
-	
 	
 	public String getCodePetitionCase() {
 		return codePetitionCase;
@@ -44,6 +47,18 @@ public class PetitionCaseDTO {
 	}
 	public void setIsReviewed(Boolean isReviewed) {
 		this.isReviewed = isReviewed;
+	}
+	public Date getModifiedDate() {
+		return modifiedDate;
+	}
+	public void setModifiedDate(Date modifiedDate) {
+		this.modifiedDate = modifiedDate;
+	}
+	public String getModifiedUser() {
+		return modifiedUser;
+	}
+	public void setModifiedUser(String modifiedUser) {
+		this.modifiedUser = modifiedUser;
 	}
 	public BankAccountDTO getBankAccount1() {
 		return bankAccount1;
@@ -81,6 +96,5 @@ public class PetitionCaseDTO {
 	public void setBankAccount6(BankAccountDTO bankAccount6) {
 		this.bankAccount6 = bankAccount6;
 	}
-	
 	
 }

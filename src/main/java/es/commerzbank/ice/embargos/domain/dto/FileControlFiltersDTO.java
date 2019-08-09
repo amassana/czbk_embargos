@@ -5,7 +5,7 @@ import java.util.Date;
 public class FileControlFiltersDTO {
 
 	private Long fileType;
-	private Long fileStatus;
+	private FileControlStatusDTO status;
 	private Boolean isProcessed;
 	private Date startDate;
 	private Date endDate;
@@ -16,11 +16,11 @@ public class FileControlFiltersDTO {
 	public void setFileType(Long fileType) {
 		this.fileType = fileType;
 	}
-	public Long getFileStatus() {
-		return fileStatus;
+	public FileControlStatusDTO getStatus() {
+		return status;
 	}
-	public void setFileStatus(Long fileStatus) {
-		this.fileStatus = fileStatus;
+	public void setStatus(FileControlStatusDTO status) {
+		this.status = status;
 	}
 	public Boolean getIsProcessed() {
 		return isProcessed;

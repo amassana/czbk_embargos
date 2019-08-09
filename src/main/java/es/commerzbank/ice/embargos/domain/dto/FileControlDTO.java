@@ -10,7 +10,6 @@ public class FileControlDTO {
 	private String fileName;
 	private String responseFileName;
 	private Boolean isProcessed;
-	private String fileStatus;
 	private String fileTarget;
 	private Date deliveryDate;
 	private Date modifiedDate;
@@ -51,12 +50,6 @@ public class FileControlDTO {
 	}
 	public void setIsProcessed(Boolean isProcessed) {
 		this.isProcessed = isProcessed;
-	}
-	public String getFileStatus() {
-		return fileStatus;
-	}
-	public void setFileStatus(String fileStatus) {
-		this.fileStatus = fileStatus;
 	}
 	public String getFileTarget() {
 		return fileTarget;

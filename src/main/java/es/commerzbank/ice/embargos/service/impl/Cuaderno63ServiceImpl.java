@@ -3,13 +3,15 @@ package es.commerzbank.ice.embargos.service.impl;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.beanio.BeanReader;
 import org.beanio.BeanWriter;
 import org.beanio.StreamFactory;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
 import es.commerzbank.ice.comun.lib.typeutils.VB6Date;
 import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.embargos.domain.dto.BankAccountDTO;
@@ -53,6 +56,7 @@ import es.commerzbank.ice.embargos.repository.SeizureRepository;
 import es.commerzbank.ice.embargos.service.Cuaderno63Service;
 import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.utils.EmbargosUtils;
 
 @Service
 @Transactional
@@ -111,6 +115,8 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 		
 		BeanReader beanReader = null;
 		
+		ControlFichero controlFicheroPeticion = null;
+		
 		try {
 		
 			// create a StreamFactory
@@ -119,8 +125,8 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        factory.loadResource(pathFileConfigCuaderno63);
 	        
 	        //Se guarda el registro de ControlFichero del fichero de entrada:
-	        ControlFichero controlFicheroPeticion = 
-	        		cuaderno63Mapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_PETICIONES);
+	        controlFicheroPeticion = 
+	        		cuaderno63Mapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63);
 	        
 	        fileControlRepository.save(controlFicheroPeticion);
 	                        
@@ -149,11 +155,11 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        		        			
 		        		//Se guarda la PeticionInformacion en bbdd:
 		        		PeticionInformacion peticionInformacion = cuaderno63Mapper.generatePeticionInformacion(solicitudInformacion, 
-		        				controlFicheroPeticion.getCodControlFichero());
+		        				controlFicheroPeticion.getCodControlFichero(), listBankAccount);
 		        		
 		        		informationPetitionRepository.save(peticionInformacion);
-		        		
-	        			//Se guardan las cuentas del nif:
+		        			        		
+	        			//Se guardan todas las cuentas del nif en la tabla PETICION_INFORMACION_CUENTAS:
 		        		for(BankAccountDTO bankAccountDTO : listBankAccount) {
 		        			
 		        			PeticionInformacionCuenta peticionInformacionCuenta = 
@@ -194,7 +200,9 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        	LOG.debug(record.toString());
 	        	        	
 	        }
-	        			
+	        
+
+	        
 	        //Datos a guardar en ControlFichero una vez procesado el fichero:
 	        
 			//- Se guarda el codigo de la Entidad comunicadora en ControlFichero:
@@ -203,10 +211,39 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 			//- Se guarda la fecha de la cabecera en el campo fechaCreacion de ControlFichero:
 			BigDecimal creationDateVB6 = fechaObtencionFicheroOrganismo!=null ?  BigDecimal.valueOf(VB6Date.dateToInt(fechaObtencionFicheroOrganismo)) : null;
 			controlFicheroPeticion.setFechaCreacion(creationDateVB6);
-	        
+	       
+			//- Se guarda la fecha maxima de respuesta (now + dias de margen)
+			long diasRespuestaF1 = entidadComunicadora.getDiasRespuestaF1()!=null ? entidadComunicadora.getDiasRespuestaF1().longValue() : 0;
+			Date lastDateResponse = DateUtils.convertToDate(LocalDate.now().plusDays(diasRespuestaF1));
+			BigDecimal limitResponseDateVB6 = BigDecimal.valueOf(VB6Date.dateToInt(lastDateResponse));
+			controlFicheroPeticion.setFechaMaximaRespuesta(limitResponseDateVB6);
+			
+			//Cambio de estado de CtrlFichero a: RECIBIDO
+	        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero();
+	        EstadoCtrlficheroPK estadoCtrlficheroPK = new EstadoCtrlficheroPK();
+	        estadoCtrlficheroPK.setCodEstado(EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_RECEIVED);
+	        estadoCtrlficheroPK.setCodTipoFichero(EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63);
+	        estadoCtrlfichero.setId(estadoCtrlficheroPK);
+	        controlFicheroPeticion.setEstadoCtrlfichero(estadoCtrlfichero);
+			
 			fileControlRepository.save(controlFicheroPeticion);
 
 		} catch (Exception e) {
+			
+			//Si hay excepcion y se ha generado controlFicheroPeticion (tiene seteada la fecha 
+			//de ultima modificacion): guardar estado de controlFicheroPeticion como ERROR:
+			if (controlFicheroPeticion!=null && controlFicheroPeticion.getFUltimaModificacion()!=null) {
+				
+		        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero();
+		        EstadoCtrlficheroPK estadoCtrlficheroPK = new EstadoCtrlficheroPK();
+		        estadoCtrlficheroPK.setCodEstado(EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_ERROR);
+		        estadoCtrlficheroPK.setCodTipoFichero(EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63);
+		        estadoCtrlfichero.setId(estadoCtrlficheroPK);
+		        controlFicheroPeticion.setEstadoCtrlfichero(estadoCtrlfichero);
+				
+				fileControlRepository.save(controlFicheroPeticion);
+			}
+			
 			
 			//TODO Rollbacks si proceden
 			
@@ -241,22 +278,34 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        String fileNamePeticion = controlFicheroPeticion.getNombreFichero();
 	        File ficheroEntrada = new File(pathProcessed + "\\" + fileNamePeticion);
 	        
-	        //Fichero de salida (Informacion):
-	        String fileNameInformacion = FilenameUtils.getBaseName(fileNamePeticion) 
+	        //TODO: comprobar que si no existe el fichero de entrada, mostrar error.
+	        
+	        //Para determinar el nombre del fichero de salida (Informacion):
+	        // - se obtiene el prefijo indicado a partir de la entidad comunicadora:
+	        String prefijoFichero = "";
+	        if (controlFicheroPeticion.getEntidadesComunicadora()!=null) {
+		        Optional<EntidadesComunicadora> entidadComunicadoraOpt = communicatingEntityRepository.findById(controlFicheroPeticion.getEntidadesComunicadora().getCodEntidadPresentadora());
+		        if (entidadComunicadoraOpt.isPresent()) {
+		        	prefijoFichero = entidadComunicadoraOpt.get().getPrefijoFicheros();
+				}
+	        }
+	        // - se obtiene la fecha local actual:
+	        LocalDate localDate = LocalDate.now();
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+	        String fechaNombreFichero = localDate.format(formatter);
+	        String fileNameInformacion = prefijoFichero + EmbargosConstants.SEPARADOR_GUION_BAJO + fechaNombreFichero 
 	            	+ EmbargosConstants.SEPARADOR_PUNTO + EmbargosConstants.TIPO_FICHERO_INFORMACION.toLowerCase();
 	        File ficheroSalida = new File(pathGenerated + "\\" + fileNameInformacion);
 	        
 	        //Se guarda el registro de ControlFichero del fichero de salida:
 	        ControlFichero controlFicheroInformacion = 
-	        		cuaderno63Mapper.generateControlFichero(ficheroSalida, EmbargosConstants.COD_TIPO_FICHERO_INFORMACION);
+	        		cuaderno63Mapper.generateControlFichero(ficheroSalida, EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63);
 	        
-	        //TODO: no hay registros en ESTADO_CTRLFICHERO con tipoFichero 2, eliminar el siguiente codigo de cambio de estado cuando se resuelva:
-	        //Actualizacion estado del fichero: tramitado
+	        //Actualizacion estado del fichero: GENERANDO
 	        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero();
 	        EstadoCtrlficheroPK estadoCtrlficheroPK = new EstadoCtrlficheroPK();
-	        estadoCtrlficheroPK.setCodEstado(EmbargosConstants.COD_ESTADO_CTRLFICHERO_PROCESSED);
-	        //TODO revisar, deberia ser fichero de embargos en lugar de peticiones (registros tabla ESTADO_CTRLFICHERO):
-	        estadoCtrlficheroPK.setCodTipoFichero(EmbargosConstants.COD_TIPO_FICHERO_PETICIONES);
+	        estadoCtrlficheroPK.setCodEstado(EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_INFORMACION_NORMA63_GENERATING);
+	        estadoCtrlficheroPK.setCodTipoFichero(EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63);
 	        estadoCtrlfichero.setId(estadoCtrlficheroPK);
 	        controlFicheroInformacion.setEstadoCtrlfichero(estadoCtrlfichero);
 	        
@@ -279,8 +328,13 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        				informationPetitionRepository.findByControlFicheroAndNif(controlFicheroPeticion,solicitudInformacion.getNifDeudor());		
 	        		
 	        		if(peticionInformacion!=null) {
-	        			//Guardar el codigo del fichero respuesta:
+	        			//Se guardan:
+	        			//- El codigo del fichero respuesta:
 	        			peticionInformacion.setCodFicheroRespuesta(BigDecimal.valueOf(controlFicheroInformacion.getCodControlFichero()));
+	        			
+	        			//- El calculo de las claves de seguridad de cada cuenta (el calculo se realiza en la fase 2, al tramitar, y no antes):
+	        			EmbargosUtils.calculateClavesSeguridadInPeticionInformacion(peticionInformacion);
+	        			
 	        			informationPetitionRepository.save(peticionInformacion);
 	        			
 	        		} else {
@@ -326,6 +380,14 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        //Se actualiza el CRC del registro de ControlFichero del fichero de salida:
 	        controlFicheroInformacion.setNumCrc(Long.toString(FileUtils.checksumCRC32(ficheroSalida)));
 	        
+	        //Actualizacion estado del fichero: GENERADO
+	        estadoCtrlfichero = new EstadoCtrlfichero();
+	        estadoCtrlficheroPK = new EstadoCtrlficheroPK();
+	        estadoCtrlficheroPK.setCodEstado(EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_INFORMACION_NORMA63_GENERATED);
+	        estadoCtrlficheroPK.setCodTipoFichero(EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63);
+	        estadoCtrlfichero.setId(estadoCtrlficheroPK);
+	        controlFicheroInformacion.setEstadoCtrlfichero(estadoCtrlfichero);
+	        
 	        fileControlRepository.save(controlFicheroInformacion);
         
 		} catch (Exception e) {
@@ -356,7 +418,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        
 	        //Se guarda el registro de ControlFichero del fichero de entrada:
 	        ControlFichero controlFicheroEmbargo = 
-	        		cuaderno63Mapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_EMBARGOS);
+	        		cuaderno63Mapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63);
 	        
 	        fileControlRepository.save(controlFicheroEmbargo);
 	        

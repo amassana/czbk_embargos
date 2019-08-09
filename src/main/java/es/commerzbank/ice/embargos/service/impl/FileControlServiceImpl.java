@@ -22,9 +22,12 @@ import es.commerzbank.ice.embargos.domain.dto.FileControlFiltersDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlficheroPK;
+import es.commerzbank.ice.embargos.domain.entity.HControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.TipoFichero;
+import es.commerzbank.ice.embargos.domain.mapper.FileControlAuditMapper;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
 import es.commerzbank.ice.embargos.domain.specification.FileControlSpecification;
+import es.commerzbank.ice.embargos.repository.FileControlAuditRepository;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.repository.FileControlStatusRepository;
 import es.commerzbank.ice.embargos.service.Cuaderno63Service;
@@ -45,9 +48,15 @@ public class FileControlServiceImpl implements FileControlService{
 	
 	@Autowired
 	private FileControlMapper fileControlMapper;
+	
+	@Autowired
+	private FileControlAuditMapper fileControlAuditMapper;
 
 	@Autowired
 	private FileControlRepository fileControlRepository;
+	
+	@Autowired
+	private FileControlAuditRepository fileControlAuditRepository;
 	
 	@Autowired
 	private FileControlStatusRepository fileControlStatusRepository;
@@ -78,7 +87,6 @@ public class FileControlServiceImpl implements FileControlService{
 		for (ControlFichero controlFichero : controlFicheroList) {
 		
 			FileControlDTO fileSearchResponseDTO = fileControlMapper.toFileControlDTO(controlFichero, 
-					new Long (1), 
 					"targetTEST", 
 					new Date());
 			
@@ -105,7 +113,6 @@ public class FileControlServiceImpl implements FileControlService{
 		}
 		
 		return fileControlMapper.toFileControlDTO(controlFicheroOpt.get(), 
-				new Long (1), 
 				"targetTEST", 
 				new Date());
 	}
@@ -141,8 +148,7 @@ public class FileControlServiceImpl implements FileControlService{
 		} else {
 			
 			if (countPendingPetitionCases > 0) {
-				LOG.debug("No se puede tramitar: quedan " + countPendingPetitionCases 
-					+ " de peticiones de informacion pendientes de ser revisadas.");
+				LOG.debug("No se puede tramitar -> numero de peticiones de informacion pendientes de ser revisadas: " + countPendingPetitionCases);
 			
 			} else if (countReviewedPetitionCases.compareTo(countPetitionCases)!=0) {
 				LOG.debug("No se puede tramitar: no se ha revisado todas las peticiones de informacion.");
@@ -167,10 +173,10 @@ public class FileControlServiceImpl implements FileControlService{
 		
 		//TODO solo actualiza el estado, pendiente resto de campos:
 		
-		if (fileControlDTO.getStatus()!=null && fileControlDTO.getStatus().getStatus()!=null) {
+		if (fileControlDTO.getStatus()!=null && fileControlDTO.getStatus().getCode()!=null) {
 
 			EstadoCtrlficheroPK estadoCtrlficheroPK = new EstadoCtrlficheroPK();
-			estadoCtrlficheroPK.setCodEstado(fileControlDTO.getStatus().getStatus());
+			estadoCtrlficheroPK.setCodEstado(fileControlDTO.getStatus().getCode());
 			estadoCtrlficheroPK.setCodTipoFichero(fileControlDTO.getCodeFileType());
 			
 			Optional<EstadoCtrlfichero> estadoCtrlficheroOpt = fileControlStatusRepository.findById(estadoCtrlficheroPK);
@@ -189,6 +195,43 @@ public class FileControlServiceImpl implements FileControlService{
 		fileControlRepository.save(controlFichero);
 		
 		return true;
+	}
+
+	@Override
+	public List<FileControlDTO> getAuditByCodeFileControl(Long codeFileControl) {
+
+		List<FileControlDTO> fileControlDTOList = new ArrayList<>();
+		
+		List<HControlFichero> hControlFicheroList = fileControlAuditRepository.findByCodControlFichero(codeFileControl);
+		
+		for(HControlFichero hControlFichero : hControlFicheroList) {
+				
+			//Se recupera la descripcion del estado de hControlFichero:
+			String descEstado = null;
+			if (hControlFichero.getCodEstado()!=null && hControlFichero.getCodTipoFichero()!=null) {
+				EstadoCtrlficheroPK estadoCtrlficheroPK = new EstadoCtrlficheroPK();
+				estadoCtrlficheroPK.setCodEstado(hControlFichero.getCodEstado().longValue());
+				estadoCtrlficheroPK.setCodTipoFichero(hControlFichero.getCodTipoFichero().longValue());
+				
+				Optional<EstadoCtrlfichero> estadoCtrlficheroOpt = fileControlStatusRepository.findById(estadoCtrlficheroPK);
+				
+				if(estadoCtrlficheroOpt.isPresent()) {
+					descEstado = estadoCtrlficheroOpt.get().getDescripcion();
+				}
+			}
+			
+			//Se obtiene el DTO:
+			FileControlDTO fileControlDTO = fileControlAuditMapper.toFileControlDTO(hControlFichero, 
+					descEstado, 
+					"targetTEST", 
+					new Date());
+		
+			fileControlDTOList.add(fileControlDTO);
+		}
+
+		return fileControlDTOList;
+		
+		
 	}
 
 
