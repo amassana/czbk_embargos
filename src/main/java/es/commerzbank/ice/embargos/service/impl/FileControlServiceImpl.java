@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -203,7 +202,7 @@ public class FileControlServiceImpl implements FileControlService{
 	}
 
 	@Override
-	public byte[] generarReporteListado(Integer codTipoFichero, Date codEstado, Date fechaInicio, Integer fechaFin) throws Exception {
+	public byte[] generarReporteListado(Integer codTipoFichero, Integer codEstado, Date fechaInicio, Date fechaFin) throws Exception {
 		System.out.println("codTipoFichero: " + codTipoFichero + " codEstado: " + codEstado + " fechaInicio: "
 				+ fechaInicio + " fechaFin: " + fechaFin);
 
