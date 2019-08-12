@@ -18,31 +18,28 @@ import es.commerzbank.ice.utils.DownloadReportFile;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping(value = "/seizure")  
+@RequestMapping(value = "/seizure")
 public class SeizureController {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(SeizureController.class);
-	
+
 	@Value("${commerzbank.jasper.temp}")
 	private String pdfSavedPath;
-	
+
 	@Autowired
 	private SeizureService seizureService;
-	
-	
-	
+
 	@GetMapping("/{cod_embargo}/justificante")
-	public ResponseEntity<InputStreamResource> generarJustificanteEmbargo(@PathVariable("cod_embargo") Integer codEmbargo) {
-		
+	public ResponseEntity<InputStreamResource> generarJustificanteEmbargo(
+			@PathVariable("cod_embargo") Integer codEmbargo) {
+
 		DownloadReportFile.setTempFileName("justificanteReport");
-		
+
 		DownloadReportFile.setFileTempPath(pdfSavedPath);
-		
-		LOG.info("SeizureController");
-		
+
 		try {
 
-			//seizure service falta
+			// seizure service falta
 			DownloadReportFile.writeFile(seizureService.generateJustificanteEmbargo(codEmbargo));
 
 			return DownloadReportFile.returnToDownloadFile();
@@ -53,5 +50,29 @@ public class SeizureController {
 
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	@GetMapping("propertyLien/fileControl/{fileControl}/report")
+	public ResponseEntity<InputStreamResource> generarResumentTrabas(
+			@PathVariable("fileControl") Integer codControlFichero) {
+
+		DownloadReportFile.setTempFileName("resumenTrabasReport");
+
+		DownloadReportFile.setFileTempPath(pdfSavedPath);
+
+		try {
+
+			// seizure service falta
+			DownloadReportFile.writeFile(seizureService.generarResumenTrabas(codControlFichero));
+
+			return DownloadReportFile.returnToDownloadFile();
+
+		} catch (Exception e) {
+			LOG.error("Error in justificanteReport", e);
+			System.out.println(e);
+
+			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
 	}
 }
