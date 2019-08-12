@@ -1,6 +1,5 @@
 package es.commerzbank.ice.embargos.controller;
 
-
 import java.util.Date;
 import java.util.List;
 
@@ -46,196 +45,190 @@ public class FileControlController {
 
 	@Autowired
 	private FileControlService fileControlService;
-	
+
 	@Autowired
 	private FileTypeService fileTypeService;
-	
+
 	@Autowired
 	private FileControlStatusService fileControlStatusService;
 
-	@PostMapping(value = "/filter",
-			produces = { "application/json" },
-			consumes = { "application/json" })
-	@ApiOperation(value="Busca en CONTROL_FICHERO las entradas que cumplan el filtro especificado.")
+	@PostMapping(value = "/filter", produces = { "application/json" }, consumes = { "application/json" })
+	@ApiOperation(value = "Busca en CONTROL_FICHERO las entradas que cumplan el filtro especificado.")
 	public ResponseEntity<Page<FileControlDTO>> filter(Authentication authentication,
-													   @RequestBody FileControlFiltersDTO fileControlFilters,
-													   Pageable pageable){
-		
+			@RequestBody FileControlFiltersDTO fileControlFilters, Pageable pageable) {
+
 		ResponseEntity<Page<FileControlDTO>> response = null;
 		Page<FileControlDTO> result = null;
-		
+
 		try {
-		
+
 			if (!Permissions.hasPermission(authentication, "ui.embargos")) {
 				LOG.info("FileControlController - fileSearch - forbidden");
 				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 			}
-			
+
 			result = fileControlService.fileSearch(fileControlFilters, pageable);
 			response = new ResponseEntity<>(result, HttpStatus.OK);
-		
+
 		} catch (Exception e) {
-			
+
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-			
+
 			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
-		}	
-			
-		return response;
-	}
-	
-	@GetMapping(value = "/filetype")
-	@ApiOperation(value="Devuelve la lista de tipos de ficheros admitidos en TIPO_FICHERO.")
-	public ResponseEntity<List<FileControlTypeDTO>> getFileTypeList(Authentication authentication){
-		
-		ResponseEntity<List<FileControlTypeDTO>> response = null;
-		List<FileControlTypeDTO> result = null;
-		
-		result = fileTypeService.listAllFileType();
-		response = new ResponseEntity<>(result, HttpStatus.OK);
-		
+		}
+
 		return response;
 	}
 
-	
+	@GetMapping(value = "/filetype")
+	@ApiOperation(value = "Devuelve la lista de tipos de ficheros admitidos en TIPO_FICHERO.")
+	public ResponseEntity<List<FileControlTypeDTO>> getFileTypeList(Authentication authentication) {
+
+		ResponseEntity<List<FileControlTypeDTO>> response = null;
+		List<FileControlTypeDTO> result = null;
+
+		result = fileTypeService.listAllFileType();
+		response = new ResponseEntity<>(result, HttpStatus.OK);
+
+		return response;
+	}
+
 	@GetMapping(value = "/filetype/{idFileType}/status")
-	@ApiOperation(value="Devuelve la lista de estados para un determinado tipo de archivo de ESTADO_CTRLFICHERO.")
+	@ApiOperation(value = "Devuelve la lista de estados para un determinado tipo de archivo de ESTADO_CTRLFICHERO.")
 	public ResponseEntity<List<FileControlStatusDTO>> getFileTypeStatusList(Authentication authentication,
-			@PathVariable("idFileType") Long idFileType){
-		
+			@PathVariable("idFileType") Long idFileType) {
+
 		ResponseEntity<List<FileControlStatusDTO>> response = null;
 		List<FileControlStatusDTO> result = null;
-	
+
 		try {
-		
-		result = fileControlStatusService.listFileControlStatusByFileType(idFileType);
-		response = new ResponseEntity<>(result, HttpStatus.OK);
-		
+
+			result = fileControlStatusService.listFileControlStatusByFileType(idFileType);
+			response = new ResponseEntity<>(result, HttpStatus.OK);
+
 		} catch (Exception e) {
-			
+
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-			
+
 			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
 		}
-			
+
 		return response;
 	}
-	
-	
+
 	@GetMapping(value = "/{codeFileControl}/audit")
-	//		,
-	//		produces = { "application/json" },
-	//		consumes = { "application/json" })
+	// ,
+	// produces = { "application/json" },
+	// consumes = { "application/json" })
 	public ResponseEntity<List<FileControlDTO>> getAuditByFileControl(Authentication authentication,
-			@PathVariable("codeFileControl") Long codeFileControl){
-		
+			@PathVariable("codeFileControl") Long codeFileControl) {
+
 		ResponseEntity<List<FileControlDTO>> response = null;
 		List<FileControlDTO> result = null;
-	
+
 		try {
-		
+
 			result = fileControlService.getAuditByCodeFileControl(codeFileControl);
-					
+
 			response = new ResponseEntity<>(result, HttpStatus.OK);
-		
+
 		} catch (Exception e) {
-			
+
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-			
+
 			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
 		}
-			
+
 		return response;
 	}
-	
+
 	@PostMapping(value = "/{codeFileControl}/process")
 	@ApiOperation(value = "Tramitacion de un archivo de peticion.")
-	public ResponseEntity<String> tramitar (Authentication authentication,
-			 @PathVariable("codeFileControl") Long codeFileControl){
-	
+	public ResponseEntity<String> tramitar(Authentication authentication,
+			@PathVariable("codeFileControl") Long codeFileControl) {
+
 		ResponseEntity<String> response = null;
 		boolean result = true;
-		
+
 		try {
-			
+
 			result = fileControlService.tramitarFicheroInformacion(codeFileControl);
-			
+
 			if (result) {
 				response = new ResponseEntity<>(HttpStatus.OK);
 			} else {
 				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			}	
-		
+			}
+
 		} catch (Exception e) {
-			
+
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			
+
 			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
 		}
-		
+
 		return response;
-		
+
 	}
-	
+
 	@PostMapping(value = "/{codeFileControl}")
 	@ApiOperation(value = "Cambia los datos del CONTROL_FICHERO segun lo especificado. Usado para el cambio de estado.")
 	public ResponseEntity<String> updateFileControl(Authentication authentication,
-																  @PathVariable("codeFileControl") Long codeFileControl,
-																  @RequestBody FileControlDTO fileControl){
-		
+			@PathVariable("codeFileControl") Long codeFileControl, @RequestBody FileControlDTO fileControl) {
+
 		ResponseEntity<String> response = null;
 		boolean result = true;
-		
+
 		try {
-			
-			//TODO: implementar el result:
-			result = fileControlService.updateFileControl(codeFileControl,fileControl);
+
+			// TODO: implementar el result:
+			result = fileControlService.updateFileControl(codeFileControl, fileControl);
 			result = false;
-			
+
 			if (result) {
 				response = new ResponseEntity<>(HttpStatus.OK);
 			} else {
 				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			}	
-		
+			}
+
 		} catch (Exception e) {
-			
+
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			
+
 			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
 		}
-		
+
 		return response;
 	}
-	
-		
+
 	@GetMapping(value = "/{codeFileControl}")
-	@ApiOperation(value="Devuelve el detalle de un CONTROL_FICHERO.")
+	@ApiOperation(value = "Devuelve el detalle de un CONTROL_FICHERO.")
 	public ResponseEntity<FileControlDTO> getByCodeFileControl(Authentication authentication,
-			 @PathVariable("codeFileControl") Long codeFileControl){
-		
+			@PathVariable("codeFileControl") Long codeFileControl) {
+
 		ResponseEntity<FileControlDTO> response = null;
 		FileControlDTO result = null;
-		
+
 		try {
-		
+
 			result = fileControlService.getByCodeFileControl(codeFileControl);
 			response = new ResponseEntity<>(result, HttpStatus.OK);
-		
+
 		} catch (Exception e) {
-			
+
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-			
+
 			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
-		}	
-			
+		}
+
 		return response;
 	}
 
 	@GetMapping("/reports/files")
 	public ResponseEntity<InputStreamResource> generarReportLista(
-			@RequestParam(name = "codTipoFichero", required = false) Integer [] codTipoFichero,
+			@RequestParam(name = "codTipoFichero", required = false) Integer[] codTipoFichero,
 			@RequestParam(name = "codEstado", required = false) Integer codEstado,
+			@RequestParam(name = "isPending", required = false) boolean isPending,
 			@RequestParam(name = "fechaInicio", required = false) Date fechaInicio,
 			@RequestParam(name = "fechaFin", required = false) Date fechaFin) throws Exception {
 
@@ -245,8 +238,7 @@ public class FileControlController {
 
 		try {
 
-			DownloadReportFile.writeFile(
-					fileControlService.generarReporteListado(codTipoFichero, codEstado, fechaInicio, fechaFin));
+				DownloadReportFile.writeFile(fileControlService.generarReporteListado(codTipoFichero, codEstado, isPending, fechaInicio, fechaFin));
 
 			return DownloadReportFile.returnToDownloadFile();
 		} catch (Exception e) {
