@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
 import es.commerzbank.ice.embargos.service.SeizureService;
+import es.commerzbank.ice.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -34,8 +35,8 @@ public class SeizureServiceImpl implements SeizureService {
 		
 				try (Connection conn = oracleDataSourceEmbargos.getEmbargosConnection()) {
 					
-					Resource embargosJrxml = new ClassPathResource("jasper/justificante_embargos.jasper");
-					Resource logoImage = new ClassPathResource("jasper/images/commerce_bank_logo.png");
+					Resource embargosJrxml = ResourcesUtil.getFromJasperFolder("justificante_embargos.jasper");
+					Resource logoImage = ResourcesUtil.getImageLogoCommerceResource();
 					
 					File image = logoImage.getFile(); 
 					

@@ -39,6 +39,7 @@ import es.commerzbank.ice.embargos.repository.FileControlStatusRepository;
 import es.commerzbank.ice.embargos.service.Cuaderno63Service;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.InformationPetitionService;
+import es.commerzbank.ice.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -303,17 +304,17 @@ public class FileControlServiceImpl implements FileControlService {
 
 			parameters.put("conn_param", connComunes);
 
-			Resource imageReport = new ClassPathResource("jasper/images/commerce_bank_logo.png");
+			Resource imageReport = ResourcesUtil.getImageLogoCommerceResource();
 			File image = imageReport.getFile();
 			parameters.put("img_param", image.toString());
 
-			Resource subResource = new ClassPathResource("jasper/header_sucursal.jasper");
+			Resource subResource = ResourcesUtil.getReportHeaderResource();
 			InputStream subResourceInputStream = subResource.getInputStream();
 
 			JasperReport subReport = (JasperReport) JRLoader.loadObject(subResourceInputStream);
 			parameters.put("file_param", subReport);
 
-			Resource resource = new ClassPathResource("jasper/control_ficheros.jasper");
+			Resource resource = ResourcesUtil.getFromJasperFolder("control_ficheros.jasper");
 			InputStream resourceInputStream = resource.getInputStream();
 
 			JasperPrint reporteLleno = JasperFillManager.fillReport(resourceInputStream, parameters, connEmbargos);

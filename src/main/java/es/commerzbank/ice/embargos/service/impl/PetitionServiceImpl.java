@@ -32,6 +32,7 @@ import es.commerzbank.ice.embargos.service.Cuaderno63Service;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.InformationPetitionService;
 import es.commerzbank.ice.embargos.service.PetitionService;
+import es.commerzbank.ice.utils.ResourcesUtil;
 
 @Service
 @Transactional
@@ -93,9 +94,9 @@ public class PetitionServiceImpl implements PetitionService{
 				Connection connComunes = oracleDataSourceEmbargosConfig.getComunesConnection();
 		) {
 
-			Resource jrxmlResource = new ClassPathResource("jasper/peticiones_informacion.jasper");
-			Resource subReportResource = new ClassPathResource("jasper/header_sucursal.jasper");
-			Resource imageReport = new ClassPathResource("jasper/images/commerce_bank_logo.png");
+			Resource jrxmlResource = ResourcesUtil.getFromJasperFolder("peticiones_informacion.jasper");
+			Resource subReportResource = ResourcesUtil.getReportHeaderResource();
+			Resource imageReport = ResourcesUtil.getImageLogoCommerceResource();
 
 			File image = imageReport.getFile();
 			InputStream subResourceInputStream = subReportResource.getInputStream();
