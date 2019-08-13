@@ -18,6 +18,8 @@ import es.commerzbank.ice.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
 
 @Service
 @Transactional
@@ -27,7 +29,7 @@ public class SeizureServiceImpl implements SeizureService {
 	private OracleDataSourceEmbargosConfig oracleDataSourceEmbargos;
 
 	@Override
-	public byte[] generateJustificanteEmbargo(Integer codEmbargo) throws Exception {
+	public byte[] generateJustificanteEmbargo(Integer idSeizure) throws Exception {
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
 		try (Connection conn = oracleDataSourceEmbargos.getEmbargosConnection()) {
@@ -37,7 +39,7 @@ public class SeizureServiceImpl implements SeizureService {
 
 			File image = logoImage.getFile();
 
-			parameters.put("COD_EMBARGO", codEmbargo);
+			parameters.put("COD_TRABA", idSeizure);
 			parameters.put("IMAGE_PARAM", image.toString());
 
 			InputStream justificanteInputStream = embargosJrxml.getInputStream();
@@ -52,26 +54,39 @@ public class SeizureServiceImpl implements SeizureService {
 	}
 
 	@Override
-	public byte[] generarResumenTrabas(Integer codControlFicher) throws Exception {
+	public byte[] generarResumenTrabas(Integer codControlFichero) throws Exception {
 
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
 		try (Connection conn = oracleDataSourceEmbargos.getEmbargosConnection()) {
 
 			Resource resumenTrabasJrxml = ResourcesUtil.getFromJasperFolder("resumen_trabas.jasper");
+			Resource totalTrabas = ResourcesUtil.getFromJasperFolder("totalTrabado.jasper");
+			Resource headerSubreport = ResourcesUtil.getReportHeaderResource();
+
 			Resource logoImage = ResourcesUtil.getImageLogoCommerceResource();
 
 			File image = logoImage.getFile();
-			
-			parameters.put("IMAGE_PARAM", image.toString());
-			
+
+			InputStream subReportHeaderInputStream = headerSubreport.getInputStream();
+			InputStream subReportTotalTrabasInputStream = totalTrabas.getInputStream();
+
+			JasperReport subReportHeader = (JasperReport) JRLoader.loadObject(subReportHeaderInputStream);
+			JasperReport subReportTotalTrabas = (JasperReport) JRLoader.loadObject(subReportTotalTrabasInputStream);
+
+			parameters.put("sub_img_param", image.toString());
+			parameters.put("SUBREPORT_HEADER", subReportHeader);
+			parameters.put("SUBREPORT_IMPORTETOTALTRABADO", subReportTotalTrabas);
+			parameters.put("COD_FILE_CONTROL", codControlFichero);
+
 			InputStream resumenInputStream = resumenTrabasJrxml.getInputStream();
 
 			JasperPrint fillReport = JasperFillManager.fillReport(resumenInputStream, parameters, conn);
-
+			System.out.println("llego peroi no 2");
 			return JasperExportManager.exportReportToPdf(fillReport);
 
 		} catch (SQLException e) {
+			System.out.println(e);
 			throw new Exception("DB exception while generating the report", e);
 		}
 

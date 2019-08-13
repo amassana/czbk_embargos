@@ -29,9 +29,9 @@ public class SeizureController {
 	@Autowired
 	private SeizureService seizureService;
 
-	@GetMapping("/{cod_embargo}/justificante")
+	@GetMapping("/{idSeizure}/case/report")
 	public ResponseEntity<InputStreamResource> generarJustificanteEmbargo(
-			@PathVariable("cod_embargo") Integer codEmbargo) {
+			@PathVariable("idSeizure") Integer idSeizure) {
 
 		DownloadReportFile.setTempFileName("justificanteReport");
 
@@ -40,7 +40,7 @@ public class SeizureController {
 		try {
 
 			// seizure service falta
-			DownloadReportFile.writeFile(seizureService.generateJustificanteEmbargo(codEmbargo));
+			DownloadReportFile.writeFile(seizureService.generateJustificanteEmbargo(idSeizure));
 
 			return DownloadReportFile.returnToDownloadFile();
 
@@ -52,7 +52,7 @@ public class SeizureController {
 		}
 	}
 
-	@GetMapping("propertyLien/fileControl/{fileControl}/report")
+	@GetMapping("/propertyLien/fileControl/{fileControl}/report")
 	public ResponseEntity<InputStreamResource> generarResumentTrabas(
 			@PathVariable("fileControl") Integer codControlFichero) {
 

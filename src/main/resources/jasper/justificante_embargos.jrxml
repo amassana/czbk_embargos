@@ -15,7 +15,7 @@
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="265"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="724"/>
 	<style name="JustificanteStyle" fontName="JustificanteReportFont" isBold="false"/>
-	<parameter name="COD_EMBARGO" class="java.lang.Integer"/>
+	<parameter name="COD_TRABA" class="java.lang.Integer"/>
 	<parameter name="IMAGE_PARAM" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select
@@ -26,7 +26,7 @@
 ,	e.datregcomdet
 from COMM_EMBARGOS_DES.TRABAS t inner join COMM_EMBARGOS_DES.CUENTA_TRABA ct on t.cod_traba = ct.cod_traba
 inner join COMM_EMBARGOS_DES.EMBARGO e on e.cod_embargo = t.cod_embargo
-where e.cod_embargo = $P{COD_EMBARGO}]]>
+where t.cod_traba = $P{COD_TRABA}]]>
 	</queryString>
 	<field name="CUENTA" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="CUENTA"/>

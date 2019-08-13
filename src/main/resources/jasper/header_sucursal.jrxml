@@ -21,7 +21,7 @@ AND b.COD_USUARIO=$P{sub_cod_user}]]>
 		<band height="90" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<image>
-				<reportElement x="43" y="18" width="260" height="70" uuid="73e22134-d71d-4d7c-8c5f-0a4330344fc9">
+				<reportElement x="31" y="10" width="260" height="70" uuid="73e22134-d71d-4d7c-8c5f-0a4330344fc9">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<imageExpression><![CDATA[$P{sub_img_param}]]></imageExpression>
