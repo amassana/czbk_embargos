@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="control_ficheros" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="847831ee-2e52-4a67-bcb6-888b478b5de8">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="OracleAdapter.xml"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceBankDAdapter.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="530"/>
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="456"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="28"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="962"/>
 	<parameter name="cod_user" class="java.lang.Integer"/>
 	<parameter name="file_param" class="java.lang.Object"/>
 	<parameter name="conn_param" class="java.sql.Connection"/>
 	<parameter name="img_param" class="java.lang.String"/>
 	<parameter name="query_param" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT c.NOMBRE_FICHERO, t.DES_TIPO_FICHERO, s.DESCRIPCION, c.FECHA_INCORPORACION, c.FECHA_GENERACION_RESPUESTA
+		<![CDATA[SELECT c.NOMBRE_FICHERO, t.DES_TIPO_FICHERO, s.DESCRIPCION, c.FECHA_INCORPORACION, c.FECHA_GENERACION_RESPUESTA, c.IND_PROCESADO
 FROM COMM_EMBARGOS_DES.CONTROL_FICHERO c 
 LEFT OUTER JOIN tipo_fichero t ON c.COD_TIPO_FICHERO = t.COD_TIPO_FICHERO 
 LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TIPO_FICHERO = s.COD_TIPO_FICHERO $P!{query_param}]]>
@@ -30,6 +32,9 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 	</field>
 	<field name="FECHA_GENERACION_RESPUESTA" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="FECHA_GENERACION_RESPUESTA"/>
+	</field>
+	<field name="IND_PROCESADO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="IND_PROCESADO"/>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -55,7 +60,7 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 	<pageHeader>
 		<band height="30" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="0" width="270" height="30" uuid="18df8e90-1597-45ce-b807-5089e83fc8e9">
+				<reportElement x="40" y="0" width="270" height="30" uuid="18df8e90-1597-45ce-b807-5089e83fc8e9">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<box leftPadding="4"/>
@@ -69,7 +74,7 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 	<columnHeader>
 		<band height="58" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="40" width="140" height="18" uuid="2c8d4731-5d93-4ef6-90b8-920d963350a1">
+				<reportElement x="33" y="40" width="140" height="18" uuid="2c8d4731-5d93-4ef6-90b8-920d963350a1">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="cbaa5abf-4acb-43b2-9be7-7cc1f22a04a3"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -82,7 +87,7 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 				<text><![CDATA[NOMBRE FICHERO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="150" y="40" width="140" height="18" uuid="321785ed-ead9-47e8-9b94-8a93644f5c39">
+				<reportElement x="203" y="40" width="197" height="18" uuid="321785ed-ead9-47e8-9b94-8a93644f5c39">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="cbaa5abf-4acb-43b2-9be7-7cc1f22a04a3"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -95,7 +100,7 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 				<text><![CDATA[TIPO FICHERO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="300" y="40" width="140" height="18" uuid="1c816283-e5ec-484f-be70-79f9e8a68a84">
+				<reportElement x="427" y="40" width="74" height="18" uuid="1c816283-e5ec-484f-be70-79f9e8a68a84">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="cbaa5abf-4acb-43b2-9be7-7cc1f22a04a3"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -105,10 +110,10 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 				<textElement verticalAlignment="Bottom">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[DESCRIPCION]]></text>
+				<text><![CDATA[ESTADO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="450" y="40" width="150" height="18" uuid="1b1809cf-9115-4eda-bc22-d80b328296b7">
+				<reportElement x="532" y="40" width="110" height="18" uuid="1b1809cf-9115-4eda-bc22-d80b328296b7">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="cbaa5abf-4acb-43b2-9be7-7cc1f22a04a3"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -118,10 +123,10 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 				<textElement verticalAlignment="Bottom">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[FECHA INCORPORACION]]></text>
+				<text><![CDATA[F.INCORPORACIÓN]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="610" y="40" width="180" height="18" uuid="777d4815-887d-4efc-afec-6b6bdc272c5f">
+				<reportElement x="672" y="40" width="80" height="18" uuid="777d4815-887d-4efc-afec-6b6bdc272c5f">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="cbaa5abf-4acb-43b2-9be7-7cc1f22a04a3"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -131,14 +136,14 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 				<textElement verticalAlignment="Bottom">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[FECHA GENERACION RESPUESTA]]></text>
+				<text><![CDATA[F.RESPUESTA]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="21" splitType="Stretch">
 			<textField isBlankWhenNull="true">
-				<reportElement x="0" y="0" width="140" height="20" uuid="61a166f7-7f75-4126-83fe-b57352eff15c">
+				<reportElement x="33" y="0" width="140" height="20" uuid="61a166f7-7f75-4126-83fe-b57352eff15c">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="9746bfe5-6627-4a64-a56e-b656d4ce668d"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -147,7 +152,7 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 				<textFieldExpression><![CDATA[$F{NOMBRE_FICHERO}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="150" y="0" width="140" height="20" uuid="af919cb8-b4ae-4547-9200-4d814fa97a4f">
+				<reportElement x="203" y="0" width="197" height="20" uuid="af919cb8-b4ae-4547-9200-4d814fa97a4f">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0c37f62d-72ac-4bd0-8ae4-30c27b63e896"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -156,7 +161,7 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 				<textFieldExpression><![CDATA[$F{DES_TIPO_FICHERO}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="300" y="0" width="140" height="20" uuid="8d949686-f761-4612-9908-3a8bac8eba3f">
+				<reportElement x="427" y="0" width="74" height="20" uuid="8d949686-f761-4612-9908-3a8bac8eba3f">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e585d553-9e9b-4f2a-82fc-71ebd4013a3f"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -165,7 +170,7 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 				<textFieldExpression><![CDATA[$F{DESCRIPCION}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="450" y="0" width="150" height="20" uuid="e20be4b6-382d-4325-a6cd-412eed86b0c4">
+				<reportElement x="532" y="0" width="110" height="20" uuid="e20be4b6-382d-4325-a6cd-412eed86b0c4">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="1d99ddd1-8982-4f66-ae19-ef2cb1aedf23"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -174,7 +179,7 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMddHHmmss").parse($F{FECHA_INCORPORACION}.toString()))]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="610" y="0" width="180" height="20" uuid="d1ab47f2-f483-4c3d-91d6-4496f1f39b66">
+				<reportElement x="672" y="0" width="80" height="20" uuid="d1ab47f2-f483-4c3d-91d6-4496f1f39b66">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5607005c-2191-4465-a92f-bdeb1be5b31a"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>

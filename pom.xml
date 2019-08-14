@@ -139,8 +139,17 @@
 			<artifactId>jasperreports</artifactId>
 			<version>6.1.0</version>
 		</dependency>
+		
+			<!-- Dependencia del archivo jar del estilo de fuentes -->
+		<dependency>
+			<groupId>local.SerifCommerce</groupId>
+			<artifactId>local.SerifCommerce</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/src/main/resources/fonts/jar/pt-serif.jar</systemPath>
+		</dependency>
 	</dependencies>
-
+	
 	<build>
 		<finalName>embargos</finalName>
 			<plugins>

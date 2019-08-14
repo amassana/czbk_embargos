@@ -39,6 +39,7 @@ import es.commerzbank.ice.embargos.repository.FileControlStatusRepository;
 import es.commerzbank.ice.embargos.service.Cuaderno63Service;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.InformationPetitionService;
+import es.commerzbank.ice.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -48,28 +49,28 @@ import net.sf.jasperreports.engine.util.JRLoader;
 
 @Service
 @Transactional
-public class FileControlServiceImpl implements FileControlService{
-	
+public class FileControlServiceImpl implements FileControlService {
+
 	private static final Logger LOG = LoggerFactory.getLogger(FileControlServiceImpl.class);
 
 	@Autowired
 	InformationPetitionService informationPetitionService;
-	
+
 	@Autowired
 	Cuaderno63Service cuaderno63Service;
-	
+
 	@Autowired
 	private FileControlMapper fileControlMapper;
-	
+
 	@Autowired
 	private FileControlAuditMapper fileControlAuditMapper;
 
 	@Autowired
 	private FileControlRepository fileControlRepository;
-	
+
 	@Autowired
 	private FileControlAuditRepository fileControlAuditRepository;
-	
+
 	@Autowired
 	private FileControlStatusRepository fileControlStatusRepository;
 
@@ -77,138 +78,136 @@ public class FileControlServiceImpl implements FileControlService{
 	private OracleDataSourceEmbargosConfig oracleDataSourceEmbargosConfig;
 
 	@Override
-	public Page<FileControlDTO> fileSearch(FileControlFiltersDTO fileControlFiltersDTO, Pageable pageable) throws Exception{
+	public Page<FileControlDTO> fileSearch(FileControlFiltersDTO fileControlFiltersDTO, Pageable pageable)
+			throws Exception {
 
 		List<FileControlDTO> fileSearchResponseDTOList = new ArrayList<>();
-				
+
 		Date startDate = fileControlFiltersDTO.getStartDate();
 		Date endDate = fileControlFiltersDTO.getEndDate();
-		
+
 //		//Validar fechas:
 //		if (!validateDates(startDate,endDate)) {
 //			throw new Exception("ERROR: incorrect dates");
 //		}
-		
+
 		Long tipoFicheroLong = fileControlFiltersDTO.getFileType();
-		
+
 		TipoFichero tipoFichero = new TipoFichero();
-		long codTipoFichero = tipoFicheroLong!=null ? Long.valueOf(fileControlFiltersDTO.getFileType()) : 0;
+		long codTipoFichero = tipoFicheroLong != null ? Long.valueOf(fileControlFiltersDTO.getFileType()) : 0;
 		tipoFichero.setCodTipoFichero(codTipoFichero);
-		
+
 		Specification<ControlFichero> fileControlSpecification = new FileControlSpecification(fileControlFiltersDTO);
-		
+
 		Page<ControlFichero> controlFicheroList = fileControlRepository.findAll(fileControlSpecification, pageable);
-									
+
 		for (ControlFichero controlFichero : controlFicheroList) {
-		
-			FileControlDTO fileSearchResponseDTO = fileControlMapper.toFileControlDTO(controlFichero, 
-					"targetTEST", 
+
+			FileControlDTO fileSearchResponseDTO = fileControlMapper.toFileControlDTO(controlFichero, "targetTEST",
 					new Date());
-			
+
 			fileSearchResponseDTOList.add(fileSearchResponseDTO);
-		
+
 		}
-		
+
 		return new PageImpl<>(fileSearchResponseDTOList, pageable, controlFicheroList.getTotalElements());
-		
+
 	}
-	
+
 	private boolean validateDates(Date startDate, Date endDate) {
-		
-		return (startDate != null && endDate!=null && startDate.compareTo(endDate) <= 0);
+
+		return (startDate != null && endDate != null && startDate.compareTo(endDate) <= 0);
 	}
 
 	@Override
 	public FileControlDTO getByCodeFileControl(Long codeFileControl) {
 
 		Optional<ControlFichero> controlFicheroOpt = fileControlRepository.findById(codeFileControl);
-		
-		if(!controlFicheroOpt.isPresent()) {
+
+		if (!controlFicheroOpt.isPresent()) {
 			return null;
 		}
-		
-		return fileControlMapper.toFileControlDTO(controlFicheroOpt.get(), 
-				"targetTEST", 
-				new Date());
+
+		return fileControlMapper.toFileControlDTO(controlFicheroOpt.get(), "targetTEST", new Date());
 	}
 
 	@Override
 	public boolean tramitarFicheroInformacion(Long codeFileControl) throws IOException {
 
-		//Obtener el codigo del fichero de control:
+		// Obtener el codigo del fichero de control:
 		Optional<ControlFichero> controlFicheroOpt = fileControlRepository.findById(codeFileControl);
-		
-		if(!controlFicheroOpt.isPresent()) {
+
+		if (!controlFicheroOpt.isPresent()) {
 			return false;
 		}
-		
-		ControlFichero controlFichero = controlFicheroOpt.get();
-		
-	
-		//Solo se puede tramitar si no hay peticiones de informacion pendientes de ser revisadas:
-		
-		Integer countPendingPetitionCases = 
-				informationPetitionService.getCountPendingPetitionCases(controlFichero);
 
-		Integer countReviewedPetitionCases = 
-				informationPetitionService.getCountReviewedPetitionCases(controlFichero);
-		
-		Integer countPetitionCases = 
-				informationPetitionService.getCountPetitionCases(controlFichero);
-		
-		if (countPendingPetitionCases == 0 && (countReviewedPetitionCases.compareTo(countPetitionCases)==0)) {
-			
+		ControlFichero controlFichero = controlFicheroOpt.get();
+
+		// Solo se puede tramitar si no hay peticiones de informacion pendientes de ser
+		// revisadas:
+
+		Integer countPendingPetitionCases = informationPetitionService.getCountPendingPetitionCases(controlFichero);
+
+		Integer countReviewedPetitionCases = informationPetitionService.getCountReviewedPetitionCases(controlFichero);
+
+		Integer countPetitionCases = informationPetitionService.getCountPetitionCases(controlFichero);
+
+		if (countPendingPetitionCases == 0 && (countReviewedPetitionCases.compareTo(countPetitionCases) == 0)) {
+
 			cuaderno63Service.tramitarFicheroInformacion(codeFileControl);
-		
+
 		} else {
-			
+
 			if (countPendingPetitionCases > 0) {
-				LOG.debug("No se puede tramitar -> numero de peticiones de informacion pendientes de ser revisadas: " + countPendingPetitionCases);
-			
-			} else if (countReviewedPetitionCases.compareTo(countPetitionCases)!=0) {
+				LOG.debug("No se puede tramitar -> numero de peticiones de informacion pendientes de ser revisadas: "
+						+ countPendingPetitionCases);
+
+			} else if (countReviewedPetitionCases.compareTo(countPetitionCases) != 0) {
 				LOG.debug("No se puede tramitar: no se ha revisado todas las peticiones de informacion.");
 			}
-			
+
 			return false;
 		}
-		
+
 		return true;
 	}
 
 	@Override
 	public boolean updateFileControl(Long codeFileControl, FileControlDTO fileControlDTO) {
-		
+
 		Optional<ControlFichero> controlFicheroOpt = fileControlRepository.findById(codeFileControl);
-		
-		if(!controlFicheroOpt.isPresent()) {
+
+		if (!controlFicheroOpt.isPresent()) {
 			return false;
 		}
-		
+
 		ControlFichero controlFichero = controlFicheroOpt.get();
-		
-		//TODO solo actualiza el estado, pendiente resto de campos:
-		
-		if (fileControlDTO.getStatus()!=null && fileControlDTO.getStatus().getCode()!=null) {
+
+		// TODO solo actualiza el estado, pendiente resto de campos:
+
+		if (fileControlDTO.getStatus() != null && fileControlDTO.getStatus().getCode() != null) {
 
 			EstadoCtrlficheroPK estadoCtrlficheroPK = new EstadoCtrlficheroPK();
 			estadoCtrlficheroPK.setCodEstado(fileControlDTO.getStatus().getCode());
 			estadoCtrlficheroPK.setCodTipoFichero(fileControlDTO.getCodeFileType());
-			
-			Optional<EstadoCtrlfichero> estadoCtrlficheroOpt = fileControlStatusRepository.findById(estadoCtrlficheroPK);
-			
-			if(!estadoCtrlficheroOpt.isPresent()) {
+
+			Optional<EstadoCtrlfichero> estadoCtrlficheroOpt = fileControlStatusRepository
+					.findById(estadoCtrlficheroPK);
+
+			if (!estadoCtrlficheroOpt.isPresent()) {
 				return false;
 			}
-			
+
 			controlFichero.setEstadoCtrlfichero(estadoCtrlficheroOpt.get());
 		}
-		
-		//controlFichero.setFicheroRespuesta("PRUEBA2");
-		
-		//TODO no se esta guardando el EstadoCtrlfichero, puede ser debido al problema en ControlFichero del "Repeated Columns" de COD_TIPO_FICHERO.
-		
+
+		// controlFichero.setFicheroRespuesta("PRUEBA2");
+
+		// TODO no se esta guardando el EstadoCtrlfichero, puede ser debido al problema
+		// en ControlFichero del "Repeated Columns" de COD_TIPO_FICHERO.
+
 		fileControlRepository.save(controlFichero);
-		
+
 		return true;
 	}
 
@@ -216,42 +215,41 @@ public class FileControlServiceImpl implements FileControlService{
 	public List<FileControlDTO> getAuditByCodeFileControl(Long codeFileControl) {
 
 		List<FileControlDTO> fileControlDTOList = new ArrayList<>();
-		
+
 		List<HControlFichero> hControlFicheroList = fileControlAuditRepository.findByCodControlFichero(codeFileControl);
-		
-		for(HControlFichero hControlFichero : hControlFicheroList) {
-				
-			//Se recupera la descripcion del estado de hControlFichero:
+
+		for (HControlFichero hControlFichero : hControlFicheroList) {
+
+			// Se recupera la descripcion del estado de hControlFichero:
 			String descEstado = null;
-			if (hControlFichero.getCodEstado()!=null && hControlFichero.getCodTipoFichero()!=null) {
+			if (hControlFichero.getCodEstado() != null && hControlFichero.getCodTipoFichero() != null) {
 				EstadoCtrlficheroPK estadoCtrlficheroPK = new EstadoCtrlficheroPK();
 				estadoCtrlficheroPK.setCodEstado(hControlFichero.getCodEstado().longValue());
 				estadoCtrlficheroPK.setCodTipoFichero(hControlFichero.getCodTipoFichero().longValue());
-				
-				Optional<EstadoCtrlfichero> estadoCtrlficheroOpt = fileControlStatusRepository.findById(estadoCtrlficheroPK);
-				
-				if(estadoCtrlficheroOpt.isPresent()) {
+
+				Optional<EstadoCtrlfichero> estadoCtrlficheroOpt = fileControlStatusRepository
+						.findById(estadoCtrlficheroPK);
+
+				if (estadoCtrlficheroOpt.isPresent()) {
 					descEstado = estadoCtrlficheroOpt.get().getDescripcion();
 				}
 			}
-			
-			//Se obtiene el DTO:
-			FileControlDTO fileControlDTO = fileControlAuditMapper.toFileControlDTO(hControlFichero, 
-					descEstado, 
-					"targetTEST", 
-					new Date());
-		
+
+			// Se obtiene el DTO:
+			FileControlDTO fileControlDTO = fileControlAuditMapper.toFileControlDTO(hControlFichero, descEstado,
+					"targetTEST", new Date());
+
 			fileControlDTOList.add(fileControlDTO);
 		}
 
 		return fileControlDTOList;
-		
-		
+
 	}
 
 	@Override
-	public byte[] generarReporteListado(Integer [] codTipoFichero, Integer codEstado, Date fechaInicio, Date fechaFin) throws Exception {
-		System.out.println("codTipoFichero: " + codTipoFichero + " codEstado: " + codEstado + " fechaInicio: "
+	public byte[] generarReporteListado(Integer[] codTipoFichero,
+			Integer codEstado, boolean isPending, Date fechaInicio, Date fechaFin) throws Exception {
+		System.out.println("codTipoFichero: " + codTipoFichero +  " codEstado: " + codEstado + " isPending: " + isPending + " fechaInicio: "
 				+ fechaInicio + " fechaFin: " + fechaFin);
 
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
@@ -261,7 +259,8 @@ public class FileControlServiceImpl implements FileControlService{
 		String query = "WHERE";
 
 		if (codTipoFichero != null) {
-			String fileTypes = String.join(", ", Arrays.asList(codTipoFichero).stream().map(i -> String.valueOf(i)).collect(Collectors.toList()) );
+			String fileTypes = String.join(", ",
+					Arrays.asList(codTipoFichero).stream().map(i -> String.valueOf(i)).collect(Collectors.toList()));
 			query = query + " c.COD_TIPO_FICHERO IN (" + fileTypes + ") AND";
 
 			if (codEstado != null) {
@@ -279,41 +278,52 @@ public class FileControlServiceImpl implements FileControlService{
 
 		if (codTipoFichero == null && codEstado == null && fechaInicio == null && fechaFin == null) {
 			query = "";
-		} else {
-			query = query.substring(0, query.length() - 4);
+		} 
+		
+		
+		if (query.isBlank()) {
+			query = "WHERE";
 		}
+		
+		if (isPending) {
+			query = query + " c.IND_PROCESADO<>'S'";
+		} else {
+			query = query + " c.IND_PROCESADO='S'";
+		}
+		
+		
+		
+		
+		System.out.println(query);
 
 		parameters.put("query_param", query);
-		//parameters.put("cod_user", 3);
+		// parameters.put("cod_user", 3);
 
-		try (
-				Connection connEmbargos = oracleDataSourceEmbargosConfig.getEmbargosConnection();
-				Connection connComunes = oracleDataSourceEmbargosConfig.getComunesConnection()
-		) {
+		try (Connection connEmbargos = oracleDataSourceEmbargosConfig.getEmbargosConnection();) {
+//				Connection connComunes = oracleDataSourceEmbargosConfig.getComunesConnection()
+			
 
-			parameters.put("conn_param", connComunes);
+//			parameters.put("conn_param", connComunes);
 
-			Resource imageReport = new ClassPathResource("jasper/images/commerce_bank_logo.png");
+			Resource imageReport = ResourcesUtil.getImageLogoCommerceResource();
 			File image = imageReport.getFile();
 			parameters.put("img_param", image.toString());
 
-			Resource subResource = new ClassPathResource("jasper/header_sucursal.jasper");
+			Resource subResource = ResourcesUtil.getReportHeaderResource();
 			InputStream subResourceInputStream = subResource.getInputStream();
 
 			JasperReport subReport = (JasperReport) JRLoader.loadObject(subResourceInputStream);
 			parameters.put("file_param", subReport);
 
-			Resource resource = new ClassPathResource("jasper/control_ficheros.jasper");
+			Resource resource = ResourcesUtil.getFromJasperFolder("control_ficheros.jasper");
 			InputStream resourceInputStream = resource.getInputStream();
 
-
-			JasperPrint reporteLleno = JasperFillManager.fillReport(resourceInputStream, parameters,
-					connEmbargos);
+			JasperPrint reporteLleno = JasperFillManager.fillReport(resourceInputStream, parameters, connEmbargos);
 
 			return JasperExportManager.exportReportToPdf(reporteLleno);
 		} catch (JRException | SQLException ex) {
 			throw new Exception("Error in generarReporteListado()", ex);
 		}
 	}
-	
+
 }
