@@ -299,10 +299,11 @@ public class FileControlServiceImpl implements FileControlService {
 		parameters.put("query_param", query);
 		// parameters.put("cod_user", 3);
 
-		try (Connection connEmbargos = oracleDataSourceEmbargosConfig.getEmbargosConnection();
-				Connection connComunes = oracleDataSourceEmbargosConfig.getComunesConnection()) {
+		try (Connection connEmbargos = oracleDataSourceEmbargosConfig.getEmbargosConnection();) {
+//				Connection connComunes = oracleDataSourceEmbargosConfig.getComunesConnection()
+			
 
-			parameters.put("conn_param", connComunes);
+//			parameters.put("conn_param", connComunes);
 
 			Resource imageReport = ResourcesUtil.getImageLogoCommerceResource();
 			File image = imageReport.getFile();

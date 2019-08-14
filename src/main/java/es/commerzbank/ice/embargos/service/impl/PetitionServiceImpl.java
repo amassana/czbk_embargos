@@ -91,7 +91,7 @@ public class PetitionServiceImpl implements PetitionService{
 
 		try (
 				Connection connEmbargos = oracleDataSourceEmbargosConfig.getEmbargosConnection();
-				Connection connComunes = oracleDataSourceEmbargosConfig.getComunesConnection();
+//				Connection connComunes = oracleDataSourceEmbargosConfig.getComunesConnection();
 		) {
 
 			Resource jrxmlResource = ResourcesUtil.getFromJasperFolder("peticiones_informacion.jasper");
@@ -107,7 +107,7 @@ public class PetitionServiceImpl implements PetitionService{
 			parameters.put("cod_control_fichero", codeFileControl);
 			// parameters.put("cod_user", 3);
 			parameters.put("file_param", subReport);
-			parameters.put("conn_param", connComunes);
+//			parameters.put("conn_param", connComunes);
 
 			InputStream resourceInputStream = jrxmlResource.getInputStream();
 
