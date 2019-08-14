@@ -16,8 +16,8 @@
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["C:\\Users\\sergio.ruiz\\JaspersoftWorkspace\\MyReports\\"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="SUBREPORT_HEADER" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="SUBREPORT_IMPORTETOTALTRABADO" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="SUBREPORT_HEADER" class="java.lang.Object" isForPrompting="false"/>
+	<parameter name="SUBREPORT_IMPORTETOTALTRABADO" class="java.lang.Object" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[SELECT
 	ec.des_entidad ,
