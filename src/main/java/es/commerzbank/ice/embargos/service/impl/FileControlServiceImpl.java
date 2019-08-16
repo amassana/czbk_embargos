@@ -7,15 +7,16 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -40,6 +41,7 @@ import es.commerzbank.ice.embargos.repository.FileControlStatusRepository;
 import es.commerzbank.ice.embargos.service.Cuaderno63Service;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.InformationPetitionService;
+import es.commerzbank.ice.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -250,10 +252,10 @@ public class FileControlServiceImpl implements FileControlService{
 		
 	}
 
-
-		@Override
-	public byte[] generarReporteListado(Integer codTipoFichero, Integer codEstado, Date fechaInicio, Date fechaFin) throws Exception {
-		System.out.println("codTipoFichero: " + codTipoFichero + " codEstado: " + codEstado + " fechaInicio: "
+	@Override
+	public byte[] generarReporteListado(Integer[] codTipoFichero,
+			Integer codEstado, boolean isPending, Date fechaInicio, Date fechaFin) throws Exception {
+		System.out.println("codTipoFichero: " + codTipoFichero +  " codEstado: " + codEstado + " isPending: " + isPending + " fechaInicio: "
 				+ fechaInicio + " fechaFin: " + fechaFin);
 
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
@@ -263,11 +265,13 @@ public class FileControlServiceImpl implements FileControlService{
 		String query = "WHERE";
 
 		if (codTipoFichero != null) {
-			query = query + " c.COD_TIPO_FICHERO=" + codTipoFichero.toString() + " AND";
-		}
+			String fileTypes = String.join(", ",
+					Arrays.asList(codTipoFichero).stream().map(i -> String.valueOf(i)).collect(Collectors.toList()));
+			query = query + " c.COD_TIPO_FICHERO IN (" + fileTypes + ") AND";
 
-		if (codEstado != null) {
-			query = query + " c.COD_ESTADO=" + codEstado.toString() + " AND";
+			if (codEstado != null) {
+				query = query + " c.COD_ESTADO=" + codEstado.toString() + " AND";
+			}
 		}
 
 		if (fechaInicio != null) {
@@ -280,36 +284,47 @@ public class FileControlServiceImpl implements FileControlService{
 
 		if (codTipoFichero == null && codEstado == null && fechaInicio == null && fechaFin == null) {
 			query = "";
-		} else {
-			query = query.substring(0, query.length() - 4);
+		} 
+		
+		
+		if (query.isEmpty()) {
+			query = "WHERE";
 		}
+		
+		if (isPending) {
+			query = query + " c.IND_PROCESADO<>'S'";
+		} else {
+			query = query + " c.IND_PROCESADO='S'";
+		}
+		
+		
+		
+		
+		System.out.println(query);
 
 		parameters.put("query_param", query);
-		//parameters.put("cod_user", 3);
+		// parameters.put("cod_user", 3);
 
-		try (
-				Connection connEmbargos = oracleDataSourceEmbargosConfig.getEmbargosConnection();
-				Connection connComunes = oracleDataSourceEmbargosConfig.getComunesConnection()
-		) {
+		try (Connection connEmbargos = oracleDataSourceEmbargosConfig.getEmbargosConnection();) {
+//				Connection connComunes = oracleDataSourceEmbargosConfig.getComunesConnection()
+			
 
-			parameters.put("conn_param", connComunes);
+//			parameters.put("conn_param", connComunes);
 
-			Resource imageReport = new ClassPathResource("jasper/images/commerce_bank_logo.png");
+			Resource imageReport = ResourcesUtil.getImageLogoCommerceResource();
 			File image = imageReport.getFile();
 			parameters.put("img_param", image.toString());
 
-			Resource subResource = new ClassPathResource("jasper/header_sucursal.jasper");
+			Resource subResource = ResourcesUtil.getReportHeaderResource();
 			InputStream subResourceInputStream = subResource.getInputStream();
 
 			JasperReport subReport = (JasperReport) JRLoader.loadObject(subResourceInputStream);
 			parameters.put("file_param", subReport);
 
-			Resource resource = new ClassPathResource("jasper/control_ficheros.jasper");
+			Resource resource = ResourcesUtil.getFromJasperFolder("control_ficheros.jasper");
 			InputStream resourceInputStream = resource.getInputStream();
 
-
-			JasperPrint reporteLleno = JasperFillManager.fillReport(resourceInputStream, parameters,
-					connEmbargos);
+			JasperPrint reporteLleno = JasperFillManager.fillReport(resourceInputStream, parameters, connEmbargos);
 
 			return JasperExportManager.exportReportToPdf(reporteLleno);
 		} catch (JRException | SQLException ex) {

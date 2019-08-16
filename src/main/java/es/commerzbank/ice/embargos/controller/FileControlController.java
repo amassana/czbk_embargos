@@ -234,8 +234,9 @@ public class FileControlController {
 
 	@GetMapping("/reports/files")
 	public ResponseEntity<InputStreamResource> generarReportLista(
-			@RequestParam(name = "codTipoFichero", required = false) Integer codTipoFichero,
+			@RequestParam(name = "codTipoFichero", required = false) Integer[] codTipoFichero,
 			@RequestParam(name = "codEstado", required = false) Integer codEstado,
+			@RequestParam(name = "isPending", required = false) boolean isPending,
 			@RequestParam(name = "fechaInicio", required = false) Date fechaInicio,
 			@RequestParam(name = "fechaFin", required = false) Date fechaFin) throws Exception {
 
@@ -245,8 +246,7 @@ public class FileControlController {
 
 		try {
 
-			DownloadReportFile.writeFile(
-					fileControlService.generarReporteListado(codTipoFichero, codEstado, fechaInicio, fechaFin));
+				DownloadReportFile.writeFile(fileControlService.generarReporteListado(codTipoFichero, codEstado, isPending, fechaInicio, fechaFin));
 
 			return DownloadReportFile.returnToDownloadFile();
 		} catch (Exception e) {

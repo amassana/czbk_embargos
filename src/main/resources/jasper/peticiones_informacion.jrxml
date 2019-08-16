@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="peticiones_informacion" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="847831ee-2e52-4a67-bcb6-888b478b5de8">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="comm_bank_peti_info" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="847831ee-2e52-4a67-bcb6-888b478b5de8">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="OracleAdapter.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="530"/>
@@ -100,7 +100,7 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 	<columnHeader>
 		<band height="61" splitType="Stretch">
 			<staticText>
-				<reportElement x="-7" y="43" width="40" height="18" uuid="cff7f524-2d76-4530-8623-d6b2a9e3abc7">
+				<reportElement x="-11" y="43" width="51" height="18" uuid="cff7f524-2d76-4530-8623-d6b2a9e3abc7">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f8981161-6eba-4742-8c42-d6858d208d2d"/>
 				</reportElement>
 				<box leftPadding="3" bottomPadding="3">
@@ -115,7 +115,7 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 				<text><![CDATA[NIF]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="41" y="43" width="102" height="18" uuid="d4342627-c9bd-4d4d-9e97-95ba0e0e5c0e">
+				<reportElement x="47" y="43" width="102" height="18" uuid="d4342627-c9bd-4d4d-9e97-95ba0e0e5c0e">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="70336e19-b482-4d6d-8e95-6a79b597cad8"/>
 				</reportElement>
 				<box leftPadding="3" bottomPadding="3">
@@ -130,7 +130,7 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 				<text><![CDATA[RAZON SOCIAL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="317" y="43" width="70" height="18" uuid="f3fef6bb-33cb-426f-99dd-44b319d16a12">
+				<reportElement x="329" y="43" width="70" height="18" uuid="f3fef6bb-33cb-426f-99dd-44b319d16a12">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="1d84535f-b5b5-4469-814e-c968fceba5fa"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -147,7 +147,7 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 				<text><![CDATA[IBAN1]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="400" y="43" width="70" height="18" uuid="da56d79f-b498-4688-a469-9fe50f9f7186">
+				<reportElement x="410" y="43" width="70" height="18" uuid="da56d79f-b498-4688-a469-9fe50f9f7186">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3f34c996-085a-417a-9279-98aeb615d7e7"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -163,7 +163,7 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 				<text><![CDATA[IBAN2]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="486" y="43" width="70" height="18" uuid="30e639f7-b4a1-44f4-9406-ba306517e83f">
+				<reportElement x="489" y="43" width="70" height="18" uuid="30e639f7-b4a1-44f4-9406-ba306517e83f">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5bcd7bb8-9b45-4cd7-92ea-3f76e79b2a96"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -211,7 +211,7 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 				<text><![CDATA[IBAN5]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="731" y="43" width="70" height="18" uuid="f12aaf25-bfec-497a-8879-61d9d4430ad9">
+				<reportElement x="730" y="43" width="70" height="18" uuid="f12aaf25-bfec-497a-8879-61d9d4430ad9">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ffff8303-2ce5-4843-b132-428ad5597b6e"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -231,8 +231,7 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHA_CREACION}.toString()))
-]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{FECHA_CREACION}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="580" y="0" width="122" height="30" uuid="125c07d9-689c-4a97-9843-5b88cde7f843"/>
@@ -242,7 +241,7 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 				<text><![CDATA[FECHA DE CREACIÓN: ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="148" y="43" width="148" height="18" uuid="5204a177-d713-4d8e-bcd4-a3f8041af5cf">
+				<reportElement x="160" y="43" width="160" height="18" uuid="5204a177-d713-4d8e-bcd4-a3f8041af5cf">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="cbaa5abf-4acb-43b2-9be7-7cc1f22a04a3"/>
 				</reportElement>
 				<box leftPadding="2" bottomPadding="2">
@@ -258,7 +257,7 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 	<detail>
 		<band height="31" splitType="Stretch">
 			<textField isBlankWhenNull="true">
-				<reportElement x="-7" y="13" width="40" height="18" uuid="84408f2c-f58a-45aa-afe9-8be86736c657">
+				<reportElement x="-11" y="13" width="51" height="18" uuid="84408f2c-f58a-45aa-afe9-8be86736c657">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f8981161-6eba-4742-8c42-d6858d208d2d"/>
 				</reportElement>
 				<box topPadding="5" leftPadding="2" bottomPadding="0">
@@ -270,7 +269,7 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 				<textFieldExpression><![CDATA[$F{NIF}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="41" y="13" width="102" height="18" uuid="0f1d4b90-399b-4e67-9ece-1caa97eebb4d">
+				<reportElement x="47" y="13" width="102" height="18" uuid="0f1d4b90-399b-4e67-9ece-1caa97eebb4d">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="70336e19-b482-4d6d-8e95-6a79b597cad8"/>
 				</reportElement>
 				<box topPadding="5" leftPadding="2" bottomPadding="0">
@@ -282,7 +281,7 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 				<textFieldExpression><![CDATA[$F{RAZON_SOCIAL}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="317" y="13" width="70" height="18" uuid="b1a2e64a-012c-467d-aaa1-81095385ff30">
+				<reportElement x="329" y="13" width="70" height="18" uuid="b1a2e64a-012c-467d-aaa1-81095385ff30">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="1d84535f-b5b5-4469-814e-c968fceba5fa"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -295,7 +294,7 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 				<textFieldExpression><![CDATA[$F{IBAN1}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="400" y="13" width="70" height="18" uuid="98a3460b-3eda-424f-aa4f-3ae457f0dcfc">
+				<reportElement x="410" y="13" width="70" height="18" uuid="98a3460b-3eda-424f-aa4f-3ae457f0dcfc">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3f34c996-085a-417a-9279-98aeb615d7e7"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -308,7 +307,7 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 				<textFieldExpression><![CDATA[$F{IBAN2}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="486" y="13" width="70" height="18" uuid="6fd38d1d-f0f7-4ef1-8b8d-e6c1c9d805d4">
+				<reportElement x="489" y="13" width="70" height="18" uuid="6fd38d1d-f0f7-4ef1-8b8d-e6c1c9d805d4">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5bcd7bb8-9b45-4cd7-92ea-3f76e79b2a96"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -347,7 +346,7 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 				<textFieldExpression><![CDATA[$F{IBAN5}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="731" y="13" width="70" height="18" uuid="cc272600-7edf-417f-b1da-b7d3f5767a41">
+				<reportElement x="730" y="13" width="70" height="18" uuid="cc272600-7edf-417f-b1da-b7d3f5767a41">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ffff8303-2ce5-4843-b132-428ad5597b6e"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -360,7 +359,7 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 				<textFieldExpression><![CDATA[$F{IBAN6}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="148" y="13" width="148" height="18" uuid="465867d3-9861-4b87-a198-37c5e67eaab2">
+				<reportElement x="160" y="13" width="160" height="18" uuid="465867d3-9861-4b87-a198-37c5e67eaab2">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="cbaa5abf-4acb-43b2-9be7-7cc1f22a04a3"/>
 				</reportElement>
 				<box topPadding="5" leftPadding="5">

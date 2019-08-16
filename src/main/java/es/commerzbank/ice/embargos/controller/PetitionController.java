@@ -34,7 +34,7 @@ import io.swagger.annotations.ApiOperation;
 public class PetitionController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PetitionController.class);
-	
+
 	@Autowired
 	private InformationPetitionService informationPetitionService;
 
@@ -48,120 +48,117 @@ public class PetitionController {
 	private String pdfSavedPath;
 
 	@GetMapping(value = "/{codeFileControl}")
-	@ApiOperation(value="Devuelve la lista de casos para una peticion de informacion.")
+	@ApiOperation(value = "Devuelve la lista de casos para una peticion de informacion.")
 	public ResponseEntity<List<PetitionCaseDTO>> getPetitionCaseListByCodeFileControl(Authentication authentication,
-			  												   @PathVariable("codeFileControl") Long codeFileControl){
+			@PathVariable("codeFileControl") Long codeFileControl) {
 		ResponseEntity<List<PetitionCaseDTO>> response = null;
 		List<PetitionCaseDTO> result = null;
 
 		try {
-						
+
 			ControlFichero controlFichero = new ControlFichero();
 			controlFichero.setCodControlFichero(codeFileControl);
-			
+
 			result = informationPetitionService.getAllByControlFichero(controlFichero);
-					
+
 			response = new ResponseEntity<>(result, HttpStatus.OK);
-		
+
 		} catch (Exception e) {
-			
+
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-			
+
 			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
 		}
-			
+
 		return response;
 	}
-	
+
 	@GetMapping(value = "/{codeFileControl}/petitioncase/{codePetitionCase}/bankAccounts")
-	@ApiOperation(value="Devuelve la lista de cuentas disponibles para el caso indicado de PETICION_INFORMACION_CUENTAS.")
-	public ResponseEntity<List<BankAccountDTO>> getBankAccountListByCodeFileControlAndPetitionCase(Authentication authentication,
-			  												   @PathVariable("codeFileControl") Long codeFileControl,
-			  												   @PathVariable("codePetitionCase") String codePetitionCase){
+	@ApiOperation(value = "Devuelve la lista de cuentas disponibles para el caso indicado de PETICION_INFORMACION_CUENTAS.")
+	public ResponseEntity<List<BankAccountDTO>> getBankAccountListByCodeFileControlAndPetitionCase(
+			Authentication authentication, @PathVariable("codeFileControl") Long codeFileControl,
+			@PathVariable("codePetitionCase") String codePetitionCase) {
 		ResponseEntity<List<BankAccountDTO>> response = null;
 		List<BankAccountDTO> result = null;
 
 		try {
-			
+
 			result = informationPetitionBankAccountService.getAllByControlFicheroAndPeticionInformacion(codeFileControl,
 					codePetitionCase);
-					
+
 			response = new ResponseEntity<>(result, HttpStatus.OK);
-		
+
 		} catch (Exception e) {
-			
+
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-			
+
 			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
 		}
-			
+
 		return response;
 	}
-	
-	@PostMapping(value = "/{codeFileControl}/petitioncase/{codePetitionCase}",
-			produces = { "application/json" }, 
-	        consumes = { "application/json" })
-	@ApiOperation(value="Actualiza el caso de PETICION_INFORMACION indicado, guardando los datos que se traspasen")
+
+	@PostMapping(value = "/{codeFileControl}/petitioncase/{codePetitionCase}", produces = {
+			"application/json" }, consumes = { "application/json" })
+	@ApiOperation(value = "Actualiza el caso de PETICION_INFORMACION indicado, guardando los datos que se traspasen")
 	public ResponseEntity<String> savePetitionCase(Authentication authentication,
 			@PathVariable("codeFileControl") Long codeFileControl,
-			@PathVariable("codePetitionCase") String codePetitionCase,
-			@RequestBody PetitionCaseDTO petitionCase){
-		
-		
+			@PathVariable("codePetitionCase") String codePetitionCase, @RequestBody PetitionCaseDTO petitionCase) {
+
 		ResponseEntity<String> response = null;
 		boolean result = true;
-		
+
 		try {
-			
-			String userModif = authentication.getName(); 
-			
-			result = informationPetitionService.savePetitionCase(codeFileControl, codePetitionCase, petitionCase, userModif);
-			
+
+			String userModif = authentication.getName();
+
+			result = informationPetitionService.savePetitionCase(codeFileControl, codePetitionCase, petitionCase,
+					userModif);
+
 			if (result) {
 				response = new ResponseEntity<>(HttpStatus.OK);
 			} else {
 				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			}	
-		
+			}
+
 		} catch (Exception e) {
-			
+
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			
+
 			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
 		}
-		
+
 		return response;
-		
+
 	}
-	
+
 	@GetMapping(value = "/{codeFileControl}/petitioncase/{codePetitionCase}/audit")
 	public ResponseEntity<List<PetitionCaseDTO>> getAuditPetitionCase(Authentication authentication,
 			@PathVariable("codeFileControl") Long codeFileControl,
-			@PathVariable("codePetitionCase") String codePetitionCase){
-		
-		
+			@PathVariable("codePetitionCase") String codePetitionCase) {
+
 		ResponseEntity<List<PetitionCaseDTO>> response = null;
 		List<PetitionCaseDTO> result = null;
-		
+
 		try {
-			
+
 			result = informationPetitionService.getAuditByCodeInformationPetition(codePetitionCase);
-					
+
 			response = new ResponseEntity<>(result, HttpStatus.OK);
-		
+
 		} catch (Exception e) {
-			
+
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-			
+
 			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
 		}
-		
+
 		return response;
-		
+
 	}
-	
+
 	////////////// REVISAR:
-	
+
 //	@GetMapping(value = "/filecontrol/{codeFileControl}")
 //	public ResponseEntity<PetitionDTO> getByCodeFileControl(@RequestHeader(value="token",required=true) String token,
 //			  												   @PathVariable("codeFileControl") Long codeFileControl){
@@ -184,7 +181,6 @@ public class PetitionController {
 //		return response;
 //	}
 
-
 	@GetMapping("/{codeFileControl}/report")
 	public ResponseEntity<InputStreamResource> petitionReport(
 			@PathVariable("codeFileControl") Integer codeFileControl) {
@@ -206,5 +202,5 @@ public class PetitionController {
 		}
 
 	}
-	
+
 }
