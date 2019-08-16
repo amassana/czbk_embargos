@@ -14,7 +14,7 @@ public class EmbargosConstants {
 	public static final String TIPO_FICHERO_FINAL = "FIN";
 	public static final String TIPO_FICHERO_APUNTES_CONTABLES = "CON";
 	
-	public static final long COD_TIPO_FICHERO_ALL_TYPES = 0;
+//	public static final long COD_TIPO_FICHERO_ALL_TYPES = 0;
 //	public static final long COD_TIPO_FICHERO_PETICIONES = 1;
 //	public static final long COD_TIPO_FICHERO_INFORMACION = 2;
 //	public static final long COD_TIPO_FICHERO_EMBARGOS = 3;

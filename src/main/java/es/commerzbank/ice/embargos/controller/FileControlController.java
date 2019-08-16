@@ -78,7 +78,7 @@ public class FileControlController {
 			
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 			
-			//LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
+			LOG.error("ERROR in filter: ", e);
 		}	
 			
 		return response;
@@ -115,7 +115,7 @@ public class FileControlController {
 			
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 			
-			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
+			LOG.error("ERROR in getFileTypeStatusList: ", e);
 		}
 			
 		return response;
@@ -142,7 +142,7 @@ public class FileControlController {
 			
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 			
-			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
+			LOG.error("ERROR in getAuditByFileControl: ", e);
 		}
 			
 		return response;
@@ -170,7 +170,7 @@ public class FileControlController {
 			
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			
-			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
+			LOG.error("ERROR in tramitar: ", e);
 		}
 		
 		return response;
@@ -188,9 +188,7 @@ public class FileControlController {
 		
 		try {
 			
-			//TODO: implementar el result:
 			result = fileControlService.updateFileControl(codeFileControl,fileControl);
-			result = false;
 			
 			if (result) {
 				response = new ResponseEntity<>(HttpStatus.OK);
@@ -202,7 +200,7 @@ public class FileControlController {
 			
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			
-			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
+			LOG.error("ERROR in updateFileControl: ", e);
 		}
 		
 		return response;
@@ -226,7 +224,7 @@ public class FileControlController {
 			
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 			
-			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
+			LOG.error("ERROR in getByCodeFileControl: ", e);
 		}	
 			
 		return response;

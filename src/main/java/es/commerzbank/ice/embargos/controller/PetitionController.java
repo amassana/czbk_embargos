@@ -67,7 +67,7 @@ public class PetitionController {
 
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 
-			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
+			LOG.error("ERROR in getPetitionCaseListByCodeFileControl: ", e);
 		}
 
 		return response;
@@ -92,7 +92,7 @@ public class PetitionController {
 
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 
-			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
+			LOG.error("ERROR in getBankAccountListByCodeFileControlAndPetitionCase: ", e);
 		}
 
 		return response;
@@ -125,7 +125,7 @@ public class PetitionController {
 
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
+			LOG.error("ERROR in savePetitionCase: ", e);
 		}
 
 		return response;
@@ -150,7 +150,7 @@ public class PetitionController {
 
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 
-			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
+			LOG.error("ERROR in getAuditPetitionCase: ", e);
 		}
 
 		return response;
@@ -175,7 +175,7 @@ public class PetitionController {
 //			
 //			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 //			
-//			//LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
+//			LOG.error("ERROR in getByCodeFileControl: ", e);
 //		}
 //		
 //		return response;

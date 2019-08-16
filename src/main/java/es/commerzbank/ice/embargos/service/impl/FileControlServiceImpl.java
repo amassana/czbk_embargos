@@ -195,7 +195,7 @@ public class FileControlServiceImpl implements FileControlService{
 
 			EstadoCtrlficheroPK estadoCtrlficheroPK = new EstadoCtrlficheroPK();
 			estadoCtrlficheroPK.setCodEstado(fileControlDTO.getStatus().getCode());
-			estadoCtrlficheroPK.setCodTipoFichero(fileControlDTO.getCodeFileType());
+			estadoCtrlficheroPK.setCodTipoFichero(controlFichero.getTipoFichero().getCodTipoFichero());
 			
 			Optional<EstadoCtrlfichero> estadoCtrlficheroOpt = fileControlStatusRepository.findById(estadoCtrlficheroPK);
 			

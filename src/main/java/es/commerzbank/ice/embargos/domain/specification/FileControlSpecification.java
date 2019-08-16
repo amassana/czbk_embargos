@@ -38,8 +38,6 @@ public class FileControlSpecification implements Specification<ControlFichero> {
 				
 		Predicate predicate = null;
 		
-		long codTipoFichero = 0;
-		
 		//Filtro por tipo de fichero:
 		if (fileControlFiltersDTO.getFileType()!=null) {
 			
@@ -55,16 +53,17 @@ public class FileControlSpecification implements Specification<ControlFichero> {
 			predicates.add(predicate);
 		}
 
-		//Filtro de estado (no aplicar filtro si tipo de Fichero es COD_TIPO_FICHERO_ALL_TYPES (Todos) ):
+		//Filtro de estado (aplicar el filtro cuando fileType[] solo tiene 1 elemento, es decir, solo se ha seleccionado
+		//un tipo de fichero en el multiselector del frontal):
 		if(fileControlFiltersDTO.getStatus()!=null && fileControlFiltersDTO.getStatus().getCode()!=null 
-				&& codTipoFichero != EmbargosConstants.COD_TIPO_FICHERO_ALL_TYPES) {
+				&& fileControlFiltersDTO.getFileType()!=null && fileControlFiltersDTO.getFileType().length == 1) {
 			
 			EstadoCtrlfichero estadoCtrlFichero = new EstadoCtrlfichero();
 			
 			EstadoCtrlficheroPK estadoCtrlFicheroPK = new EstadoCtrlficheroPK();
 			
 			estadoCtrlFicheroPK.setCodEstado(fileControlFiltersDTO.getStatus().getCode());
-			estadoCtrlFicheroPK.setCodTipoFichero(codTipoFichero);
+			estadoCtrlFicheroPK.setCodTipoFichero(fileControlFiltersDTO.getFileType()[0]);
 			
 			estadoCtrlFichero.setId(estadoCtrlFicheroPK);
 			
