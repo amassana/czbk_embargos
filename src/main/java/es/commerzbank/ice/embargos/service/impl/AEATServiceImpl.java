@@ -2,8 +2,6 @@ package es.commerzbank.ice.embargos.service.impl;
 
 import java.io.File;
 
-import javax.transaction.Transactional;
-
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
 import org.slf4j.Logger;
@@ -11,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.Diligencia;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
@@ -19,7 +18,7 @@ import es.commerzbank.ice.embargos.service.AEATService;
 import es.commerzbank.ice.utils.EmbargosConstants;
 
 @Service
-@Transactional
+@Transactional(transactionManager="transactionManager")
 public class AEATServiceImpl implements AEATService{
 
 	private static final Logger LOG = LoggerFactory.getLogger(AEATServiceImpl.class);

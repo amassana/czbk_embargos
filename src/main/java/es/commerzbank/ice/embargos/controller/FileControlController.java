@@ -78,7 +78,7 @@ public class FileControlController {
 			
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 			
-			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
+			//LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
 		}	
 			
 		return response;
@@ -158,7 +158,7 @@ public class FileControlController {
 		
 		try {
 			
-			result = fileControlService.tramitarFicheroInformacion(codeFileControl);
+			result = fileControlService.tramitarFicheroInformacion(codeFileControl, authentication.getName());
 			
 			if (result) {
 				response = new ResponseEntity<>(HttpStatus.OK);

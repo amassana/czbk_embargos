@@ -18,7 +18,6 @@ import org.mapstruct.Mappings;
 
 import com.google.common.math.DoubleMath;
 
-import es.commerzbank.ice.comun.lib.typeutils.VB6Date;
 import es.commerzbank.ice.embargos.domain.dto.BankAccountDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
@@ -38,6 +37,7 @@ import es.commerzbank.ice.embargos.formats.cuaderno63.fase2.RespuestaSolicitudIn
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase3.OrdenEjecucionEmbargoComplementarioFase3;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase3.OrdenEjecucionEmbargoFase3;
 import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.utils.ICEDateUtils;
 
 @Mapper(componentModel="spring")
 public abstract class Cuaderno63Mapper {
@@ -55,43 +55,75 @@ public abstract class Cuaderno63Mapper {
         //Se inicializa con valor a 1 (codigo de Entidad Comunicadora tiene que existir), no puede ser null:
         EntidadesComunicadora entidadesComunicadora = new EntidadesComunicadora();
         entidadesComunicadora.setCodEntidadPresentadora(1);
+        controlFichero.setEntidadesComunicadora(entidadesComunicadora);
         
         //Guardar registro del control del fichero de Peticion:
         controlFichero.setTipoFichero(tipoFichero);
         controlFichero.setNombreFichero(fileNamePeticion);
-        //nombre fichero en la descripcion:
-        controlFichero.setDescripcion(fileNamePeticion);
-        controlFichero.setEntidadesComunicadora(entidadesComunicadora);
+        //Descripcion por defecto:
+        controlFichero.setDescripcion(EmbargosConstants.CONTROL_FICHERO_DESCRIPCION_DEFAULT);
         
         //Calculo del CRC del fichero:
         if (file.exists()) {
         	controlFichero.setNumCrc(Long.toString(FileUtils.checksumCRC32(file)));
         }
                 
-        //Fecha de incorporacion: fecha actual en formato VB6
-        BigDecimal actualDateVB6 = BigDecimal.valueOf(VB6Date.dateToInt(new Date()));
-        controlFichero.setFechaIncorporacion(actualDateVB6);
+        //Fecha de incorporacion: fecha actual
+        BigDecimal actualDate = ICEDateUtils.dateToBigDecimal(new Date(),ICEDateUtils.FORMAT_yyyyMMddHHmmss);
+        controlFichero.setFechaIncorporacion(actualDate);
         
         //Indicadores y flags:
         //TODO se tendra que agregar casuistica dependiendo del tipo del fichero:
         controlFichero.setIndProcesado(EmbargosConstants.IND_FLAG_NO);
-        controlFichero.setInd6301(EmbargosConstants.IND_FLAG_YES);
+        controlFichero.setInd6301(EmbargosConstants.IND_FLAG_SI);
         controlFichero.setIndCgpj(EmbargosConstants.IND_FLAG_NO);
         
-        //Estado del fichero: cargando
-        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero();
-        EstadoCtrlficheroPK estadoCtrlficheroPK = new EstadoCtrlficheroPK();
-        estadoCtrlficheroPK.setCodEstado(EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_LOADING);
-        estadoCtrlficheroPK.setCodTipoFichero(tipoFichero.getCodTipoFichero());
-        estadoCtrlfichero.setId(estadoCtrlficheroPK);
+        //Iso moneda:
+        controlFichero.setIsoMoneda(EmbargosConstants.ISO_MONEDA_EUR);
+        
+        //ESTADO DEL FICHERO: calcular el estado inicial del fichero dependiendo del tipo de fichero:
+        EstadoCtrlfichero estadoCtrlfichero = determineInitialEstadoCtrlFicheroByCodTipoFichero(codTipoFichero);
         controlFichero.setEstadoCtrlfichero(estadoCtrlfichero);
         
         //Usuario y fecha ultima modificacion:
-        controlFichero.setUsuarioUltModificacion(EmbargosConstants.SYSTEM_USER);
-        controlFichero.setFUltimaModificacion(BigDecimal.valueOf(System.currentTimeMillis()));
+        controlFichero.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+        controlFichero.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
         
         return controlFichero;
 	}
+	
+	/**
+	 * Determina el estado inicial del fichero dependiendo del tipo de fichero.
+	 * 
+	 * @param codTipoFichero
+	 * @return
+	 */
+	private EstadoCtrlfichero determineInitialEstadoCtrlFicheroByCodTipoFichero(long codTipoFichero) {
+			
+		long codEstado = 0;
+		
+		if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63) {
+
+			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_LOADING;
+			
+		} else if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63) {
+		
+			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_INFORMACION_NORMA63_GENERATING;
+			
+		} else {
+			return null;
+		}
+		
+        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero();
+        EstadoCtrlficheroPK estadoCtrlficheroPK = new EstadoCtrlficheroPK();
+        estadoCtrlficheroPK.setCodEstado(codEstado);
+        estadoCtrlficheroPK.setCodTipoFichero(codTipoFichero);
+        estadoCtrlfichero.setId(estadoCtrlficheroPK);
+        
+        return estadoCtrlfichero;
+		
+	}
+	
 	
 //	@Mappings({
 //		@Mapping(source = "codControlFicheroPeticion", target = "controlFichero.codControlFichero")
@@ -151,7 +183,7 @@ public abstract class Cuaderno63Mapper {
 		setPreloadedBankAccounts(peticionInformacion,listBankAccount);
 		
         //Usuario y fecha ultima modificacion:
-		peticionInformacion.setUsuarioUltModificacion(EmbargosConstants.SYSTEM_USER);
+		peticionInformacion.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
         peticionInformacion.setFUltimaModificacion(BigDecimal.valueOf(System.currentTimeMillis()));
 		
 	}
@@ -263,8 +295,8 @@ public abstract class Cuaderno63Mapper {
 			cuentaEmbargo.setClaveSeguridad(ordenEjecucionEmbargo.getClaveSeguridadIban1());
 			cuentaEmbargo.setNumeroOrdenCuenta(numeroOrden);
 			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
-			cuentaEmbargo.setUsuarioUltModificacion(EmbargosConstants.SYSTEM_USER);
-			cuentaEmbargo.setFUltimaModificacion(BigDecimal.valueOf(System.currentTimeMillis()));
+			cuentaEmbargo.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+			cuentaEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 			cuentaEmbargosList.add(cuentaEmbargo);
 		}
 
@@ -276,8 +308,8 @@ public abstract class Cuaderno63Mapper {
 			cuentaEmbargo.setClaveSeguridad(ordenEjecucionEmbargo.getClaveSeguridadIban2());
 			cuentaEmbargo.setNumeroOrdenCuenta(numeroOrden);
 			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
-			cuentaEmbargo.setUsuarioUltModificacion(EmbargosConstants.SYSTEM_USER);
-			cuentaEmbargo.setFUltimaModificacion(BigDecimal.valueOf(System.currentTimeMillis()));
+			cuentaEmbargo.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+			cuentaEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 			cuentaEmbargosList.add(cuentaEmbargo);
 		}
 		
@@ -289,8 +321,8 @@ public abstract class Cuaderno63Mapper {
 			cuentaEmbargo.setClaveSeguridad(ordenEjecucionEmbargo.getClaveSeguridadIban3());
 			cuentaEmbargo.setNumeroOrdenCuenta(numeroOrden);
 			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
-			cuentaEmbargo.setUsuarioUltModificacion(EmbargosConstants.SYSTEM_USER);
-			cuentaEmbargo.setFUltimaModificacion(BigDecimal.valueOf(System.currentTimeMillis()));
+			cuentaEmbargo.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+			cuentaEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 			cuentaEmbargosList.add(cuentaEmbargo);
 		}
 		
@@ -302,8 +334,8 @@ public abstract class Cuaderno63Mapper {
 			cuentaEmbargo.setClaveSeguridad(ordenEjecucionEmbargo.getClaveSeguridadIban4());
 			cuentaEmbargo.setNumeroOrdenCuenta(numeroOrden);
 			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
-			cuentaEmbargo.setUsuarioUltModificacion(EmbargosConstants.SYSTEM_USER);
-			cuentaEmbargo.setFUltimaModificacion(BigDecimal.valueOf(System.currentTimeMillis()));
+			cuentaEmbargo.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+			cuentaEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 			cuentaEmbargosList.add(cuentaEmbargo);
 		}
 		
@@ -315,8 +347,8 @@ public abstract class Cuaderno63Mapper {
 			cuentaEmbargo.setClaveSeguridad(ordenEjecucionEmbargo.getClaveSeguridadIban5());
 			cuentaEmbargo.setNumeroOrdenCuenta(numeroOrden);
 			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
-			cuentaEmbargo.setUsuarioUltModificacion(EmbargosConstants.SYSTEM_USER);
-			cuentaEmbargo.setFUltimaModificacion(BigDecimal.valueOf(System.currentTimeMillis()));
+			cuentaEmbargo.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+			cuentaEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 			cuentaEmbargosList.add(cuentaEmbargo);
 		}
 		
@@ -328,16 +360,16 @@ public abstract class Cuaderno63Mapper {
 			cuentaEmbargo.setClaveSeguridad(ordenEjecucionEmbargo.getClaveSeguridadIban6());
 			cuentaEmbargo.setNumeroOrdenCuenta(numeroOrden);
 			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
-			cuentaEmbargo.setUsuarioUltModificacion(EmbargosConstants.SYSTEM_USER);
-			cuentaEmbargo.setFUltimaModificacion(BigDecimal.valueOf(System.currentTimeMillis()));
+			cuentaEmbargo.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+			cuentaEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 			cuentaEmbargosList.add(cuentaEmbargo);
 		}
 		
 		embargo.setCuentaEmbargos(cuentaEmbargosList);
 		
         //Usuario y fecha ultima modificacion:
-		embargo.setUsuarioUltModificacion(EmbargosConstants.SYSTEM_USER);
-		embargo.setFUltimaModificacion(BigDecimal.valueOf(System.currentTimeMillis()));
+		embargo.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+		embargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 		
 	}
 }

@@ -82,12 +82,18 @@ public class EmbargosConstants {
 	public static final String SEPARADOR_PUNTO = ".";
 	public static final String SEPARADOR_GUION_BAJO = "_";	
 	
-	public static final String SYSTEM_USER = "system";
+	public static final String USER_SYSTEM = "system";
+	public static final String USER_AUTOMATICO = "AUTOMATICO";
+	
+	public static final String CONTROL_FICHERO_DESCRIPCION_DEFAULT = "AUTOMATICO";
 	
 	public static final String COD_ESTADO_PRIMARIO_PETICION_ENVIANDO_PETICION_UNICA = "1000";
 	
 	public static final String IND_FLAG_NO = "N";
 	public static final String IND_FLAG_YES = "Y";
+	public static final String IND_FLAG_SI = "S";
+	
+	public static final String ISO_MONEDA_EUR = "EUR";
 	
 	public static final String BANK_ACCOUNT_STATUS_NORMAL = "NORMAL";
 	public static final String BANK_ACCOUNT_STATUS_BLOQUED = "BLOQUED";

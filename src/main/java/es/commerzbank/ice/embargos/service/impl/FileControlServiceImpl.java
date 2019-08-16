@@ -12,8 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +22,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
 import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
@@ -32,7 +31,6 @@ import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlficheroPK;
 import es.commerzbank.ice.embargos.domain.entity.HControlFichero;
-import es.commerzbank.ice.embargos.domain.entity.TipoFichero;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlAuditMapper;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
 import es.commerzbank.ice.embargos.domain.specification.FileControlSpecification;
@@ -50,7 +48,7 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 @Service
-@Transactional
+@Transactional(transactionManager="transactionManager")
 public class FileControlServiceImpl implements FileControlService{
 	
 	private static final Logger LOG = LoggerFactory.getLogger(FileControlServiceImpl.class);
@@ -91,13 +89,13 @@ public class FileControlServiceImpl implements FileControlService{
 //		if (!validateDates(startDate,endDate)) {
 //			throw new Exception("ERROR: incorrect dates");
 //		}
-		
+		/*
 		Long tipoFicheroLong = fileControlFiltersDTO.getFileType();
 		
 		TipoFichero tipoFichero = new TipoFichero();
 		long codTipoFichero = tipoFicheroLong!=null ? Long.valueOf(fileControlFiltersDTO.getFileType()) : 0;
 		tipoFichero.setCodTipoFichero(codTipoFichero);
-		
+		*/
 		Specification<ControlFichero> fileControlSpecification = new FileControlSpecification(fileControlFiltersDTO);
 		
 		Page<ControlFichero> controlFicheroList = fileControlRepository.findAll(fileControlSpecification, pageable);
@@ -136,7 +134,7 @@ public class FileControlServiceImpl implements FileControlService{
 	}
 
 	@Override
-	public boolean tramitarFicheroInformacion(Long codeFileControl) throws IOException {
+	public boolean tramitarFicheroInformacion(Long codeFileControl, String usuarioTramitador) throws IOException {
 
 		//Obtener el codigo del fichero de control:
 		Optional<ControlFichero> controlFicheroOpt = fileControlRepository.findById(codeFileControl);
@@ -161,7 +159,7 @@ public class FileControlServiceImpl implements FileControlService{
 		
 		if (countPendingPetitionCases == 0 && (countReviewedPetitionCases.compareTo(countPetitionCases)==0)) {
 			
-			cuaderno63Service.tramitarFicheroInformacion(codeFileControl);
+			cuaderno63Service.tramitarFicheroInformacion(codeFileControl, usuarioTramitador);
 		
 		} else {
 			

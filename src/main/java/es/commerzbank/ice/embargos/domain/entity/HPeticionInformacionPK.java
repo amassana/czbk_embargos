@@ -15,8 +15,8 @@ public class HPeticionInformacionPK implements Serializable {
 	@Column(name="COD_PETICION", unique=true, nullable=false, length=10)
 	private String codPeticion;
 
-	@Column(name="F_ULTIMA_MODIFICACION", unique=true, nullable=false, precision=14)
-	private long fUltimaModificacion;
+	@Column(name="CHANGE_TIMESTAMP", unique=true, nullable=false)
+	private String changeTimestamp;
 
 	public HPeticionInformacionPK() {
 	}
@@ -26,11 +26,11 @@ public class HPeticionInformacionPK implements Serializable {
 	public void setCodPeticion(String codPeticion) {
 		this.codPeticion = codPeticion;
 	}
-	public long getFUltimaModificacion() {
-		return this.fUltimaModificacion;
+	public String getChangeTimestamp() {
+		return this.changeTimestamp;
 	}
-	public void setFUltimaModificacion(long fUltimaModificacion) {
-		this.fUltimaModificacion = fUltimaModificacion;
+	public void setChangeTimestamp(String changeTimestamp) {
+		this.changeTimestamp = changeTimestamp;
 	}
 
 	public boolean equals(Object other) {
@@ -43,14 +43,14 @@ public class HPeticionInformacionPK implements Serializable {
 		HPeticionInformacionPK castOther = (HPeticionInformacionPK)other;
 		return 
 			this.codPeticion.equals(castOther.codPeticion)
-			&& (this.fUltimaModificacion == castOther.fUltimaModificacion);
+			&& this.changeTimestamp.equals(castOther.changeTimestamp);
 	}
 
 	public int hashCode() {
 		final int prime = 31;
 		int hash = 17;
 		hash = hash * prime + this.codPeticion.hashCode();
-		hash = hash * prime + ((int) (this.fUltimaModificacion ^ (this.fUltimaModificacion >>> 32)));
+		hash = hash * prime + this.changeTimestamp.hashCode();
 		
 		return hash;
 	}

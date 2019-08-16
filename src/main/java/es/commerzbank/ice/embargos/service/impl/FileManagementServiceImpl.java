@@ -22,7 +22,7 @@ import es.commerzbank.ice.embargos.service.FileManagementService;
 import es.commerzbank.ice.utils.EmbargosConstants;
 
 @Service
-@Transactional
+@Transactional("transactionManager")
 public class FileManagementServiceImpl implements FileManagementService {
 
 	

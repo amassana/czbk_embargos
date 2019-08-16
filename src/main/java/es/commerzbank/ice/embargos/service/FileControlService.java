@@ -18,7 +18,7 @@ public interface FileControlService {
 	
 	public List<FileControlDTO> getAuditByCodeFileControl(Long codeFileControl);
 	
-	public boolean tramitarFicheroInformacion(Long codeFileControl) throws IOException;
+	public boolean tramitarFicheroInformacion(Long codeFileControl, String usuarioTramitador) throws IOException;
 	
 	public boolean updateFileControl(Long codeFileControl, FileControlDTO fileControlDTO);
 

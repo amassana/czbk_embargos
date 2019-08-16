@@ -9,8 +9,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.io.FileUtils;
 import org.beanio.BeanReader;
 import org.beanio.BeanWriter;
@@ -20,9 +18,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
+import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
-import es.commerzbank.ice.comun.lib.typeutils.VB6Date;
 import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.embargos.domain.dto.BankAccountDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
@@ -57,9 +58,10 @@ import es.commerzbank.ice.embargos.service.Cuaderno63Service;
 import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.utils.EmbargosConstants;
 import es.commerzbank.ice.utils.EmbargosUtils;
+import es.commerzbank.ice.utils.ICEDateUtils;
 
 @Service
-@Transactional
+@Transactional(transactionManager="transactionManager")
 public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 
 	private static final Logger LOG = LoggerFactory.getLogger(Cuaderno63ServiceImpl.class);
@@ -84,6 +86,9 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	
 	@Autowired
 	CustomerService customerService;
+	
+	@Autowired
+	TaskService taskService;
 	
 	//Agregar repositories de DWH ...
 	@Autowired
@@ -209,14 +214,15 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 			controlFicheroPeticion.setEntidadesComunicadora(entidadComunicadora);
 			
 			//- Se guarda la fecha de la cabecera en el campo fechaCreacion de ControlFichero:
-			BigDecimal creationDateVB6 = fechaObtencionFicheroOrganismo!=null ?  BigDecimal.valueOf(VB6Date.dateToInt(fechaObtencionFicheroOrganismo)) : null;
-			controlFicheroPeticion.setFechaCreacion(creationDateVB6);
+			BigDecimal fechaObtencionFicheroOrganismoBigDec = fechaObtencionFicheroOrganismo!=null ? ICEDateUtils.dateToBigDecimal(fechaObtencionFicheroOrganismo, ICEDateUtils.FORMAT_yyyyMMdd) : null;
+			controlFicheroPeticion.setFechaCreacion(fechaObtencionFicheroOrganismoBigDec);
+			controlFicheroPeticion.setFechaComienzoCiclo(fechaObtencionFicheroOrganismoBigDec);
 	       
 			//- Se guarda la fecha maxima de respuesta (now + dias de margen)
 			long diasRespuestaF1 = entidadComunicadora.getDiasRespuestaF1()!=null ? entidadComunicadora.getDiasRespuestaF1().longValue() : 0;
 			Date lastDateResponse = DateUtils.convertToDate(LocalDate.now().plusDays(diasRespuestaF1));
-			BigDecimal limitResponseDateVB6 = BigDecimal.valueOf(VB6Date.dateToInt(lastDateResponse));
-			controlFicheroPeticion.setFechaMaximaRespuesta(limitResponseDateVB6);
+			BigDecimal limitResponseDate = ICEDateUtils.dateToBigDecimal(lastDateResponse, ICEDateUtils.FORMAT_yyyyMMdd);
+			controlFicheroPeticion.setFechaMaximaRespuesta(limitResponseDate);
 			
 			//Cambio de estado de CtrlFichero a: RECIBIDO
 	        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero();
@@ -226,6 +232,23 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        estadoCtrlfichero.setId(estadoCtrlficheroPK);
 	        controlFicheroPeticion.setEstadoCtrlfichero(estadoCtrlfichero);
 			
+	        //CALENDARIO:
+	        // - Se agrega la tarea al calendario:
+	        TaskAndEvent task = new TaskAndEvent();
+	        task.setDescription("Petición de información " + controlFicheroPeticion.getNombreFichero());
+	        task.setDate(ICEDateUtils.bigDecimalToDate(controlFicheroPeticion.getFechaMaximaRespuesta(), ICEDateUtils.FORMAT_yyyyMMdd));
+	        task.setCodCalendar(1L);
+	        task.setType("T");
+	        task.setCodOffice("1");
+	        //
+	        task.setAction("0");
+	        task.setState("P");
+	        task.setIndActive("Y");
+	        Long codTarea = taskService.addCalendarTask(task);
+	        
+	        // - Se guarda el codigo de tarea del calendario:
+	        controlFicheroPeticion.setCodTarea(BigDecimal.valueOf(codTarea));
+	        	        
 			fileControlRepository.save(controlFicheroPeticion);
 
 		} catch (Exception e) {
@@ -258,7 +281,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 		
 	}
 	
-	public void tramitarFicheroInformacion(Long codControlFicheroPeticion) throws IOException {
+	public void tramitarFicheroInformacion(Long codControlFicheroPeticion, String usuarioTramitador) throws IOException {
 			
 		
 		BeanReader beanReader = null;
@@ -301,14 +324,9 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        ControlFichero controlFicheroInformacion = 
 	        		cuaderno63Mapper.generateControlFichero(ficheroSalida, EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63);
 	        
-	        //Actualizacion estado del fichero: GENERANDO
-	        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero();
-	        EstadoCtrlficheroPK estadoCtrlficheroPK = new EstadoCtrlficheroPK();
-	        estadoCtrlficheroPK.setCodEstado(EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_INFORMACION_NORMA63_GENERATING);
-	        estadoCtrlficheroPK.setCodTipoFichero(EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63);
-	        estadoCtrlfichero.setId(estadoCtrlficheroPK);
-	        controlFicheroInformacion.setEstadoCtrlfichero(estadoCtrlfichero);
-	        
+	        //Usuario que realiza la tramitacion:
+	        controlFicheroInformacion.setUsuarioUltModificacion(usuarioTramitador);
+	        	        
 	        fileControlRepository.save(controlFicheroInformacion);
 	                
 	        // use a StreamFactory to create a BeanReader
@@ -376,20 +394,50 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        	
 	        }
 	
-	    
-	        //Se actualiza el CRC del registro de ControlFichero del fichero de salida:
+	        //ACTUALIZACIONES DEL FICHERO DE SALIDA (controlFicheroInformacion):
+	        //1.- Se actualiza el CRC:
 	        controlFicheroInformacion.setNumCrc(Long.toString(FileUtils.checksumCRC32(ficheroSalida)));
 	        
-	        //Actualizacion estado del fichero: GENERADO
-	        estadoCtrlfichero = new EstadoCtrlfichero();
-	        estadoCtrlficheroPK = new EstadoCtrlficheroPK();
+	        //2.- Se actualiza el estado a GENERADO:
+	        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero();
+	        EstadoCtrlficheroPK estadoCtrlficheroPK = new EstadoCtrlficheroPK();
 	        estadoCtrlficheroPK.setCodEstado(EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_INFORMACION_NORMA63_GENERATED);
 	        estadoCtrlficheroPK.setCodTipoFichero(EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63);
 	        estadoCtrlfichero.setId(estadoCtrlficheroPK);
 	        controlFicheroInformacion.setEstadoCtrlfichero(estadoCtrlfichero);
 	        
+	        //3.- Actualizacion del fichero de origen:
+	        controlFicheroInformacion.setControlFicheroOrigen(controlFicheroPeticion);
+	        
 	        fileControlRepository.save(controlFicheroInformacion);
+	        
+	        //ACTUALIZACIONES DEL FICHERO DE ENTRADA (controlFicheroPeticion):
+	        //1.- Actualizacion del flag IND_PROCESADO:
+	        controlFicheroPeticion.setIndProcesado(EmbargosConstants.IND_FLAG_YES);
+	        
+	        //2.- Actualizacion del fichero de respuesta:
+	        controlFicheroPeticion.setControlFicheroRespuesta(controlFicheroInformacion);
+	        
+	        fileControlRepository.save(controlFicheroPeticion);
         
+	        //Cerrar la tarea:
+	        boolean closed = false;
+	        if (controlFicheroPeticion.getCodTarea()!=null) {
+	        	
+	        	Long codTarea = controlFicheroPeticion.getCodTarea().longValue();	        	
+	        	closed = taskService.closeCalendarTask(codTarea);
+		      
+	        	if(!closed) {
+		        	LOG.error("ERROR: No se ha cerrado la Tarea");
+		        	//TODO: lanzar excepcion si no se ha cerrado la tarea
+		        }
+	        } else {
+	        	LOG.error("ERROR al cerrar la tarea: No se ha encontrado el codigo de la Tarea");
+	        	//TODO: lanzar excepcion si no se ha encontrado el codigo de tarea
+	        }
+
+	        
+	        
 		} catch (Exception e) {
 			
 			throw e;

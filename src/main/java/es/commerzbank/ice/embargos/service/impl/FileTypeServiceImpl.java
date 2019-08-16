@@ -14,7 +14,7 @@ import es.commerzbank.ice.embargos.repository.FileTypeRepository;
 import es.commerzbank.ice.embargos.service.FileTypeService;
 
 @Service
-@Transactional
+@Transactional(transactionManager="transactionManager")
 public class FileTypeServiceImpl implements FileTypeService {
 
 	@Autowired

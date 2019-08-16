@@ -11,6 +11,7 @@ import org.mapstruct.Mappings;
 import es.commerzbank.ice.embargos.domain.dto.PetitionCaseDTO;
 import es.commerzbank.ice.embargos.domain.entity.HPeticionInformacion;
 import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.utils.ICEDateUtils;
 
 @Mapper(componentModel="spring")
 public abstract class InformationPetitionAuditMapper {
@@ -51,11 +52,11 @@ public abstract class InformationPetitionAuditMapper {
 		petitionCaseDTO.setIsReviewed(isReviewed);
 		
 		//Fecha de ultima modificacion:
-		if (hPeticionInformacion.getId().getFUltimaModificacion()>0) {
+		if (hPeticionInformacion.getFUltimaModificacion()!=null) {
 			
 			//TODO: mirar que sea fecha local
 			
-			Date modifiedDate = new Date(hPeticionInformacion.getId().getFUltimaModificacion());
+			Date modifiedDate = ICEDateUtils.bigDecimalToDate(hPeticionInformacion.getFUltimaModificacion(), ICEDateUtils.FORMAT_yyyyMMddHHmmss);
 			
 			petitionCaseDTO.setModifiedDate(modifiedDate);
 		}
