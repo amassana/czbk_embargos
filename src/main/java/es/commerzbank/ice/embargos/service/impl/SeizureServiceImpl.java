@@ -1,7 +1,9 @@
 package es.commerzbank.ice.embargos.service.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -15,11 +17,18 @@ import org.springframework.stereotype.Service;
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
 import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.utils.ResourcesUtil;
+import net.sf.jasperreports.engine.JRExpression;
+import net.sf.jasperreports.engine.JRReportTemplate;
+import net.sf.jasperreports.engine.JRTemplate;
+import net.sf.jasperreports.engine.JRTemplateReference;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.engine.xml.JRStyleFactory;
+import net.sf.jasperreports.engine.xml.JRXmlTemplateLoader;
 
 @Service
 @Transactional
@@ -36,11 +45,17 @@ public class SeizureServiceImpl implements SeizureService {
 
 			Resource embargosJrxml = ResourcesUtil.getFromJasperFolder("justificante_embargos.jasper");
 			Resource logoImage = ResourcesUtil.getImageLogoCommerceResource();
+			Resource templateStyle = ResourcesUtil.getTemplateStyleResource();
+			
+			System.out.println(templateStyle.getFile().getAbsolutePath());
 
 			File image = logoImage.getFile();
 
+			InputStream templateStyleStream = getClass().getResourceAsStream("/jasper/CommerzBankStyle.jrtx");
+
 			parameters.put("COD_TRABA", idSeizure);
 			parameters.put("IMAGE_PARAM", image.toString());
+			parameters.put("TEMPLATE_STYLE_PATH", templateStyle.getFile().getAbsolutePath().toString());
 
 			InputStream justificanteInputStream = embargosJrxml.getInputStream();
 
@@ -70,6 +85,7 @@ public class SeizureServiceImpl implements SeizureService {
 
 			InputStream subReportHeaderInputStream = headerSubreport.getInputStream();
 			InputStream subReportTotalTrabasInputStream = totalTrabas.getInputStream();
+		
 
 			JasperReport subReportHeader = (JasperReport) JRLoader.loadObject(subReportHeaderInputStream);
 			JasperReport subReportTotalTrabas = (JasperReport) JRLoader.loadObject(subReportTotalTrabasInputStream);
@@ -82,7 +98,7 @@ public class SeizureServiceImpl implements SeizureService {
 			InputStream resumenInputStream = resumenTrabasJrxml.getInputStream();
 
 			JasperPrint fillReport = JasperFillManager.fillReport(resumenInputStream, parameters, conn);
-			System.out.println("llego peroi no 2");
+
 			return JasperExportManager.exportReportToPdf(fillReport);
 
 		} catch (SQLException e) {

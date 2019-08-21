@@ -39,6 +39,7 @@ import es.commerzbank.ice.embargos.repository.FileControlStatusRepository;
 import es.commerzbank.ice.embargos.service.Cuaderno63Service;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.InformationPetitionService;
+import es.commerzbank.ice.utils.ICEDateUtils;
 import es.commerzbank.ice.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -269,11 +270,11 @@ public class FileControlServiceImpl implements FileControlService {
 		}
 
 		if (fechaInicio != null) {
-			query = query + " c.FECHA_INCORPORACION>=" + sdf.format(fechaInicio) + " AND";
+			query = query + " c.FECHA_INCORPORACION>=" + ICEDateUtils.dateToBigDecimal(fechaInicio, ICEDateUtils.FORMAT_yyyyMMddHHmmss) + " AND";
 		}
 
 		if (fechaFin != null) {
-			query = query + " c.FECHA_GENERACION_RESPUESTA<=" + sdf.format(fechaFin) + " AND";
+			query = query + " c.FECHA_GENERACION_RESPUESTA<=" + ICEDateUtils.dateToBigDecimal(fechaFin, ICEDateUtils.FORMAT_yyyyMMddHHmmss) + " AND";
 		}
 
 		if (codTipoFichero == null && codEstado == null && fechaInicio == null && fechaFin == null) {
@@ -281,7 +282,7 @@ public class FileControlServiceImpl implements FileControlService {
 		} 
 		
 		
-		if (query.isBlank()) {
+		if (query.isEmpty()) {
 			query = "WHERE";
 		}
 		

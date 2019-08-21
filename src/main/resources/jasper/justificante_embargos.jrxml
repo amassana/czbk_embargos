@@ -14,9 +14,12 @@
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="265"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="724"/>
-	<style name="JustificanteStyle" fontName="JustificanteReportFont" isBold="false"/>
+	<template><![CDATA[$P{TEMPLATE_STYLE_PATH}]]></template>
 	<parameter name="COD_TRABA" class="java.lang.Integer"/>
 	<parameter name="IMAGE_PARAM" class="java.lang.String"/>
+	<parameter name="TEMPLATE_STYLE_PATH" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[select
 	ct.cuenta
