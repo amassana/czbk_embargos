@@ -1,5 +1,7 @@
 package es.commerzbank.ice.embargos.controller;
 
+import java.math.BigDecimal;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.utils.DownloadReportFile;
+import es.commerzbank.ice.utils.NumberToLetterConverter;
 
 @CrossOrigin("*")
 @RestController
@@ -80,5 +83,16 @@ public class SeizureController {
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
+	}
+	
+	@GetMapping("/propertyLien/anexo/{importe}")
+	public ResponseEntity<InputStreamResource> generarAnexo(@PathVariable("importe") BigDecimal importe) {
+		
+		NumberToLetterConverter ntlc = new NumberToLetterConverter();
+		
+		System.out.println(ntlc.Convertir(String.valueOf(importe), true));
+		
+		
+		return null;
 	}
 }
