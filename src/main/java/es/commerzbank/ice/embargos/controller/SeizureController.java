@@ -32,6 +32,7 @@ public class SeizureController {
 	@GetMapping("/{idSeizure}/case/report")
 	public ResponseEntity<InputStreamResource> generarJustificanteEmbargo(
 			@PathVariable("idSeizure") Integer idSeizure) {
+		
 
 		DownloadReportFile.setTempFileName("justificanteReport");
 
@@ -46,7 +47,10 @@ public class SeizureController {
 
 		} catch (Exception e) {
 			LOG.error("Error in justificanteReport", e);
-			System.out.println(e);
+			
+			if (e.getMessage() == null) {
+				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
+			}
 
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -55,6 +59,8 @@ public class SeizureController {
 	@GetMapping("/propertyLien/fileControl/{fileControl}/report")
 	public ResponseEntity<InputStreamResource> generarResumentTrabas(
 			@PathVariable("fileControl") Integer codControlFichero) {
+		
+		
 
 		DownloadReportFile.setTempFileName("resumenTrabasReport");
 
