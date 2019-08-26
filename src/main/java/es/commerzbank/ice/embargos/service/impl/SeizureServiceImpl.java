@@ -44,6 +44,7 @@ import es.commerzbank.ice.embargos.repository.SeizureStatusRepository;
 import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.utils.ICEDateUtils;
 import es.commerzbank.ice.utils.ResourcesUtil;
+
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -315,17 +316,24 @@ public class SeizureServiceImpl implements SeizureService {
 	
 	@Override
 	public byte[] generateJustificanteEmbargo(Integer idSeizure) throws Exception {
+		
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
 		try (Connection conn = oracleDataSourceEmbargos.getEmbargosConnection()) {
 
 			Resource embargosJrxml = ResourcesUtil.getFromJasperFolder("justificante_embargos.jasper");
 			Resource logoImage = ResourcesUtil.getImageLogoCommerceResource();
+			//Resource templateStyle = ResourcesUtil.getTemplateStyleResource();
+			
+			//System.out.println(templateStyle.getFile().getAbsolutePath());
 
 			File image = logoImage.getFile();
 
+			//InputStream templateStyleStream = getClass().getResourceAsStream("/jasper/CommerzBankStyle.jrtx");
+
 			parameters.put("COD_TRABA", idSeizure);
 			parameters.put("IMAGE_PARAM", image.toString());
+			//parameters.put("TEMPLATE_STYLE_PATH", templateStyleStream);
 
 			InputStream justificanteInputStream = embargosJrxml.getInputStream();
 
@@ -355,6 +363,7 @@ public class SeizureServiceImpl implements SeizureService {
 
 			InputStream subReportHeaderInputStream = headerSubreport.getInputStream();
 			InputStream subReportTotalTrabasInputStream = totalTrabas.getInputStream();
+		
 
 			JasperReport subReportHeader = (JasperReport) JRLoader.loadObject(subReportHeaderInputStream);
 			JasperReport subReportTotalTrabas = (JasperReport) JRLoader.loadObject(subReportTotalTrabasInputStream);
@@ -367,7 +376,7 @@ public class SeizureServiceImpl implements SeizureService {
 			InputStream resumenInputStream = resumenTrabasJrxml.getInputStream();
 
 			JasperPrint fillReport = JasperFillManager.fillReport(resumenInputStream, parameters, conn);
-			System.out.println("llego peroi no 2");
+
 			return JasperExportManager.exportReportToPdf(fillReport);
 
 		} catch (SQLException e) {

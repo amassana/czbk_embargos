@@ -12,12 +12,11 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<parameter name="COD_FILE_CONTROL" class="java.lang.String"/>
-	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["C:\\Users\\sergio.ruiz\\JaspersoftWorkspace\\MyReports\\"]]></defaultValueExpression>
-	</parameter>
+	<parameter name="COD_FILE_CONTROL" class="java.lang.Integer"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="SUBREPORT_HEADER" class="java.lang.Object" isForPrompting="false"/>
 	<parameter name="SUBREPORT_IMPORTETOTALTRABADO" class="java.lang.Object" isForPrompting="false"/>
+	<parameter name="sub_img_param" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT
 	ec.des_entidad ,
@@ -99,9 +98,9 @@ ORDER BY
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="133" splitType="Stretch">
+		<band height="125" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="83" width="160" height="20" uuid="abe67322-132f-4faf-aa22-d8c4d7118d6b"/>
+				<reportElement x="5" y="83" width="160" height="20" uuid="abe67322-132f-4faf-aa22-d8c4d7118d6b"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
@@ -122,7 +121,7 @@ ORDER BY
 				<text><![CDATA[Fecha Vto:]]></text>
 			</staticText>
 			<textField>
-				<reportElement isPrintRepeatedValues="false" x="160" y="83" width="156" height="21" uuid="fba90554-2346-4bb5-a0e5-a386fcd9d379">
+				<reportElement isPrintRepeatedValues="false" x="165" y="83" width="156" height="21" uuid="fba90554-2346-4bb5-a0e5-a386fcd9d379">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a439b967-a736-41eb-949d-01afc719f1c8"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -147,7 +146,10 @@ ORDER BY
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHA_CREACION}.toString()))]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement x="0" y="0" width="350" height="70" uuid="8c069cd3-5fd0-4a42-a49e-4fdc93755c73"/>
+				<reportElement x="0" y="0" width="800" height="70" uuid="41d44598-e197-4d61-aab3-6623c7872b1a"/>
+				<subreportParameter name="sub_img_param">
+					<subreportParameterExpression><![CDATA[$P{sub_img_param}]]></subreportParameterExpression>
+				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_HEADER}]]></subreportExpression>
 			</subreport>
@@ -342,12 +344,9 @@ ORDER BY
 	<summary>
 		<band height="91">
 			<subreport isUsingCache="false" runToBottom="false">
-				<reportElement x="600" y="20" width="200" height="50" uuid="3ff1e856-43cd-4b6a-863c-0004457502b8"/>
+				<reportElement x="529" y="20" width="200" height="50" uuid="3ff1e856-43cd-4b6a-863c-0004457502b8"/>
 				<subreportParameter name="COD_FILE_CONTROL">
 					<subreportParameterExpression><![CDATA[$P{COD_FILE_CONTROL}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="SUBREPORT_DIR">
-					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_IMPORTETOTALTRABADO}]]></subreportExpression>

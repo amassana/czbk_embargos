@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -28,6 +29,7 @@ import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
 import es.commerzbank.ice.embargos.domain.dto.FileControlFiltersDTO;
 import es.commerzbank.ice.embargos.domain.dto.FileControlStatusDTO;
 import es.commerzbank.ice.embargos.domain.dto.FileControlTypeDTO;
+import es.commerzbank.ice.embargos.domain.dto.ReportParamsDTO;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.FileControlStatusService;
 import es.commerzbank.ice.embargos.service.FileTypeService;
@@ -270,13 +272,12 @@ public class FileControlController {
 		return response;
 	}
 
-	@GetMapping("/reports/files")
+	@PostMapping("/reports/files")
 	public ResponseEntity<InputStreamResource> generarReportLista(
 			@RequestParam(name = "codTipoFichero", required = false) Integer[] codTipoFichero,
 			@RequestParam(name = "codEstado", required = false) Integer codEstado,
 			@RequestParam(name = "isPending", required = false) boolean isPending,
-			@RequestParam(name = "fechaInicio", required = false) Date fechaInicio,
-			@RequestParam(name = "fechaFin", required = false) Date fechaFin) throws Exception {
+			@RequestBody ReportParamsDTO reportParams) throws Exception {
 
 		DownloadReportFile.setTempFileName("reportList");
 
@@ -284,7 +285,8 @@ public class FileControlController {
 
 		try {
 
-				DownloadReportFile.writeFile(fileControlService.generarReporteListado(codTipoFichero, codEstado, isPending, fechaInicio, fechaFin));
+			DownloadReportFile.writeFile(fileControlService.generarReporteListado(codTipoFichero, codEstado, isPending,
+					reportParams.getFechaInicio(), reportParams.getFechaFin()));
 
 			return DownloadReportFile.returnToDownloadFile();
 		} catch (Exception e) {

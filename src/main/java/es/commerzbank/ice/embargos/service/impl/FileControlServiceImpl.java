@@ -316,11 +316,11 @@ public class FileControlServiceImpl implements FileControlService{
 		}
 
 		if (fechaInicio != null) {
-			query = query + " c.FECHA_INCORPORACION>=" + sdf.format(fechaInicio) + " AND";
+			query = query + " c.FECHA_INCORPORACION>=" + ICEDateUtils.dateToBigDecimal(fechaInicio, ICEDateUtils.FORMAT_yyyyMMddHHmmss) + " AND";
 		}
 
 		if (fechaFin != null) {
-			query = query + " c.FECHA_GENERACION_RESPUESTA<=" + sdf.format(fechaFin) + " AND";
+			query = query + " c.FECHA_GENERACION_RESPUESTA<=" + ICEDateUtils.dateToBigDecimal(fechaFin, ICEDateUtils.FORMAT_yyyyMMddHHmmss) + " AND";
 		}
 
 		if (codTipoFichero == null && codEstado == null && fechaInicio == null && fechaFin == null) {

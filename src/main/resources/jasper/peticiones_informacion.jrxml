@@ -100,7 +100,7 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 	<columnHeader>
 		<band height="61" splitType="Stretch">
 			<staticText>
-				<reportElement x="-11" y="43" width="51" height="18" uuid="cff7f524-2d76-4530-8623-d6b2a9e3abc7">
+				<reportElement x="-14" y="43" width="58" height="18" uuid="cff7f524-2d76-4530-8623-d6b2a9e3abc7">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f8981161-6eba-4742-8c42-d6858d208d2d"/>
 				</reportElement>
 				<box leftPadding="3" bottomPadding="3">
@@ -110,12 +110,12 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Bottom" markup="none">
-					<font isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[NIF]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="47" y="43" width="102" height="18" uuid="d4342627-c9bd-4d4d-9e97-95ba0e0e5c0e">
+				<reportElement x="46" y="43" width="112" height="18" uuid="d4342627-c9bd-4d4d-9e97-95ba0e0e5c0e">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="70336e19-b482-4d6d-8e95-6a79b597cad8"/>
 				</reportElement>
 				<box leftPadding="3" bottomPadding="3">
@@ -125,12 +125,12 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Bottom" markup="none">
-					<font isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[RAZON SOCIAL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="329" y="43" width="70" height="18" uuid="f3fef6bb-33cb-426f-99dd-44b319d16a12">
+				<reportElement x="325" y="43" width="79" height="18" uuid="f3fef6bb-33cb-426f-99dd-44b319d16a12">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="1d84535f-b5b5-4469-814e-c968fceba5fa"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -142,12 +142,12 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Bottom" markup="none">
-					<font isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[IBAN1]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="410" y="43" width="70" height="18" uuid="da56d79f-b498-4688-a469-9fe50f9f7186">
+				<reportElement x="408" y="43" width="79" height="18" uuid="da56d79f-b498-4688-a469-9fe50f9f7186">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3f34c996-085a-417a-9279-98aeb615d7e7"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -158,12 +158,12 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Bottom" markup="none">
-					<font isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[IBAN2]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="489" y="43" width="70" height="18" uuid="30e639f7-b4a1-44f4-9406-ba306517e83f">
+				<reportElement x="489" y="43" width="79" height="18" uuid="30e639f7-b4a1-44f4-9406-ba306517e83f">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5bcd7bb8-9b45-4cd7-92ea-3f76e79b2a96"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -174,12 +174,12 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Bottom" markup="none">
-					<font isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[IBAN3]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="570" y="43" width="70" height="18" uuid="7b0dd934-6e9a-44c3-a4b8-ce8714ca00b5">
+				<reportElement x="571" y="43" width="79" height="18" uuid="7b0dd934-6e9a-44c3-a4b8-ce8714ca00b5">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="11736f21-4235-40c9-929f-bd9a7ea772e2"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -190,12 +190,12 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Bottom" markup="none">
-					<font isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[IBAN4]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="650" y="43" width="70" height="18" uuid="308823fb-0a29-4b9e-ae54-c6465c559641">
+				<reportElement x="653" y="43" width="79" height="18" uuid="308823fb-0a29-4b9e-ae54-c6465c559641">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c6a58533-ee5a-464d-a908-0c8276dc66a4"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -206,12 +206,12 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Bottom" markup="none">
-					<font isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[IBAN5]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="730" y="43" width="70" height="18" uuid="f12aaf25-bfec-497a-8879-61d9d4430ad9">
+				<reportElement x="736" y="43" width="79" height="18" uuid="f12aaf25-bfec-497a-8879-61d9d4430ad9">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ffff8303-2ce5-4843-b132-428ad5597b6e"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -222,7 +222,7 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Bottom" markup="none">
-					<font isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[IBAN6]]></text>
 			</staticText>
@@ -231,7 +231,7 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{FECHA_CREACION}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHA_CREACION}.toString()))]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="580" y="0" width="122" height="30" uuid="125c07d9-689c-4a97-9843-5b88cde7f843"/>
@@ -248,7 +248,7 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 					<bottomPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Bottom">
-					<font size="10" isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[RAZON SOCIAL INTERNA]]></text>
 			</staticText>
@@ -257,7 +257,7 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 	<detail>
 		<band height="31" splitType="Stretch">
 			<textField isBlankWhenNull="true">
-				<reportElement x="-11" y="13" width="51" height="18" uuid="84408f2c-f58a-45aa-afe9-8be86736c657">
+				<reportElement x="-14" y="13" width="58" height="18" uuid="84408f2c-f58a-45aa-afe9-8be86736c657">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f8981161-6eba-4742-8c42-d6858d208d2d"/>
 				</reportElement>
 				<box topPadding="5" leftPadding="2" bottomPadding="0">
@@ -266,10 +266,13 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{NIF}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="47" y="13" width="102" height="18" uuid="0f1d4b90-399b-4e67-9ece-1caa97eebb4d">
+				<reportElement x="46" y="13" width="112" height="18" uuid="0f1d4b90-399b-4e67-9ece-1caa97eebb4d">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="70336e19-b482-4d6d-8e95-6a79b597cad8"/>
 				</reportElement>
 				<box topPadding="5" leftPadding="2" bottomPadding="0">
@@ -278,10 +281,13 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{RAZON_SOCIAL}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="329" y="13" width="70" height="18" uuid="b1a2e64a-012c-467d-aaa1-81095385ff30">
+				<reportElement x="325" y="13" width="79" height="18" uuid="b1a2e64a-012c-467d-aaa1-81095385ff30">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="1d84535f-b5b5-4469-814e-c968fceba5fa"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -291,10 +297,13 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{IBAN1}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="410" y="13" width="70" height="18" uuid="98a3460b-3eda-424f-aa4f-3ae457f0dcfc">
+				<reportElement x="408" y="13" width="79" height="18" uuid="98a3460b-3eda-424f-aa4f-3ae457f0dcfc">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3f34c996-085a-417a-9279-98aeb615d7e7"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -304,10 +313,13 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{IBAN2}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="489" y="13" width="70" height="18" uuid="6fd38d1d-f0f7-4ef1-8b8d-e6c1c9d805d4">
+				<reportElement x="489" y="13" width="79" height="18" uuid="6fd38d1d-f0f7-4ef1-8b8d-e6c1c9d805d4">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5bcd7bb8-9b45-4cd7-92ea-3f76e79b2a96"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -317,10 +329,13 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{IBAN3}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="570" y="13" width="70" height="18" uuid="0b61cda2-7a23-41b1-af22-bbaa31dc4a11">
+				<reportElement x="571" y="13" width="79" height="18" uuid="0b61cda2-7a23-41b1-af22-bbaa31dc4a11">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="11736f21-4235-40c9-929f-bd9a7ea772e2"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -330,10 +345,13 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{IBAN4}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="650" y="13" width="70" height="18" uuid="9fe1783d-85b9-4283-baa8-ff5a754d8702">
+				<reportElement x="653" y="13" width="79" height="18" uuid="9fe1783d-85b9-4283-baa8-ff5a754d8702">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c6a58533-ee5a-464d-a908-0c8276dc66a4"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -343,10 +361,13 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{IBAN5}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="730" y="13" width="70" height="18" uuid="cc272600-7edf-417f-b1da-b7d3f5767a41">
+				<reportElement x="736" y="13" width="79" height="18" uuid="cc272600-7edf-417f-b1da-b7d3f5767a41">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ffff8303-2ce5-4843-b132-428ad5597b6e"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -356,6 +377,9 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{IBAN6}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
@@ -368,7 +392,9 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement verticalAlignment="Bottom"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{RAZON_SOCIAL_INTERNA}]]></textFieldExpression>
 			</textField>
 		</band>
