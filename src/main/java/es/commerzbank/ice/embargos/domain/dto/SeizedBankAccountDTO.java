@@ -4,7 +4,8 @@ import java.math.BigDecimal;
 
 public class SeizedBankAccountDTO {
 
-	private String idSeizedBankAccount;
+	private Long idSeizedBankAccount;
+	private String iban;
 	private String bankAccountStatus;
 	private String bankAccountCurrency;
 	private BigDecimal amount;
@@ -12,12 +13,20 @@ public class SeizedBankAccountDTO {
 	private SeizureActionDTO seizureAction;
 	private SeizureStatusDTO seizureStatus;
 
-	public String getIdSeizedBankAccount() {
+	public Long getIdSeizedBankAccount() {
 		return idSeizedBankAccount;
 	}
 
 	public String getBankAccountStatus() {
 		return bankAccountStatus;
+	}
+
+	public String getIban() {
+		return iban;
+	}
+
+	public void setIban(String iban) {
+		this.iban = iban;
 	}
 
 	public String getBankAccountCurrency() {
@@ -40,7 +49,7 @@ public class SeizedBankAccountDTO {
 		return seizureStatus;
 	}
 
-	public void setIdSeizedBankAccount(String idSeizedBankAccount) {
+	public void setIdSeizedBankAccount(Long idSeizedBankAccount) {
 		this.idSeizedBankAccount = idSeizedBankAccount;
 	}
 

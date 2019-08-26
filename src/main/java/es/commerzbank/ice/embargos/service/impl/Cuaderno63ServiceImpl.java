@@ -52,7 +52,7 @@ import es.commerzbank.ice.embargos.repository.InformationPetitionBankAccountRepo
 import es.commerzbank.ice.embargos.repository.InformationPetitionRepository;
 import es.commerzbank.ice.embargos.repository.OrderingEntityRepository;
 import es.commerzbank.ice.embargos.repository.PetitionRepository;
-import es.commerzbank.ice.embargos.repository.SeizureAccountRepository;
+import es.commerzbank.ice.embargos.repository.SeizureBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
 import es.commerzbank.ice.embargos.service.Cuaderno63Service;
 import es.commerzbank.ice.embargos.service.CustomerService;
@@ -107,7 +107,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	SeizureRepository seizureRepository;
 	
 	@Autowired
-	SeizureAccountRepository seizureAccountRepository;
+	SeizureBankAccountRepository seizureBankAccountRepository;
 	
 	@Autowired
 	OrderingEntityRepository orderingEntityRepository;
@@ -532,7 +532,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        			
 	        			//TODO mirar si se tiene que comprobar si es nulo el Iban o bien la "cuenta":
 	        			if (cuentaEmbargo.getIban()!=null && !cuentaEmbargo.getIban().isEmpty()) {
-	        				seizureAccountRepository.save(cuentaEmbargo);
+	        				seizureBankAccountRepository.save(cuentaEmbargo);
 	        			}
 	        		}
 	        		

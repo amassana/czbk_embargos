@@ -177,8 +177,9 @@ public class FileControlController {
 		
 	}
 	
+	//TODO: pendiente de ser deprecada (se utilizara updateFileControlStatus)
 	@PostMapping(value = "/{codeFileControl}")
-	@ApiOperation(value = "Cambia los datos del CONTROL_FICHERO segun lo especificado. Usado para el cambio de estado.")
+	@ApiOperation(value = "Cambia los datos del CONTROL_FICHERO segun lo especificado.")
 	public ResponseEntity<String> updateFileControl(Authentication authentication,
 																  @PathVariable("codeFileControl") Long codeFileControl,
 																  @RequestBody FileControlDTO fileControl){
@@ -188,7 +189,9 @@ public class FileControlController {
 		
 		try {
 			
-			result = fileControlService.updateFileControl(codeFileControl,fileControl);
+			String userModif = authentication.getName();
+			
+			result = fileControlService.updateFileControl(codeFileControl,fileControl, userModif);
 			
 			if (result) {
 				response = new ResponseEntity<>(HttpStatus.OK);
@@ -205,6 +208,43 @@ public class FileControlController {
 		
 		return response;
 	}
+	
+	
+	@PostMapping(value = "/{codeFileControl}/status")
+	@ApiOperation(value = "Cambia el estado de CONTROL_FICHERO.")
+	public ResponseEntity<String> updateFileControlStatus(Authentication authentication,
+	  		@PathVariable("codeFileControl") Long codeFileControl,
+	  		@RequestBody FileControlStatusDTO fileControlStatus){
+		
+		ResponseEntity<String> response = null;
+		boolean result = false;
+
+		try {
+
+			if (fileControlStatus!=null) {
+				
+				String userModif = authentication.getName();
+				
+				result = fileControlService.updateFileControlStatus(codeFileControl, fileControlStatus.getCode(), userModif);
+			}
+			
+			
+			if (result) {
+				response = new ResponseEntity<>(HttpStatus.OK);
+			} else {
+				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+
+		} catch (Exception e) {
+
+			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+			LOG.error("ERROR in updateFileControlStatus: ", e);
+		}
+
+		return response;
+	}
+	
 	
 		
 	@GetMapping(value = "/{codeFileControl}")

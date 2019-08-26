@@ -11,6 +11,7 @@ public class SeizureDTO
     private String nameInternal;
     private SeizureStatusDTO status;
     private BigDecimal requestedAmount;
+    private BigDecimal codAudit;
 
     public String getIdSeizure() {
         return idSeizure;
@@ -67,4 +68,14 @@ public class SeizureDTO
     public void setRequestedAmount(BigDecimal requestedAmount) {
         this.requestedAmount = requestedAmount;
     }
+
+	public BigDecimal getCodAudit() {
+		return codAudit;
+	}
+
+	public void setCodAudit(BigDecimal codAudit) {
+		this.codAudit = codAudit;
+	}
+    
+    
 }

@@ -20,7 +20,9 @@ public interface FileControlService {
 	
 	public boolean tramitarFicheroInformacion(Long codeFileControl, String usuarioTramitador) throws IOException;
 	
-	public boolean updateFileControl(Long codeFileControl, FileControlDTO fileControlDTO);
+	public boolean updateFileControl(Long codeFileControl, FileControlDTO fileControlDTO, String userModif);
+	
+	public boolean updateFileControlStatus(Long codeFileControl, Long codFileControlStatus, String userModif);
 
 	public byte[] generarReporteListado(Integer [] codTipoFichero, Integer codEstado, boolean isPending, Date fechaInicio, Date fechaFin) throws Exception;
 	

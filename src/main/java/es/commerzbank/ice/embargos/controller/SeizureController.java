@@ -1,6 +1,5 @@
 package es.commerzbank.ice.embargos.controller;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,114 +39,109 @@ public class SeizureController {
 
 	@Autowired
 	private SeizureService seizureService;
-
+	
     @GetMapping(value = "/{codeFileControl}")
-    @ApiOperation(value="hello world")
+    @ApiOperation(value="Devuelve la lista de embargos para una petición de embargo.")
     public ResponseEntity<List<SeizureDTO>> getSeizureListByCodeFileControl(Authentication authentication,
                                                                                  @PathVariable("codeFileControl") Long codeFileControl){
-        ResponseEntity<List<SeizureDTO>> response = null;
-        List<SeizureDTO> result = new ArrayList<SeizureDTO>();
+    	
+    	ResponseEntity<List<SeizureDTO>> response = null;
+    	List<SeizureDTO> result = new ArrayList<SeizureDTO>();
+    	
+    	try {
+    		
+			result = seizureService.getSeizureListByCodeFileControl(codeFileControl);
+			response = new ResponseEntity<>(result, HttpStatus.OK);
+    	
+	    } catch (Exception e) {
+			
+			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			
+			LOG.error("ERROR in getSeizureListByCodeFileControl: ", e);
+		}	
+			
+		return response;
 
-        SeizureStatusDTO sstatus = new SeizureStatusDTO();
-        sstatus.setCode("1");
-        sstatus.setCode("Pendiente");
-
-        SeizureDTO s1 = new SeizureDTO();
-        s1.setIdSeizure("id s 1");
-        s1.setIdSeizureRequest("id sr 1");
-        s1.setName("name 1");
-        s1.setNameInternal("internal name 1");
-        s1.setNIF("12345678J");
-        s1.setRequestedAmount(BigDecimal.TEN.multiply(BigDecimal.TEN));
-        s1.setStatus(sstatus);
-
-        SeizureDTO s2 = new SeizureDTO();
-        s2.setIdSeizure("id s 2");
-        s2.setIdSeizureRequest("id sr 2");
-        s2.setName("name 2");
-        s2.setNameInternal("internal name 2");
-        s2.setNIF("87654321P");
-        s2.setRequestedAmount(BigDecimal.ONE);
-        s2.setStatus(sstatus);
-
-        result.add(s1);
-        result.add(s2);
-
-        response = new ResponseEntity<>(result, HttpStatus.OK);
-
-        return response;
+    }
+    
+    @GetMapping(value = "/{codeFileControl}/case/{idSeizure}")
+    @ApiOperation(value="Devuelve el embargo a partir de su identificador.")
+    public ResponseEntity<SeizureDTO> getSeizureById(Authentication authentication, @PathVariable("idSeizure") Long idSeizure){
+    	
+    	ResponseEntity<SeizureDTO> response = null;
+    	SeizureDTO result = null;
+    	
+    	try {
+    		  
+    		//TODO: Revisar: idSeizure en este caso esta aplicando por codEmbargo. ¿tiene que ser por codTraba?
+    		
+			result = seizureService.getSeizureById(idSeizure);
+			response = new ResponseEntity<>(result, HttpStatus.OK);
+    	
+	    } catch (Exception e) {
+			
+			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			
+			LOG.error("ERROR in getSeizureListByCodeFileControl: ", e);
+		}	
+			
+		return response;
+    	
     }
 
     @GetMapping(value = "/{codeFileControl}/case/{idSeizure}/accounts")
-    @ApiOperation(value="write something here")
-    public ResponseEntity<List<SeizedBankAccountDTO>> getBankAccountListByCodeFileControlAndPetitionCase(Authentication authentication,
-                                                                                                         @PathVariable("codeFileControl") Long codeFileControl,
-                                                                                                         @PathVariable("idSeizure") String idSeizure){
+    @ApiOperation(value="Devuelve el listado de cuentas bancarias asociadas a la traba.")
+    public ResponseEntity<List<SeizedBankAccountDTO>> getBankAccountListBySeizure(Authentication authentication,
+                                                                         		@PathVariable("codeFileControl") Long codeFileControl,
+                                                                         		@PathVariable("idSeizure") Long idSeizure){
         ResponseEntity<List<SeizedBankAccountDTO>> response = null;
-        List<SeizedBankAccountDTO> result = new ArrayList<SeizedBankAccountDTO>();
-
-        SeizureActionDTO saction = new SeizureActionDTO();
-        saction.setCode("00");
-        saction.setDescription("Sin actuacion");
-
-        SeizureStatusDTO sstatus = new SeizureStatusDTO();
-        sstatus.setCode("1");
-        sstatus.setCode("Pendiente");
-
-        SeizedBankAccountDTO s1 = new SeizedBankAccountDTO();
-        s1.setAmount(BigDecimal.ZERO);
-        s1.setBankAccountCurrency("EUR");
-        s1.setBankAccountStatus("ACTIVE");
-        s1.setFxRate(BigDecimal.ONE);
-        s1.setIdSeizedBankAccount("id sbk 1");
-        s1.setSeizureAction(saction);
-        s1.setSeizureStatus(sstatus);
-
-        SeizedBankAccountDTO s2 = new SeizedBankAccountDTO();
-        s2.setAmount(BigDecimal.ZERO);
-        s2.setBankAccountCurrency("USD");
-        s2.setBankAccountStatus("ACTIVE");
-        s2.setFxRate(new BigDecimal("1.1"));
-        s2.setIdSeizedBankAccount("id sbk 2");
-        s2.setSeizureAction(saction);
-        s2.setSeizureStatus(sstatus);
-
-        result.add(s1);
-        result.add(s2);
-
-        response = new ResponseEntity<>(result, HttpStatus.OK);
+    	List<SeizedBankAccountDTO> result = new ArrayList<>();
+    	
+    	try {
+    		
+			result = seizureService.getBankAccountListBySeizure(codeFileControl,idSeizure);
+			response = new ResponseEntity<>(result, HttpStatus.OK);
+    	
+	    } catch (Exception e) {
+			
+			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			
+			LOG.error("ERROR in getBankAccountListByCodeFileControlAndPetitionCase: ", e);
+		}	
 
         return response;
     }
 
     @GetMapping(value = "/actions")
-    @ApiOperation(value="x was here")
+    @ApiOperation(value="Devuelve el listado de acciones posibles de las trabas.")
     public ResponseEntity<List<SeizureActionDTO>> getSeizureActions(Authentication authentication)
     {
+    	
         ResponseEntity<List<SeizureActionDTO>> response = null;
-        List<SeizureActionDTO> result = new ArrayList<SeizureActionDTO>();
-
-        SeizureActionDTO saction = new SeizureActionDTO();
-        saction.setCode("00");
-        saction.setDescription("Sin actuacion");
-
-        SeizureActionDTO saction2 = new SeizureActionDTO();
-        saction2.setCode("01");
-        saction2.setDescription("Retencion realizada");
-
-        result.add(saction);
-        result.add(saction2);
-
-        response = new ResponseEntity<>(result, HttpStatus.OK);
+    	List<SeizureActionDTO> result = new ArrayList<>();
+    	
+    	try {
+    		
+			result = seizureService.getSeizureActions();
+			response = new ResponseEntity<>(result, HttpStatus.OK);
+    	
+	    } catch (Exception e) {
+			
+			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			
+			LOG.error("ERROR in getSeizureActions: ", e);
+		}	
 
         return response;
+    	
     }
 
-    @GetMapping(value = "/accountingStatuses")
-    @ApiOperation(value="write something there")
-    public ResponseEntity<List<SeizureStatusDTO>> getAccountingStatuses(Authentication authentication)
+    @GetMapping(value = "/seizureStatus")
+    @ApiOperation(value="Devuelve el listado de estados posibles de las trabas.")
+    public ResponseEntity<List<SeizureStatusDTO>> getSeizureStatusList(Authentication authentication)
     {
-        ResponseEntity<List<SeizureStatusDTO>> response = null;
+    	/*
+    	ResponseEntity<List<SeizureStatusDTO>> response = null;
         List<SeizureStatusDTO> result = new ArrayList<SeizureStatusDTO>();
 
         SeizureStatusDTO sstatus = new SeizureStatusDTO();
@@ -167,8 +163,186 @@ public class SeizureController {
         response = new ResponseEntity<>(result, HttpStatus.OK);
 
         return response;
+        */
+        
+        ResponseEntity<List<SeizureStatusDTO>> response = null;
+
+        List<SeizureStatusDTO> result = new ArrayList<>();
+          
+    	try {
+
+			result = seizureService.getSeizureStatusList();
+			
+			response = new ResponseEntity<>(result, HttpStatus.OK);
+    	
+	    } catch (Exception e) {
+			
+			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			
+			LOG.error("ERROR in getSeizureStatusList: ", e);
+		}	
+        
+        return response;
+        
     }
 
+    @PostMapping(value = "/{codeFileControl}/case/{idSeizure}/accounts")
+    @ApiOperation(value="Guarda una actualizacion para las cuentas trabadas.")
+    public ResponseEntity<String> updateSeizedBankAccountList(Authentication authentication,
+    														  @PathVariable("codeFileControl") Long codeFileControl,
+    														  @PathVariable("idSeizure") Long idSeizure,
+    														  @RequestBody List<SeizedBankAccountDTO> seizedBankAccountList){
+    	
+		ResponseEntity<String> response = null;
+		boolean result = false;
+
+		try {
+
+			String userModif = authentication.getName();
+
+			result = seizureService.updateSeizedBankAccountList(codeFileControl, idSeizure, seizedBankAccountList,userModif);
+
+			if (result) {
+				response = new ResponseEntity<>(HttpStatus.OK);
+			} else {
+				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+
+		} catch (Exception e) {
+
+			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+			LOG.error("ERROR in updateSeizedBankAccountList: ", e);
+		}
+
+		return response;
+
+    }
+    
+
+    @PostMapping(value = "/{codeFileControl}/case/{idSeizure}/status")
+    @ApiOperation(value="Guarda una actualizacion de estado para el caso indicado")
+    public ResponseEntity<String> updateSeizureStatus(Authentication authentication,
+    												  @PathVariable("codeFileControl") Long codeFileControl,
+    												  @PathVariable("idSeizure") Long idSeizure,
+    												  @RequestBody SeizureStatusDTO seizureStatus){
+    	
+		ResponseEntity<String> response = null;
+		boolean result = false;
+
+		try {
+
+			String userModif = authentication.getName();
+
+			result = seizureService.updateSeizureStatus(codeFileControl, idSeizure, seizureStatus, userModif);
+
+			if (result) {
+				response = new ResponseEntity<>(HttpStatus.OK);
+			} else {
+				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+
+		} catch (Exception e) {
+
+			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+			LOG.error("ERROR in updateSeizureStatus: ", e);
+		}
+
+		return response;
+
+    }
+    
+    
+//    @PostMapping(value = "/{codeFileControl}/status")
+//    @ApiOperation(value="Guarda una actualizacion de estado para el caso indicado")
+//    public ResponseEntity<String> updateFileControlStatus(Authentication authentication,
+//    												  		@PathVariable("codeFileControl") Long codeFileControl,
+//    												  		@RequestBody FileControlStatusDTO fileControlStatus){
+//    	
+//		ResponseEntity<String> response = null;
+//		boolean result = false;
+//
+//		try {
+//
+//			if (fileControlStatus!=null) {
+//				
+//				String userModif = authentication.getName();
+//				
+//				result = fileControlService.updateFileControlStatus(codeFileControl, fileControlStatus.getCode(), userModif);
+//			}
+//			
+//			
+//			if (result) {
+//				response = new ResponseEntity<>(HttpStatus.OK);
+//			} else {
+//				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//			}
+//
+//		} catch (Exception e) {
+//
+//			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//
+//			LOG.error("ERROR in updateFileControlStatus: ", e);
+//		}
+//
+//		return response;
+//
+//    }
+    
+    @GetMapping(value = "/{codeFileControl}/case/{idSeizure}/audit")
+    @ApiOperation(value="Devuelve el histórico de cambios")
+    public ResponseEntity<List<SeizureDTO>> getAuditSeizure(Authentication authentication,
+    												  @PathVariable("codeFileControl") Long codeFileControl,
+    												  @PathVariable("idSeizure") Long idSeizure){
+    	
+		ResponseEntity<List<SeizureDTO>> response = null;
+		List<SeizureDTO> result = new ArrayList<>();
+
+		try {
+
+			result = seizureService.getAuditSeizure(codeFileControl, idSeizure);
+
+			response = new ResponseEntity<>(result, HttpStatus.OK);
+	    	
+	    } catch (Exception e) {
+			
+			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			
+			LOG.error("ERROR in getAudit: ", e);
+		}	
+        
+        return response;
+
+    }
+    
+    @GetMapping(value = "/{codeFileControl}/case/{idSeizure}/accounts/audit/{codAudit}")
+    @ApiOperation(value="Devuelve el histórico de cambios")
+    public ResponseEntity<List<SeizedBankAccountDTO>> getAudit(Authentication authentication,
+    												  @PathVariable("codeFileControl") Long codeFileControl,
+    												  @PathVariable("idSeizure") Long idSeizure,
+    												  @PathVariable("codAudit") Long codAudit){
+    	
+		ResponseEntity<List<SeizedBankAccountDTO>> response = null;
+		List<SeizedBankAccountDTO> result = new ArrayList<>();
+
+		try {
+
+			result = seizureService.getAuditSeizedBankAccounts(codeFileControl, idSeizure, codAudit);
+
+			response = new ResponseEntity<>(result, HttpStatus.OK);
+	    	
+	    } catch (Exception e) {
+			
+			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			
+			LOG.error("ERROR in getAudit: ", e);
+		}	
+        
+        return response;
+
+    }
+    
 	@GetMapping("/{idSeizure}/case/report")
 	public ResponseEntity<InputStreamResource> generarJustificanteEmbargo(
 			@PathVariable("idSeizure") Integer idSeizure) {

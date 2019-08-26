@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
 import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
 import es.commerzbank.ice.embargos.domain.dto.FileControlFiltersDTO;
+import es.commerzbank.ice.embargos.domain.dto.FileControlStatusDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlficheroPK;
@@ -41,6 +42,7 @@ import es.commerzbank.ice.embargos.repository.FileControlStatusRepository;
 import es.commerzbank.ice.embargos.service.Cuaderno63Service;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.InformationPetitionService;
+import es.commerzbank.ice.utils.ICEDateUtils;
 import es.commerzbank.ice.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -179,7 +181,7 @@ public class FileControlServiceImpl implements FileControlService{
 	}
 
 	@Override
-	public boolean updateFileControl(Long codeFileControl, FileControlDTO fileControlDTO) {
+	public boolean updateFileControl(Long codeFileControl, FileControlDTO fileControlDTO, String userModif) {
 		
 		Optional<ControlFichero> controlFicheroOpt = fileControlRepository.findById(codeFileControl);
 		
@@ -213,6 +215,45 @@ public class FileControlServiceImpl implements FileControlService{
 		fileControlRepository.save(controlFichero);
 		
 		return true;
+	}
+	
+	@Override
+	public boolean updateFileControlStatus(Long codeFileControl, Long codFileControlStatus, String userModif) {
+		
+		Optional<ControlFichero> fileControlOpt = fileControlRepository.findById(codeFileControl);
+		
+		if(!fileControlOpt.isPresent()) {
+			return false;
+		}
+		
+		if(codFileControlStatus!=null) {
+			
+			ControlFichero controlFichero = fileControlOpt.get();
+			
+			EstadoCtrlficheroPK estadoCtrlficheroPK = new EstadoCtrlficheroPK();
+			estadoCtrlficheroPK.setCodEstado(codFileControlStatus);
+			estadoCtrlficheroPK.setCodTipoFichero(controlFichero.getTipoFichero().getCodTipoFichero());
+			
+			Optional<EstadoCtrlfichero> estadoCtrlficheroOpt = fileControlStatusRepository.findById(estadoCtrlficheroPK);
+			
+			if(!estadoCtrlficheroOpt.isPresent()) {
+				return false;
+			}
+			
+			controlFichero.setEstadoCtrlfichero(estadoCtrlficheroOpt.get());
+			
+			//Usuario y fecha ultima modificacion:
+			controlFichero.setUsuarioUltModificacion(userModif);
+			controlFichero.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+			
+			fileControlRepository.save(controlFichero);
+		
+		} else {			
+			return false;
+		}
+		
+		return true;
+		
 	}
 
 	@Override

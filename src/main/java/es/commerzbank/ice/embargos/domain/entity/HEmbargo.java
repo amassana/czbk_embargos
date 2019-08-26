@@ -7,121 +7,109 @@ import java.util.List;
 
 
 /**
- * The persistent class for the EMBARGO database table.
+ * The persistent class for the H_EMBARGO database table.
  * 
  */
 @Entity
-@Table(name="EMBARGO")
-@NamedQuery(name="Embargo.findAll", query="SELECT e FROM Embargo e")
-public class Embargo implements Serializable {
+@Table(name="H_EMBARGO")
+@NamedQuery(name="HEmbargo.findAll", query="SELECT h FROM HEmbargo h")
+public class HEmbargo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@SequenceGenerator(name = "embargo_seq_gen", sequenceName = "EMBARGO_SEQ", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "embargo_seq_gen")
-	@Column(name="COD_EMBARGO", unique=true, nullable=false)
-	private long codEmbargo;
+	@EmbeddedId
+	private HEmbargoPK id;
 
-	@Column(name="COD_DEUDA_DEUDOR", length=8)
+	@Column(name="COD_CONTROL_FICHERO")
+	private BigDecimal codControlFichero;
+
+	@Column(name="COD_DEUDA_DEUDOR")
 	private String codDeudaDeudor;
+
+	@Column(name="COD_ENTIDAD_ORDENANTE")
+	private BigDecimal codEntidadOrdenante;
 
 	@Column(name="COD_SUCURSAL")
 	private BigDecimal codSucursal;
 
-	@Column(name="CODIGO_POSTAL", length=5)
+	@Column(name="CODIGO_POSTAL")
 	private String codigoPostal;
 
-	@Column(length=200)
 	private String datregcomdet;
 
-	@Column(length=39)
 	private String domicilio;
 
-	@Column(length=2)
 	private String escalera;
 
-	@Column(name="F_ULTIMA_MODIFICACION", precision=14)
+	@Column(name="F_ULTIMA_MODIFICACION")
 	private BigDecimal fUltimaModificacion;
 
-	@Column(name="FECHA_GENERACION", precision=8)
+	@Column(name="FECHA_GENERACION")
 	private BigDecimal fechaGeneracion;
 
-	@Column(name="FECHA_LIMITE_TRABA", precision=8)
+	@Column(name="FECHA_LIMITE_TRABA")
 	private BigDecimal fechaLimiteTraba;
 
 	private BigDecimal importe;
 
-	@Column(name="IND_PROCESADO", length=1)
+	@Column(name="IND_PROCESADO")
 	private String indProcesado;
 
-	@Column(name="ISO_MONEDA", length=3)
+	@Column(name="ISO_MONEDA")
 	private String isoMoneda;
 
-	@Column(length=1)
 	private String letra;
 
-	@Column(length=12)
 	private String municipio;
 
-	@Column(length=9)
 	private String nif;
 
-	@Column(length=100)
 	private String nombre;
 
-	@Column(name="NOMBRE_VP", length=25)
+	@Column(name="NOMBRE_VP")
 	private String nombreVp;
 
 	private BigDecimal numero;
 
-	@Column(name="NUMERO_EMBARGO", length=40)
+	@Column(name="NUMERO_EMBARGO")
 	private String numeroEmbargo;
 
-	@Column(length=2)
 	private String piso;
 
-	@Column(length=2)
 	private String puerta;
 
-	@Column(name="SIGLAS_VP", length=2)
+	@Column(name="RAZON_SOCIAL_INTERNA")
+	private String razonSocialInterna;
+
+	@Column(name="SIGLAS_VP")
 	private String siglasVp;
 
-	@Column(name="TIPO_DEUDA", length=2)
+	@Column(name="TIPO_DEUDA")
 	private String tipoDeuda;
 
-	@Column(name="USUARIO_ULT_MODIFICACION", length=10)
+	@Column(name="USUARIO_ULT_MODIFICACION")
 	private String usuarioUltModificacion;
 
-	//bi-directional many-to-one association to CuentaEmbargo
-	@OneToMany(mappedBy="embargo")
-	private List<CuentaEmbargo> cuentaEmbargos;
+	//bi-directional many-to-one association to HTraba
+	@OneToMany(mappedBy="HEmbargo")
+	private List<HTraba> HTrabas;
 
-	//bi-directional many-to-one association to ControlFichero
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="COD_CONTROL_FICHERO", nullable=false)
-	private ControlFichero controlFichero;
-
-	//bi-directional many-to-one association to EntidadesOrdenante
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="COD_ENTIDAD_ORDENANTE", nullable=false)
-	private EntidadesOrdenante entidadesOrdenante;
-
-	//bi-directional many-to-one association to Traba
-	@OneToMany(mappedBy="embargo")
-	private List<Traba> trabas;
-
-	@Column(name="RAZON_SOCIAL_INTERNA", length=100)
-	private String razonSocialInterna;
-	
-	public Embargo() {
+	public HEmbargo() {
 	}
 
-	public long getCodEmbargo() {
-		return this.codEmbargo;
+	public HEmbargoPK getId() {
+		return this.id;
 	}
 
-	public void setCodEmbargo(long codEmbargo) {
-		this.codEmbargo = codEmbargo;
+	public void setId(HEmbargoPK id) {
+		this.id = id;
+	}
+
+	public BigDecimal getCodControlFichero() {
+		return this.codControlFichero;
+	}
+
+	public void setCodControlFichero(BigDecimal codControlFichero) {
+		this.codControlFichero = codControlFichero;
 	}
 
 	public String getCodDeudaDeudor() {
@@ -130,6 +118,14 @@ public class Embargo implements Serializable {
 
 	public void setCodDeudaDeudor(String codDeudaDeudor) {
 		this.codDeudaDeudor = codDeudaDeudor;
+	}
+
+	public BigDecimal getCodEntidadOrdenante() {
+		return this.codEntidadOrdenante;
+	}
+
+	public void setCodEntidadOrdenante(BigDecimal codEntidadOrdenante) {
+		this.codEntidadOrdenante = codEntidadOrdenante;
 	}
 
 	public BigDecimal getCodSucursal() {
@@ -292,6 +288,14 @@ public class Embargo implements Serializable {
 		this.puerta = puerta;
 	}
 
+	public String getRazonSocialInterna() {
+		return this.razonSocialInterna;
+	}
+
+	public void setRazonSocialInterna(String razonSocialInterna) {
+		this.razonSocialInterna = razonSocialInterna;
+	}
+
 	public String getSiglasVp() {
 		return this.siglasVp;
 	}
@@ -316,72 +320,26 @@ public class Embargo implements Serializable {
 		this.usuarioUltModificacion = usuarioUltModificacion;
 	}
 
-	public List<CuentaEmbargo> getCuentaEmbargos() {
-		return this.cuentaEmbargos;
+	public List<HTraba> getHTrabas() {
+		return this.HTrabas;
 	}
 
-	public void setCuentaEmbargos(List<CuentaEmbargo> cuentaEmbargos) {
-		this.cuentaEmbargos = cuentaEmbargos;
+	public void setHTrabas(List<HTraba> HTrabas) {
+		this.HTrabas = HTrabas;
 	}
 
-	public CuentaEmbargo addCuentaEmbargo(CuentaEmbargo cuentaEmbargo) {
-		getCuentaEmbargos().add(cuentaEmbargo);
-		cuentaEmbargo.setEmbargo(this);
+	public HTraba addHTraba(HTraba HTraba) {
+		getHTrabas().add(HTraba);
+		HTraba.setHEmbargo(this);
 
-		return cuentaEmbargo;
+		return HTraba;
 	}
 
-	public CuentaEmbargo removeCuentaEmbargo(CuentaEmbargo cuentaEmbargo) {
-		getCuentaEmbargos().remove(cuentaEmbargo);
-		cuentaEmbargo.setEmbargo(null);
+	public HTraba removeHTraba(HTraba HTraba) {
+		getHTrabas().remove(HTraba);
+		HTraba.setHEmbargo(null);
 
-		return cuentaEmbargo;
-	}
-
-	public ControlFichero getControlFichero() {
-		return this.controlFichero;
-	}
-
-	public void setControlFichero(ControlFichero controlFichero) {
-		this.controlFichero = controlFichero;
-	}
-
-	public EntidadesOrdenante getEntidadesOrdenante() {
-		return this.entidadesOrdenante;
-	}
-
-	public void setEntidadesOrdenante(EntidadesOrdenante entidadesOrdenante) {
-		this.entidadesOrdenante = entidadesOrdenante;
-	}
-
-	public List<Traba> getTrabas() {
-		return this.trabas;
-	}
-
-	public void setTrabas(List<Traba> trabas) {
-		this.trabas = trabas;
-	}
-
-	public Traba addTraba(Traba traba) {
-		getTrabas().add(traba);
-		traba.setEmbargo(this);
-
-		return traba;
-	}
-
-	public Traba removeTraba(Traba traba) {
-		getTrabas().remove(traba);
-		traba.setEmbargo(null);
-
-		return traba;
-	}
-
-	public String getRazonSocialInterna() {
-		return razonSocialInterna;
-	}
-
-	public void setRazonSocialInterna(String razonSocialInterna) {
-		this.razonSocialInterna = razonSocialInterna;
+		return HTraba;
 	}
 
 }
