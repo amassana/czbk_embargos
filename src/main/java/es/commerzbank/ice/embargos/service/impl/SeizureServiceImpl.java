@@ -2,6 +2,7 @@ package es.commerzbank.ice.embargos.service.impl;
 
 import java.io.File;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -31,24 +32,23 @@ public class SeizureServiceImpl implements SeizureService {
 
 	@Override
 	public byte[] generateJustificanteEmbargo(Integer idSeizure) throws Exception {
-		
+
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
 		try (Connection conn = oracleDataSourceEmbargos.getEmbargosConnection()) {
 
 			Resource embargosJrxml = ResourcesUtil.getFromJasperFolder("justificante_embargos.jasper");
 			Resource logoImage = ResourcesUtil.getImageLogoCommerceResource();
-			//Resource templateStyle = ResourcesUtil.getTemplateStyleResource();
-			
-			//System.out.println(templateStyle.getFile().getAbsolutePath());
+			// Resource templateStyle = ResourcesUtil.getTemplateStyleResource();
 
 			File image = logoImage.getFile();
 
-			//InputStream templateStyleStream = getClass().getResourceAsStream("/jasper/CommerzBankStyle.jrtx");
+			// InputStream templateStyleStream =
+			// getClass().getResourceAsStream("/jasper/CommerzBankStyle.jrtx");
 
 			parameters.put("COD_TRABA", idSeizure);
 			parameters.put("IMAGE_PARAM", image.toString());
-			//parameters.put("TEMPLATE_STYLE_PATH", templateStyleStream);
+			// parameters.put("TEMPLATE_STYLE_PATH", templateStyleStream);
 
 			InputStream justificanteInputStream = embargosJrxml.getInputStream();
 
@@ -78,7 +78,6 @@ public class SeizureServiceImpl implements SeizureService {
 
 			InputStream subReportHeaderInputStream = headerSubreport.getInputStream();
 			InputStream subReportTotalTrabasInputStream = totalTrabas.getInputStream();
-		
 
 			JasperReport subReportHeader = (JasperReport) JRLoader.loadObject(subReportHeaderInputStream);
 			JasperReport subReportTotalTrabas = (JasperReport) JRLoader.loadObject(subReportTotalTrabasInputStream);
@@ -95,10 +94,49 @@ public class SeizureServiceImpl implements SeizureService {
 			return JasperExportManager.exportReportToPdf(fillReport);
 
 		} catch (SQLException e) {
-			System.out.println(e);
 			throw new Exception("DB exception while generating the report", e);
 		}
 
+	}
+
+	@Override
+	public byte[] generarAnexo(BigDecimal cod_usuario, BigDecimal cod_traba) throws Exception {
+		HashMap<String, Object> parameters = new HashMap<String, Object>();
+
+		try (Connection conn_comunes = oracleDataSourceEmbargos.getComunesConnection();
+				Connection conn_embargos = oracleDataSourceEmbargos.getEmbargosConnection();) {
+
+			Resource anexoJasperFile = ResourcesUtil.getFromJasperFolder("anexo1.jasper");
+			Resource importeAbonadoSubReport = ResourcesUtil.getFromJasperFolder("importe_abonado.jasper");
+//			Resource simpleHeaderResource = ResourcesUtil.getSimpleHeader();
+			Resource logoImage = ResourcesUtil.getImageLogoCommerceResource();
+
+			File image = logoImage.getFile();
+
+//			InputStream subReportSimpleHeaderInputStream = simpleHeaderResource.getInputStream();
+//			JasperReport subReportSimpleHeader = (JasperReport) JRLoader.loadObject(subReportSimpleHeaderInputStream);
+//		
+			InputStream importeAbonadoInputStream = importeAbonadoSubReport.getInputStream();
+			JasperReport importeAbonadoReport = (JasperReport) JRLoader.loadObject(importeAbonadoInputStream);
+
+			parameters.put("IMAGE_PARAM", image.toString());
+//			parameters.put("SUBREPORT_SIMPLE_HEADER", subReportSimpleHeader);
+			parameters.put("REPORT_IMPORTE_ABONADO", importeAbonadoReport);
+			parameters.put("COD_USUARIO", cod_usuario);
+			parameters.put("COD_TRABA", cod_traba);
+			parameters.put("REPORT_CONNECTION_EMB", conn_embargos);
+
+			
+	
+			InputStream anexo1Input = anexoJasperFile.getInputStream();
+			JasperPrint fillReport = JasperFillManager.fillReport(anexo1Input, parameters, conn_comunes);
+
+			return JasperExportManager.exportReportToPdf(fillReport);
+
+		} catch (SQLException e) {
+			System.out.println(e);
+			throw new Exception("DB exception while generating the report", e);
+		}
 	}
 
 }

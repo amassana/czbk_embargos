@@ -13,6 +13,10 @@ public class ResourcesUtil {
 		return getFromJasperFolder("header_sucursal.jasper");
 	}
 	
+//	public static Resource getSimpleHeader() {
+//		return getFromJasperFolder("SimpleHeader.jasper");
+//	}
+	
 	public static Resource getFromJasperFolder(String path) {
 		return new ClassPathResource("jasper/" + path);
 	}

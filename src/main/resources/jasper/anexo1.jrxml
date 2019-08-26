@@ -1,55 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="anexo1" pageWidth="595" pageHeight="842" columnWidth="495" leftMargin="50" rightMargin="50" topMargin="20" bottomMargin="20" uuid="8023237a-e493-4f98-b614-121eb503aa39">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerzBankAdapterComunes.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<parameter name="NOMBRE_APODERADO" class="java.lang.String"/>
+	<parameter name="COD_TRABA" class="java.math.BigDecimal"/>
+	<parameter name="COD_USUARIO" class="java.math.BigDecimal"/>
+	<parameter name="REPORT_CONNECTION_EMB" class="java.sql.Connection"/>
+	<parameter name="REPORT_IMPORTE_ABONADO" class="java.lang.Object"/>
+	<parameter name="IMAGE_PARAM" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select
-	ct.cuenta
-,	ct.importe AS importeTraba
-,	t.fecha_traba, e.COD_EMBARGO, e.nombre, e.domicilio, e.codigo_postal, e.municipio, e.numero_embargo, e.nif
-,	e.importe AS importeEmbargo
-,	e.datregcomdet
-from COMM_EMBARGOS_DES.TRABAS t inner join COMM_EMBARGOS_DES.CUENTA_TRABA ct on t.cod_traba = ct.cod_traba
-inner join COMM_EMBARGOS_DES.EMBARGO e on e.cod_embargo = t.cod_embargo
-where t.cod_traba = $P{NOMBRE_APODERADO}]]>
+		<![CDATA[SELECT l.LOCALIDAD AS Municipio, u.PERFIL AS Cargo, u.NOMBRE FROM USUARIO u INNER JOIN SUCURSAL s ON u.COD_SUCURSAL = s.COD_SUCURSAL INNER JOIN LOCALIDAD l ON s.COD_LOCALIDAD = l.COD_LOCALIDAD
+WHERE u.COD_USUARIO = $P{COD_USUARIO}]]>
 	</queryString>
-	<field name="CUENTA" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="CUENTA"/>
-	</field>
-	<field name="IMPORTETRABA" class="java.math.BigDecimal">
-		<property name="com.jaspersoft.studio.field.label" value="IMPORTETRABA"/>
-	</field>
-	<field name="FECHA_TRABA" class="java.math.BigDecimal">
-		<property name="com.jaspersoft.studio.field.label" value="FECHA_TRABA"/>
-	</field>
-	<field name="COD_EMBARGO" class="java.math.BigDecimal">
-		<property name="com.jaspersoft.studio.field.label" value="COD_EMBARGO"/>
-	</field>
-	<field name="NOMBRE" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="NOMBRE"/>
-	</field>
-	<field name="DOMICILIO" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="DOMICILIO"/>
-	</field>
-	<field name="CODIGO_POSTAL" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="CODIGO_POSTAL"/>
-	</field>
 	<field name="MUNICIPIO" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="MUNICIPIO"/>
 	</field>
-	<field name="NUMERO_EMBARGO" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="NUMERO_EMBARGO"/>
+	<field name="CARGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CARGO"/>
 	</field>
-	<field name="NIF" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="NIF"/>
-	</field>
-	<field name="IMPORTEEMBARGO" class="java.math.BigDecimal">
-		<property name="com.jaspersoft.studio.field.label" value="IMPORTEEMBARGO"/>
-	</field>
-	<field name="DATREGCOMDET" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="DATREGCOMDET"/>
+	<field name="NOMBRE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NOMBRE"/>
 	</field>
 	<variable name="TodayDate" class="java.lang.String">
 		<variableExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new Date())]]></variableExpression>
@@ -59,11 +29,10 @@ where t.cod_traba = $P{NOMBRE_APODERADO}]]>
 	</background>
 	<title>
 		<band height="74" splitType="Stretch">
-			<subreport>
-				<reportElement x="-25" y="0" width="280" height="69" uuid="37bea3d5-9fa8-4a6d-b24c-644b63a75da6"/>
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA["C:/Users/sergio.ruiz/git/Embargos/src/main/resources/jasper/SimpleHeader.jasper"]]></subreportExpression>
-			</subreport>
+			<image>
+				<reportElement x="1" y="0" width="289" height="60" uuid="4e2f76b0-4fe3-4987-afdb-7468e28102af"/>
+				<imageExpression><![CDATA[$P{IMAGE_PARAM}]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<pageHeader>
@@ -76,37 +45,37 @@ where t.cod_traba = $P{NOMBRE_APODERADO}]]>
 				<text><![CDATA[Anexo I]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="-25" y="39" width="105" height="30" uuid="554b6614-d65a-4b54-9bf7-3471c20a76ad"/>
+				<reportElement x="5" y="42" width="85" height="30" uuid="554b6614-d65a-4b54-9bf7-3471c20a76ad"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="13"/>
+					<font size="11"/>
 				</textElement>
 				<text><![CDATA[DESTINATARIO:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="-24" y="114" width="554" height="30" uuid="ae37d5df-c4f9-466f-8feb-1e05541bb3e3"/>
+				<reportElement x="7" y="110" width="523" height="30" uuid="ae37d5df-c4f9-466f-8feb-1e05541bb3e3"/>
 				<textElement verticalAlignment="Middle">
-					<font size="10"/>
+					<font size="9"/>
 				</textElement>
 				<text><![CDATA[COMUNICACION DE INGRESOS POR RECAUDACION MEDIANTE PROCEDIMIENTO TELEMATICO DE EMBARGO DE CUENTAS.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="16" y="153" width="150" height="19" uuid="6578fb13-0915-4984-a573-d9f23f1ee1ae"/>
+				<reportElement x="49" y="149" width="150" height="19" uuid="6578fb13-0915-4984-a573-d9f23f1ee1ae"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[ENTIDAD FINANCIERA:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="82" y="40" width="350" height="30" uuid="5ec315ed-ae85-4a7e-a5e6-fed9582fc8ce"/>
+				<reportElement x="93" y="43" width="350" height="30" uuid="5ec315ed-ae85-4a7e-a5e6-fed9582fc8ce"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="13" isBold="true"/>
+					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TESORERIA GENERAL DE LA SEGURIDAD SOCIAL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="82" y="70" width="173" height="29" uuid="0d6428cd-e975-4efa-b252-1e018f274be2"/>
+				<reportElement x="94" y="73" width="173" height="29" uuid="0d6428cd-e975-4efa-b252-1e018f274be2"/>
 				<textElement textAlignment="Left" verticalAlignment="Top">
-					<font size="13" isBold="true"/>
+					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[INTERVENCION CENTRAL]]></text>
 			</staticText>
@@ -115,94 +84,61 @@ where t.cod_traba = $P{NOMBRE_APODERADO}]]>
 	<columnHeader>
 		<band height="115" splitType="Stretch">
 			<staticText>
-				<reportElement x="16" y="33" width="150" height="19" uuid="f5c0705b-5398-4deb-b4f8-387980bbf373"/>
+				<reportElement x="49" y="29" width="74" height="19" uuid="f5c0705b-5398-4deb-b4f8-387980bbf373"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[CLAVE C.S.B:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="16" y="3" width="150" height="19" uuid="afd93bdb-8eec-488a-b3ad-677a59bd9126"/>
+				<reportElement x="49" y="-1" width="94" height="19" uuid="afd93bdb-8eec-488a-b3ad-677a59bd9126"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[DENOMINACION:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="15" y="80" width="340" height="19" uuid="026f7dfa-cb8e-4275-bc5d-b44009378cab"/>
+				<reportElement x="8" y="66" width="340" height="19" uuid="026f7dfa-cb8e-4275-bc5d-b44009378cab"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[IMPORTE ABONADO EN CUENTA UNICA CENTRALIZADA]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="153" y="-1" width="280" height="19" uuid="2ef8834d-f5f7-47b2-a997-a1fc1af23a6d"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[COMMERZBANK AG SUCURSAL EN ESPAÑA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="153" y="29" width="30" height="19" uuid="bbadd394-f04a-4012-9a08-b9b3ea8da5de"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[0159]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="125" splitType="Stretch">
-			<staticText>
-				<reportElement x="15" y="0" width="110" height="16" uuid="b836b662-2634-464e-85c2-83e429404e27"/>
-				<box leftPadding="3">
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[IMPORTE EN CIFRAS]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="15" y="16" width="110" height="26" uuid="1b3a65cc-a54e-4cab-b7d5-9d1ff08260ad"/>
-				<box topPadding="3" leftPadding="3">
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Left" verticalAlignment="Justified">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[IMPORTE EN LETRAS]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="15" y="42" width="110" height="15" uuid="53924ff5-d4c4-4e2c-9a7c-ff7485a42ae1"/>
-				<box leftPadding="3">
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[FECHA DE ABONO]]></text>
-			</staticText>
-			<rectangle>
-				<reportElement mode="Transparent" x="125" y="0" width="241" height="16" uuid="5e6c65e8-83d8-417c-b4f1-0887fdb5aa6c"/>
-			</rectangle>
-			<textField>
-				<reportElement x="133" y="0" width="100" height="16" uuid="54a19c1f-d2fe-4098-a7de-85eacd1fbecc"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[0]]></textFieldExpression>
-			</textField>
-			<rectangle>
-				<reportElement mode="Transparent" x="125" y="16" width="241" height="26" uuid="50073d59-6a3b-4aa3-bd5b-00060dea2657"/>
-			</rectangle>
-			<textField>
-				<reportElement x="133" y="42" width="100" height="15" uuid="132c3eeb-7a72-49a6-9105-5074a351d5f5"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA["04/06/2019"]]></textFieldExpression>
-			</textField>
-			<rectangle>
-				<reportElement mode="Transparent" x="125" y="42" width="241" height="15" uuid="01f5853e-5a9d-4ef8-9d70-a9ad3fbbd6b3"/>
-			</rectangle>
-			<textField>
-				<reportElement x="130" y="16" width="110" height="26" uuid="0f4c563f-fbb1-4196-91e0-410f4a797039"/>
-				<box topPadding="3"/>
-				<textElement verticalAlignment="Top"/>
-				<textFieldExpression><![CDATA["EUROS"]]></textFieldExpression>
-			</textField>
+		<band height="136" splitType="Stretch">
+			<subreport>
+				<reportElement x="8" y="-30" width="473" height="120" uuid="3c0a4998-bee9-4e5a-a2ab-01282f68afd8"/>
+				<subreportParameter name="COD_TRABA">
+					<subreportParameterExpression><![CDATA[$P{COD_TRABA}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="COD_USUARIO">
+					<subreportParameterExpression><![CDATA[$P{COD_USUARIO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_CONNECTION_EMB">
+					<subreportParameterExpression><![CDATA[$P{REPORT_CONNECTION_EMB}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_IMPORTE_ABONADO">
+					<subreportParameterExpression><![CDATA[$P{REPORT_IMPORTE_ABONADO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION_EMB}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{REPORT_IMPORTE_ABONADO}]]></subreportExpression>
+			</subreport>
 		</band>
 	</detail>
 	<columnFooter>
@@ -211,33 +147,33 @@ where t.cod_traba = $P{NOMBRE_APODERADO}]]>
 	<pageFooter>
 		<band height="77" splitType="Stretch">
 			<staticText>
-				<reportElement x="-19" y="1" width="554" height="30" uuid="39f6952f-95ee-456d-89fd-ee13b2a2f96b"/>
+				<reportElement x="5" y="0" width="493" height="40" uuid="39f6952f-95ee-456d-89fd-ee13b2a2f96b"/>
 				<textElement>
-					<font fontName="Serif"/>
+					<font fontName="SansSerif" size="9" isBold="false"/>
 				</textElement>
-				<text><![CDATA[COMUNICACION A REMITIR AL FAX 92938129 ANTES DE LAS 13:30 DEL DIA 14 O 29 DE CADA MES O INMEDIATO HABIL ANTERIOR CASO DE SER AQUELLOS INHABILES]]></text>
+				<text><![CDATA[COMUNICACION A REMITIR AL FAX 915037941 ANTES DE LAS 13:30 DEL DIA 14 O 29 DE CADA MES O INMEDIATO HABIL ANTERIOR CASO DE SER AQUELLOS INHABILES]]></text>
 			</staticText>
 		</band>
 	</pageFooter>
 	<summary>
 		<band height="164" splitType="Stretch">
 			<staticText>
-				<reportElement x="35" y="27" width="124" height="19" uuid="ef40d175-4478-4113-a2ca-8a999edfafeb"/>
+				<reportElement x="23" y="27" width="145" height="19" uuid="ef40d175-4478-4113-a2ca-8a999edfafeb"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[SELLO ENTIDAD]]></text>
+				<text><![CDATA[SELLO DE LA ENTIDAD]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="159" y="50" width="56" height="19" uuid="609dccdc-a1b1-4674-be5d-08f5ddf764e9"/>
-				<textElement>
+				<reportElement x="159" y="50" width="31" height="19" uuid="609dccdc-a1b1-4674-be5d-08f5ddf764e9"/>
+				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[FDO:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="159" y="78" width="166" height="19" uuid="b740bc88-e0ba-4fc3-929c-ae23bd08b1d7"/>
-				<textElement>
+				<reportElement x="159" y="78" width="145" height="19" uuid="b740bc88-e0ba-4fc3-929c-ae23bd08b1d7"/>
+				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[CARGO QUE OSTENTA:]]></text>
@@ -294,6 +230,33 @@ where t.cod_traba = $P{NOMBRE_APODERADO}]]>
 				<reportElement x="426" y="17" width="50" height="13" uuid="b643d94c-ab26-4070-8057-74766c151403"/>
 				<box leftPadding="2"/>
 				<textFieldExpression><![CDATA[$V{TodayDate}.split("/")[2]]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="264" y="12" width="71" height="18" uuid="81b8121c-0ad8-4da3-ad5a-f022ccc1a3f9">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="899e72d8-0f8a-45f4-a208-16d3abd6f70e"/>
+				</reportElement>
+				<box topPadding="5" leftPadding="2"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{MUNICIPIO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="190" y="50" width="165" height="19" uuid="a75e7068-c290-4bfd-9b8d-97b424ffacc8">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7c3a0609-31d6-4bdd-a706-fd58298043af"/>
+				</reportElement>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="304" y="78" width="146" height="19" uuid="3790a58d-5bed-43d8-b2a2-2366d838da01">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="16e5394c-d601-4ed0-8527-a13bae2677cf"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CARGO}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

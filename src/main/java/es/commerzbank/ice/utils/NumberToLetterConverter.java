@@ -2,11 +2,14 @@ package es.commerzbank.ice.utils;
 
 import java.util.regex.Pattern;
 
+import net.sf.jasperreports.engine.JRDefaultScriptlet;
+import net.sf.jasperreports.engine.JRScriptletException;
+
 /**
  *
  * @author CALIDAD
  */
-public class NumberToLetterConverter {
+public class NumberToLetterConverter extends JRDefaultScriptlet{
 
 	private final String[] UNIDADES = { "", "un ", "dos ", "tres ", "cuatro ", "cinco ", "seis ", "siete ", "ocho ",
 			"nueve " };
@@ -18,10 +21,12 @@ public class NumberToLetterConverter {
 
 	public NumberToLetterConverter() {
 	}
+	
+	
 
-	public String Convertir(String numero, boolean mayusculas) {
+	public String Convertir(String numero, boolean mayusculas) throws JRScriptletException {
 		String literal = "";
-		String parte_decimal;
+		String parte_decimal = "";
 		// si el numero utiliza (.) en lugar de (,) -> se reemplaza
 		numero = numero.replace(".", ",");
 		// si el numero no tiene parte decimal, se le agrega ,00
@@ -36,7 +41,7 @@ public class NumberToLetterConverter {
 			if (Num[1].equals("00")) {
 				parte_decimal = "EUROS";
 			} else {
-				parte_decimal = "EUROS CON " + Num[1] + " CENTIMOS";
+				parte_decimal = "EUROS CON " + numberToLetter(Num[1], mayusculas) + "CENTIMOS";
 			}
 
 			// se convierte el numero a literal
@@ -53,6 +58,7 @@ public class NumberToLetterConverter {
 			} else {// sino unidades -> 9
 				literal = getUnidades(Num[0]);
 			}
+			
 			// devuelve el resultado en mayusculas o minusculas
 			if (mayusculas) {
 				return (literal + parte_decimal).toUpperCase();
@@ -62,6 +68,32 @@ public class NumberToLetterConverter {
 		} else {// error, no se puede convertir
 			return literal = null;
 		}
+	}
+
+	private String numberToLetter(String num, boolean mayusculas) {
+
+		String literal = "";
+
+		// se convierte el numero a literal
+		if (Integer.parseInt(num) == 0) {// si el valor es cero
+			literal = "cero ";
+		} else if (Integer.parseInt(num) > 999999) {// si es millon
+			literal = getMillones(num);
+		} else if (Integer.parseInt(num) > 999) {// si es miles
+			literal = getMiles(num);
+		} else if (Integer.parseInt(num) > 99) {// si es centena
+			literal = getCentenas(num);
+		} else if (Integer.parseInt(num) > 9) {// si es decena
+			literal = getDecenas(num);
+		} else {// sino unidades -> 9
+			literal = getUnidades(num);
+		}
+
+		// devuelve el resultado en mayusculas o minusculas
+		if (mayusculas) {
+			literal = (literal).toUpperCase();
+		}
+		return literal;
 	}
 
 	/* funciones para convertir los numeros a literales */

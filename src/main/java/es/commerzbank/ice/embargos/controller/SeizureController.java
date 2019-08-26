@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.utils.DownloadReportFile;
 import es.commerzbank.ice.utils.NumberToLetterConverter;
+import net.sf.jasperreports.engine.JRScriptletException;
 
 @CrossOrigin("*")
 @RestController
@@ -35,7 +36,6 @@ public class SeizureController {
 	@GetMapping("/{idSeizure}/case/report")
 	public ResponseEntity<InputStreamResource> generarJustificanteEmbargo(
 			@PathVariable("idSeizure") Integer idSeizure) {
-		
 
 		DownloadReportFile.setTempFileName("justificanteReport");
 
@@ -50,7 +50,7 @@ public class SeizureController {
 
 		} catch (Exception e) {
 			LOG.error("Error in justificanteReport", e);
-			
+
 			if (e.getMessage() == null) {
 				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
 			}
@@ -62,8 +62,6 @@ public class SeizureController {
 	@GetMapping("/propertyLien/fileControl/{fileControl}/report")
 	public ResponseEntity<InputStreamResource> generarResumentTrabas(
 			@PathVariable("fileControl") Integer codControlFichero) {
-		
-		
 
 		DownloadReportFile.setTempFileName("resumenTrabasReport");
 
@@ -77,22 +75,43 @@ public class SeizureController {
 			return DownloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
-			LOG.error("Error in justificanteReport", e);
-			System.out.println(e);
+			LOG.error("Error in resumenTrabas", e);
+			
+			if (e.getMessage() == null) {
+				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
+			}
 
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 	}
-	
-	@GetMapping("/propertyLien/anexo/{importe}")
-	public ResponseEntity<InputStreamResource> generarAnexo(@PathVariable("importe") BigDecimal importe) {
-		
+
+	@GetMapping("/propertyLien/anexo/{cod_usuario}/{cod_traba}")
+	public ResponseEntity<InputStreamResource> generarAnexo(@PathVariable("cod_usuario") BigDecimal cod_usuario, @PathVariable("cod_traba") BigDecimal cod_traba) throws JRScriptletException {
+
 		NumberToLetterConverter ntlc = new NumberToLetterConverter();
-		
-		System.out.println(ntlc.Convertir(String.valueOf(importe), true));
-		
-		
-		return null;
+
+		System.out.println(ntlc.Convertir(String.valueOf(1250.6), true) + " COD_USUARIO: " + cod_usuario + " COD_TRABA: " + cod_traba);
+
+		DownloadReportFile.setTempFileName("anexoReport");
+
+		DownloadReportFile.setFileTempPath(pdfSavedPath);
+
+		try {
+
+			// seizure service falta
+			DownloadReportFile.writeFile(seizureService.generarAnexo(cod_usuario, cod_traba));
+
+			return DownloadReportFile.returnToDownloadFile();
+
+		} catch (Exception e) {
+			LOG.error("Error in anexoReport", e);
+			
+			if (e.getMessage() == null) {
+				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
+			}
+			
+			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 }
