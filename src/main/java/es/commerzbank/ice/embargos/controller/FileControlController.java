@@ -1,6 +1,6 @@
 package es.commerzbank.ice.embargos.controller;
 
-import java.util.Date;
+
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

@@ -62,14 +62,40 @@ public class SeizureServiceImpl implements SeizureService {
 	}
 
 	@Override
-	public byte[] generarResumenTrabas(Integer codControlFichero) throws Exception {
+	public byte[] generarResumenTrabasF4(Integer codControlFichero) throws Exception {
+		HashMap<String, Object> parameters = new HashMap<String, Object>();
+
+		try (Connection conn = oracleDataSourceEmbargos.getEmbargosConnection()) {
+
+			Resource resumenTrabasJrxml = ResourcesUtil.getFromJasperFolder("resumen_trabas_seizures.jasper");
+
+			Resource logoImage = ResourcesUtil.getImageLogoCommerceResource();
+
+			File image = logoImage.getFile();
+
+			parameters.put("IMAGE_PARAM", image.toString());
+			parameters.put("COD_FILE_CONTROL", codControlFichero);
+
+			InputStream resumenInputStream = resumenTrabasJrxml.getInputStream();
+
+			JasperPrint fillReport = JasperFillManager.fillReport(resumenInputStream, parameters, conn);
+
+			return JasperExportManager.exportReportToPdf(fillReport);
+
+		} catch (SQLException e) {
+			throw new Exception("DB exception while generating the report", e);
+		}
+	}
+
+	@Override
+	public byte[] generarResumenTrabasF3(Integer codControlFichero) throws Exception {
 
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
 		try (Connection conn = oracleDataSourceEmbargos.getEmbargosConnection()) {
 
-			Resource resumenTrabasJrxml = ResourcesUtil.getFromJasperFolder("resumen_trabas.jasper");
-			Resource totalTrabas = ResourcesUtil.getFromJasperFolder("totalTrabado.jasper");
+			Resource resumenTrabasJrxml = ResourcesUtil.getFromJasperFolder("resumen_trabas_request.jasper");
+			
 			Resource headerSubreport = ResourcesUtil.getReportHeaderResource();
 
 			Resource logoImage = ResourcesUtil.getImageLogoCommerceResource();
@@ -77,14 +103,11 @@ public class SeizureServiceImpl implements SeizureService {
 			File image = logoImage.getFile();
 
 			InputStream subReportHeaderInputStream = headerSubreport.getInputStream();
-			InputStream subReportTotalTrabasInputStream = totalTrabas.getInputStream();
 
 			JasperReport subReportHeader = (JasperReport) JRLoader.loadObject(subReportHeaderInputStream);
-			JasperReport subReportTotalTrabas = (JasperReport) JRLoader.loadObject(subReportTotalTrabasInputStream);
 
 			parameters.put("sub_img_param", image.toString());
 			parameters.put("SUBREPORT_HEADER", subReportHeader);
-			parameters.put("SUBREPORT_IMPORTETOTALTRABADO", subReportTotalTrabas);
 			parameters.put("COD_FILE_CONTROL", codControlFichero);
 
 			InputStream resumenInputStream = resumenTrabasJrxml.getInputStream();
@@ -100,13 +123,14 @@ public class SeizureServiceImpl implements SeizureService {
 	}
 
 	@Override
-	public byte[] generarAnexo(BigDecimal cod_usuario, BigDecimal cod_traba) throws Exception {
+	public byte[] generarAnexo(BigDecimal cod_usuario, BigDecimal cod_traba, Integer num_anexo) throws Exception {
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
 		try (Connection conn_comunes = oracleDataSourceEmbargos.getComunesConnection();
 				Connection conn_embargos = oracleDataSourceEmbargos.getEmbargosConnection();) {
 
-			Resource anexoJasperFile = ResourcesUtil.getFromJasperFolder("anexo1.jasper");
+			Resource anexoJasperFile = ResourcesUtil.getFromJasperFolder("anexo" + num_anexo + ".jasper");
+
 			Resource importeAbonadoSubReport = ResourcesUtil.getFromJasperFolder("importe_abonado.jasper");
 //			Resource simpleHeaderResource = ResourcesUtil.getSimpleHeader();
 			Resource logoImage = ResourcesUtil.getImageLogoCommerceResource();
@@ -126,8 +150,6 @@ public class SeizureServiceImpl implements SeizureService {
 			parameters.put("COD_TRABA", cod_traba);
 			parameters.put("REPORT_CONNECTION_EMB", conn_embargos);
 
-			
-	
 			InputStream anexo1Input = anexoJasperFile.getInputStream();
 			JasperPrint fillReport = JasperFillManager.fillReport(anexo1Input, parameters, conn_comunes);
 
