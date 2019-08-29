@@ -60,6 +60,38 @@ public class SeizureServiceImpl implements SeizureService {
 			throw new Exception("DB exception while generating the report", e);
 		}
 	}
+	
+	@Override
+	public byte[] generateLevantamientoReport(Integer idLifting) throws Exception {
+		HashMap<String, Object> parameters = new HashMap<String, Object>();
+
+		try (Connection conn = oracleDataSourceEmbargos.getEmbargosConnection()) {
+
+			Resource embargosJrxml = ResourcesUtil.getFromJasperFolder("levantamiento_embargo.jasper");
+			Resource logoImage = ResourcesUtil.getImageLogoCommerceResource();
+			// Resource templateStyle = ResourcesUtil.getTemplateStyleResource();
+
+			File image = logoImage.getFile();
+
+			// InputStream templateStyleStream =
+			// getClass().getResourceAsStream("/jasper/CommerzBankStyle.jrtx");
+
+			parameters.put("COD_LEVANTAMIENTO", idLifting);
+			parameters.put("IMAGE_PARAM", image.toString());
+			// parameters.put("TEMPLATE_STYLE_PATH", templateStyleStream);
+
+			InputStream justificanteInputStream = embargosJrxml.getInputStream();
+
+			JasperPrint fillReport = JasperFillManager.fillReport(justificanteInputStream, parameters, conn);
+
+			return JasperExportManager.exportReportToPdf(fillReport);
+
+		} catch (SQLException e) {
+			System.out.println(e);
+			throw new Exception("DB exception while generating the report", e);
+		}
+	}
+
 
 	@Override
 	public byte[] generarResumenTrabasF4(Integer codControlFichero) throws Exception {
@@ -160,5 +192,6 @@ public class SeizureServiceImpl implements SeizureService {
 			throw new Exception("DB exception while generating the report", e);
 		}
 	}
+
 
 }

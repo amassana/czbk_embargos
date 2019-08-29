@@ -186,13 +186,6 @@ where t.cod_traba = $P{COD_TRABA}]]>
 				<text><![CDATA[NOMBRE:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement isPrintRepeatedValues="false" x="0" y="132" width="83" height="20" uuid="da374c33-0fc1-415e-9c3a-b504580e97f8"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="JustificanteReportFont" size="13" isBold="true"/>
-				</textElement>
-				<text><![CDATA[IMPORTE:]]></text>
-			</staticText>
-			<staticText>
 				<reportElement x="0" y="163" width="419" height="30" uuid="477b6876-a0cd-47d8-9fbb-d535172f6a2b"/>
 				<textElement>
 					<font fontName="JustificanteReportFont" size="12" isBold="true"/>
@@ -221,7 +214,7 @@ where t.cod_traba = $P{COD_TRABA}]]>
 				<text><![CDATA[Importe:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="69" y="102" width="244" height="20" uuid="e3848e4c-a64f-4647-9dc9-624a19259395">
+				<reportElement x="69" y="102" width="421" height="20" uuid="e3848e4c-a64f-4647-9dc9-624a19259395">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="16dcd533-3d49-4634-b336-f64c3a91946b"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -266,7 +259,7 @@ where t.cod_traba = $P{COD_TRABA}]]>
 				<textFieldExpression><![CDATA[$F{IMPORTETRABA} + " EUR"]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="83" y="192" width="112" height="20" uuid="f2467dde-a3a6-4e7c-961e-f6598679d694">
+				<reportElement x="83" y="192" width="157" height="20" uuid="f2467dde-a3a6-4e7c-961e-f6598679d694">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3b989121-f2ee-4887-ad1b-8b10f49b27a0"/>
 				</reportElement>
 				<textElement verticalAlignment="Bottom">
@@ -325,7 +318,7 @@ where t.cod_traba = $P{COD_TRABA}]]>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement x="83" y="148" width="118" height="1" uuid="0538859b-bc49-4a3e-b7b9-f8417de15eb6">
+				<reportElement x="87" y="148" width="244" height="1" uuid="0538859b-bc49-4a3e-b7b9-f8417de15eb6">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<graphicElement>
@@ -333,7 +326,7 @@ where t.cod_traba = $P{COD_TRABA}]]>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement x="80" y="212" width="118" height="1" uuid="36060081-1cc2-4a94-9741-8019789a9099">
+				<reportElement x="80" y="212" width="160" height="1" uuid="36060081-1cc2-4a94-9741-8019789a9099">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<graphicElement>
@@ -356,6 +349,13 @@ where t.cod_traba = $P{COD_TRABA}]]>
 					<pen lineWidth="1.0" lineStyle="Dotted"/>
 				</graphicElement>
 			</line>
+			<staticText>
+				<reportElement x="0" y="128" width="86" height="20" uuid="5c158429-e5b9-4119-89d6-a0cd8b17515e"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="JustificanteReportFont" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[IMPORTE:]]></text>
+			</staticText>
 		</band>
 	</detail>
 	<columnFooter>

@@ -32,7 +32,7 @@ public class SeizureController {
 	@Autowired
 	private SeizureService seizureService;
 
-	@GetMapping("/notification/{idSeizure}/report")
+	@GetMapping("/notification/{idSeizure}/seizureReport")
 	@ApiOperation(value = "Devuelve un justificante de embargo")
 	public ResponseEntity<InputStreamResource> generarJustificanteEmbargo(
 			@PathVariable("idSeizure") Integer idSeizure) {
@@ -50,6 +50,34 @@ public class SeizureController {
 
 		} catch (Exception e) {
 			LOG.error("Error in justificanteReport", e);
+
+			if (e.getMessage() == null) {
+				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
+			}
+
+			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@GetMapping("/notification/{idLifting}/liftingReport")
+	@ApiOperation(value = "Devuelve un justificante de embargo")
+	public ResponseEntity<InputStreamResource> generarJustificanteEmbargo3(
+			@PathVariable("idLifting") Integer idLifting) {
+
+		DownloadReportFile.setTempFileName("levantamientoReport");
+
+		DownloadReportFile.setFileTempPath(pdfSavedPath);
+
+		try {
+
+			// seizure service falta
+			DownloadReportFile.writeFile(seizureService.generateLevantamientoReport(idLifting));
+
+			return DownloadReportFile.returnToDownloadFile();
+
+		} catch (Exception e) {
+			LOG.error("Error in levantamientoReport", e);
+			System.out.println(e);
 
 			if (e.getMessage() == null) {
 				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);

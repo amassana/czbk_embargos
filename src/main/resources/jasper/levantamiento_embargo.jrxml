@@ -15,7 +15,7 @@
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="265"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="724"/>
 	<parameter name="IMAGE_PARAM" class="java.lang.String"/>
-	<parameter name="COD_LEVANTAMIENTO" class="java.math.BigDecimal"/>
+	<parameter name="COD_LEVANTAMIENTO" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[SELECT
     e.nombre,
@@ -24,7 +24,6 @@
     e.codigo_postal,
 l.F_ULTIMA_MODIFICACION,
     e.numero_embargo,
-    		e.DATREGCOMDET,
     t.fecha_traba,
     eo.DES_ENTIDAD,
     e.nif ,
@@ -63,9 +62,6 @@ WHERE
 	<field name="NUMERO_EMBARGO" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="NUMERO_EMBARGO"/>
 	</field>
-	<field name="DATREGCOMDET" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="DATREGCOMDET"/>
-	</field>
 	<field name="FECHA_TRABA" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="FECHA_TRABA"/>
 	</field>
@@ -84,7 +80,7 @@ WHERE
 	<field name="IMPORTELEVANTAMIENTO" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="IMPORTELEVANTAMIENTO"/>
 	</field>
-	<field name="COLUMN_14" class="java.math.BigDecimal">
+	<field name="COLUMN_13" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="F_ULTIMA_MODIFICACION"/>
 	</field>
 	<background>
@@ -203,13 +199,6 @@ WHERE
 				<text><![CDATA[NOMBRE:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement isPrintRepeatedValues="false" x="0" y="132" width="83" height="20" uuid="da374c33-0fc1-415e-9c3a-b504580e97f8"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="JustificanteReportFont" size="13" isBold="true"/>
-				</textElement>
-				<text><![CDATA[IMPORTE:]]></text>
-			</staticText>
-			<staticText>
 				<reportElement x="0" y="163" width="419" height="30" uuid="477b6876-a0cd-47d8-9fbb-d535172f6a2b"/>
 				<textElement>
 					<font fontName="JustificanteReportFont" size="12" isBold="true"/>
@@ -238,7 +227,7 @@ WHERE
 				<text><![CDATA[Importe:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="69" y="102" width="244" height="20" uuid="e3848e4c-a64f-4647-9dc9-624a19259395">
+				<reportElement x="68" y="103" width="244" height="20" uuid="e3848e4c-a64f-4647-9dc9-624a19259395">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="16dcd533-3d49-4634-b336-f64c3a91946b"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -247,7 +236,7 @@ WHERE
 				<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="61" y="79" width="104" height="20" uuid="1744d672-39f5-4400-83d8-925eb552fe8f">
+				<reportElement x="57" y="79" width="104" height="20" uuid="1744d672-39f5-4400-83d8-925eb552fe8f">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="1a6c961d-eb0b-4f68-af21-5d2b826bd1c1"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -256,7 +245,7 @@ WHERE
 				<textFieldExpression><![CDATA[$F{NIF}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="87" y="128" width="244" height="20" uuid="e7561877-c18c-42ac-a654-85c83ad97f70">
+				<reportElement x="84" y="129" width="244" height="20" uuid="e7561877-c18c-42ac-a654-85c83ad97f70">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="891fdffe-38ba-48fd-b302-fe4baa8a541c"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -283,7 +272,7 @@ WHERE
 				<textFieldExpression><![CDATA[$F{IMPORTELEVANTAMIENTO} + " EUR"]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="83" y="192" width="112" height="20" uuid="f2467dde-a3a6-4e7c-961e-f6598679d694">
+				<reportElement x="83" y="192" width="160" height="20" uuid="f2467dde-a3a6-4e7c-961e-f6598679d694">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3b989121-f2ee-4887-ad1b-8b10f49b27a0"/>
 				</reportElement>
 				<textElement verticalAlignment="Bottom">
@@ -326,7 +315,7 @@ WHERE
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement x="56" y="99" width="118" height="1" uuid="5923e2d6-d7b4-4d9e-92fa-959f780d41a4">
+				<reportElement x="57" y="99" width="118" height="1" uuid="5923e2d6-d7b4-4d9e-92fa-959f780d41a4">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<graphicElement>
@@ -334,7 +323,7 @@ WHERE
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement x="67" y="122" width="205" height="1" uuid="0c80ea2b-41c8-4b2f-a032-86b7a7771f27">
+				<reportElement x="68" y="123" width="205" height="1" uuid="0c80ea2b-41c8-4b2f-a032-86b7a7771f27">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<graphicElement>
@@ -342,7 +331,7 @@ WHERE
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement x="83" y="148" width="118" height="1" uuid="0538859b-bc49-4a3e-b7b9-f8417de15eb6">
+				<reportElement x="84" y="148" width="118" height="1" uuid="0538859b-bc49-4a3e-b7b9-f8417de15eb6">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<graphicElement>
@@ -350,7 +339,7 @@ WHERE
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement x="80" y="212" width="118" height="1" uuid="36060081-1cc2-4a94-9741-8019789a9099">
+				<reportElement x="80" y="212" width="163" height="1" uuid="36060081-1cc2-4a94-9741-8019789a9099">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<graphicElement>
@@ -380,25 +369,24 @@ WHERE
 				<textElement>
 					<font size="11"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Siguiendo instrucciones de la " + $F{DES_ENTIDAD} + " por medio de envio telmático nos ordena el EMBARGO siguiente:"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Siguiendo instrucciones de la " + $F{DES_ENTIDAD} + " por medio de envio telmático nos ordena el LEVANTAMIENTO DE EMBARGO del embargo siguiente:"]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="0" y="129" width="82" height="20" uuid="9c8689b2-0eb8-400b-8374-524be7360a95"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="JustificanteReportFont" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[IMPORTE:]]></text>
+			</staticText>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="160" splitType="Stretch">
-			<staticText>
-				<reportElement x="36" y="150" width="84" height="10" uuid="b799b760-9ef9-4f75-88c6-6cddf191ea5e"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="JustificanteReportFont" size="6"/>
-				</textElement>
-				<text><![CDATA[Información Organismo Emisor]]></text>
-			</staticText>
-		</band>
+		<band height="160" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
 		<band height="108" splitType="Stretch">
 			<staticText>
-				<reportElement x="36" y="10" width="314" height="19" uuid="a6bcf41e-55e5-4c50-8c93-ab971483b873"/>
+				<reportElement x="37" y="0" width="314" height="19" uuid="a6bcf41e-55e5-4c50-8c93-ab971483b873"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="JustificanteReportFont" size="8" isBold="false"/>
 				</textElement>
@@ -427,15 +415,6 @@ Sucursal en España]]></text>
 				</textElement>
 				<text><![CDATA[Esta notificación no precisa firma.]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="36" y="0" width="464" height="10" uuid="66722ec0-57b3-4571-9724-c9919e79653f">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f9c8ca2d-4dc6-4b24-9ce1-5d02fe847a7f"/>
-				</reportElement>
-				<textElement verticalAlignment="Middle">
-					<font fontName="JustificanteReportFont" size="6"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{DATREGCOMDET}]]></textFieldExpression>
-			</textField>
 		</band>
 	</pageFooter>
 </jasperReport>
