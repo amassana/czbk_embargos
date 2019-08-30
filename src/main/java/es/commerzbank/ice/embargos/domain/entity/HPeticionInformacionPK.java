@@ -12,18 +12,18 @@ public class HPeticionInformacionPK implements Serializable {
 	//default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
-	@Column(name="COD_PETICION", unique=true, nullable=false, length=10)
-	private String codPeticion;
+	@Column(name="COD_PETICION", unique=true, nullable=false)
+	private long codPeticion;
 
 	@Column(name="CHANGE_TIMESTAMP", unique=true, nullable=false)
 	private String changeTimestamp;
 
 	public HPeticionInformacionPK() {
 	}
-	public String getCodPeticion() {
+	public long getCodPeticion() {
 		return this.codPeticion;
 	}
-	public void setCodPeticion(String codPeticion) {
+	public void setCodPeticion(long codPeticion) {
 		this.codPeticion = codPeticion;
 	}
 	public String getChangeTimestamp() {
@@ -42,14 +42,14 @@ public class HPeticionInformacionPK implements Serializable {
 		}
 		HPeticionInformacionPK castOther = (HPeticionInformacionPK)other;
 		return 
-			this.codPeticion.equals(castOther.codPeticion)
+			this.codPeticion == castOther.codPeticion
 			&& this.changeTimestamp.equals(castOther.changeTimestamp);
 	}
 
 	public int hashCode() {
 		final int prime = 31;
 		int hash = 17;
-		hash = hash * prime + this.codPeticion.hashCode();
+		hash = hash * prime + ((int) (this.codPeticion ^ (this.codPeticion >>> 32)));
 		hash = hash * prime + this.changeTimestamp.hashCode();
 		
 		return hash;

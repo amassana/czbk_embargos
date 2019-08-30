@@ -180,11 +180,6 @@ public abstract class Cuaderno63Mapper {
 	@AfterMapping
 	protected void setPeticionInformacionAfterMapping(@MappingTarget PeticionInformacion peticionInformacion, List<AccountDTO> listBankAccount) {
 		
-		//eliminar en el futuro, debe ser por sequence cuando no sea un char(10):
-		long aleatorio = (DoubleMath.roundToLong(Math.random()*1000000000L, RoundingMode.DOWN)) + 1000000000L;
-		peticionInformacion.setCodPeticion(Long.toString(aleatorio));
-		
-		
 		//Variables pendientes de cambiar:
 		BigDecimal pendienteCambiarBigDec = new BigDecimal(0);
 		EntidadesOrdenante pendienteCambiarEntidadesOrdenante  = new EntidadesOrdenante();
@@ -214,8 +209,8 @@ public abstract class Cuaderno63Mapper {
 		int i=1;
 		for (AccountDTO accountDTO : listAccount) {
 				
-			//Solo se setean las cuentas que tengan estado NORMAL:
-			if (EmbargosConstants.BANK_ACCOUNT_STATUS_NORMAL.equals(accountDTO.getStatus())) {
+			//Solo se setean las cuentas que tengan estado ACTIVE:
+			if (EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE.equals(accountDTO.getStatus())) {
 				switch(i) {
 					case 1:
 						peticionInformacion.setCuenta1(accountDTO.getAccountNum());

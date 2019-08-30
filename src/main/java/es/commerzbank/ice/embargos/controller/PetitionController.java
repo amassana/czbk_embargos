@@ -77,7 +77,7 @@ public class PetitionController {
 	@ApiOperation(value = "Devuelve la lista de cuentas disponibles para el caso indicado de PETICION_INFORMACION_CUENTAS.")
 	public ResponseEntity<List<BankAccountDTO>> getBankAccountListByCodeFileControlAndPetitionCase(
 			Authentication authentication, @PathVariable("codeFileControl") Long codeFileControl,
-			@PathVariable("codePetitionCase") String codePetitionCase) {
+			@PathVariable("codePetitionCase") Long codePetitionCase) {
 		ResponseEntity<List<BankAccountDTO>> response = null;
 		List<BankAccountDTO> result = null;
 

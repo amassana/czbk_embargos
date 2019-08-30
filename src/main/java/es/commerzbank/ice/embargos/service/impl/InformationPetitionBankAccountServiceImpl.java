@@ -27,7 +27,7 @@ public class InformationPetitionBankAccountServiceImpl implements InformationPet
 	
 	@Override
 	public List<BankAccountDTO> getAllByControlFicheroAndPeticionInformacion(Long codControlFichero,
-			String codPeticionInformacion) {
+			Long codPeticionInformacion) {
 	
 		List<BankAccountDTO> bankAccountList = new ArrayList<>();
 		

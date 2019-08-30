@@ -16,7 +16,7 @@ public abstract class InformationPetitionBankAccountMapper {
 		@Mapping(source = "accountDTO.iban", target = "id.iban"),
 		@Mapping(source = "accountDTO.status", target = "estadoCuenta")
 	})
-	public abstract PeticionInformacionCuenta toPeticionInformacionCuenta(AccountDTO accountDTO, String codPeticionInformacion);
+	public abstract PeticionInformacionCuenta toPeticionInformacionCuenta(AccountDTO accountDTO, Long codPeticionInformacion);
 	
 	
 }
