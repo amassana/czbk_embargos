@@ -67,7 +67,7 @@ public class PetitionController {
 
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 
-			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
+			LOG.error("ERROR in getPetitionCaseListByCodeFileControl: ", e);
 		}
 
 		return response;
@@ -77,7 +77,7 @@ public class PetitionController {
 	@ApiOperation(value = "Devuelve la lista de cuentas disponibles para el caso indicado de PETICION_INFORMACION_CUENTAS.")
 	public ResponseEntity<List<BankAccountDTO>> getBankAccountListByCodeFileControlAndPetitionCase(
 			Authentication authentication, @PathVariable("codeFileControl") Long codeFileControl,
-			@PathVariable("codePetitionCase") String codePetitionCase) {
+			@PathVariable("codePetitionCase") Long codePetitionCase) {
 		ResponseEntity<List<BankAccountDTO>> response = null;
 		List<BankAccountDTO> result = null;
 
@@ -92,7 +92,7 @@ public class PetitionController {
 
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 
-			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
+			LOG.error("ERROR in getBankAccountListByCodeFileControlAndPetitionCase: ", e);
 		}
 
 		return response;
@@ -125,7 +125,7 @@ public class PetitionController {
 
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
+			LOG.error("ERROR in savePetitionCase: ", e);
 		}
 
 		return response;
@@ -150,7 +150,7 @@ public class PetitionController {
 
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 
-			LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
+			LOG.error("ERROR in getAuditPetitionCase: ", e);
 		}
 
 		return response;
@@ -175,7 +175,7 @@ public class PetitionController {
 //			
 //			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 //			
-//			//LOG.error("ERROR: ".concat(e.getLocalizedMessage()));
+//			LOG.error("ERROR in getByCodeFileControl: ", e);
 //		}
 //		
 //		return response;

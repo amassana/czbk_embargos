@@ -5,11 +5,12 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-
-import javax.transaction.Transactional;
 
 import org.apache.commons.io.FileUtils;
 import org.beanio.BeanReader;
@@ -20,22 +21,29 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
+import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
-import es.commerzbank.ice.comun.lib.typeutils.VB6Date;
 import es.commerzbank.ice.comun.lib.util.ICEParserException;
-import es.commerzbank.ice.embargos.domain.dto.BankAccountDTO;
+import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
+import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
+import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlficheroPK;
+import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
 import es.commerzbank.ice.embargos.domain.entity.PeticionInformacion;
 import es.commerzbank.ice.embargos.domain.entity.PeticionInformacionCuenta;
+import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.embargos.domain.mapper.Cuaderno63Mapper;
 import es.commerzbank.ice.embargos.domain.mapper.InformationPetitionBankAccountMapper;
+import es.commerzbank.ice.embargos.domain.mapper.SeizedBankAccountMapper;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase1.CabeceraEmisorFase1;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase1.FinFicheroFase1;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase1.SolicitudInformacionFase1;
@@ -51,15 +59,18 @@ import es.commerzbank.ice.embargos.repository.InformationPetitionBankAccountRepo
 import es.commerzbank.ice.embargos.repository.InformationPetitionRepository;
 import es.commerzbank.ice.embargos.repository.OrderingEntityRepository;
 import es.commerzbank.ice.embargos.repository.PetitionRepository;
-import es.commerzbank.ice.embargos.repository.SeizureAccountRepository;
+import es.commerzbank.ice.embargos.repository.SeizedBankAccountRepository;
+import es.commerzbank.ice.embargos.repository.SeizedRepository;
+import es.commerzbank.ice.embargos.repository.SeizureBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
 import es.commerzbank.ice.embargos.service.Cuaderno63Service;
 import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.utils.EmbargosConstants;
 import es.commerzbank.ice.utils.EmbargosUtils;
+import es.commerzbank.ice.utils.ICEDateUtils;
 
 @Service
-@Transactional
+@Transactional(transactionManager="transactionManager")
 public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 
 	private static final Logger LOG = LoggerFactory.getLogger(Cuaderno63ServiceImpl.class);
@@ -83,7 +94,13 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	InformationPetitionBankAccountMapper informationPetitionBankAccountMapper;
 	
 	@Autowired
+	SeizedBankAccountMapper seizedBankAccountMapper;
+	
+	@Autowired
 	CustomerService customerService;
+	
+	@Autowired
+	TaskService taskService;
 	
 	//Agregar repositories de DWH ...
 	@Autowired
@@ -102,7 +119,13 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	SeizureRepository seizureRepository;
 	
 	@Autowired
-	SeizureAccountRepository seizureAccountRepository;
+	SeizedRepository seizedRepository;
+	
+	@Autowired
+	SeizureBankAccountRepository seizureBankAccountRepository;
+	
+	@Autowired
+	SeizedBankAccountRepository seizedBankAccountRepository;
 	
 	@Autowired
 	OrderingEntityRepository orderingEntityRepository;
@@ -147,28 +170,36 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        		SolicitudInformacionFase1 solicitudInformacion = (SolicitudInformacionFase1) record;
 	        		LOG.debug(solicitudInformacion.getNifDeudor());
 	 		        
-	        		//Obtener las cuentas del nif:
-	        		List<BankAccountDTO> listBankAccount = customerService.listAllAccountsByNif(solicitudInformacion.getNifDeudor());
+	        		//Llamada a Datawarehouse: Obtener las cuentas del cliente a partir del nif:        		
+	        		CustomerDTO customerDTO = customerService.findCustomerByNif(solicitudInformacion.getNifDeudor());
 	        		
-	        		//Tratar solamente los clientes en los que se han encontrado cuentas:
-	        		if(listBankAccount != null && !listBankAccount.isEmpty()) {
-	        		        			
-		        		//Se guarda la PeticionInformacion en bbdd:
-		        		PeticionInformacion peticionInformacion = cuaderno63Mapper.generatePeticionInformacion(solicitudInformacion, 
-		        				controlFicheroPeticion.getCodControlFichero(), listBankAccount);
+	        		//Si existe el cliente:
+	        		if (customerDTO!=null) {
+	        		
+		        		List<AccountDTO> accountList = customerDTO.getBankAccounts();
 		        		
-		        		informationPetitionRepository.save(peticionInformacion);
-		        			        		
-	        			//Se guardan todas las cuentas del nif en la tabla PETICION_INFORMACION_CUENTAS:
-		        		for(BankAccountDTO bankAccountDTO : listBankAccount) {
+		        		//Tratar solamente los clientes en los que se han encontrado cuentas:
+		        		if(accountList != null && !accountList.isEmpty()) {
+		        		    	        			
+		        			String razonSocialInterna = EmbargosUtils.determineRazonSocialInternaFromCustomer(customerDTO);
 		        			
-		        			PeticionInformacionCuenta peticionInformacionCuenta = 
-		        					informationPetitionBankAccountMapper.toPeticionInformacionCuenta(bankAccountDTO, 
-		        							peticionInformacion.getCodPeticion());
-		        			
-		        			informationPetitionBankAccountRepository.save(peticionInformacionCuenta);
+			        		//Se guarda la PeticionInformacion en bbdd:
+			        		PeticionInformacion peticionInformacion = cuaderno63Mapper.generatePeticionInformacion(solicitudInformacion, 
+			        				controlFicheroPeticion.getCodControlFichero(), accountList, razonSocialInterna);
+			        		
+			        		informationPetitionRepository.save(peticionInformacion);
+			        			        		
+		        			//Se guardan todas las cuentas del nif en la tabla PETICION_INFORMACION_CUENTAS:
+			        		for(AccountDTO accountDTO : accountList) {
+			        			
+			        			PeticionInformacionCuenta peticionInformacionCuenta = 
+			        					informationPetitionBankAccountMapper.toPeticionInformacionCuenta(accountDTO, 
+			        							peticionInformacion.getCodPeticion());
+			        			
+			        			informationPetitionBankAccountRepository.save(peticionInformacionCuenta);
+			        		}
+		  		
 		        		}
-	  		
 	        		}
 	        		        	
 	        	} else if(EmbargosConstants.RECORD_NAME_CABECERAEMISOR.equals(beanReader.getRecordName())) {
@@ -209,14 +240,15 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 			controlFicheroPeticion.setEntidadesComunicadora(entidadComunicadora);
 			
 			//- Se guarda la fecha de la cabecera en el campo fechaCreacion de ControlFichero:
-			BigDecimal creationDateVB6 = fechaObtencionFicheroOrganismo!=null ?  BigDecimal.valueOf(VB6Date.dateToInt(fechaObtencionFicheroOrganismo)) : null;
-			controlFicheroPeticion.setFechaCreacion(creationDateVB6);
+			BigDecimal fechaObtencionFicheroOrganismoBigDec = fechaObtencionFicheroOrganismo!=null ? ICEDateUtils.dateToBigDecimal(fechaObtencionFicheroOrganismo, ICEDateUtils.FORMAT_yyyyMMdd) : null;
+			controlFicheroPeticion.setFechaCreacion(fechaObtencionFicheroOrganismoBigDec);
+			controlFicheroPeticion.setFechaComienzoCiclo(fechaObtencionFicheroOrganismoBigDec);
 	       
 			//- Se guarda la fecha maxima de respuesta (now + dias de margen)
 			long diasRespuestaF1 = entidadComunicadora.getDiasRespuestaF1()!=null ? entidadComunicadora.getDiasRespuestaF1().longValue() : 0;
 			Date lastDateResponse = DateUtils.convertToDate(LocalDate.now().plusDays(diasRespuestaF1));
-			BigDecimal limitResponseDateVB6 = BigDecimal.valueOf(VB6Date.dateToInt(lastDateResponse));
-			controlFicheroPeticion.setFechaMaximaRespuesta(limitResponseDateVB6);
+			BigDecimal limitResponseDate = ICEDateUtils.dateToBigDecimal(lastDateResponse, ICEDateUtils.FORMAT_yyyyMMdd);
+			controlFicheroPeticion.setFechaMaximaRespuesta(limitResponseDate);
 			
 			//Cambio de estado de CtrlFichero a: RECIBIDO
 	        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero();
@@ -226,6 +258,23 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        estadoCtrlfichero.setId(estadoCtrlficheroPK);
 	        controlFicheroPeticion.setEstadoCtrlfichero(estadoCtrlfichero);
 			
+	        //CALENDARIO:
+	        // - Se agrega la tarea al calendario:
+	        TaskAndEvent task = new TaskAndEvent();
+	        task.setDescription("Petición de información " + controlFicheroPeticion.getNombreFichero());
+	        task.setDate(ICEDateUtils.bigDecimalToDate(controlFicheroPeticion.getFechaMaximaRespuesta(), ICEDateUtils.FORMAT_yyyyMMdd));
+	        task.setCodCalendar(1L);
+	        task.setType("T");
+	        task.setCodOffice("1");
+	        //
+	        task.setAction("0");
+	        task.setState("P");
+	        task.setIndActive("Y");
+	        Long codTarea = taskService.addCalendarTask(task);
+	        
+	        // - Se guarda el codigo de tarea del calendario:
+	        controlFicheroPeticion.setCodTarea(BigDecimal.valueOf(codTarea));
+	        	        
 			fileControlRepository.save(controlFicheroPeticion);
 
 		} catch (Exception e) {
@@ -258,7 +307,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 		
 	}
 	
-	public void tramitarFicheroInformacion(Long codControlFicheroPeticion) throws IOException {
+	public void tramitarFicheroInformacion(Long codControlFicheroPeticion, String usuarioTramitador) throws IOException {
 			
 		
 		BeanReader beanReader = null;
@@ -301,14 +350,9 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        ControlFichero controlFicheroInformacion = 
 	        		cuaderno63Mapper.generateControlFichero(ficheroSalida, EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63);
 	        
-	        //Actualizacion estado del fichero: GENERANDO
-	        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero();
-	        EstadoCtrlficheroPK estadoCtrlficheroPK = new EstadoCtrlficheroPK();
-	        estadoCtrlficheroPK.setCodEstado(EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_INFORMACION_NORMA63_GENERATING);
-	        estadoCtrlficheroPK.setCodTipoFichero(EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63);
-	        estadoCtrlfichero.setId(estadoCtrlficheroPK);
-	        controlFicheroInformacion.setEstadoCtrlfichero(estadoCtrlfichero);
-	        
+	        //Usuario que realiza la tramitacion:
+	        controlFicheroInformacion.setUsuarioUltModificacion(usuarioTramitador);
+	        	        
 	        fileControlRepository.save(controlFicheroInformacion);
 	                
 	        // use a StreamFactory to create a BeanReader
@@ -376,20 +420,50 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        	
 	        }
 	
-	    
-	        //Se actualiza el CRC del registro de ControlFichero del fichero de salida:
+	        //ACTUALIZACIONES DEL FICHERO DE SALIDA (controlFicheroInformacion):
+	        //1.- Se actualiza el CRC:
 	        controlFicheroInformacion.setNumCrc(Long.toString(FileUtils.checksumCRC32(ficheroSalida)));
 	        
-	        //Actualizacion estado del fichero: GENERADO
-	        estadoCtrlfichero = new EstadoCtrlfichero();
-	        estadoCtrlficheroPK = new EstadoCtrlficheroPK();
+	        //2.- Se actualiza el estado a GENERADO:
+	        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero();
+	        EstadoCtrlficheroPK estadoCtrlficheroPK = new EstadoCtrlficheroPK();
 	        estadoCtrlficheroPK.setCodEstado(EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_INFORMACION_NORMA63_GENERATED);
 	        estadoCtrlficheroPK.setCodTipoFichero(EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63);
 	        estadoCtrlfichero.setId(estadoCtrlficheroPK);
 	        controlFicheroInformacion.setEstadoCtrlfichero(estadoCtrlfichero);
 	        
+	        //3.- Actualizacion del fichero de origen:
+	        controlFicheroInformacion.setControlFicheroOrigen(controlFicheroPeticion);
+	        
 	        fileControlRepository.save(controlFicheroInformacion);
+	        
+	        //ACTUALIZACIONES DEL FICHERO DE ENTRADA (controlFicheroPeticion):
+	        //1.- Actualizacion del flag IND_PROCESADO:
+	        controlFicheroPeticion.setIndProcesado(EmbargosConstants.IND_FLAG_YES);
+	        
+	        //2.- Actualizacion del fichero de respuesta:
+	        controlFicheroPeticion.setControlFicheroRespuesta(controlFicheroInformacion);
+	        
+	        fileControlRepository.save(controlFicheroPeticion);
         
+	        //Cerrar la tarea:
+	        boolean closed = false;
+	        if (controlFicheroPeticion.getCodTarea()!=null) {
+	        	
+	        	Long codTarea = controlFicheroPeticion.getCodTarea().longValue();	        	
+	        	closed = taskService.closeCalendarTask(codTarea);
+		      
+	        	if(!closed) {
+		        	LOG.error("ERROR: No se ha cerrado la Tarea");
+		        	//TODO: lanzar excepcion si no se ha cerrado la tarea
+		        }
+	        } else {
+	        	LOG.error("ERROR al cerrar la tarea: No se ha encontrado el codigo de la Tarea");
+	        	//TODO: lanzar excepcion si no se ha encontrado el codigo de tarea
+	        }
+
+	        
+	        
 		} catch (Exception e) {
 			
 			throw e;
@@ -432,6 +506,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	    	OrdenEjecucionEmbargoComplementarioFase3 ordenEjecucionEmbargoComp = null;
 	    	boolean isRecordOrdenEjecEmbargo;
 	    	EntidadesOrdenante entidadOrdenante = null;
+	    	Date fechaObtencionFicheroOrganismo = null;
 	    	
 	        while ((record = beanReader.read()) != null) {
 	               
@@ -454,6 +529,8 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        		
 	        		entidadOrdenante = orderingEntityRepository.findByNifEntidad(nifOrganismoEmisor);
 	        		
+	        		fechaObtencionFicheroOrganismo = cabeceraEmisor.getFechaObtencionFicheroOrganismo();
+	        		
 	        		//TODO TRATAR SI entidadOrdenante ES NULO -> NO SE PUEDE CREAR REGISTRO EN EMBARGO...
 	        		
 	        		
@@ -465,35 +542,167 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        	if (ordenEjecucionEmbargo!=null && !isRecordOrdenEjecEmbargo) {
 	        		
 	        		Embargo embargo = null;
+	        		Traba traba = null;
 	        		
+	        		//- Se obtienen de Datawarehouse los datos del cliente y sus cuentas a partir del NIF del cliente:
+	        		CustomerDTO customerDTO = customerService.findCustomerByNif(ordenEjecucionEmbargoComp.getNifDeudor());
+	        		
+	        		//- Se almacenan las cuentas obtenidas de Datawarehouse en una Hash donde la key es el IBAN:
+	        		Map<String, AccountDTO> customerAccountsMap = new HashMap<>(); 
+	        		if (customerDTO!=null) {
+		        		for (AccountDTO accountDTO : customerDTO.getBankAccounts()) {    		
+		        			customerAccountsMap.put(accountDTO.getIban(), accountDTO);
+		        		}
+	        		}
+	        		
+	        		//Determinacion de la fecha limite de la traba:
+	        		BigDecimal diasRespuestaFase3 = new BigDecimal(0);
+	        		if (entidadOrdenante!=null && entidadOrdenante.getEntidadesComunicadora()!=null && entidadOrdenante.getEntidadesComunicadora().getDiasRespuestaF3()!=null) {
+	        			diasRespuestaFase3 = entidadOrdenante.getEntidadesComunicadora().getDiasRespuestaF3();
+	        		}       				
+	        		BigDecimal fechaLimiteTraba = null;
+	        		if (fechaObtencionFicheroOrganismo!=null) {
+	        			Date fechaLimiteTrabaDate = DateUtils.convertToDate(DateUtils.convertToLocalDate(fechaObtencionFicheroOrganismo).plusDays(diasRespuestaFase3.longValue()));
+	        			fechaLimiteTraba = ICEDateUtils.dateToBigDecimal(fechaLimiteTrabaDate, ICEDateUtils.FORMAT_yyyyMMdd);
+	        		}
+	        		
+	        		//Razon social interna (obtenida del customerDTO de datawarehouse):
+	        		String razonSocialInterna = EmbargosUtils.determineRazonSocialInternaFromCustomer(customerDTO);
+	        		
+	        		//Generacion de las instancias de Embargo y de Traba:
 	        		if (ordenEjecucionEmbargoComp!=null 
 	        				&& ordenEjecucionEmbargo.getNifDeudor().equals(ordenEjecucionEmbargoComp.getNifDeudor())) {
 	        			
-	        			embargo = cuaderno63Mapper.generateEmbargo(ordenEjecucionEmbargo, ordenEjecucionEmbargoComp, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante);
+	        			embargo = cuaderno63Mapper.generateEmbargo(ordenEjecucionEmbargo, ordenEjecucionEmbargoComp, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, razonSocialInterna, fechaLimiteTraba);
+	        			
+	        			traba =  cuaderno63Mapper.generateTraba(ordenEjecucionEmbargo, ordenEjecucionEmbargoComp, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante);        			
+	        			traba.setEmbargo(embargo);
 	        			
 	        		} else {
-	        			embargo = cuaderno63Mapper.generateEmbargo(ordenEjecucionEmbargo, new OrdenEjecucionEmbargoComplementarioFase3(), controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante);
+	        			embargo = cuaderno63Mapper.generateEmbargo(ordenEjecucionEmbargo, new OrdenEjecucionEmbargoComplementarioFase3(), controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, razonSocialInterna, fechaLimiteTraba);
+
+	        			traba =  cuaderno63Mapper.generateTraba(ordenEjecucionEmbargo, ordenEjecucionEmbargoComp, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante);        			
+	        			traba.setEmbargo(embargo);
+	        			
 	        		}
-	        		
-	        		
-	        		//Tratamiento de embargo.....
+       			        		
+	        		//Guardar los datos del embargo y traba:
 	        		seizureRepository.save(embargo);
 	        		
-	        		//- Se guardan las cuentas del embargo:
+	        		seizedRepository.save(traba);
+	        		
+	        		//- Se guardan las cuentas obtenidas del fichero de embargo en CUENTA_EMBARGO:
 	        		for (CuentaEmbargo cuentaEmbargo : embargo.getCuentaEmbargos()) {
 	        			
 	        			//TODO mirar si se tiene que comprobar si es nulo el Iban o bien la "cuenta":
 	        			if (cuentaEmbargo.getIban()!=null && !cuentaEmbargo.getIban().isEmpty()) {
-	        				seizureAccountRepository.save(cuentaEmbargo);
+	        				
+	        				//Seteo de datos obtenidos de DWH en cuentaEmbargo:
+	        				AccountDTO accountDTO = customerAccountsMap.get(cuentaEmbargo.getIban());     				
+	        				if(accountDTO!=null) {
+	        					cuentaEmbargo.setCuenta(accountDTO.getAccountNum());
+	        				}
+	        				
+	        				seizureBankAccountRepository.save(cuentaEmbargo);
 	        			}
 	        		}
 	        		
-	        		//inicializar a null:
+	        		//Para almacenar los numeros de cuenta del cliente que vienen en el fichero de embargos:
+	        		List<String> ibanClienteFicheroEmbargoList = new ArrayList<>();
+	        		BigDecimal numeroOrdenCuenta = new BigDecimal(0);
+	        		
+	        		//- Se guardan las cuentas obtenidas del fichero de embargo en CUENTA_TRABA:
+	        		for (CuentaTraba cuentaTraba : traba.getCuentaTrabas()) {
+	        			
+	        			//TODO mirar si se tiene que comprobar si es nulo el Iban o bien la "cuenta":
+	        			if (cuentaTraba.getIban()!=null && !cuentaTraba.getIban().isEmpty()) {
+
+	        				ibanClienteFicheroEmbargoList.add(cuentaTraba.getIban());
+	        				
+	        				numeroOrdenCuenta = (cuentaTraba.getNumeroOrdenCuenta()!=null && cuentaTraba.getNumeroOrdenCuenta().compareTo(numeroOrdenCuenta) > 0) ?
+	        						cuentaTraba.getNumeroOrdenCuenta() : numeroOrdenCuenta;
+	        				
+	        				//Seteo de datos obtenidos de DWH en cuentaTraba:
+	    	        		AccountDTO accountDTO = customerAccountsMap.get(cuentaTraba.getIban());     				
+	    	        		if(accountDTO!=null) {
+	    	        			cuentaTraba.setCuenta(accountDTO.getAccountNum());
+	    	        			cuentaTraba.setDivisa(accountDTO.getDivisa());
+	    	        			cuentaTraba.setEstadoCuenta(accountDTO.getStatus());
+	    	        		}
+	        				
+	        				seizedBankAccountRepository.save(cuentaTraba);
+	        			}
+	        		}
+	        		
+	        		
+	        		//- Se guardan en CUENTA_TRABA el resto de cuentas obtenidas de Datawarehouse que no se encuentran en el fichero de Embargos (cuentas extra):
+	        		if(customerDTO!=null) {
+	        			
+	        			for (AccountDTO accountDTO : customerDTO.getBankAccounts()) {
+	        			
+	        				//Se guarda la cuenta si no se encuentra en el fichero de embargos:
+	        				if(!ibanClienteFicheroEmbargoList.contains(accountDTO.getIban())) {
+	        					
+	        					numeroOrdenCuenta = numeroOrdenCuenta.add(BigDecimal.valueOf(1));
+	        					
+	        					CuentaTraba cuentaTrabaExtra = extraCustomerBankAccount(accountDTO, numeroOrdenCuenta, traba);
+	        					seizedBankAccountRepository.save(cuentaTrabaExtra);
+	        				}
+	        			}
+	        		}
+	        		
+	        		
+	        		//inicializar a null para la siguiente iteracion:
 	        		ordenEjecucionEmbargo = null;
 	        		ordenEjecucionEmbargoComp = null;
 	        	}
 	        	
 	        }
+	        
+	        
+	        //Datos a guardar en ControlFichero una vez procesado el fichero:
+	        
+			//- Se guarda el codigo de la Entidad comunicadora en ControlFichero:
+	        EntidadesComunicadora entidadComunicadora = entidadOrdenante.getEntidadesComunicadora();
+	        controlFicheroEmbargo.setEntidadesComunicadora(entidadOrdenante.getEntidadesComunicadora());
+			
+			//- Se guarda la fecha de la cabecera en el campo fechaCreacion de ControlFichero:
+			BigDecimal fechaObtencionFicheroOrganismoBigDec = fechaObtencionFicheroOrganismo!=null ? ICEDateUtils.dateToBigDecimal(fechaObtencionFicheroOrganismo, ICEDateUtils.FORMAT_yyyyMMdd) : null;
+			controlFicheroEmbargo.setFechaCreacion(fechaObtencionFicheroOrganismoBigDec);
+			controlFicheroEmbargo.setFechaComienzoCiclo(fechaObtencionFicheroOrganismoBigDec);
+	       
+			//- Se guarda la fecha maxima de respuesta (now + dias de margen)
+			long diasRespuestaF1 = entidadComunicadora.getDiasRespuestaF1()!=null ? entidadComunicadora.getDiasRespuestaF1().longValue() : 0;
+			Date lastDateResponse = DateUtils.convertToDate(LocalDate.now().plusDays(diasRespuestaF1));
+			BigDecimal limitResponseDate = ICEDateUtils.dateToBigDecimal(lastDateResponse, ICEDateUtils.FORMAT_yyyyMMdd);
+			controlFicheroEmbargo.setFechaMaximaRespuesta(limitResponseDate);
+			
+			//Cambio de estado de CtrlFichero a: RECIBIDO
+	        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero();
+	        EstadoCtrlficheroPK estadoCtrlficheroPK = new EstadoCtrlficheroPK();
+	        estadoCtrlficheroPK.setCodEstado(EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_RECEIVED);
+	        estadoCtrlficheroPK.setCodTipoFichero(EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63);
+	        estadoCtrlfichero.setId(estadoCtrlficheroPK);
+	        controlFicheroEmbargo.setEstadoCtrlfichero(estadoCtrlfichero);
+			
+	        //CALENDARIO:
+	        // - Se agrega la tarea al calendario:
+	        TaskAndEvent task = new TaskAndEvent();
+	        task.setDescription("Embargo " + controlFicheroEmbargo.getNombreFichero());
+	        task.setDate(ICEDateUtils.bigDecimalToDate(controlFicheroEmbargo.getFechaMaximaRespuesta(), ICEDateUtils.FORMAT_yyyyMMdd));
+	        task.setCodCalendar(1L);
+	        task.setType("T");
+	        task.setCodOffice("1");
+	        //
+	        task.setAction("0");
+	        task.setState("P");
+	        task.setIndActive("Y");
+	        Long codTarea = taskService.addCalendarTask(task);
+	        
+	        // - Se guarda el codigo de tarea del calendario:
+	        controlFicheroEmbargo.setCodTarea(BigDecimal.valueOf(codTarea));
+	        	        
+			fileControlRepository.save(controlFicheroEmbargo);
         
 		} catch (Exception e) {
         
@@ -505,6 +714,20 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 				beanReader.close();
 			}
 		}
+		
+	}
+
+	private CuentaTraba extraCustomerBankAccount(AccountDTO accountDTO, BigDecimal numeroOrdenCuenta, Traba traba) {
+		CuentaTraba cuentaTraba = seizedBankAccountMapper.accountDTOToCuentaTraba(accountDTO);
+		cuentaTraba.setTraba(traba);
+		cuentaTraba.setNumeroOrdenCuenta(numeroOrdenCuenta);
+		EstadoTraba estadoTraba = new EstadoTraba();
+		estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_INICIAL);
+		cuentaTraba.setEstadoTraba(estadoTraba);
+		cuentaTraba.setOrigenEmb(EmbargosConstants.IND_FLAG_NO);
+		cuentaTraba.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+		cuentaTraba.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+		return cuentaTraba;
 		
 	}
 	

@@ -110,6 +110,9 @@ public class Embargo implements Serializable {
 	@OneToMany(mappedBy="embargo")
 	private List<Traba> trabas;
 
+	@Column(name="RAZON_SOCIAL_INTERNA", length=100)
+	private String razonSocialInterna;
+	
 	public Embargo() {
 	}
 
@@ -371,6 +374,14 @@ public class Embargo implements Serializable {
 		traba.setEmbargo(null);
 
 		return traba;
+	}
+
+	public String getRazonSocialInterna() {
+		return razonSocialInterna;
+	}
+
+	public void setRazonSocialInterna(String razonSocialInterna) {
+		this.razonSocialInterna = razonSocialInterna;
 	}
 
 }

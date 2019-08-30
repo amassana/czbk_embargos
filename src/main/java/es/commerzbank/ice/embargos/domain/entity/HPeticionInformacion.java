@@ -75,6 +75,9 @@ public class HPeticionInformacion implements Serializable {
 	@Column(length=39)
 	private String domicilio;
 
+	@Column(name="F_ULTIMA_MODIFICACION", precision=14)
+	private BigDecimal fUltimaModificacion;
+
 	@Column(length=24)
 	private String iban1;
 
@@ -284,6 +287,14 @@ public class HPeticionInformacion implements Serializable {
 
 	public void setDomicilio(String domicilio) {
 		this.domicilio = domicilio;
+	}
+
+	public BigDecimal getFUltimaModificacion() {
+		return this.fUltimaModificacion;
+	}
+
+	public void setFUltimaModificacion(BigDecimal fUltimaModificacion) {
+		this.fUltimaModificacion = fUltimaModificacion;
 	}
 
 	public String getIban1() {

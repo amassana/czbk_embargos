@@ -1,23 +1,23 @@
 package es.commerzbank.ice.embargos.domain.specification;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaBuilder.In;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import es.commerzbank.ice.comun.lib.typeutils.VB6Date;
 import es.commerzbank.ice.embargos.domain.dto.FileControlFiltersDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero_;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlficheroPK;
-import es.commerzbank.ice.embargos.domain.entity.TipoFichero;
 import es.commerzbank.ice.utils.EmbargosConstants;
 
 public class FileControlSpecification implements Specification<ControlFichero> {
@@ -38,33 +38,32 @@ public class FileControlSpecification implements Specification<ControlFichero> {
 				
 		Predicate predicate = null;
 		
-		long codTipoFichero = 0;
-		
 		//Filtro por tipo de fichero:
 		if (fileControlFiltersDTO.getFileType()!=null) {
-			TipoFichero tipoFichero = new TipoFichero();
-			codTipoFichero = fileControlFiltersDTO.getFileType()!=null ? Long.valueOf(fileControlFiltersDTO.getFileType()) : 0;
-			tipoFichero.setCodTipoFichero(codTipoFichero);
 			
-			if (codTipoFichero != EmbargosConstants.COD_TIPO_FICHERO_ALL_TYPES) {
-				predicate = criteriaBuilder.equal(root.get(ControlFichero_.TIPO_FICHERO), tipoFichero);
-				predicates.add(predicate);
+			In<Long> inClause = criteriaBuilder.in(root.get(ControlFichero_.TIPO_FICHERO));
+			
+			for (Long filetype : fileControlFiltersDTO.getFileType()) {
+			    inClause.value(filetype);
 			}
+			
+			predicates.add(inClause);
 		} else {
 			predicate = criteriaBuilder.equal(root.get(ControlFichero_.TIPO_FICHERO), -1);
 			predicates.add(predicate);
 		}
 
-		//Filtro de estado (no aplicar filtro si tipo de Fichero es COD_TIPO_FICHERO_ALL_TYPES (Todos) ):
+		//Filtro de estado (aplicar el filtro cuando fileType[] solo tiene 1 elemento, es decir, solo se ha seleccionado
+		//un tipo de fichero en el multiselector del frontal):
 		if(fileControlFiltersDTO.getStatus()!=null && fileControlFiltersDTO.getStatus().getCode()!=null 
-				&& codTipoFichero != EmbargosConstants.COD_TIPO_FICHERO_ALL_TYPES) {
+				&& fileControlFiltersDTO.getFileType()!=null && fileControlFiltersDTO.getFileType().length == 1) {
 			
 			EstadoCtrlfichero estadoCtrlFichero = new EstadoCtrlfichero();
 			
 			EstadoCtrlficheroPK estadoCtrlFicheroPK = new EstadoCtrlficheroPK();
 			
 			estadoCtrlFicheroPK.setCodEstado(fileControlFiltersDTO.getStatus().getCode());
-			estadoCtrlFicheroPK.setCodTipoFichero(codTipoFichero);
+			estadoCtrlFicheroPK.setCodTipoFichero(fileControlFiltersDTO.getFileType()[0]);
 			
 			estadoCtrlFichero.setId(estadoCtrlFicheroPK);
 			
@@ -75,20 +74,30 @@ public class FileControlSpecification implements Specification<ControlFichero> {
 		//Filtro de fechas:
 		Date startDate = fileControlFiltersDTO.getStartDate();
 		Date endDate = fileControlFiltersDTO.getEndDate();
-			
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 		if (startDate!=null) {
-			Integer startDateVB = VB6Date.dateToInt(startDate);
-			predicate = criteriaBuilder.ge(root.get(ControlFichero_.FECHA_INCORPORACION), startDateVB);
+			Long startDateLong = Long.parseLong(sdf.format(startDate));
+			predicate = criteriaBuilder.ge(root.get(ControlFichero_.FECHA_INCORPORACION), startDateLong);
 			predicates.add(predicate);
 		}
 			
 		if (endDate!=null) {
-			Integer endDateVB = VB6Date.dateToInt(endDate);
-			predicate = criteriaBuilder.le(root.get(ControlFichero_.FECHA_INCORPORACION), endDateVB);
+			Long endDateLong = Long.parseLong(sdf.format(endDate));
+			predicate = criteriaBuilder.le(root.get(ControlFichero_.FECHA_INCORPORACION), endDateLong);
 			predicates.add(predicate);
 		}
 		
-				
+		//Filtro isPending:
+		if (fileControlFiltersDTO.getIsPending() != null && fileControlFiltersDTO.getIsPending())
+		{
+			predicate = criteriaBuilder.equal(root.get(ControlFichero_.IND_PROCESADO), EmbargosConstants.IND_FLAG_NO);
+			predicates.add(predicate);
+		
+		} else if (fileControlFiltersDTO.getIsPending() != null && !fileControlFiltersDTO.getIsPending()) {
+			predicate = criteriaBuilder.equal(root.get(ControlFichero_.IND_PROCESADO), EmbargosConstants.IND_FLAG_SI);
+			predicates.add(predicate);			
+		}
+		
 		return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 	}
 

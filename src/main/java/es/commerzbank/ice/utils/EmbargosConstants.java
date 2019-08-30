@@ -14,7 +14,7 @@ public class EmbargosConstants {
 	public static final String TIPO_FICHERO_FINAL = "FIN";
 	public static final String TIPO_FICHERO_APUNTES_CONTABLES = "CON";
 	
-	public static final long COD_TIPO_FICHERO_ALL_TYPES = 0;
+//	public static final long COD_TIPO_FICHERO_ALL_TYPES = 0;
 //	public static final long COD_TIPO_FICHERO_PETICIONES = 1;
 //	public static final long COD_TIPO_FICHERO_INFORMACION = 2;
 //	public static final long COD_TIPO_FICHERO_EMBARGOS = 3;
@@ -43,7 +43,25 @@ public class EmbargosConstants {
 	public static final long COD_ESTADO_CTRLFICHERO_ENVIO_INFORMACION_NORMA63_GENERATING = 1;
 	public static final long COD_ESTADO_CTRLFICHERO_ENVIO_INFORMACION_NORMA63_GENERATED = 2;
 	public static final long COD_ESTADO_CTRLFICHERO_ENVIO_INFORMACION_NORMA63_SENT = 3;
-		
+	
+	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_ERROR = 0;
+	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_LOADING = 1;
+	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_RECEIVED = 2;
+	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PROCESSING = 3;
+	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PROCESSED = 4;
+	
+	public static final long COD_ESTADO_CTRLFICHERO_INITIAL_STATUS_DEFAULT = 1;
+
+	/** Estados de la Traba **/
+	public static final long COD_ESTADO_TRABA_INICIAL = 1;
+	public static final long COD_ESTADO_TRABA_MODIFICADA = 2;
+	public static final long COD_ESTADO_TRABA_CONTABILIZADA = 3;
+	public static final long COD_ESTADO_TRABA_MODIFICADA_CON_EXTORNO = 4;
+	public static final long COD_ESTADO_TRABA_MODIFICADA_POR_LEVANTAMIENTO_SIN_EXTORNO = 5;
+	public static final long COD_ESTADO_TRABA_MODIFICADA_POR_LEVANTAMIENTO_CON_EXTORNO = 6;
+	public static final long COD_ESTADO_TRABA_PASADA_A_IMPUESTO = 7;
+	public static final long COD_ESTADO_TRABA_ESTADO_ERRONEO = 8;
+	
 	/** Stream names del cuaderno 63 **/
 	public static final String STREAM_NAME_FASE1 = "fase1";
 	public static final String STREAM_NAME_FASE2 = "fase2";
@@ -80,16 +98,29 @@ public class EmbargosConstants {
 	public static final String RECORD_NAME_ERRORESTRABA = "erroresTraba";
 	
 	public static final String SEPARADOR_PUNTO = ".";
-	public static final String SEPARADOR_GUION_BAJO = "_";	
+	public static final String SEPARADOR_GUION_BAJO = "_";
+	public static final String SEPARADOR_ESPACIO = " ";
 	
-	public static final String SYSTEM_USER = "system";
+	public static final String USER_SYSTEM = "system";
+	public static final String USER_AUTOMATICO = "AUTOMATICO";
+	
+	public static final String CONTROL_FICHERO_DESCRIPCION_DEFAULT = "AUTOMATICO";
 	
 	public static final String COD_ESTADO_PRIMARIO_PETICION_ENVIANDO_PETICION_UNICA = "1000";
 	
 	public static final String IND_FLAG_NO = "N";
 	public static final String IND_FLAG_YES = "Y";
+	public static final String IND_FLAG_SI = "S";
 	
-	public static final String BANK_ACCOUNT_STATUS_NORMAL = "NORMAL";
+	public static final String ISO_MONEDA_EUR = "EUR";
+	
+	public static final String BANK_ACCOUNT_STATUS_ACTIVE = "ACTIVE";
 	public static final String BANK_ACCOUNT_STATUS_BLOQUED = "BLOQUED";
 	public static final String BANK_ACCOUNT_STATUS_CANCELLED = "CANCELLED";
+	
+	public static final long COD_CUENTA_INMOVILIZACION_DEFAULT = 1;
+	
+	public static final String PERSON_TYPE_ID_FISICA = "F";
+	public static final String PERSON_TYPE_ID_JURIDICA = "J";
+	
 }

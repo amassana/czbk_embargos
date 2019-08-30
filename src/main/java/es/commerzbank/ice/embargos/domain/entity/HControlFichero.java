@@ -18,17 +18,29 @@ public class HControlFichero implements Serializable {
 	@EmbeddedId
 	private HControlFicheroPK id;
 
+	@Column(name="COD_CONTROL_FICHERO_ORIGEN")
+	private BigDecimal codControlFicheroOrigen;
+
+	@Column(name="COD_CONTROL_FICHERO_RESPUESTA")
+	private BigDecimal codControlFicheroRespuesta;
+
 	@Column(name="COD_ENTIDAD_PRESENTADORA", nullable=false)
 	private BigDecimal codEntidadPresentadora;
 
 	@Column(name="COD_ESTADO")
 	private BigDecimal codEstado;
 
+	@Column(name="COD_TAREA")
+	private BigDecimal codTarea;
+
 	@Column(name="COD_TIPO_FICHERO", nullable=false)
 	private BigDecimal codTipoFichero;
 
 	@Column(length=30)
 	private String descripcion;
+
+	@Column(name="F_ULTIMA_MODIFICACION", precision=14)
+	private BigDecimal fUltimaModificacion;
 
 	@Column(name="FECHA_COMIENZO_CICLO", precision=8)
 	private BigDecimal fechaComienzoCiclo;
@@ -44,9 +56,6 @@ public class HControlFichero implements Serializable {
 
 	@Column(name="FECHA_MAXIMA_RESPUESTA")
 	private BigDecimal fechaMaximaRespuesta;
-
-	@Column(name="FICHERO_RESPUESTA", length=100)
-	private String ficheroRespuesta;
 
 	@Column(name="IND_6301", length=1)
 	private String ind6301;
@@ -83,6 +92,22 @@ public class HControlFichero implements Serializable {
 		this.id = id;
 	}
 
+	public BigDecimal getCodControlFicheroOrigen() {
+		return this.codControlFicheroOrigen;
+	}
+
+	public void setCodControlFicheroOrigen(BigDecimal codControlFicheroOrigen) {
+		this.codControlFicheroOrigen = codControlFicheroOrigen;
+	}
+
+	public BigDecimal getCodControlFicheroRespuesta() {
+		return this.codControlFicheroRespuesta;
+	}
+
+	public void setCodControlFicheroRespuesta(BigDecimal codControlFicheroRespuesta) {
+		this.codControlFicheroRespuesta = codControlFicheroRespuesta;
+	}
+
 	public BigDecimal getCodEntidadPresentadora() {
 		return this.codEntidadPresentadora;
 	}
@@ -99,6 +124,14 @@ public class HControlFichero implements Serializable {
 		this.codEstado = codEstado;
 	}
 
+	public BigDecimal getCodTarea() {
+		return this.codTarea;
+	}
+
+	public void setCodTarea(BigDecimal codTarea) {
+		this.codTarea = codTarea;
+	}
+
 	public BigDecimal getCodTipoFichero() {
 		return this.codTipoFichero;
 	}
@@ -113,6 +146,14 @@ public class HControlFichero implements Serializable {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+
+	public BigDecimal getFUltimaModificacion() {
+		return this.fUltimaModificacion;
+	}
+
+	public void setFUltimaModificacion(BigDecimal fUltimaModificacion) {
+		this.fUltimaModificacion = fUltimaModificacion;
 	}
 
 	public BigDecimal getFechaComienzoCiclo() {
@@ -153,14 +194,6 @@ public class HControlFichero implements Serializable {
 
 	public void setFechaMaximaRespuesta(BigDecimal fechaMaximaRespuesta) {
 		this.fechaMaximaRespuesta = fechaMaximaRespuesta;
-	}
-
-	public String getFicheroRespuesta() {
-		return this.ficheroRespuesta;
-	}
-
-	public void setFicheroRespuesta(String ficheroRespuesta) {
-		this.ficheroRespuesta = ficheroRespuesta;
 	}
 
 	public String getInd6301() {

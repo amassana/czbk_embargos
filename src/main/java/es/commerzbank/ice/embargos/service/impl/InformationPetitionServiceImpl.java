@@ -1,14 +1,12 @@
 package es.commerzbank.ice.embargos.service.impl;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.embargos.domain.dto.PetitionCaseDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
@@ -21,10 +19,10 @@ import es.commerzbank.ice.embargos.repository.InformationPetitionRepository;
 import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.embargos.service.InformationPetitionService;
 import es.commerzbank.ice.utils.EmbargosConstants;
-import es.commerzbank.ice.utils.EmbargosUtils;
+import es.commerzbank.ice.utils.ICEDateUtils;
 
 @Service
-@Transactional
+@Transactional(transactionManager="transactionManager")
 public class InformationPetitionServiceImpl implements InformationPetitionService{
 
 	
@@ -247,7 +245,7 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 		
         //Usuario y fecha ultima modificacion:
 		peticionInformacion.setUsuarioUltModificacion(userModif);
-        peticionInformacion.setFUltimaModificacion(BigDecimal.valueOf(System.currentTimeMillis()));
+        peticionInformacion.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 		
 		informationPetitionRepository.save(peticionInformacion);
 		

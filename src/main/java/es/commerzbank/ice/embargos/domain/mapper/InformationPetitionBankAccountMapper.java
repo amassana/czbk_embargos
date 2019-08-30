@@ -4,18 +4,19 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
-import es.commerzbank.ice.embargos.domain.dto.BankAccountDTO;
+import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.embargos.domain.entity.PeticionInformacionCuenta;
 
 @Mapper(componentModel="spring")
 public abstract class InformationPetitionBankAccountMapper {
 
 	@Mappings({
-		@Mapping(source = "bankAccountDTO.codeBankAccount", target = "cuenta"),
+		@Mapping(source = "accountDTO.accountNum", target = "cuenta"),
 		@Mapping(source = "codPeticionInformacion", target = "id.codPeticionInformacion"),
-		@Mapping(source = "bankAccountDTO.iban", target = "id.iban")
+		@Mapping(source = "accountDTO.iban", target = "id.iban"),
+		@Mapping(source = "accountDTO.status", target = "estadoCuenta")
 	})
-	public abstract PeticionInformacionCuenta toPeticionInformacionCuenta(BankAccountDTO bankAccountDTO, String codPeticionInformacion);
+	public abstract PeticionInformacionCuenta toPeticionInformacionCuenta(AccountDTO accountDTO, Long codPeticionInformacion);
 	
 	
 }

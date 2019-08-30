@@ -7,5 +7,5 @@ import es.commerzbank.ice.embargos.domain.dto.BankAccountDTO;
 public interface InformationPetitionBankAccountService {
 
 	public List<BankAccountDTO> getAllByControlFicheroAndPeticionInformacion(Long codControlFichero,
-			String codPeticionInformacion);
+			Long codPeticionInformacion);
 }

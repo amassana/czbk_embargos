@@ -10,6 +10,8 @@ import org.mapstruct.Mappings;
 
 import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
 import es.commerzbank.ice.embargos.domain.entity.HControlFichero;
+import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.utils.ICEDateUtils;
 
 @Mapper(componentModel="spring")
 public abstract class FileControlAuditMapper {
@@ -34,11 +36,14 @@ public abstract class FileControlAuditMapper {
 	@AfterMapping
 	protected void setFileControlDTOAfterMapping(HControlFichero hControlFichero, @MappingTarget FileControlDTO fileControlDTO) {
 		
-		if (hControlFichero.getId().getFUltimaModificacion()>0) {
+		boolean isProcessed = hControlFichero.getIndProcesado()!=null && EmbargosConstants.IND_FLAG_YES.equals(hControlFichero.getIndProcesado());
+		fileControlDTO.setIsProcessed(isProcessed);
+		
+		if (hControlFichero.getFUltimaModificacion()!=null) {
 		
 			//TODO: mirar que sea fecha local
 			
-			Date modifiedDate = new Date(hControlFichero.getId().getFUltimaModificacion());
+			Date modifiedDate = ICEDateUtils.bigDecimalToDate(hControlFichero.getFUltimaModificacion(), ICEDateUtils.FORMAT_yyyyMMddHHmmss);
 			
 			fileControlDTO.setModifiedDate(modifiedDate);
 		}

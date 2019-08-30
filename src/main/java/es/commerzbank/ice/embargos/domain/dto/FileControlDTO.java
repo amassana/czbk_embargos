@@ -12,6 +12,8 @@ public class FileControlDTO {
 	private Boolean isProcessed;
 	private String fileTarget;
 	private Date deliveryDate;
+	private Long codeFileOrigin;
+	private Long codeFileResponse;
 	private Date modifiedDate;
 	private String modifiedUser;
 	
@@ -62,6 +64,18 @@ public class FileControlDTO {
 	}
 	public void setDeliveryDate(Date deliveryDate) {
 		this.deliveryDate = deliveryDate;
+	}
+	public Long getCodeFileOrigin() {
+		return codeFileOrigin;
+	}
+	public void setCodeFileOrigin(Long codeFileOrigin) {
+		this.codeFileOrigin = codeFileOrigin;
+	}
+	public Long getCodeFileResponse() {
+		return codeFileResponse;
+	}
+	public void setCodeFileResponse(Long codeFileResponse) {
+		this.codeFileResponse = codeFileResponse;
 	}
 	public Date getModifiedDate() {
 		return modifiedDate;

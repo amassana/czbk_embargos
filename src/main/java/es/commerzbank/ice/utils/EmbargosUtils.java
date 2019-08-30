@@ -3,6 +3,8 @@ package es.commerzbank.ice.utils;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
+import es.commerzbank.ice.datawarehouse.domain.dto.PersonType;
 import es.commerzbank.ice.embargos.domain.entity.PeticionInformacion;
 
 public class EmbargosUtils {
@@ -45,5 +47,31 @@ public class EmbargosUtils {
 		
 		return result.toString();
 		
+	}
+	
+	public static String determineRazonSocialInternaFromCustomer(CustomerDTO customerDTO) {
+		
+		String razonSocial = null;
+		
+		if (customerDTO != null) {
+		
+			PersonType personType = (PersonType) customerDTO.getPersonType();
+			
+			if (personType!=null && EmbargosConstants.PERSON_TYPE_ID_FISICA.equals(personType.getId())) {
+				
+				razonSocial = customerDTO.getFirstName() 
+						+ (customerDTO.getMiddleName()!=null ? 
+								EmbargosConstants.SEPARADOR_ESPACIO + customerDTO.getMiddleName() + EmbargosConstants.SEPARADOR_ESPACIO :
+								EmbargosConstants.SEPARADOR_ESPACIO)
+						+ customerDTO.getLastName();
+			}
+			
+			else if (personType!=null && EmbargosConstants.PERSON_TYPE_ID_JURIDICA.equals(personType.getId())) {
+				
+				razonSocial = customerDTO.getName();
+			}
+			
+		}
+		return razonSocial;
 	}
 }

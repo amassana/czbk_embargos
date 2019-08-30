@@ -16,7 +16,7 @@ import es.commerzbank.ice.embargos.repository.InformationPetitionBankAccountRepo
 import es.commerzbank.ice.embargos.service.InformationPetitionBankAccountService;
 
 @Service
-@Transactional
+@Transactional(transactionManager="transactionManager")
 public class InformationPetitionBankAccountServiceImpl implements InformationPetitionBankAccountService{
 
 	@Autowired
@@ -27,7 +27,7 @@ public class InformationPetitionBankAccountServiceImpl implements InformationPet
 	
 	@Override
 	public List<BankAccountDTO> getAllByControlFicheroAndPeticionInformacion(Long codControlFichero,
-			String codPeticionInformacion) {
+			Long codPeticionInformacion) {
 	
 		List<BankAccountDTO> bankAccountList = new ArrayList<>();
 		

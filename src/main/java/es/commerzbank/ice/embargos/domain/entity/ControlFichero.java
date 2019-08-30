@@ -34,8 +34,14 @@ public class ControlFichero implements Serializable {
 	@Column(name="FECHA_CREACION", precision=8)
 	private BigDecimal fechaCreacion;
 
+	@Column(name="FECHA_GENERACION_RESPUESTA")
+	private BigDecimal fechaGeneracionRespuesta;
+
 	@Column(name="FECHA_INCORPORACION", precision=14)
 	private BigDecimal fechaIncorporacion;
+
+	@Column(name="FECHA_MAXIMA_RESPUESTA")
+	private BigDecimal fechaMaximaRespuesta;
 
 	@Column(name="IND_6301", length=1)
 	private String ind6301;
@@ -61,9 +67,30 @@ public class ControlFichero implements Serializable {
 	@Column(name="USUARIO_ULT_MODIFICACION", length=10)
 	private String usuarioUltModificacion;
 
+	@Column(name="COD_TAREA")
+	private BigDecimal codTarea;
+	
 	//bi-directional many-to-one association to ApunteContable
 	@OneToMany(mappedBy="controlFichero")
 	private List<ApunteContable> apunteContables;
+
+	//bi-directional many-to-one association to ControlFichero
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="COD_CONTROL_FICHERO_RESPUESTA")
+	private ControlFichero controlFicheroRespuesta;
+
+	//bi-directional many-to-one association to ControlFichero
+	@OneToMany(mappedBy="controlFicheroRespuesta")
+	private List<ControlFichero> controlFicheroRespuestaList;
+
+	//bi-directional many-to-one association to ControlFichero
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="COD_CONTROL_FICHERO_ORIGEN")
+	private ControlFichero controlFicheroOrigen;
+
+	//bi-directional many-to-one association to ControlFichero
+	@OneToMany(mappedBy="controlFicheroOrigen")
+	private List<ControlFichero> controlFicheroOrigenList;
 
 	//bi-directional many-to-one association to EntidadesComunicadora
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -77,7 +104,7 @@ public class ControlFichero implements Serializable {
 		@JoinColumn(name="COD_TIPO_FICHERO", referencedColumnName="COD_TIPO_FICHERO", nullable=false)
 		})
 	private EstadoCtrlfichero estadoCtrlfichero;
-	
+
 	//bi-directional many-to-one association to TipoFichero
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="COD_TIPO_FICHERO", nullable=false, insertable=false, updatable=false)
@@ -123,15 +150,6 @@ public class ControlFichero implements Serializable {
 	@OneToMany(mappedBy="controlFichero")
 	private List<TareasRealizada> tareasRealizadas;
 
-	@Column(name="FICHERO_RESPUESTA", length=100)
-	private String ficheroRespuesta;
-	
-	@Column(name="FECHA_MAXIMA_RESPUESTA")
-	private BigDecimal fechaMaximaRespuesta;
-	
-	@Column(name="FECHA_GENERACION_RESPUESTA")
-	private BigDecimal fechaGeneracionRespuesta;
-
 	public ControlFichero() {
 	}
 
@@ -175,12 +193,28 @@ public class ControlFichero implements Serializable {
 		this.fechaCreacion = fechaCreacion;
 	}
 
+	public BigDecimal getFechaGeneracionRespuesta() {
+		return this.fechaGeneracionRespuesta;
+	}
+
+	public void setFechaGeneracionRespuesta(BigDecimal fechaGeneracionRespuesta) {
+		this.fechaGeneracionRespuesta = fechaGeneracionRespuesta;
+	}
+
 	public BigDecimal getFechaIncorporacion() {
 		return this.fechaIncorporacion;
 	}
 
 	public void setFechaIncorporacion(BigDecimal fechaIncorporacion) {
 		this.fechaIncorporacion = fechaIncorporacion;
+	}
+
+	public BigDecimal getFechaMaximaRespuesta() {
+		return this.fechaMaximaRespuesta;
+	}
+
+	public void setFechaMaximaRespuesta(BigDecimal fechaMaximaRespuesta) {
+		this.fechaMaximaRespuesta = fechaMaximaRespuesta;
 	}
 
 	public String getInd6301() {
@@ -247,6 +281,14 @@ public class ControlFichero implements Serializable {
 		this.usuarioUltModificacion = usuarioUltModificacion;
 	}
 
+	public BigDecimal getCodTarea() {
+		return codTarea;
+	}
+
+	public void setCodTarea(BigDecimal codTarea) {
+		this.codTarea = codTarea;
+	}
+
 	public List<ApunteContable> getApunteContables() {
 		return this.apunteContables;
 	}
@@ -269,6 +311,66 @@ public class ControlFichero implements Serializable {
 		return apunteContable;
 	}
 
+	public ControlFichero getControlFicheroRespuesta() {
+		return this.controlFicheroRespuesta;
+	}
+
+	public void setControlFicheroRespuesta(ControlFichero controlFicheroRespuesta) {
+		this.controlFicheroRespuesta = controlFicheroRespuesta;
+	}
+
+	public List<ControlFichero> getControlFicheroRespuestaList() {
+		return this.controlFicheroRespuestaList;
+	}
+
+	public void setControlFicheroRespuestaList(List<ControlFichero> controlFicheroRespuestaList) {
+		this.controlFicheroRespuestaList = controlFicheroRespuestaList;
+	}
+
+	public ControlFichero addControlFicheroRespuestaList(ControlFichero controlFicheroRespuestaList) {
+		getControlFicheroRespuestaList().add(controlFicheroRespuestaList);
+		controlFicheroRespuestaList.setControlFicheroRespuesta(this);
+
+		return controlFicheroRespuestaList;
+	}
+
+	public ControlFichero removeControlFicheroRespuestaList(ControlFichero controlFicheroRespuestaList) {
+		getControlFicheroRespuestaList().remove(controlFicheroRespuestaList);
+		controlFicheroRespuestaList.setControlFicheroRespuesta(null);
+
+		return controlFicheroRespuestaList;
+	}
+
+	public ControlFichero getControlFicheroOrigen() {
+		return this.controlFicheroOrigen;
+	}
+
+	public void setControlFicheroOrigen(ControlFichero controlFicheroOrigen) {
+		this.controlFicheroOrigen = controlFicheroOrigen;
+	}
+
+	public List<ControlFichero> getControlFicheroOrigenList() {
+		return this.controlFicheroOrigenList;
+	}
+
+	public void setControlFicheroOrigenList(List<ControlFichero> controlFicheroOrigenList) {
+		this.controlFicheroOrigenList = controlFicheroOrigenList;
+	}
+
+	public ControlFichero addControlFicheroOrigenList(ControlFichero controlFicheroOrigenList) {
+		getControlFicheroOrigenList().add(controlFicheroOrigenList);
+		controlFicheroOrigenList.setControlFicheroOrigen(this);
+
+		return controlFicheroOrigenList;
+	}
+
+	public ControlFichero removeControlFicheroOrigenList(ControlFichero controlFicheroOrigenList) {
+		getControlFicheroOrigenList().remove(controlFicheroOrigenList);
+		controlFicheroOrigenList.setControlFicheroOrigen(null);
+
+		return controlFicheroOrigenList;
+	}
+
 	public EntidadesComunicadora getEntidadesComunicadora() {
 		return this.entidadesComunicadora;
 	}
@@ -284,7 +386,7 @@ public class ControlFichero implements Serializable {
 	public void setEstadoCtrlfichero(EstadoCtrlfichero estadoCtrlfichero) {
 		this.estadoCtrlfichero = estadoCtrlfichero;
 	}
-	
+
 	public TipoFichero getTipoFichero() {
 		return this.tipoFichero;
 	}
@@ -419,14 +521,14 @@ public class ControlFichero implements Serializable {
 		this.peticiones = peticiones;
 	}
 
-	public Peticion addPeticion(Peticion peticion) {
-		getPeticiones().add(peticion);
-		peticion.setControlFichero(this);
+	public Peticion addPeticione(Peticion peticione) {
+		getPeticiones().add(peticione);
+		peticione.setControlFichero(this);
 
-		return peticion;
+		return peticione;
 	}
 
-	public Peticion removePeticion(Peticion peticion) {
+	public Peticion removePeticione(Peticion peticion) {
 		getPeticiones().remove(peticion);
 		peticion.setControlFichero(null);
 
@@ -497,30 +599,6 @@ public class ControlFichero implements Serializable {
 		tareasRealizada.setControlFichero(null);
 
 		return tareasRealizada;
-	}
-
-	public String getFicheroRespuesta() {
-		return ficheroRespuesta;
-	}
-
-	public void setFicheroRespuesta(String ficheroRespuesta) {
-		this.ficheroRespuesta = ficheroRespuesta;
-	}
-
-	public BigDecimal getFechaMaximaRespuesta() {
-		return fechaMaximaRespuesta;
-	}
-
-	public void setFechaMaximaRespuesta(BigDecimal fechaMaximaRespuesta) {
-		this.fechaMaximaRespuesta = fechaMaximaRespuesta;
-	}
-
-	public BigDecimal getFechaGeneracionRespuesta() {
-		return fechaGeneracionRespuesta;
-	}
-
-	public void setFechaGeneracionRespuesta(BigDecimal fechaGeneracionRespuesta) {
-		this.fechaGeneracionRespuesta = fechaGeneracionRespuesta;
 	}
 
 }

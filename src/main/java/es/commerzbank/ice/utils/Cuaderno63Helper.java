@@ -30,9 +30,6 @@ public class Cuaderno63Helper {
 		pendienteCambiarEntidadesOrdenante.setCodEntidadOrdenante(Long.valueOf(1));
 		
 		PeticionInformacion peticionInformacion = new PeticionInformacion();
-
-		//eliminar en el futuro, debe ser por sequence cuando no sea un char(10):
-		peticionInformacion.setCodPeticion(Long.toString(System.currentTimeMillis()).substring(2, 12));
 		
 		peticionInformacion.setNif(solicitudInfo.getNifDeudor());
 		peticionInformacion.setRazonSocial(solicitudInfo.getNombreDeudor());

@@ -12,18 +12,18 @@ public class PeticionInformacionCuentaPK implements Serializable {
 	//default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
-	@Column(name="COD_PETICION_INFORMACION", insertable=false, updatable=false, unique=true, nullable=false, length=10)
-	private String codPeticionInformacion;
+	@Column(name="COD_PETICION_INFORMACION", insertable=false, updatable=false, unique=true, nullable=false)
+	private long codPeticionInformacion;
 
 	@Column(unique=true, nullable=false, length=47)
 	private String iban;
 
 	public PeticionInformacionCuentaPK() {
 	}
-	public String getCodPeticionInformacion() {
+	public long getCodPeticionInformacion() {
 		return this.codPeticionInformacion;
 	}
-	public void setCodPeticionInformacion(String codPeticionInformacion) {
+	public void setCodPeticionInformacion(long codPeticionInformacion) {
 		this.codPeticionInformacion = codPeticionInformacion;
 	}
 	public String getIban() {
@@ -42,14 +42,14 @@ public class PeticionInformacionCuentaPK implements Serializable {
 		}
 		PeticionInformacionCuentaPK castOther = (PeticionInformacionCuentaPK)other;
 		return 
-			this.codPeticionInformacion.equals(castOther.codPeticionInformacion)
+			this.codPeticionInformacion == castOther.codPeticionInformacion
 			&& this.iban.equals(castOther.iban);
 	}
 
 	public int hashCode() {
 		final int prime = 31;
 		int hash = 17;
-		hash = hash * prime + this.codPeticionInformacion.hashCode();
+		hash = hash * prime + ((int) (this.codPeticionInformacion ^ (this.codPeticionInformacion >>> 32)));
 		hash = hash * prime + this.iban.hashCode();
 		
 		return hash;

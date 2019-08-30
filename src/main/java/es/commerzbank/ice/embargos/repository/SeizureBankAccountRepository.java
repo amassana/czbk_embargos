@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
 
-public interface SeizureAccountRepository extends JpaRepository<CuentaEmbargo, Long>{
+public interface SeizureBankAccountRepository extends JpaRepository<CuentaEmbargo, Long>{
 
 }
