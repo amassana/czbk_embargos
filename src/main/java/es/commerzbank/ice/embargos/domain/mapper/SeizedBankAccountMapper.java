@@ -6,6 +6,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 
+import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizedBankAccountDTO;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
 import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
@@ -18,19 +19,25 @@ public abstract class  SeizedBankAccountMapper {
 	@Mappings({
 		@Mapping (source = "codCuentaTraba", target = "idSeizedBankAccount"),
 		@Mapping (source = "iban", target = "iban"),
-		@Mapping (source = "estadoTraba.codEstado", target = "bankAccountStatus"),
+		@Mapping (source = "estadoCuenta", target = "bankAccountStatus"),
 		@Mapping (source = "importe", target = "amount"),
 		@Mapping (source = "cambio", target = "fxRate"),
 		@Mapping (source = "actuacion", target = "seizureAction.code"),
 		@Mapping (source = "traba.estadoTraba.codEstado", target = "seizureStatus.code"),
+		@Mapping (source = "divisa", target = "bankAccountCurrency"),
 	})
 	public abstract SeizedBankAccountDTO toSeizedBankAccountDTO (CuentaTraba cuentaTraba);
 
 	@AfterMapping
 	protected void setSeizedBankAccountDTAfterMapping(@MappingTarget SeizedBankAccountDTO seizedBankAccountDTO, CuentaTraba cuentaTraba) {
 
-		seizedBankAccountDTO.setBankAccountCurrency(EmbargosConstants.ISO_MONEDA_EUR);
 		
+		boolean originEmb = cuentaTraba.getOrigenEmb()!=null && EmbargosConstants.IND_FLAG_YES.equals(cuentaTraba.getOrigenEmb());
+		seizedBankAccountDTO.setOriginEmb(originEmb);
+		
+		boolean addToSeized = cuentaTraba.getAgregarATraba()!=null && EmbargosConstants.IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba());
+		seizedBankAccountDTO.setAddToSeized(addToSeized);
+
 	}
 	
 	
@@ -59,16 +66,21 @@ public abstract class  SeizedBankAccountMapper {
 		}	
 		if (seizedBankAccountDTO.getBankAccountCurrency()!=null) {
 
-			//TODO: Pendiente de agregar campo del tipo de divisa en la cuenta de la traba.
+			cuentaTraba.setDivisa(seizedBankAccountDTO.getBankAccountCurrency());
 		}
-		if (seizedBankAccountDTO.getBankAccountStatus()!=null) {		
+		if (seizedBankAccountDTO.getBankAccountStatus()!=null) {
 			
-			//Estado de la cuenta:
-			EstadoTraba estadoTraba = new EstadoTraba();
-			estadoTraba.setCodEstado(Long.valueOf(seizedBankAccountDTO.getBankAccountStatus()));
+			cuentaTraba.setEstadoCuenta(seizedBankAccountDTO.getBankAccountStatus());	
 			
-			cuentaTraba.setEstadoTraba(estadoTraba);	
-			
+		}
+		//Campo readonly, se comenta:
+		//if (seizedBankAccountDTO.getOriginEmb()!=null) {
+		//	String origenEmb = seizedBankAccountDTO.getOriginEmb() ? EmbargosConstants.IND_FLAG_YES : EmbargosConstants.IND_FLAG_NO;
+		//	cuentaTraba.setOrigenEmb(origenEmb);
+		//}
+		if (seizedBankAccountDTO.getAddToSeized()!=null) {
+			String addToSeized = seizedBankAccountDTO.getAddToSeized() ? EmbargosConstants.IND_FLAG_YES : EmbargosConstants.IND_FLAG_NO;
+			cuentaTraba.setAgregarATraba(addToSeized);
 		}
 		
 		cuentaTraba.setUsuarioUltModificacion(userModif);
@@ -76,5 +88,13 @@ public abstract class  SeizedBankAccountMapper {
 		
 		return cuentaTraba;
 	}
+	
+	@Mappings({
+		@Mapping (source = "accountNum", target = "cuenta"),
+		@Mapping (source = "iban", target = "iban"),
+		@Mapping (source = "status", target = "estadoCuenta"),
+		@Mapping (source = "divisa", target = "divisa"),
+	})
+	public abstract CuentaTraba accountDTOToCuentaTraba(AccountDTO accountDTO);
 	
 }

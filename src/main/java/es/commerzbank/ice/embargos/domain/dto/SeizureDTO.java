@@ -11,6 +11,8 @@ public class SeizureDTO
     private String nameInternal;
     private SeizureStatusDTO status;
     private BigDecimal requestedAmount;
+    private BigDecimal seizedAmount;
+    private BigDecimal pendingSeizedAmount;
     private BigDecimal codAudit;
 
     public String getIdSeizure() {
@@ -68,6 +70,22 @@ public class SeizureDTO
     public void setRequestedAmount(BigDecimal requestedAmount) {
         this.requestedAmount = requestedAmount;
     }
+
+	public BigDecimal getSeizedAmount() {
+		return seizedAmount;
+	}
+
+	public void setSeizedAmount(BigDecimal seizedAmount) {
+		this.seizedAmount = seizedAmount;
+	}
+
+	public BigDecimal getPendingSeizedAmount() {
+		return pendingSeizedAmount;
+	}
+
+	public void setPendingSeizedAmount(BigDecimal pendingSeizedAmount) {
+		this.pendingSeizedAmount = pendingSeizedAmount;
+	}
 
 	public BigDecimal getCodAudit() {
 		return codAudit;

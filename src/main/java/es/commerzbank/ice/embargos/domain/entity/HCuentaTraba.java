@@ -43,6 +43,15 @@ public class HCuentaTraba implements Serializable {
 	@Column(name="USUARIO_ULT_MODIFICACION")
 	private String usuarioUltModificacion;
 
+	@Column(name="ORIGEN_EMB", length=1)
+	private String origenEmb;
+	
+	@Column(name="AGREGAR_A_TRABA", length=1)
+	private String agregarATraba;
+	
+	@Column(name="ESTADO_CUENTA", length=10)
+	private String estadoCuenta;
+	
 	public HCuentaTraba() {
 	}
 
@@ -134,4 +143,28 @@ public class HCuentaTraba implements Serializable {
 		this.usuarioUltModificacion = usuarioUltModificacion;
 	}
 
+	
+	public String getOrigenEmb() {
+		return origenEmb;
+	}
+
+	public void setOrigenEmb(String origenEmb) {
+		this.origenEmb = origenEmb;
+	}
+
+	public String getAgregarATraba() {
+		return agregarATraba;
+	}
+
+	public void setAgregarATraba(String agregarATraba) {
+		this.agregarATraba = agregarATraba;
+	}
+
+	public String getEstadoCuenta() {
+		return estadoCuenta;
+	}
+
+	public void setEstadoCuenta(String estadoCuenta) {
+		this.estadoCuenta = estadoCuenta;
+	}
 }

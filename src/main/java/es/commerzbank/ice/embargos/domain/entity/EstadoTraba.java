@@ -21,6 +21,9 @@ public class EstadoTraba implements Serializable {
 
 	@Column(name="DES_ESTADO", length=40)
 	private String desEstado;
+	
+	@Column(name="OCULTAR_A_USUARIO", length=1)
+	private String ocultarAUsuario;
 
 	//bi-directional many-to-one association to CuentaTraba
 	@OneToMany(mappedBy="estadoTraba")
@@ -51,6 +54,14 @@ public class EstadoTraba implements Serializable {
 
 	public void setDesEstado(String desEstado) {
 		this.desEstado = desEstado;
+	}
+	
+	public String getOcultarAUsuario() {
+		return ocultarAUsuario;
+	}
+
+	public void setOcultarAUsuario(String ocultarAUsuario) {
+		this.ocultarAUsuario = ocultarAUsuario;
 	}
 
 	public List<CuentaTraba> getCuentaTrabas() {

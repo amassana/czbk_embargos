@@ -133,6 +133,13 @@
            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <!--  -->
+        <!-- Libreria datawarehouse-dtos de Commerzbank -->
+        <dependency>
+           <groupId>es.commerzbank.ice</groupId>
+           <artifactId>datawarehouse-dtos</artifactId>
+           <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <!--  -->
 		<!-- Jasper report jrxml to jasper compiler plugin -->
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>

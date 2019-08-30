@@ -19,7 +19,10 @@ public class PeticionInformacionCuenta implements Serializable {
 
 	@Column(length=20)
 	private String cuenta;
-
+	
+	@Column(name="ESTADO_CUENTA", length=10)
+	private String estadoCuenta;
+	
 	//bi-directional many-to-one association to PeticionInformacion
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="COD_PETICION_INFORMACION", nullable=false, insertable=false, updatable=false)
@@ -42,6 +45,14 @@ public class PeticionInformacionCuenta implements Serializable {
 
 	public void setCuenta(String cuenta) {
 		this.cuenta = cuenta;
+	}
+
+	public String getEstadoCuenta() {
+		return estadoCuenta;
+	}
+
+	public void setEstadoCuenta(String estadoCuenta) {
+		this.estadoCuenta = estadoCuenta;
 	}
 
 	public PeticionInformacion getPeticionInformacion() {

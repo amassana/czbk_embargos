@@ -16,6 +16,8 @@ public class CuentaTraba implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@SequenceGenerator(name = "cuenta_traba_seq_gen", sequenceName = "CUENTA_TRABA_SEQ", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cuenta_traba_seq_gen")
 	@Column(name="COD_CUENTA_TRABA", unique=true, nullable=false)
 	private long codCuentaTraba;
 
@@ -41,6 +43,18 @@ public class CuentaTraba implements Serializable {
 	@Column(name="USUARIO_ULT_MODIFICACION", length=10)
 	private String usuarioUltModificacion;
 
+	@Column(name="ORIGEN_EMB", length=1)
+	private String origenEmb;
+	
+	@Column(name="AGREGAR_A_TRABA", length=1)
+	private String agregarATraba;
+	
+	@Column(name="ESTADO_CUENTA", length=10)
+	private String estadoCuenta;
+	
+	@Column(length=3)
+	private String divisa;
+	
 	//bi-directional many-to-one association to EstadoTraba
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="COD_ESTADO", nullable=false)
@@ -124,6 +138,38 @@ public class CuentaTraba implements Serializable {
 
 	public void setUsuarioUltModificacion(String usuarioUltModificacion) {
 		this.usuarioUltModificacion = usuarioUltModificacion;
+	}
+	
+	public String getOrigenEmb() {
+		return origenEmb;
+	}
+
+	public void setOrigenEmb(String origenEmb) {
+		this.origenEmb = origenEmb;
+	}
+
+	public String getAgregarATraba() {
+		return agregarATraba;
+	}
+
+	public void setAgregarATraba(String agregarATraba) {
+		this.agregarATraba = agregarATraba;
+	}
+
+	public String getEstadoCuenta() {
+		return estadoCuenta;
+	}
+
+	public void setEstadoCuenta(String estadoCuenta) {
+		this.estadoCuenta = estadoCuenta;
+	}
+
+	public String getDivisa() {
+		return divisa;
+	}
+
+	public void setDivisa(String divisa) {
+		this.divisa = divisa;
 	}
 
 	public EstadoTraba getEstadoTraba() {

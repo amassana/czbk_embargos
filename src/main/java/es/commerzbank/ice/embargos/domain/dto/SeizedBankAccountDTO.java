@@ -12,6 +12,8 @@ public class SeizedBankAccountDTO {
 	private BigDecimal fxRate;
 	private SeizureActionDTO seizureAction;
 	private SeizureStatusDTO seizureStatus;
+	private Boolean originEmb;
+	private Boolean addToSeized;
 
 	public Long getIdSeizedBankAccount() {
 		return idSeizedBankAccount;
@@ -75,6 +77,21 @@ public class SeizedBankAccountDTO {
 
 	public void setSeizureStatus(SeizureStatusDTO seizureStatus) {
 		this.seizureStatus = seizureStatus;
+	}
+	public Boolean getOriginEmb() {
+		return originEmb;
+	}
+
+	public void setOriginEmb(Boolean originEmb) {
+		this.originEmb = originEmb;
+	}
+
+	public Boolean getAddToSeized() {
+		return addToSeized;
+	}
+
+	public void setAddToSeized(Boolean addToSeized) {
+		this.addToSeized = addToSeized;
 	}
 
 

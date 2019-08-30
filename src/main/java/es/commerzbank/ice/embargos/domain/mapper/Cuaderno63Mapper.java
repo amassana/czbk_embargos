@@ -18,16 +18,21 @@ import org.mapstruct.Mappings;
 
 import com.google.common.math.DoubleMath;
 
-import es.commerzbank.ice.embargos.domain.dto.BankAccountDTO;
+import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
+import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
+import es.commerzbank.ice.embargos.domain.entity.CuentasInmovilizacion;
+import es.commerzbank.ice.embargos.domain.entity.CuentasRecaudacion;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlficheroPK;
+import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
 import es.commerzbank.ice.embargos.domain.entity.PeticionInformacion;
 import es.commerzbank.ice.embargos.domain.entity.TipoFichero;
+import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase1.CabeceraEmisorFase1;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase1.FinFicheroFase1;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase1.SolicitudInformacionFase1;
@@ -109,9 +114,17 @@ public abstract class Cuaderno63Mapper {
 		} else if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63) {
 		
 			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_INFORMACION_NORMA63_GENERATING;
+
+		} else if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63) {	
+
+			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_LOADING;
 			
+		//TODO agregar por cada tipo de fichero el estado incial:
+		//} else if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_TRABAS_NORMA63) {		
+
 		} else {
-			return null;
+			//Estado inicial por defecto:
+			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_INITIAL_STATUS_DEFAULT;
 		}
 		
         EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero();
@@ -156,15 +169,16 @@ public abstract class Cuaderno63Mapper {
 	@Mappings({
 		@Mapping(source = "solicitudInfo.nifDeudor", target = "nif"),
 		@Mapping(source = "solicitudInfo.nombreDeudor", target = "razonSocial"),
+		@Mapping(source = "razonSocialInterna", target = "razonSocialInterna"),
 		@Mapping(source = "solicitudInfo.domicilioDeudor", target = "domicilio"),
 		@Mapping(source = "solicitudInfo.codigoDeuda", target = "codDeudaDeudor"),
 		@Mapping(source = "codControlFicheroPeticion", target = "controlFichero.codControlFichero")
 	})
 	public abstract PeticionInformacion generatePeticionInformacion(SolicitudInformacionFase1 solicitudInfo, 
-			Long codControlFicheroPeticion, List<BankAccountDTO> listBankAccount);
+			Long codControlFicheroPeticion, List<AccountDTO> listBankAccount, String razonSocialInterna);
 	
 	@AfterMapping
-	protected void setPeticionInformacionAfterMapping(@MappingTarget PeticionInformacion peticionInformacion, List<BankAccountDTO> listBankAccount) {
+	protected void setPeticionInformacionAfterMapping(@MappingTarget PeticionInformacion peticionInformacion, List<AccountDTO> listBankAccount) {
 		
 		//eliminar en el futuro, debe ser por sequence cuando no sea un char(10):
 		long aleatorio = (DoubleMath.roundToLong(Math.random()*1000000000L, RoundingMode.DOWN)) + 1000000000L;
@@ -189,43 +203,43 @@ public abstract class Cuaderno63Mapper {
 	}
 	
 	/**
-	 * Setea las primeras cuentas en estado NORMAL del listado de cuentas 'listBankAccount', hasta un maximo de seis cuentas.
+	 * Setea las primeras cuentas en estado NORMAL del listado de cuentas 'listAccount', hasta un maximo de seis cuentas.
 	 * 
 	 * @param peticionInformacion
-	 * @param listBankAccount
+	 * @param listAccount
 	 */
-	private void setPreloadedBankAccounts(PeticionInformacion peticionInformacion, List<BankAccountDTO> listBankAccount) {
+	private void setPreloadedBankAccounts(PeticionInformacion peticionInformacion, List<AccountDTO> listAccount) {
 	
 		//Iterating by the bank accounts:
 		int i=1;
-		for (BankAccountDTO bankAccountDTO : listBankAccount) {
+		for (AccountDTO accountDTO : listAccount) {
 				
 			//Solo se setean las cuentas que tengan estado NORMAL:
-			if (EmbargosConstants.BANK_ACCOUNT_STATUS_NORMAL.equals(bankAccountDTO.getStatus())) {
+			if (EmbargosConstants.BANK_ACCOUNT_STATUS_NORMAL.equals(accountDTO.getStatus())) {
 				switch(i) {
 					case 1:
-						peticionInformacion.setCuenta1(bankAccountDTO.getCodeBankAccount());
-						peticionInformacion.setIban1(bankAccountDTO.getIban());
+						peticionInformacion.setCuenta1(accountDTO.getAccountNum());
+						peticionInformacion.setIban1(accountDTO.getIban());
 						break;
 					case 2:
-						peticionInformacion.setCuenta2(bankAccountDTO.getCodeBankAccount());
-						peticionInformacion.setIban2(bankAccountDTO.getIban());
+						peticionInformacion.setCuenta2(accountDTO.getAccountNum());
+						peticionInformacion.setIban2(accountDTO.getIban());
 						break;
 					case 3:
-						peticionInformacion.setCuenta3(bankAccountDTO.getCodeBankAccount());
-						peticionInformacion.setIban3(bankAccountDTO.getIban());
+						peticionInformacion.setCuenta3(accountDTO.getAccountNum());
+						peticionInformacion.setIban3(accountDTO.getIban());
 						break;
 					case 4:
-						peticionInformacion.setCuenta4(bankAccountDTO.getCodeBankAccount());
-						peticionInformacion.setIban4(bankAccountDTO.getIban());
+						peticionInformacion.setCuenta4(accountDTO.getAccountNum());
+						peticionInformacion.setIban4(accountDTO.getIban());
 						break;
 					case 5:
-						peticionInformacion.setCuenta5(bankAccountDTO.getCodeBankAccount());
-						peticionInformacion.setIban5(bankAccountDTO.getIban());
+						peticionInformacion.setCuenta5(accountDTO.getAccountNum());
+						peticionInformacion.setIban5(accountDTO.getIban());
 						break;
 					case 6:
-						peticionInformacion.setCuenta6(bankAccountDTO.getCodeBankAccount());
-						peticionInformacion.setIban6(bankAccountDTO.getIban());
+						peticionInformacion.setCuenta6(accountDTO.getAccountNum());
+						peticionInformacion.setIban6(accountDTO.getIban());
 						break;
 					default:
 				}
@@ -273,10 +287,12 @@ public abstract class Cuaderno63Mapper {
 		@Mapping(source = "ordenEjecucionEmbargo.importeTotalAEmbargar", target = "importe"),
 		@Mapping(source = "ordenEjecucionEmbargo.codigoDeuda", target = "codDeudaDeudor"),
 		@Mapping(source = "codControlFicheroEmbargo", target = "controlFichero.codControlFichero"),
-		@Mapping(source = "entidadOrdenante", target = "entidadesOrdenante")
+		@Mapping(source = "entidadOrdenante", target = "entidadesOrdenante"),
+		@Mapping(source = "razonSocialInterna", target = "razonSocialInterna"),
+		@Mapping(source = "fechaLimiteTraba", target = "fechaLimiteTraba")
 	})
 	public abstract Embargo generateEmbargo(OrdenEjecucionEmbargoFase3 ordenEjecucionEmbargo, 
-			OrdenEjecucionEmbargoComplementarioFase3 ordenEjecucionEmbargoComp, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante);
+			OrdenEjecucionEmbargoComplementarioFase3 ordenEjecucionEmbargoComp, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante, String razonSocialInterna, BigDecimal fechaLimiteTraba);
 	
 	@AfterMapping
 	public void generateEmbargoAfterMapping(@MappingTarget Embargo embargo, OrdenEjecucionEmbargoFase3 ordenEjecucionEmbargo, 
@@ -286,6 +302,21 @@ public abstract class Cuaderno63Mapper {
 		
 		BigDecimal numeroOrden = new BigDecimal(1);
 		
+		BigDecimal fechaUltmaModif = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
+		String usuarioModif = EmbargosConstants.USER_AUTOMATICO;
+		
+		//seteo de datregcomdet:
+		StringBuilder datregcomdet = new StringBuilder();
+		datregcomdet.append(ordenEjecucionEmbargoComp.getTextoLibre1());
+		datregcomdet.append(EmbargosConstants.SEPARADOR_ESPACIO);
+		datregcomdet.append(ordenEjecucionEmbargoComp.getTextoLibre2());
+		datregcomdet.append(EmbargosConstants.SEPARADOR_ESPACIO);
+		datregcomdet.append(ordenEjecucionEmbargoComp.getTextoLibre3());
+		
+		embargo.setDatregcomdet(datregcomdet.toString());
+				
+		
+		//SETEO DE CUENTAS:
 		//Datos iban1:
 		CuentaEmbargo cuentaEmbargo = new CuentaEmbargo();
 		
@@ -295,8 +326,8 @@ public abstract class Cuaderno63Mapper {
 			cuentaEmbargo.setClaveSeguridad(ordenEjecucionEmbargo.getClaveSeguridadIban1());
 			cuentaEmbargo.setNumeroOrdenCuenta(numeroOrden);
 			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
-			cuentaEmbargo.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
-			cuentaEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+			cuentaEmbargo.setUsuarioUltModificacion(usuarioModif);
+			cuentaEmbargo.setFUltimaModificacion(fechaUltmaModif);
 			cuentaEmbargosList.add(cuentaEmbargo);
 		}
 
@@ -308,8 +339,8 @@ public abstract class Cuaderno63Mapper {
 			cuentaEmbargo.setClaveSeguridad(ordenEjecucionEmbargo.getClaveSeguridadIban2());
 			cuentaEmbargo.setNumeroOrdenCuenta(numeroOrden);
 			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
-			cuentaEmbargo.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
-			cuentaEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+			cuentaEmbargo.setUsuarioUltModificacion(usuarioModif);
+			cuentaEmbargo.setFUltimaModificacion(fechaUltmaModif);
 			cuentaEmbargosList.add(cuentaEmbargo);
 		}
 		
@@ -321,8 +352,8 @@ public abstract class Cuaderno63Mapper {
 			cuentaEmbargo.setClaveSeguridad(ordenEjecucionEmbargo.getClaveSeguridadIban3());
 			cuentaEmbargo.setNumeroOrdenCuenta(numeroOrden);
 			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
-			cuentaEmbargo.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
-			cuentaEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+			cuentaEmbargo.setUsuarioUltModificacion(usuarioModif);
+			cuentaEmbargo.setFUltimaModificacion(fechaUltmaModif);
 			cuentaEmbargosList.add(cuentaEmbargo);
 		}
 		
@@ -334,8 +365,8 @@ public abstract class Cuaderno63Mapper {
 			cuentaEmbargo.setClaveSeguridad(ordenEjecucionEmbargo.getClaveSeguridadIban4());
 			cuentaEmbargo.setNumeroOrdenCuenta(numeroOrden);
 			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
-			cuentaEmbargo.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
-			cuentaEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+			cuentaEmbargo.setUsuarioUltModificacion(usuarioModif);
+			cuentaEmbargo.setFUltimaModificacion(fechaUltmaModif);
 			cuentaEmbargosList.add(cuentaEmbargo);
 		}
 		
@@ -347,8 +378,8 @@ public abstract class Cuaderno63Mapper {
 			cuentaEmbargo.setClaveSeguridad(ordenEjecucionEmbargo.getClaveSeguridadIban5());
 			cuentaEmbargo.setNumeroOrdenCuenta(numeroOrden);
 			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
-			cuentaEmbargo.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
-			cuentaEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+			cuentaEmbargo.setUsuarioUltModificacion(usuarioModif);
+			cuentaEmbargo.setFUltimaModificacion(fechaUltmaModif);
 			cuentaEmbargosList.add(cuentaEmbargo);
 		}
 		
@@ -359,17 +390,151 @@ public abstract class Cuaderno63Mapper {
 			cuentaEmbargo.setIban(ordenEjecucionEmbargo.getIbanCuenta6());
 			cuentaEmbargo.setClaveSeguridad(ordenEjecucionEmbargo.getClaveSeguridadIban6());
 			cuentaEmbargo.setNumeroOrdenCuenta(numeroOrden);
-			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
-			cuentaEmbargo.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
-			cuentaEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+			cuentaEmbargo.setUsuarioUltModificacion(usuarioModif);
+			cuentaEmbargo.setFUltimaModificacion(fechaUltmaModif);
 			cuentaEmbargosList.add(cuentaEmbargo);
 		}
 		
 		embargo.setCuentaEmbargos(cuentaEmbargosList);
 		
         //Usuario y fecha ultima modificacion:
-		embargo.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
-		embargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+		embargo.setUsuarioUltModificacion(usuarioModif);
+		embargo.setFUltimaModificacion(fechaUltmaModif);
 		
+	}
+	
+
+	public abstract Traba generateTraba(OrdenEjecucionEmbargoFase3 ordenEjecucionEmbargo, 
+			OrdenEjecucionEmbargoComplementarioFase3 ordenEjecucionEmbargoComp, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante);
+	
+	@AfterMapping
+	public void generateTrabaAfterMapping(@MappingTarget Traba traba, OrdenEjecucionEmbargoFase3 ordenEjecucionEmbargo, 
+			OrdenEjecucionEmbargoComplementarioFase3 ordenEjecucionEmbargoComp, EntidadesOrdenante entidadOrdenante) {
+		
+		BigDecimal fechaUltmaModif = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
+		String usuarioModif = EmbargosConstants.USER_AUTOMATICO;
+		
+		CuentasRecaudacion cuentaRecaudacion = entidadOrdenante.getEntidadesComunicadora().getCuentasRecaudacion();	
+		traba.setCuentasRecaudacion(cuentaRecaudacion);
+		
+		//TODO revisar --> Cuenta de inmovilizacion: la asignada por defecto (sucursal de Madrid con codigo=1):
+		CuentasInmovilizacion cuentaInmovilizacion = new CuentasInmovilizacion();
+		cuentaInmovilizacion.setCodCuentaInmovilizacion(EmbargosConstants.COD_CUENTA_INMOVILIZACION_DEFAULT);
+		traba.setCuentasInmovilizacion(cuentaInmovilizacion);
+		
+		//Estado inicial de la traba al generarse:
+		EstadoTraba estadoTraba = new EstadoTraba();
+		estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_INICIAL);
+		traba.setEstadoTraba(estadoTraba);
+		
+		
+		//CUENTAS TRABAS:
+		
+		List<CuentaTraba> cuentaTrabasList = new ArrayList<>();
+		
+		BigDecimal numeroOrden = new BigDecimal(1);
+		
+		//Datos iban1:
+		CuentaTraba cuentaTraba = new CuentaTraba();
+		
+		if (ordenEjecucionEmbargo.getIbanCuenta1()!=null && !ordenEjecucionEmbargo.getIbanCuenta1().isEmpty()) {
+			cuentaTraba.setTraba(traba);
+			cuentaTraba.setIban(ordenEjecucionEmbargo.getIbanCuenta1());
+			cuentaTraba.setNumeroOrdenCuenta(numeroOrden);
+			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
+			//TODO: estado cuenta traba tiene que ser el de DWH
+			estadoTraba = new EstadoTraba();
+			estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_INICIAL);
+			cuentaTraba.setEstadoTraba(estadoTraba);
+			cuentaTraba.setOrigenEmb(EmbargosConstants.IND_FLAG_YES);
+			cuentaTraba.setUsuarioUltModificacion(usuarioModif);
+			cuentaTraba.setFUltimaModificacion(fechaUltmaModif);
+			cuentaTrabasList.add(cuentaTraba);
+		}
+
+		//Datos iban2:
+		if (ordenEjecucionEmbargo.getIbanCuenta2()!=null && !ordenEjecucionEmbargo.getIbanCuenta2().isEmpty()) {
+			cuentaTraba = new CuentaTraba();
+			cuentaTraba.setTraba(traba);
+			cuentaTraba.setIban(ordenEjecucionEmbargo.getIbanCuenta2());
+			cuentaTraba.setNumeroOrdenCuenta(numeroOrden);
+			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
+			estadoTraba = new EstadoTraba();
+			estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_INICIAL);
+			cuentaTraba.setEstadoTraba(estadoTraba);
+			cuentaTraba.setOrigenEmb(EmbargosConstants.IND_FLAG_YES);
+			cuentaTraba.setUsuarioUltModificacion(usuarioModif);
+			cuentaTraba.setFUltimaModificacion(fechaUltmaModif);
+			cuentaTrabasList.add(cuentaTraba);
+		}
+		
+		//Datos iban3:
+		if (ordenEjecucionEmbargo.getIbanCuenta3()!=null && !ordenEjecucionEmbargo.getIbanCuenta3().isEmpty()) {
+			cuentaTraba = new CuentaTraba();
+			cuentaTraba.setTraba(traba);
+			cuentaTraba.setIban(ordenEjecucionEmbargo.getIbanCuenta3());
+			cuentaTraba.setNumeroOrdenCuenta(numeroOrden);
+			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
+			estadoTraba = new EstadoTraba();
+			estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_INICIAL);
+			cuentaTraba.setEstadoTraba(estadoTraba);
+			cuentaTraba.setOrigenEmb(EmbargosConstants.IND_FLAG_YES);
+			cuentaTraba.setUsuarioUltModificacion(usuarioModif);
+			cuentaTraba.setFUltimaModificacion(fechaUltmaModif);
+			cuentaTrabasList.add(cuentaTraba);
+		}
+		
+		//Datos iban4:
+		if (ordenEjecucionEmbargo.getIbanCuenta4()!=null && !ordenEjecucionEmbargo.getIbanCuenta4().isEmpty()) {
+			cuentaTraba = new CuentaTraba();
+			cuentaTraba.setTraba(traba);
+			cuentaTraba.setIban(ordenEjecucionEmbargo.getIbanCuenta4());
+			cuentaTraba.setNumeroOrdenCuenta(numeroOrden);
+			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
+			estadoTraba = new EstadoTraba();
+			estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_INICIAL);
+			cuentaTraba.setEstadoTraba(estadoTraba);
+			cuentaTraba.setOrigenEmb(EmbargosConstants.IND_FLAG_YES);
+			cuentaTraba.setUsuarioUltModificacion(usuarioModif);
+			cuentaTraba.setFUltimaModificacion(fechaUltmaModif);
+			cuentaTrabasList.add(cuentaTraba);
+		}
+		
+		//Datos iban5:
+		if (ordenEjecucionEmbargo.getIbanCuenta5()!=null && !ordenEjecucionEmbargo.getIbanCuenta5().isEmpty()) {
+			cuentaTraba = new CuentaTraba();
+			cuentaTraba.setTraba(traba);
+			cuentaTraba.setIban(ordenEjecucionEmbargo.getIbanCuenta5());
+			cuentaTraba.setNumeroOrdenCuenta(numeroOrden);
+			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
+			estadoTraba = new EstadoTraba();
+			estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_INICIAL);
+			cuentaTraba.setEstadoTraba(estadoTraba);
+			cuentaTraba.setOrigenEmb(EmbargosConstants.IND_FLAG_YES);
+			cuentaTraba.setUsuarioUltModificacion(usuarioModif);
+			cuentaTraba.setFUltimaModificacion(fechaUltmaModif);
+			cuentaTrabasList.add(cuentaTraba);
+		}
+		
+		//Datos iban6:
+		if (ordenEjecucionEmbargo.getIbanCuenta6()!=null && !ordenEjecucionEmbargo.getIbanCuenta6().isEmpty()) {
+			cuentaTraba = new CuentaTraba();
+			cuentaTraba.setTraba(traba);
+			cuentaTraba.setIban(ordenEjecucionEmbargo.getIbanCuenta6());
+			cuentaTraba.setNumeroOrdenCuenta(numeroOrden);
+			estadoTraba = new EstadoTraba();
+			estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_INICIAL);
+			cuentaTraba.setEstadoTraba(estadoTraba);
+			cuentaTraba.setOrigenEmb(EmbargosConstants.IND_FLAG_YES);
+			cuentaTraba.setUsuarioUltModificacion(usuarioModif);
+			cuentaTraba.setFUltimaModificacion(fechaUltmaModif);
+			cuentaTrabasList.add(cuentaTraba);
+		}
+		
+		traba.setCuentaTrabas(cuentaTrabasList);
+		
+        //Usuario y fecha ultima modificacion:
+		traba.setUsuarioUltModificacion(usuarioModif);
+		traba.setFUltimaModificacion(fechaUltmaModif);
 	}
 }

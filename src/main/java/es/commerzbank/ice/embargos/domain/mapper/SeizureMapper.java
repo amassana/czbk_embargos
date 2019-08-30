@@ -1,5 +1,7 @@
 package es.commerzbank.ice.embargos.domain.mapper;
 
+import java.math.BigDecimal;
+
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -36,6 +38,16 @@ public abstract class SeizureMapper {
 			SeizureStatusDTO seizureStatusDTO = new SeizureStatusDTO();
 			seizureStatusDTO.setCode(String.valueOf(traba.getEstadoTraba().getCodEstado()));
 			seizureDTO.setStatus(seizureStatusDTO);
+			
+			//Importe trabado:
+			BigDecimal importeTrabado = traba.getImporteTrabado()!=null ? traba.getImporteTrabado() : BigDecimal.valueOf(0);
+			seizureDTO.setSeizedAmount(importeTrabado);
+			
+			//Importe pendiente:
+			if (embargo.getImporte()!=null) {
+				BigDecimal pendingSeizedAmount = embargo.getImporte().subtract(importeTrabado);
+				seizureDTO.setPendingSeizedAmount(pendingSeizedAmount);
+			}
 		}
 	}
 }

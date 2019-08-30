@@ -180,7 +180,7 @@ public class SeizureServiceImpl implements SeizureService {
 		
 		List<SeizureStatusDTO> seizureStatusDTOList = new ArrayList<>();
 		
-		List<EstadoTraba> estadoTrabaList = seizureStatusRepository.findAll();
+		List<EstadoTraba> estadoTrabaList = seizureStatusRepository.findAllVisibleToUser();
 		
 		for(EstadoTraba estadoTraba : estadoTrabaList) {
 			
@@ -211,6 +211,14 @@ public class SeizureServiceImpl implements SeizureService {
 			Embargo embargo = traba.getEmbargo();
 			embargo.setUsuarioUltModificacion(userModif);
 			embargo.setFUltimaModificacion(fechaActualBigDec);
+			
+			//Calculo del importe trabado: sumar los importes trabados de cada cuenta:
+			BigDecimal importeTrabado = new BigDecimal(0);
+			for (SeizedBankAccountDTO seizedBankAccountDTO : seizedBankAccountDTOList) {
+				BigDecimal importeTrabadoBankAccount = seizedBankAccountDTO.getAmount()!=null ? seizedBankAccountDTO.getAmount() :BigDecimal.valueOf(0);
+				importeTrabado = importeTrabado.add(importeTrabadoBankAccount);
+			}
+			traba.setImporteTrabado(importeTrabado);
 			
 			seizedRepository.save(traba);
 		}
