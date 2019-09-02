@@ -1,5 +1,7 @@
 package es.commerzbank.ice.embargos.domain.mapper;
 
+import java.math.BigDecimal;
+
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -10,6 +12,7 @@ import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizedBankAccountDTO;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
 import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
+import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.utils.EmbargosConstants;
 import es.commerzbank.ice.utils.ICEDateUtils;
 
@@ -24,6 +27,7 @@ public abstract class  SeizedBankAccountMapper {
 		@Mapping (source = "cambio", target = "fxRate"),
 		@Mapping (source = "actuacion", target = "seizureAction.code"),
 		@Mapping (source = "traba.estadoTraba.codEstado", target = "seizureStatus.code"),
+		@Mapping (source = "traba.estadoTraba.desEstado", target = "seizureStatus.description"),
 		@Mapping (source = "divisa", target = "bankAccountCurrency"),
 	})
 	public abstract SeizedBankAccountDTO toSeizedBankAccountDTO (CuentaTraba cuentaTraba);
@@ -95,6 +99,20 @@ public abstract class  SeizedBankAccountMapper {
 		@Mapping (source = "status", target = "estadoCuenta"),
 		@Mapping (source = "divisa", target = "divisa"),
 	})
-	public abstract CuentaTraba accountDTOToCuentaTraba(AccountDTO accountDTO);
+	public abstract CuentaTraba accountDTOToCuentaTraba(AccountDTO accountDTO, BigDecimal numeroOrdenCuenta, Traba traba);
+	
+	@AfterMapping
+	public CuentaTraba accountDTOToCuentaTrabaAfterMapping(@MappingTarget CuentaTraba cuentaTraba, AccountDTO accountDTO, BigDecimal numeroOrdenCuenta, Traba traba) {
+		
+		cuentaTraba.setTraba(traba);
+		cuentaTraba.setNumeroOrdenCuenta(numeroOrdenCuenta);
+		EstadoTraba estadoTraba = new EstadoTraba();
+		estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_INICIAL);
+		cuentaTraba.setEstadoTraba(estadoTraba);
+		cuentaTraba.setOrigenEmb(EmbargosConstants.IND_FLAG_NO);
+		cuentaTraba.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+		cuentaTraba.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+		return cuentaTraba;
+	}
 	
 }

@@ -4,14 +4,14 @@ import java.util.List;
 
 public class FicheroDiligencias {
 
-	private List<EntidadTransmisoraGroup> entidadTransmisoraGorupList;
+	private List<EntidadTransmisoraGroup> entidadTransmisoraGroupList;
 	private RegistroControlEntidadTransmisora registroControlEntidadTransmisora;
 	
-	public List<EntidadTransmisoraGroup> getEntidadTransmisoraGorupList() {
-		return entidadTransmisoraGorupList;
+	public List<EntidadTransmisoraGroup> getEntidadTransmisoraGroupList() {
+		return entidadTransmisoraGroupList;
 	}
-	public void setEntidadTransmisoraGorupList(List<EntidadTransmisoraGroup> entidadTransmisoraGorupList) {
-		this.entidadTransmisoraGorupList = entidadTransmisoraGorupList;
+	public void setEntidadTransmisoraGroupList(List<EntidadTransmisoraGroup> entidadTransmisoraGroupList) {
+		this.entidadTransmisoraGroupList = entidadTransmisoraGroupList;
 	}
 	public RegistroControlEntidadTransmisora getRegistroControlEntidadTransmisora() {
 		return registroControlEntidadTransmisora;

@@ -8,4 +8,6 @@ public interface OrderingEntityRepository extends JpaRepository<EntidadesOrdenan
 
 	public EntidadesOrdenante findByNifEntidad(String identificadorEntidad);
 	
+	public EntidadesOrdenante findByIdentificadorEntidad(String identificadorEntidad);
+	
 }

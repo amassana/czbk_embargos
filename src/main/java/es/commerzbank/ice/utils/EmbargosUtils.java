@@ -74,4 +74,38 @@ public class EmbargosUtils {
 		}
 		return razonSocial;
 	}
+		
+	public static String determineFileFormatByTipoFichero(long codTipoFichero) {
+		
+		String fileFormat = null;
+		
+		if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63
+		 || codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63
+		 || codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63
+		 || codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63
+		 || codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63
+		 ) {
+		
+			fileFormat = EmbargosConstants.FILE_FORMAT_CUADERNO63;
+			
+		} else if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT
+				|| codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_TRABAS_AEAT
+				|| codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT
+				|| codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_ERRORES_TRABAS_ENVIADAS_AEAT
+		) {
+		
+			fileFormat = EmbargosConstants.FILE_FORMAT_AEAT;
+		
+		} else if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_PETICION_CGPJ
+				|| codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_RESPUESTA_CGPJ){
+
+			fileFormat = EmbargosConstants.FILE_FORMAT_CGPJ;
+		}
+			
+		else {}
+			
+		return fileFormat;
+		
+		
+	}
 }
