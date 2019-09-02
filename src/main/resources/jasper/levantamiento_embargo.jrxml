@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="justificante_embargos" pageWidth="595" pageHeight="842" columnWidth="490" leftMargin="60" rightMargin="45" topMargin="20" bottomMargin="20" isSummaryNewPage="true" uuid="0daf82b9-4d28-4a16-9cf4-ff291803fc37">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceBankDAdapter.xml"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="levantamiento_embargos" pageWidth="595" pageHeight="842" columnWidth="490" leftMargin="60" rightMargin="45" topMargin="20" bottomMargin="20" isSummaryNewPage="true" isSummaryWithPageHeaderAndFooter="true" uuid="0daf82b9-4d28-4a16-9cf4-ff291803fc37">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceBankDAdapterEmbargos.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -14,45 +14,59 @@
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="265"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="724"/>
-	<parameter name="COD_TRABA" class="java.lang.Integer"/>
 	<parameter name="IMAGE_PARAM" class="java.lang.String"/>
+	<parameter name="COD_LEVANTAMIENTO" class="java.lang.Integer"/>
 	<queryString>
-		<![CDATA[select
-	ct.cuenta
-,	ct.importe AS importeTraba
-,	t.fecha_traba, e.COD_EMBARGO, e.nombre, e.domicilio, e.codigo_postal, e.municipio, e.numero_embargo, e.nif
-,	e.importe AS importeEmbargo
-,	e.datregcomdet
-from COMM_EMBARGOS_DES.TRABAS t inner join COMM_EMBARGOS_DES.CUENTA_TRABA ct on t.cod_traba = ct.cod_traba
-inner join COMM_EMBARGOS_DES.EMBARGO e on e.cod_embargo = t.cod_embargo
-where t.cod_traba = $P{COD_TRABA}]]>
+		<![CDATA[SELECT
+    e.nombre,
+    e.domicilio,
+    e.municipio,
+    e.codigo_postal,
+l.F_ULTIMA_MODIFICACION,
+    e.numero_embargo,
+    t.fecha_traba,
+    eo.DES_ENTIDAD,
+    e.nif ,
+    e.importe AS importeEmbargo ,
+    cl.IBAN,
+    cl.IMPORTE  AS importeLevantamiento,
+    l.F_ULTIMA_MODIFICACION
+FROM
+LEVANTAMIENTO_TRABA l
+INNER JOIN
+    TRABAS t ON t.COD_TRABA = l.COD_TRABA
+INNER JOIN CUENTA_LEVANTAMIENTO cl ON
+    l.COD_LEVANTAMIENTO = cl.COD_LEVANTAMIENTO
+INNER JOIN EMBARGO e ON
+    e.cod_embargo = t.cod_embargo
+INNER JOIN ENTIDADES_ORDENANTES eo ON
+eo.COD_ENTIDAD_ORDENANTE = e.COD_ENTIDAD_ORDENANTE
+WHERE
+    l.COD_LEVANTAMIENTO = $P{COD_LEVANTAMIENTO}]]>
 	</queryString>
-	<field name="CUENTA" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="CUENTA"/>
-	</field>
-	<field name="IMPORTETRABA" class="java.math.BigDecimal">
-		<property name="com.jaspersoft.studio.field.label" value="IMPORTETRABA"/>
-	</field>
-	<field name="FECHA_TRABA" class="java.math.BigDecimal">
-		<property name="com.jaspersoft.studio.field.label" value="FECHA_TRABA"/>
-	</field>
-	<field name="COD_EMBARGO" class="java.math.BigDecimal">
-		<property name="com.jaspersoft.studio.field.label" value="COD_EMBARGO"/>
-	</field>
 	<field name="NOMBRE" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="NOMBRE"/>
 	</field>
 	<field name="DOMICILIO" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="DOMICILIO"/>
 	</field>
-	<field name="CODIGO_POSTAL" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="CODIGO_POSTAL"/>
-	</field>
 	<field name="MUNICIPIO" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="MUNICIPIO"/>
 	</field>
+	<field name="CODIGO_POSTAL" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CODIGO_POSTAL"/>
+	</field>
+	<field name="F_ULTIMA_MODIFICACION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="F_ULTIMA_MODIFICACION"/>
+	</field>
 	<field name="NUMERO_EMBARGO" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="NUMERO_EMBARGO"/>
+	</field>
+	<field name="FECHA_TRABA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="FECHA_TRABA"/>
+	</field>
+	<field name="DES_ENTIDAD" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DES_ENTIDAD"/>
 	</field>
 	<field name="NIF" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="NIF"/>
@@ -60,8 +74,14 @@ where t.cod_traba = $P{COD_TRABA}]]>
 	<field name="IMPORTEEMBARGO" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="IMPORTEEMBARGO"/>
 	</field>
-	<field name="DATREGCOMDET" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="DATREGCOMDET"/>
+	<field name="IBAN" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="IBAN"/>
+	</field>
+	<field name="IMPORTELEVANTAMIENTO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="IMPORTELEVANTAMIENTO"/>
+	</field>
+	<field name="COLUMN_13" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="F_ULTIMA_MODIFICACION"/>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -77,12 +97,12 @@ where t.cod_traba = $P{COD_TRABA}]]>
 	<pageHeader>
 		<band height="77" splitType="Stretch">
 			<staticText>
-				<reportElement x="2" y="6" width="220" height="46" uuid="5b30acd5-431d-475c-ba1c-747521e02785"/>
+				<reportElement x="2" y="6" width="260" height="46" uuid="5b30acd5-431d-475c-ba1c-747521e02785"/>
 				<box leftPadding="0"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="JustificanteReportFont" size="14" isBold="true" isUnderline="true"/>
 				</textElement>
-				<text><![CDATA[NOTIFICACIÓN  DE EMBARGO]]></text>
+				<text><![CDATA[LEVANTAMIENTO DE EMBARGO]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="307" y="35" width="148" height="19" uuid="c203b3d0-2ea3-4636-a2d9-195ec47d24d2">
@@ -165,13 +185,6 @@ where t.cod_traba = $P{COD_TRABA}]]>
 				<text><![CDATA[FECHA TRABA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="39" width="450" height="34" uuid="1b80ce23-ff91-4edf-90ac-9830b04447a0"/>
-				<textElement>
-					<font fontName="JustificanteReportFont" size="11"/>
-				</textElement>
-				<text><![CDATA[Siguiendo instrucciones de la TGSS por medio de envio telmático nos ordena el EMBARGO siguiente:]]></text>
-			</staticText>
-			<staticText>
 				<reportElement x="0" y="83" width="55" height="20" uuid="a6785840-3483-4671-bfb2-24a6ff8c8fb4"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="JustificanteReportFont" size="13" isBold="true"/>
@@ -190,7 +203,7 @@ where t.cod_traba = $P{COD_TRABA}]]>
 				<textElement>
 					<font fontName="JustificanteReportFont" size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Por lo que procedemos a ADEUDARLE en cuenta los importes siguientes:]]></text>
+				<text><![CDATA[Por lo que procedemos a ABONARLE en cuenta los importes siguientes:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="197" width="80" height="20" uuid="2114f5da-7319-4aa6-afa0-79214723d60f"/>
@@ -214,7 +227,7 @@ where t.cod_traba = $P{COD_TRABA}]]>
 				<text><![CDATA[Importe:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="69" y="102" width="421" height="20" uuid="e3848e4c-a64f-4647-9dc9-624a19259395">
+				<reportElement x="68" y="103" width="244" height="20" uuid="e3848e4c-a64f-4647-9dc9-624a19259395">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="16dcd533-3d49-4634-b336-f64c3a91946b"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -223,7 +236,7 @@ where t.cod_traba = $P{COD_TRABA}]]>
 				<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="61" y="79" width="104" height="20" uuid="1744d672-39f5-4400-83d8-925eb552fe8f">
+				<reportElement x="57" y="79" width="104" height="20" uuid="1744d672-39f5-4400-83d8-925eb552fe8f">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="1a6c961d-eb0b-4f68-af21-5d2b826bd1c1"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -232,7 +245,7 @@ where t.cod_traba = $P{COD_TRABA}]]>
 				<textFieldExpression><![CDATA[$F{NIF}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="87" y="128" width="244" height="20" uuid="e7561877-c18c-42ac-a654-85c83ad97f70">
+				<reportElement x="84" y="129" width="244" height="20" uuid="e7561877-c18c-42ac-a654-85c83ad97f70">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="891fdffe-38ba-48fd-b302-fe4baa8a541c"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -256,16 +269,16 @@ where t.cod_traba = $P{COD_TRABA}]]>
 				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font fontName="JustificanteReportFont" size="12" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{IMPORTETRABA} + " EUR"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{IMPORTELEVANTAMIENTO} + " EUR"]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="83" y="192" width="157" height="20" uuid="f2467dde-a3a6-4e7c-961e-f6598679d694">
+				<reportElement x="83" y="192" width="160" height="20" uuid="f2467dde-a3a6-4e7c-961e-f6598679d694">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3b989121-f2ee-4887-ad1b-8b10f49b27a0"/>
 				</reportElement>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="JustificanteReportFont" size="12" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{CUENTA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{IBAN}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="163" y="-10" width="106" height="30" uuid="60c657c7-b3c5-42de-a835-1ae61cb68ce7">
@@ -302,7 +315,7 @@ where t.cod_traba = $P{COD_TRABA}]]>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement x="56" y="99" width="118" height="1" uuid="5923e2d6-d7b4-4d9e-92fa-959f780d41a4">
+				<reportElement x="57" y="99" width="118" height="1" uuid="5923e2d6-d7b4-4d9e-92fa-959f780d41a4">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<graphicElement>
@@ -310,7 +323,7 @@ where t.cod_traba = $P{COD_TRABA}]]>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement x="67" y="122" width="205" height="1" uuid="0c80ea2b-41c8-4b2f-a032-86b7a7771f27">
+				<reportElement x="68" y="123" width="205" height="1" uuid="0c80ea2b-41c8-4b2f-a032-86b7a7771f27">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<graphicElement>
@@ -318,7 +331,7 @@ where t.cod_traba = $P{COD_TRABA}]]>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement x="87" y="148" width="244" height="1" uuid="0538859b-bc49-4a3e-b7b9-f8417de15eb6">
+				<reportElement x="84" y="148" width="118" height="1" uuid="0538859b-bc49-4a3e-b7b9-f8417de15eb6">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<graphicElement>
@@ -326,7 +339,7 @@ where t.cod_traba = $P{COD_TRABA}]]>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement x="80" y="212" width="160" height="1" uuid="36060081-1cc2-4a94-9741-8019789a9099">
+				<reportElement x="80" y="212" width="163" height="1" uuid="36060081-1cc2-4a94-9741-8019789a9099">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<graphicElement>
@@ -349,8 +362,17 @@ where t.cod_traba = $P{COD_TRABA}]]>
 					<pen lineWidth="1.0" lineStyle="Dotted"/>
 				</graphicElement>
 			</line>
+			<textField>
+				<reportElement x="0" y="39" width="449" height="40" uuid="ee463db0-3b38-495d-b975-61089cd7f684">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ca4f254c-baf0-4c2b-bb66-140681874935"/>
+				</reportElement>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Siguiendo instrucciones de la " + $F{DES_ENTIDAD} + " por medio de envio telmático nos ordena el LEVANTAMIENTO DE EMBARGO del embargo siguiente:"]]></textFieldExpression>
+			</textField>
 			<staticText>
-				<reportElement x="0" y="128" width="86" height="20" uuid="5c158429-e5b9-4119-89d6-a0cd8b17515e"/>
+				<reportElement x="0" y="129" width="82" height="20" uuid="9c8689b2-0eb8-400b-8374-524be7360a95"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="JustificanteReportFont" size="13" isBold="true"/>
 				</textElement>
@@ -359,20 +381,12 @@ where t.cod_traba = $P{COD_TRABA}]]>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="160" splitType="Stretch">
-			<staticText>
-				<reportElement x="36" y="150" width="84" height="10" uuid="b799b760-9ef9-4f75-88c6-6cddf191ea5e"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="JustificanteReportFont" size="6"/>
-				</textElement>
-				<text><![CDATA[Información Organismo Emisor]]></text>
-			</staticText>
-		</band>
+		<band height="160" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
 		<band height="108" splitType="Stretch">
 			<staticText>
-				<reportElement x="36" y="10" width="314" height="19" uuid="a6bcf41e-55e5-4c50-8c93-ab971483b873"/>
+				<reportElement x="37" y="0" width="314" height="19" uuid="a6bcf41e-55e5-4c50-8c93-ab971483b873"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="JustificanteReportFont" size="8" isBold="false"/>
 				</textElement>
@@ -401,15 +415,6 @@ Sucursal en España]]></text>
 				</textElement>
 				<text><![CDATA[Esta notificación no precisa firma.]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="36" y="0" width="464" height="10" uuid="66722ec0-57b3-4571-9724-c9919e79653f">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f9c8ca2d-4dc6-4b24-9ce1-5d02fe847a7f"/>
-				</reportElement>
-				<textElement verticalAlignment="Middle">
-					<font fontName="JustificanteReportFont" size="6"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{DATREGCOMDET}]]></textFieldExpression>
-			</textField>
 		</band>
 	</pageFooter>
 </jasperReport>

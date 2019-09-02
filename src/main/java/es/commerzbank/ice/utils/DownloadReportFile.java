@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+
+
 public class DownloadReportFile {
 
 	private static String filename;
@@ -65,12 +67,14 @@ public class DownloadReportFile {
 		
 		respHeaders = new HttpHeaders();
 
-		MediaType mediaType = MediaType.parseMediaType("application/pdf");
+		MediaType mediaType = MediaType.parseMediaType("application/" + PDF_EXTENSION);
 
 		respHeaders.setContentType(mediaType);
 		respHeaders.setContentLength(fileLength);
 		respHeaders.setContentDispositionFormData("attachment", fileNameSuggestion.concat(PDF_EXTENSION));
 	}
+	
+
 
 	public static ResponseEntity<InputStreamResource> returnToDownloadFile() throws FileNotFoundException {
 		FileInputStream fis = null;

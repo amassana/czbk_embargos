@@ -1,5 +1,7 @@
 package es.commerzbank.ice.embargos.service;
 
+
+import java.math.BigDecimal;
 import java.util.List;
 
 import es.commerzbank.ice.embargos.domain.dto.SeizedBankAccountDTO;
@@ -20,5 +22,8 @@ public interface SeizureService {
 	public List<SeizedBankAccountDTO> getAuditSeizedBankAccounts(Long codFileControl, Long idSeizure, Long codAudit);
 	
 	public byte[] generateJustificanteEmbargo(Integer idSeizure) throws Exception;
-	public byte[] generarResumenTrabas(Integer codControlFichero) throws Exception;
+	public byte[] generateLevantamientoReport(Integer idLifting) throws Exception;
+	public byte[] generarResumenTrabasF3(Integer codControlFichero) throws Exception;
+	public byte[] generarResumenTrabasF4(Integer codControlFichero) throws Exception;
+	public byte[] generarAnexo(BigDecimal cod_usuario, BigDecimal cod_traba, Integer num_anexo) throws Exception;
 }
