@@ -123,4 +123,8 @@ public class EmbargosConstants {
 	public static final String PERSON_TYPE_ID_FISICA = "F";
 	public static final String PERSON_TYPE_ID_JURIDICA = "J";
 	
+	//Tabla Apoderados
+	public static final String NAME_APODERADO = "name";
+	public static final String POSITION_APODERADO = "position";
+	
 }

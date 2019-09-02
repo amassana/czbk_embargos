@@ -137,7 +137,7 @@ public class CustomerServiceImpl implements CustomerService{
 //			accountList.add(account);
 //		}
 //		/** END MOCK **/
-		
+	
 		String endpoint = "http://commerzbank.prod.altengroup.dir:8080/datawarehouse/client-account?nif="+ nif +"&includeInactive=true";
 				
 		//CustomerDTO customerDTO = clientRestService.callToRESTMethod(endpoint, HttpMethod.GET.toString(), null, CustomerDTO.class);
