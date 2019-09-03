@@ -143,4 +143,21 @@ public class RepresentativeServiceImpl implements RepresentativeService {
 		return pageOffice;
 	}
 
+	@Override
+	public List<Representative> listAll() {
+		List<Apoderados> apoderados = null;
+		List<Representative> response = null;
+		
+		apoderados = apoderadosRepository.findAll();
+		
+		if (apoderados != null && apoderados.size() > 0) {
+			response = new ArrayList<Representative>();
+			for (Apoderados a : apoderados) {
+				response.add(representativeMapper.toRepresentative(a));
+			}
+		}
+		
+		return response;
+	}
+
 }
