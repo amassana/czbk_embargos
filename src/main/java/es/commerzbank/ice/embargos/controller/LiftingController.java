@@ -95,7 +95,7 @@ public class LiftingController {
 	@ApiOperation(value = "Actualiza el caso de levantamiento indicado, guardando los datos que se traspasen")
 	public ResponseEntity<String> saveLifting(Authentication authentication,
 			@PathVariable("codeFileControl") Long codeFileControl,
-			@PathVariable("codeLifting") Long codeLifting, @RequestBody Map<String, Object> parametros) {
+			@PathVariable("codeLifting") Long codeLifting, @RequestBody LiftingDTO lifting) {
 		
 		ResponseEntity<String> response = null;
 		boolean result = true;
@@ -104,7 +104,7 @@ public class LiftingController {
 		
 			String userModif = authentication.getName();
 		
-			result = liftingService.saveLifting(codeFileControl, codeLifting, parametros, userModif);
+			result = liftingService.saveLifting(codeFileControl, codeLifting, lifting, userModif);
 		
 			if (result) {
 				response = new ResponseEntity<>(HttpStatus.OK);

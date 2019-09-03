@@ -13,9 +13,9 @@ public interface LiftingService {
 
 	List<LiftingDTO> getAllByControlFichero(ControlFichero controlFichero);
 
-	List<BankAccountLiftingDTO> getAllByControlFicheroAndLevantamiento(Long codeFileControl, Long codeLifting);
+	LiftingDTO getAllByControlFicheroAndLevantamiento(Long codeFileControl, Long codeLifting);
 
-	boolean saveLifting(Long codeFileControl, Long codeLifting, Map<String, Object> parametros, String userModif);
+	boolean saveLifting(Long codeFileControl, Long codeLifting, LiftingDTO lifting, String userModif) throws Exception;
 
 	List<LiftingAuditDTO> getAuditByCodeLiftingCase(Long codeLiftingCase);
 

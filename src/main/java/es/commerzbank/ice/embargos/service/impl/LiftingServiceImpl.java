@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,49 +84,55 @@ public class LiftingServiceImpl implements LiftingService {
 	}
 
 	@Override
-	public List<BankAccountLiftingDTO> getAllByControlFicheroAndLevantamiento(Long codeFileControl, Long codeLifting) {
+	public LiftingDTO getAllByControlFicheroAndLevantamiento(Long codeFileControl, Long codeLifting) {
 		List<BankAccountLiftingDTO> bankAccountList = new ArrayList<>();
+		LiftingDTO response = null;
 		
-		//TODO mirar si se tiene que hacer join con PeticionInformacion para utilizar ControlFichero
-		ControlFichero controlFichero = new ControlFichero();
-		controlFichero.setCodControlFichero(codeFileControl);
+		Optional<LevantamientoTraba> result = liftingRepository.findById(codeLifting);
 		
-		LevantamientoTraba levantamiento = new LevantamientoTraba();
-		levantamiento.setCodLevantamiento(codeLifting);
-		
-		List<CuentaLevantamiento> cuentasLevantamiento = liftingBankAccountRepository.findByLevantamientoTraba(levantamiento);
-		
-		for (CuentaLevantamiento cuentaLevantamiento : cuentasLevantamiento) {
+		if (result != null) {
 			
-			BankAccountLiftingDTO bankAccountDTO = bankAccountLiftingMapper.toBankAccountLiftingDTO(cuentaLevantamiento);
-			bankAccountList.add(bankAccountDTO);
+			response = liftingMapper.toLiftingDTO(result.get());
+			
+			//TODO mirar si se tiene que hacer join con PeticionInformacion para utilizar ControlFichero
+			ControlFichero controlFichero = new ControlFichero();
+			controlFichero.setCodControlFichero(codeFileControl);
+			
+			LevantamientoTraba levantamiento = new LevantamientoTraba();
+			levantamiento.setCodLevantamiento(codeLifting);
+			
+			List<CuentaLevantamiento> cuentasLevantamiento = liftingBankAccountRepository.findByLevantamientoTraba(levantamiento);
+			
+			for (CuentaLevantamiento cuentaLevantamiento : cuentasLevantamiento) {
+				
+				BankAccountLiftingDTO bankAccountDTO = bankAccountLiftingMapper.toBankAccountLiftingDTO(cuentaLevantamiento);
+				bankAccountList.add(bankAccountDTO);
+			}
+			
+			response.setAccounts(bankAccountList);
 		}
 		
-		return bankAccountList;
+		return response;
 	}
 
 	@Override
-	public boolean saveLifting(Long codeFileControl, Long codelifting, Map<String, Object> parametros, String userModif) {
+	public boolean saveLifting(Long codeFileControl, Long codelifting, LiftingDTO lifting, String userModif) throws Exception {
 		boolean response = false; 
 		
-		try {
-			if (parametros.get(EmbargosConstants.LIFTING) != null) {
-				LevantamientoTraba levantamiento = liftingMapper.toLevantamiento((LiftingDTO) parametros.get(EmbargosConstants.LIFTING));
-				
-				liftingRepository.save(levantamiento);
-				
-				if (parametros.get(EmbargosConstants.BANK_ACCOUNT_LIFTING_LIST) != null) {
-					List<BankAccountLiftingDTO> list = (List<BankAccountLiftingDTO>) parametros.get(EmbargosConstants.BANK_ACCOUNT_LIFTING_LIST);
-					for (BankAccountLiftingDTO account : list) {
-						CuentaLevantamiento cuenta = bankAccountLiftingMapper.toCuentaLevantamiento(account);
-						
-						liftingBankAccountRepository.save(cuenta);
-					}
+		if (lifting != null) {
+			LevantamientoTraba levantamiento = liftingMapper.toLevantamiento(lifting);
+			
+			liftingRepository.save(levantamiento);
+			
+			if (lifting.getAccounts() != null) {
+				List<BankAccountLiftingDTO> list = lifting.getAccounts();
+				for (BankAccountLiftingDTO account : list) {
+					CuentaLevantamiento cuenta = bankAccountLiftingMapper.toCuentaLevantamiento(account);
+					
+					liftingBankAccountRepository.save(cuenta);
 				}
-			} else {
-				response = false;
 			}
-		} catch (Exception e) {
+		} else {
 			response = false;
 		}
 		

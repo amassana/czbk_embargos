@@ -1,6 +1,7 @@
 package es.commerzbank.ice.embargos.domain.dto;
 
 import java.util.Date;
+import java.util.List;
 
 public class LiftingDTO {
 	private Long codLifting;
@@ -13,6 +14,7 @@ public class LiftingDTO {
 	private Double amountPending;
 	private Date modifiedDate;
 	private String modifiedUser;
+	private List<BankAccountLiftingDTO> accounts;
 	
 	
 	public LiftingDTO() {}
@@ -20,7 +22,7 @@ public class LiftingDTO {
 	
 	
 	public LiftingDTO(Long codLifting, boolean status, String nif, String name, String numSeizure, Double amountDebt,
-			Double amountLocked, Double amountPending, Date modifiedDate, String modifiedUser) {
+			Double amountLocked, Double amountPending, Date modifiedDate, String modifiedUser, List<BankAccountLiftingDTO> accounts) {
 		this.codLifting = codLifting;
 		this.status = status;
 		this.nif = nif;
@@ -31,6 +33,7 @@ public class LiftingDTO {
 		this.amountPending = amountPending;
 		this.modifiedDate = modifiedDate;
 		this.modifiedUser = modifiedUser;
+		this.accounts = accounts;
 	}
 
 
@@ -94,5 +97,11 @@ public class LiftingDTO {
 	}
 	public void setModifiedUser(String modifiedUser) {
 		this.modifiedUser = modifiedUser;
+	}
+	public List<BankAccountLiftingDTO> getAccounts() {
+		return accounts;
+	}
+	public void setAccounts(List<BankAccountLiftingDTO> accounts) {
+		this.accounts = accounts;
 	}
 }
