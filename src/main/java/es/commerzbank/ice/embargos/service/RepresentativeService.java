@@ -18,4 +18,6 @@ public interface RepresentativeService {
 
 	Page<Representative> filter(Map<String, Object> parametros, Pageable dataPage);
 
+	List<Representative> listAll();
+
 }

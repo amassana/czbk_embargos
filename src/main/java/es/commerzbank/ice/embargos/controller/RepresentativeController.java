@@ -157,4 +157,27 @@ public class RepresentativeController {
 		logger.info("RepresentativeController - listAll - end");
 		return response;
 	}
+	
+	@GetMapping(value = "/representative/listAll",
+			produces = {"application/json"})
+	public ResponseEntity<List<Representative>> listAll(Authentication authentication) {
+		logger.info("RepresentativeController - listAll - start");
+		ResponseEntity<List<Representative>> response = null;
+		List<Representative> list = null;
+		
+		list = representativeService.listAll();
+		
+		if (list != null) {
+			if (list.size() > 0) {
+				response = new ResponseEntity<List<Representative>>(list, HttpStatus.OK);
+			} else {
+				response = new ResponseEntity<List<Representative>>(list, HttpStatus.NO_CONTENT);
+			}
+		} else {
+			response = new ResponseEntity<List<Representative>>(list, HttpStatus.BAD_REQUEST);
+		}
+		
+		logger.info("RepresentativeController - listAll - end");
+		return response;
+	}
 }
