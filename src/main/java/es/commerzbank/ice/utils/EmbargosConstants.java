@@ -144,4 +144,8 @@ public class EmbargosConstants {
 	public static final String NAME_APODERADO = "name";
 	public static final String POSITION_APODERADO = "position";
 	
+	//Levantamiento
+	public static final String LIFTING = "lifting";
+	public static final Object BANK_ACCOUNT_LIFTING_LIST = "bankAccountLiftingList";
+	
 }

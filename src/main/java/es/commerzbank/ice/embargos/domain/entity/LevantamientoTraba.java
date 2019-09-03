@@ -48,6 +48,9 @@ public class LevantamientoTraba implements Serializable {
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="COD_TRABA", nullable=false)
 	private Traba traba;
+	
+	@Column(name="IND_CASO_REVISADO", length=1)
+	private String indCasoRevisado;
 
 	public LevantamientoTraba() {
 	}
@@ -136,6 +139,14 @@ public class LevantamientoTraba implements Serializable {
 
 	public void setTraba(Traba traba) {
 		this.traba = traba;
+	}
+
+	public String getIndCasoRevisado() {
+		return indCasoRevisado;
+	}
+
+	public void setIndCasoRevisado(String indCasoRevisado) {
+		this.indCasoRevisado = indCasoRevisado;
 	}
 
 }
