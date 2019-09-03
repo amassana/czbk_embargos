@@ -16,6 +16,8 @@ public class FileControlDTO {
 	private Long codeFileResponse;
 	private Date modifiedDate;
 	private String modifiedUser;
+	private Boolean isTGSS;
+	private Boolean isCuaderno63;
 	
 	public String getCode() {
 		return code;
@@ -89,7 +91,17 @@ public class FileControlDTO {
 	public void setModifiedUser(String modifiedUser) {
 		this.modifiedUser = modifiedUser;
 	}
-	
-
-	
+	public Boolean getIsTGSS() {
+		return isTGSS;
+	}
+	public void setIsTGSS(Boolean isTGSS) {
+		this.isTGSS = isTGSS;
+	}
+	public Boolean getIsCuaderno63() {
+		return isCuaderno63;
+	}
+	public void setIsCuaderno63(Boolean isCuaderno63) {
+		this.isCuaderno63 = isCuaderno63;
+	}
+		
 }
