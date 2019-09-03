@@ -32,6 +32,11 @@ public class EmbargosConstants {
 	public static final long COD_TIPO_FICHERO_PETICION_CGPJ = 12;
 	public static final long COD_TIPO_FICHERO_RESPUESTA_CGPJ = 13;
 	
+	/** Formatos de fichero **/
+	public static final String FILE_FORMAT_AEAT = "AEAT";
+	public static final String FILE_FORMAT_CUADERNO63 = "CUADERNO63";
+	public static final String FILE_FORMAT_CGPJ = "CGPJ";
+	
 	/** Estados de ControlFichero **/
 	public static final long COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_ERROR = 0;
 	public static final long COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_LOADING = 1;
@@ -49,6 +54,13 @@ public class EmbargosConstants {
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_RECEIVED = 2;
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PROCESSING = 3;
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PROCESSED = 4;
+
+	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_ERROR = 0;
+	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_LOADING = 1;
+	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_RECEIVED = 2;
+	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PROCESSING = 3;
+	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PROCESSED = 4;
+	
 	
 	public static final long COD_ESTADO_CTRLFICHERO_INITIAL_STATUS_DEFAULT = 1;
 
@@ -63,12 +75,12 @@ public class EmbargosConstants {
 	public static final long COD_ESTADO_TRABA_ESTADO_ERRONEO = 8;
 	
 	/** Stream names del cuaderno 63 **/
-	public static final String STREAM_NAME_FASE1 = "fase1";
-	public static final String STREAM_NAME_FASE2 = "fase2";
-	public static final String STREAM_NAME_FASE3 = "fase3";
-	public static final String STREAM_NAME_FASE4 = "fase4";
-	public static final String STREAM_NAME_FASE5 = "fase5";
-	public static final String STREAM_NAME_FASE6 = "fase6";
+	public static final String STREAM_NAME_CUADERNO63_FASE1 = "fase1";
+	public static final String STREAM_NAME_CUADERNO63_FASE2 = "fase2";
+	public static final String STREAM_NAME_CUADERNO63_FASE3 = "fase3";
+	public static final String STREAM_NAME_CUADERNO63_FASE4 = "fase4";
+	public static final String STREAM_NAME_CUADERNO63_FASE5 = "fase5";
+	public static final String STREAM_NAME_CUADERNO63_FASE6 = "fase6";
 	
 	/** Record names del cuaderno 63 **/
 	public static final String RECORD_NAME_CABECERAEMISOR = "cabeceraEmisor";
@@ -82,20 +94,20 @@ public class EmbargosConstants {
 	public static final String RECORD_NAME_RESULTADOFINALEMBARGO = "resultadoFinalEmbargo";
 	
 	/** Stream names de AEAT **/
-	public static final String STREAM_NAME_DILIGENCIAS = "diligencias";
-	public static final String STREAM_NAME_TRABAS = "trabas";
-	public static final String STREAM_NAME_RESULTADOVALIDACIONTRABAS = "resultadoValidacionTrabas";
-	public static final String STREAM_NAME_LEVANTAMIENTOTRABAS = "levantamientoTrabas";
+	public static final String STREAM_NAME_AEAT_DILIGENCIAS = "diligencias";
+	public static final String STREAM_NAME_AEAT_TRABAS = "trabas";
+	public static final String STREAM_NAME_AEAT_RESULTADOVALIDACIONTRABAS = "resultadoValidacionTrabas";
+	public static final String STREAM_NAME_AEAT_LEVANTAMIENTOTRABAS = "levantamientoTrabas";
 	
 	/** Record names de AEAT **/
-	public static final String RECORD_NAME_ENTIDADTRANSMISORA = "entidadTransmisora";
-	public static final String RECORD_NAME_ENTIDADCREDITO = "entidadCredito";
-	public static final String RECORD_NAME_DILIGENCIA = "diligencia";
-	public static final String RECORD_NAME_FINENTIDADCREDITO = "finEntidadCredito";
-	public static final String RECORD_NAME_FINENTIDADTRANSMISORA = "finEntidadTransmisora";
-	public static final String RECORD_NAME_REGISTROCONTROLENTIDADTRANSMISORA = "registroControlEntidadTransmisora";
-	public static final String RECORD_NAME_TRABA = "traba";
-	public static final String RECORD_NAME_ERRORESTRABA = "erroresTraba";
+	public static final String RECORD_NAME_AEAT_ENTIDADTRANSMISORA = "entidadTransmisora";
+	public static final String RECORD_NAME_AEAT_ENTIDADCREDITO = "entidadCredito";
+	public static final String RECORD_NAME_AEAT_DILIGENCIA = "diligencia";
+	public static final String RECORD_NAME_AEAT_FINENTIDADCREDITO = "finEntidadCredito";
+	public static final String RECORD_NAME_AEAT_FINENTIDADTRANSMISORA = "finEntidadTransmisora";
+	public static final String RECORD_NAME_AEAT_REGISTROCONTROLENTIDADTRANSMISORA = "registroControlEntidadTransmisora";
+	public static final String RECORD_NAME_AEAT_TRABA = "traba";
+	public static final String RECORD_NAME_AEAT_ERRORESTRABA = "erroresTraba";
 	
 	public static final String SEPARADOR_PUNTO = ".";
 	public static final String SEPARADOR_GUION_BAJO = "_";
@@ -122,6 +134,8 @@ public class EmbargosConstants {
 	
 	public static final String PERSON_TYPE_ID_FISICA = "F";
 	public static final String PERSON_TYPE_ID_JURIDICA = "J";
+	
+	public static final String CODIGO_ENTIDAD_TRANSMISORA_COMMERZBANK = "0159";
 	
 	//Tabla Apoderados
 	public static final String NAME_APODERADO = "name";

@@ -48,94 +48,7 @@ import es.commerzbank.ice.utils.ICEDateUtils;
 public abstract class Cuaderno63Mapper {
 
 	
-	public ControlFichero generateControlFichero(File file, Long codTipoFichero) throws IOException{
-		
-        ControlFichero controlFichero = new ControlFichero();
-		
-		String fileNamePeticion = FilenameUtils.getName(file.getCanonicalPath());
-        TipoFichero tipoFichero = new TipoFichero(); 
-        tipoFichero.setCodTipoFichero(codTipoFichero);
-        
-        //TODO debe permitir NULL:
-        //Se inicializa con valor a 1 (codigo de Entidad Comunicadora tiene que existir), no puede ser null:
-        EntidadesComunicadora entidadesComunicadora = new EntidadesComunicadora();
-        entidadesComunicadora.setCodEntidadPresentadora(1);
-        controlFichero.setEntidadesComunicadora(entidadesComunicadora);
-        
-        //Guardar registro del control del fichero de Peticion:
-        controlFichero.setTipoFichero(tipoFichero);
-        controlFichero.setNombreFichero(fileNamePeticion);
-        //Descripcion por defecto:
-        controlFichero.setDescripcion(EmbargosConstants.CONTROL_FICHERO_DESCRIPCION_DEFAULT);
-        
-        //Calculo del CRC del fichero:
-        if (file.exists()) {
-        	controlFichero.setNumCrc(Long.toString(FileUtils.checksumCRC32(file)));
-        }
-                
-        //Fecha de incorporacion: fecha actual
-        BigDecimal actualDate = ICEDateUtils.dateToBigDecimal(new Date(),ICEDateUtils.FORMAT_yyyyMMddHHmmss);
-        controlFichero.setFechaIncorporacion(actualDate);
-        
-        //Indicadores y flags:
-        //TODO se tendra que agregar casuistica dependiendo del tipo del fichero:
-        controlFichero.setIndProcesado(EmbargosConstants.IND_FLAG_NO);
-        controlFichero.setInd6301(EmbargosConstants.IND_FLAG_SI);
-        controlFichero.setIndCgpj(EmbargosConstants.IND_FLAG_NO);
-        
-        //Iso moneda:
-        controlFichero.setIsoMoneda(EmbargosConstants.ISO_MONEDA_EUR);
-        
-        //ESTADO DEL FICHERO: calcular el estado inicial del fichero dependiendo del tipo de fichero:
-        EstadoCtrlfichero estadoCtrlfichero = determineInitialEstadoCtrlFicheroByCodTipoFichero(codTipoFichero);
-        controlFichero.setEstadoCtrlfichero(estadoCtrlfichero);
-        
-        //Usuario y fecha ultima modificacion:
-        controlFichero.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
-        controlFichero.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
-        
-        return controlFichero;
-	}
-	
-	/**
-	 * Determina el estado inicial del fichero dependiendo del tipo de fichero.
-	 * 
-	 * @param codTipoFichero
-	 * @return
-	 */
-	private EstadoCtrlfichero determineInitialEstadoCtrlFicheroByCodTipoFichero(long codTipoFichero) {
-			
-		long codEstado = 0;
-		
-		if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63) {
 
-			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_LOADING;
-			
-		} else if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63) {
-		
-			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_INFORMACION_NORMA63_GENERATING;
-
-		} else if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63) {	
-
-			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_LOADING;
-			
-		//TODO agregar por cada tipo de fichero el estado incial:
-		//} else if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_TRABAS_NORMA63) {		
-
-		} else {
-			//Estado inicial por defecto:
-			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_INITIAL_STATUS_DEFAULT;
-		}
-		
-        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero();
-        EstadoCtrlficheroPK estadoCtrlficheroPK = new EstadoCtrlficheroPK();
-        estadoCtrlficheroPK.setCodEstado(codEstado);
-        estadoCtrlficheroPK.setCodTipoFichero(codTipoFichero);
-        estadoCtrlfichero.setId(estadoCtrlficheroPK);
-        
-        return estadoCtrlfichero;
-		
-	}
 	
 	
 //	@Mappings({
@@ -313,9 +226,10 @@ public abstract class Cuaderno63Mapper {
 		
 		//SETEO DE CUENTAS:
 		//Datos iban1:
-		CuentaEmbargo cuentaEmbargo = new CuentaEmbargo();
+		CuentaEmbargo cuentaEmbargo = null;
 		
 		if (ordenEjecucionEmbargo.getIbanCuenta1()!=null && !ordenEjecucionEmbargo.getIbanCuenta1().isEmpty()) {
+			cuentaEmbargo = new CuentaEmbargo();
 			cuentaEmbargo.setEmbargo(embargo);
 			cuentaEmbargo.setIban(ordenEjecucionEmbargo.getIbanCuenta1());
 			cuentaEmbargo.setClaveSeguridad(ordenEjecucionEmbargo.getClaveSeguridadIban1());
@@ -430,9 +344,10 @@ public abstract class Cuaderno63Mapper {
 		BigDecimal numeroOrden = new BigDecimal(1);
 		
 		//Datos iban1:
-		CuentaTraba cuentaTraba = new CuentaTraba();
+		CuentaTraba cuentaTraba = null;
 		
 		if (ordenEjecucionEmbargo.getIbanCuenta1()!=null && !ordenEjecucionEmbargo.getIbanCuenta1().isEmpty()) {
+			cuentaTraba = new CuentaTraba();
 			cuentaTraba.setTraba(traba);
 			cuentaTraba.setIban(ordenEjecucionEmbargo.getIbanCuenta1());
 			cuentaTraba.setNumeroOrdenCuenta(numeroOrden);

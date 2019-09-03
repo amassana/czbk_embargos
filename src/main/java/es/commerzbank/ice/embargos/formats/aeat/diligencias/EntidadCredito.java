@@ -5,13 +5,13 @@ import java.util.Date;
 public class EntidadCredito {
 
 	private String indicadorRegistro;
-	private Integer delegacionAgenciaEmisora;
+	private String delegacionAgenciaEmisora;
 	private Integer codigoEntidadCredito;
 	private Integer numeroEnvio;
 	private Date fechaCreacionFicheroTransmision;
 	private String indicadorTipoFichero;
 	private Date fechaGeneracionEnvioMensualDiligencias;
-	private Integer codigoEntidadTransmisora;
+	private String codigoEntidadTransmisora;
 	private String indicadorMoneda;
 	private String mensajeInformativoParaDeudor;
 	
@@ -21,10 +21,10 @@ public class EntidadCredito {
 	public void setIndicadorRegistro(String indicadorRegistro) {
 		this.indicadorRegistro = indicadorRegistro;
 	}
-	public Integer getDelegacionAgenciaEmisora() {
+	public String getDelegacionAgenciaEmisora() {
 		return delegacionAgenciaEmisora;
 	}
-	public void setDelegacionAgenciaEmisora(Integer delegacionAgenciaEmisora) {
+	public void setDelegacionAgenciaEmisora(String delegacionAgenciaEmisora) {
 		this.delegacionAgenciaEmisora = delegacionAgenciaEmisora;
 	}
 	public Integer getCodigoEntidadCredito() {
@@ -57,10 +57,10 @@ public class EntidadCredito {
 	public void setFechaGeneracionEnvioMensualDiligencias(Date fechaGeneracionEnvioMensualDiligencias) {
 		this.fechaGeneracionEnvioMensualDiligencias = fechaGeneracionEnvioMensualDiligencias;
 	}
-	public Integer getCodigoEntidadTransmisora() {
+	public String getCodigoEntidadTransmisora() {
 		return codigoEntidadTransmisora;
 	}
-	public void setCodigoEntidadTransmisora(Integer codigoEntidadTransmisora) {
+	public void setCodigoEntidadTransmisora(String codigoEntidadTransmisora) {
 		this.codigoEntidadTransmisora = codigoEntidadTransmisora;
 	}
 	public String getIndicadorMoneda() {

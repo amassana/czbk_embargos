@@ -6,7 +6,7 @@ public class EntidadTransmisora {
 
 	private String indicadorRegistro;
 	private Integer delegacionAgenciaTransmisora;
-	private Integer codigoEntidadTransmisora;
+	private String codigoEntidadTransmisora;
 	private Date fechaInicioCiclo;
 	private Date fechaCreacionFicheroTrabas;                
 	private String indicadorTipoFichero;
@@ -63,10 +63,10 @@ public class EntidadTransmisora {
 	public void setDelegacionAgenciaTransmisora(Integer delegacionAgenciaTransmisora) {
 		this.delegacionAgenciaTransmisora = delegacionAgenciaTransmisora;
 	}
-	public Integer getCodigoEntidadTransmisora() {
+	public String getCodigoEntidadTransmisora() {
 		return codigoEntidadTransmisora;
 	}
-	public void setCodigoEntidadTransmisora(Integer codigoEntidadTransmisora) {
+	public void setCodigoEntidadTransmisora(String codigoEntidadTransmisora) {
 		this.codigoEntidadTransmisora = codigoEntidadTransmisora;
 	}
 	public Date getFechaInicioCiclo() {

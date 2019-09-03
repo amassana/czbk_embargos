@@ -37,11 +37,11 @@ import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlficheroPK;
-import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
 import es.commerzbank.ice.embargos.domain.entity.PeticionInformacion;
 import es.commerzbank.ice.embargos.domain.entity.PeticionInformacionCuenta;
 import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.embargos.domain.mapper.Cuaderno63Mapper;
+import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
 import es.commerzbank.ice.embargos.domain.mapper.InformationPetitionBankAccountMapper;
 import es.commerzbank.ice.embargos.domain.mapper.SeizedBankAccountMapper;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase1.CabeceraEmisorFase1;
@@ -89,6 +89,9 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 
 	@Autowired
 	Cuaderno63Mapper cuaderno63Mapper;
+	
+	@Autowired
+	FileControlMapper fileControlMapper;
 	
 	@Autowired
 	InformationPetitionBankAccountMapper informationPetitionBankAccountMapper;
@@ -149,12 +152,12 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        
 	        //Se guarda el registro de ControlFichero del fichero de entrada:
 	        controlFicheroPeticion = 
-	        		cuaderno63Mapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63);
+	        		fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63);
 	        
 	        fileControlRepository.save(controlFicheroPeticion);
 	                        
 	        // use a StreamFactory to create a BeanReader
-	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_FASE1, file);
+	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE1, file);
 	        	        
 	        CabeceraEmisorFase1 cabeceraEmisor = null;
 	        EntidadesComunicadora entidadComunicadora = null;
@@ -348,7 +351,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        
 	        //Se guarda el registro de ControlFichero del fichero de salida:
 	        ControlFichero controlFicheroInformacion = 
-	        		cuaderno63Mapper.generateControlFichero(ficheroSalida, EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63);
+	        		fileControlMapper.generateControlFichero(ficheroSalida, EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63);
 	        
 	        //Usuario que realiza la tramitacion:
 	        controlFicheroInformacion.setUsuarioUltModificacion(usuarioTramitador);
@@ -356,8 +359,8 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        fileControlRepository.save(controlFicheroInformacion);
 	                
 	        // use a StreamFactory to create a BeanReader
-	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_FASE1, ficheroEntrada);
-	        beanWriter = factory.createWriter(EmbargosConstants.STREAM_NAME_FASE2, ficheroSalida);
+	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE1, ficheroEntrada);
+	        beanWriter = factory.createWriter(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE2, ficheroSalida);
 	        
 	        Object record = null;
 	        while ((record = beanReader.read()) != null) {
@@ -492,12 +495,12 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        
 	        //Se guarda el registro de ControlFichero del fichero de entrada:
 	        ControlFichero controlFicheroEmbargo = 
-	        		cuaderno63Mapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63);
+	        		fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63);
 	        
 	        fileControlRepository.save(controlFicheroEmbargo);
 	        
 	        // use a StreamFactory to create a BeanReader
-	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_FASE3, file);
+	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE3, file);
 	        
 	        Object record = null;
 	    	
@@ -645,7 +648,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        					
 	        					numeroOrdenCuenta = numeroOrdenCuenta.add(BigDecimal.valueOf(1));
 	        					
-	        					CuentaTraba cuentaTrabaExtra = extraCustomerBankAccount(accountDTO, numeroOrdenCuenta, traba);
+	        					CuentaTraba cuentaTrabaExtra = seizedBankAccountMapper.accountDTOToCuentaTraba(accountDTO, numeroOrdenCuenta, traba);
 	        					seizedBankAccountRepository.save(cuentaTrabaExtra);
 	        				}
 	        			}
@@ -672,8 +675,8 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 			controlFicheroEmbargo.setFechaComienzoCiclo(fechaObtencionFicheroOrganismoBigDec);
 	       
 			//- Se guarda la fecha maxima de respuesta (now + dias de margen)
-			long diasRespuestaF1 = entidadComunicadora.getDiasRespuestaF1()!=null ? entidadComunicadora.getDiasRespuestaF1().longValue() : 0;
-			Date lastDateResponse = DateUtils.convertToDate(LocalDate.now().plusDays(diasRespuestaF1));
+			long diasRespuestaF3 = entidadComunicadora.getDiasRespuestaF3()!=null ? entidadComunicadora.getDiasRespuestaF3().longValue() : 0;
+			Date lastDateResponse = DateUtils.convertToDate(LocalDate.now().plusDays(diasRespuestaF3));
 			BigDecimal limitResponseDate = ICEDateUtils.dateToBigDecimal(lastDateResponse, ICEDateUtils.FORMAT_yyyyMMdd);
 			controlFicheroEmbargo.setFechaMaximaRespuesta(limitResponseDate);
 			
@@ -717,19 +720,19 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 		
 	}
 
-	private CuentaTraba extraCustomerBankAccount(AccountDTO accountDTO, BigDecimal numeroOrdenCuenta, Traba traba) {
-		CuentaTraba cuentaTraba = seizedBankAccountMapper.accountDTOToCuentaTraba(accountDTO);
-		cuentaTraba.setTraba(traba);
-		cuentaTraba.setNumeroOrdenCuenta(numeroOrdenCuenta);
-		EstadoTraba estadoTraba = new EstadoTraba();
-		estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_INICIAL);
-		cuentaTraba.setEstadoTraba(estadoTraba);
-		cuentaTraba.setOrigenEmb(EmbargosConstants.IND_FLAG_NO);
-		cuentaTraba.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
-		cuentaTraba.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
-		return cuentaTraba;
-		
-	}
+//	private CuentaTraba extraCustomerBankAccount(AccountDTO accountDTO, BigDecimal numeroOrdenCuenta, Traba traba) {
+//		CuentaTraba cuentaTraba = seizedBankAccountMapper.accountDTOToCuentaTraba(accountDTO);
+//		cuentaTraba.setTraba(traba);
+//		cuentaTraba.setNumeroOrdenCuenta(numeroOrdenCuenta);
+//		EstadoTraba estadoTraba = new EstadoTraba();
+//		estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_INICIAL);
+//		cuentaTraba.setEstadoTraba(estadoTraba);
+//		cuentaTraba.setOrigenEmb(EmbargosConstants.IND_FLAG_NO);
+//		cuentaTraba.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+//		cuentaTraba.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+//		return cuentaTraba;
+//		
+//	}
 	
 	public void tratarFicheroLevantamientos(File file) {
 		

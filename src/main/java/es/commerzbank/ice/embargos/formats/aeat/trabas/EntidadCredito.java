@@ -10,7 +10,7 @@ public class EntidadCredito {
 	private Integer numeroEnvio;
 	private Date fechaCreacionFicheroTrabas;
 	private String indicadorTipoFichero;
-	private Integer codigoEntidadTransmisora;
+	private String codigoEntidadTransmisora;
 	private String indicadorMoneda;
 	
 	
@@ -50,10 +50,10 @@ public class EntidadCredito {
 	public void setIndicadorTipoFichero(String indicadorTipoFichero) {
 		this.indicadorTipoFichero = indicadorTipoFichero;
 	}
-	public Integer getCodigoEntidadTransmisora() {
+	public String getCodigoEntidadTransmisora() {
 		return codigoEntidadTransmisora;
 	}
-	public void setCodigoEntidadTransmisora(Integer codigoEntidadTransmisora) {
+	public void setCodigoEntidadTransmisora(String codigoEntidadTransmisora) {
 		this.codigoEntidadTransmisora = codigoEntidadTransmisora;
 	}
 	public String getIndicadorMoneda() {
