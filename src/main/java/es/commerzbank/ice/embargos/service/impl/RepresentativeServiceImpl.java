@@ -148,7 +148,17 @@ public class RepresentativeServiceImpl implements RepresentativeService {
 		List<Apoderados> apoderados = null;
 		List<Representative> response = null;
 		
-		apoderados = apoderadosRepository.findAll();
+		apoderados = apoderadosRepository.findAll(new Specification<Apoderados>() {
+
+			@Override
+			public Predicate toPredicate(Root<Apoderados> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicates = new ArrayList<>();
+				
+				predicates.add(criteriaBuilder.equal(root.get(Apoderados_.indActivo), EmbargosConstants.IND_FLAG_SI));
+		
+				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+			}
+		});
 		
 		if (apoderados != null && apoderados.size() > 0) {
 			response = new ArrayList<Representative>();
