@@ -226,9 +226,10 @@ public abstract class Cuaderno63Mapper {
 		
 		//SETEO DE CUENTAS:
 		//Datos iban1:
-		CuentaEmbargo cuentaEmbargo = new CuentaEmbargo();
+		CuentaEmbargo cuentaEmbargo = null;
 		
 		if (ordenEjecucionEmbargo.getIbanCuenta1()!=null && !ordenEjecucionEmbargo.getIbanCuenta1().isEmpty()) {
+			cuentaEmbargo = new CuentaEmbargo();
 			cuentaEmbargo.setEmbargo(embargo);
 			cuentaEmbargo.setIban(ordenEjecucionEmbargo.getIbanCuenta1());
 			cuentaEmbargo.setClaveSeguridad(ordenEjecucionEmbargo.getClaveSeguridadIban1());
@@ -343,9 +344,10 @@ public abstract class Cuaderno63Mapper {
 		BigDecimal numeroOrden = new BigDecimal(1);
 		
 		//Datos iban1:
-		CuentaTraba cuentaTraba = new CuentaTraba();
+		CuentaTraba cuentaTraba = null;
 		
 		if (ordenEjecucionEmbargo.getIbanCuenta1()!=null && !ordenEjecucionEmbargo.getIbanCuenta1().isEmpty()) {
+			cuentaTraba = new CuentaTraba();
 			cuentaTraba.setTraba(traba);
 			cuentaTraba.setIban(ordenEjecucionEmbargo.getIbanCuenta1());
 			cuentaTraba.setNumeroOrdenCuenta(numeroOrden);

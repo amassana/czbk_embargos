@@ -135,4 +135,6 @@ public class EmbargosConstants {
 	public static final String PERSON_TYPE_ID_FISICA = "F";
 	public static final String PERSON_TYPE_ID_JURIDICA = "J";
 	
+	public static final String CODIGO_ENTIDAD_TRANSMISORA_COMMERZBANK = "0159";
+	
 }

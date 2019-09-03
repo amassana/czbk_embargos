@@ -100,7 +100,7 @@ public class FileManagementServiceImpl implements FileManagementService {
 			leerFichero(file);													
 			
 			//Si fichero es de la AEAT (tiene prefijo "AEAT_")
-			if (FilenameUtils.getBaseName(file.getCanonicalPath()).toLowerCase().contains(EmbargosConstants.AEAT)) {
+			if (FilenameUtils.getBaseName(file.getCanonicalPath()).toLowerCase().contains(EmbargosConstants.AEAT.toLowerCase())) {
 
 				parsearFicheroAEAT(file);
 			
@@ -118,7 +118,7 @@ public class FileManagementServiceImpl implements FileManagementService {
 	}
 	
 
-	private void parsearFicheroAEAT(File file) throws IOException {
+	private void parsearFicheroAEAT(File file) throws IOException, ICEParserException {
 		
 		String tipoFichero = FilenameUtils.getExtension(file.getCanonicalPath()).toUpperCase();
 				

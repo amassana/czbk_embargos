@@ -29,6 +29,7 @@ public abstract class  SeizedBankAccountMapper {
 		@Mapping (source = "traba.estadoTraba.codEstado", target = "seizureStatus.code"),
 		@Mapping (source = "traba.estadoTraba.desEstado", target = "seizureStatus.description"),
 		@Mapping (source = "divisa", target = "bankAccountCurrency"),
+		@Mapping (source = "numeroOrdenCuenta", target = "orderNumberAccount"),
 	})
 	public abstract SeizedBankAccountDTO toSeizedBankAccountDTO (CuentaTraba cuentaTraba);
 
@@ -94,18 +95,22 @@ public abstract class  SeizedBankAccountMapper {
 	}
 	
 	@Mappings({
-		@Mapping (source = "accountNum", target = "cuenta"),
-		@Mapping (source = "iban", target = "iban"),
-		@Mapping (source = "status", target = "estadoCuenta"),
-		@Mapping (source = "divisa", target = "divisa"),
+		@Mapping (source = "accountDTO.accountNum", target = "cuenta"),
+		@Mapping (source = "accountDTO.iban", target = "iban"),
+		@Mapping (source = "accountDTO.status", target = "estadoCuenta"),
+		@Mapping (source = "accountDTO.divisa", target = "divisa"),
+		@Mapping (source = "numeroOrdenCuenta", target = "numeroOrdenCuenta"),
+		@Mapping (source = "traba", target = "traba"),
 	})
 	public abstract CuentaTraba accountDTOToCuentaTraba(AccountDTO accountDTO, BigDecimal numeroOrdenCuenta, Traba traba);
 	
+	//@AfterMapping
+	//public CuentaTraba accountDTOToCuentaTrabaAfterMapping(@MappingTarget CuentaTraba cuentaTraba, AccountDTO accountDTO, Traba traba) {
+	
 	@AfterMapping
-	public CuentaTraba accountDTOToCuentaTrabaAfterMapping(@MappingTarget CuentaTraba cuentaTraba, AccountDTO accountDTO, BigDecimal numeroOrdenCuenta, Traba traba) {
+	public CuentaTraba accountDTOToCuentaTrabaAfterMapping(@MappingTarget CuentaTraba cuentaTraba, AccountDTO accountDTO) {
 		
-		cuentaTraba.setTraba(traba);
-		cuentaTraba.setNumeroOrdenCuenta(numeroOrdenCuenta);
+		//cuentaTraba.setTraba(traba);
 		EstadoTraba estadoTraba = new EstadoTraba();
 		estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_INICIAL);
 		cuentaTraba.setEstadoTraba(estadoTraba);

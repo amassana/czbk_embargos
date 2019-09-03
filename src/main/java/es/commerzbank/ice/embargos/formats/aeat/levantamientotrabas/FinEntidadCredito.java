@@ -11,7 +11,7 @@ public class FinEntidadCredito {
 	private Integer numeroDiligenciasIncluidasEnvio;
 	private BigDecimal importeTotalAEmbargar;
 	private BigDecimal importeTotalTrabado;
-	private Integer codigoEntidadTransmisora;
+	private String codigoEntidadTransmisora;
 	
 	public String getIndicadorRegistro() {
 		return indicadorRegistro;
@@ -49,10 +49,10 @@ public class FinEntidadCredito {
 	public void setImporteTotalTrabado(BigDecimal importeTotalTrabado) {
 		this.importeTotalTrabado = importeTotalTrabado;
 	}
-	public Integer getCodigoEntidadTransmisora() {
+	public String getCodigoEntidadTransmisora() {
 		return codigoEntidadTransmisora;
 	}
-	public void setCodigoEntidadTransmisora(Integer codigoEntidadTransmisora) {
+	public void setCodigoEntidadTransmisora(String codigoEntidadTransmisora) {
 		this.codigoEntidadTransmisora = codigoEntidadTransmisora;
 	}
 		

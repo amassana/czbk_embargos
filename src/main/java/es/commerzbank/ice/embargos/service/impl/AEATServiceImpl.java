@@ -1,10 +1,13 @@
 package es.commerzbank.ice.embargos.service.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.beanio.BeanReader;
@@ -95,7 +98,7 @@ public class AEATServiceImpl implements AEATService{
 	@Autowired
 	SeizedBankAccountRepository seizedBankAccountRepository;
 	
-	public void tratarFicheroDiligenciasEmbargo(File file) {
+	public void tratarFicheroDiligenciasEmbargo(File file) throws IOException, ICEParserException{
 		
 		BeanReader beanReader = null;
 		
@@ -123,29 +126,33 @@ public class AEATServiceImpl implements AEATService{
 	        Diligencia diligencia = null;
 	        
 	        EntidadesOrdenante entidadOrdenante = null;
-	        Date fechaObtencionFicheroOrganismo = null;
-	        
+	        //Date fechaObtencionFicheroOrganismo = null;
+
 	        while ((record = beanReader.read()) != null) {
 	        	
 	        	if(EmbargosConstants.RECORD_NAME_AEAT_ENTIDADTRANSMISORA.equals(beanReader.getRecordName())) {      	
 	        		
 	        		entidadTransmisora = (EntidadTransmisora) record;
 	        		
+	        		//Si la entidad transmisora es Commerzbank:
 	        		if (entidadTransmisora.getCodigoEntidadTransmisora() != null 
-	        				&& entidadTransmisora.getCodigoEntidadTransmisora().intValue() == 159) {   			
+	        				&& entidadTransmisora.getCodigoEntidadTransmisora().equals(EmbargosConstants.CODIGO_ENTIDAD_TRANSMISORA_COMMERZBANK)) {   			
+	        			
 	        			isEntidadTransmisoraCommerzbank = true;
-	        		} else {
+	        			
+	        		} else {	
 	        			isEntidadTransmisoraCommerzbank = false;
 	        		}
 	        	}
 	        	
+	        	//Tratar registros solo si la entidad transmisora es Commerzbank:
 	        	if (isEntidadTransmisoraCommerzbank) {
 	        	
 		        	if(EmbargosConstants.RECORD_NAME_AEAT_ENTIDADCREDITO.equals(beanReader.getRecordName())) {
 		            	
 		        		entidadCredito = (EntidadCredito) record;
 		        		
-		        		String identificadorEntidad = entidadCredito.getDelegacionAgenciaEmisora()!=null ? Integer.toString(entidadCredito.getDelegacionAgenciaEmisora()) : null;
+		        		String identificadorEntidad = entidadCredito.getDelegacionAgenciaEmisora()!=null ? entidadCredito.getDelegacionAgenciaEmisora() : null;
 		        		
 		        		entidadOrdenante = orderingEntityRepository.findByIdentificadorEntidad(identificadorEntidad);
 		        		
@@ -165,33 +172,21 @@ public class AEATServiceImpl implements AEATService{
 		        		//- Se obtienen de Datawarehouse los datos del cliente y sus cuentas a partir del NIF del cliente:
 		        		CustomerDTO customerDTO = customerService.findCustomerByNif(diligencia.getNifDeudor());
 		        		
-		        		//- Se almacenan las cuentas obtenidas de Datawarehouse en una Hash donde la key es el IBAN:
+		        		//- Se almacenan las cuentas obtenidas de Datawarehouse en una Hash donde la key es el AccountNum:
 		        		Map<String, AccountDTO> customerAccountsMap = new HashMap<>(); 
 		        		if (customerDTO!=null) {
 			        		for (AccountDTO accountDTO : customerDTO.getBankAccounts()) {    		
-			        			customerAccountsMap.put(accountDTO.getIban(), accountDTO);
+			        			customerAccountsMap.put(accountDTO.getAccountNum(), accountDTO);
 			        		}
 		        		}
-		        		
-		        		//Determinacion de la fecha limite de la traba:
-		        		BigDecimal diasRespuestaFase3 = new BigDecimal(0);
-		        		if (entidadOrdenante!=null && entidadOrdenante.getEntidadesComunicadora()!=null && entidadOrdenante.getEntidadesComunicadora().getDiasRespuestaF3()!=null) {
-		        			diasRespuestaFase3 = entidadOrdenante.getEntidadesComunicadora().getDiasRespuestaF3();
-		        		}       				
-		        		BigDecimal fechaLimiteTraba = null;
-		        		if (fechaObtencionFicheroOrganismo!=null) {
-		        			Date fechaLimiteTrabaDate = DateUtils.convertToDate(DateUtils.convertToLocalDate(fechaObtencionFicheroOrganismo).plusDays(diasRespuestaFase3.longValue()));
-		        			fechaLimiteTraba = ICEDateUtils.dateToBigDecimal(fechaLimiteTrabaDate, ICEDateUtils.FORMAT_yyyyMMdd);
-		        		}
-		        		
+		        				        		
 		        		//Razon social interna (obtenida del customerDTO de datawarehouse):
 		        		String razonSocialInterna = EmbargosUtils.determineRazonSocialInternaFromCustomer(customerDTO);
 		        		
-		        		//Generacion de las instancias de Embargo y de Traba:
+		        		//Generacion de las instancias de Embargo y de Traba:	        			
+		        		embargo = aeatMapper.generateEmbargo(diligencia, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, razonSocialInterna, entidadCredito, customerAccountsMap);
 		        			
-		        		embargo = aeatMapper.generateEmbargo(diligencia, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, razonSocialInterna, fechaLimiteTraba);
-		        			
-		        		traba =  aeatMapper.generateTraba(diligencia, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante);        			
+		        		traba =  aeatMapper.generateTraba(diligencia, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, customerAccountsMap);        			
 		        		traba.setEmbargo(embargo);
 	
 	       			        		
@@ -200,34 +195,51 @@ public class AEATServiceImpl implements AEATService{
 		        		
 		        		seizedRepository.save(traba);
 		        		
+		        		
 		        		//- Se guardan las cuentas obtenidas del fichero de embargo en CUENTA_EMBARGO:
 		        		for (CuentaEmbargo cuentaEmbargo : embargo.getCuentaEmbargos()) {
 		        			
 		        			//TODO mirar si se tiene que comprobar si es nulo el Iban o bien la "cuenta":
-		        			if (cuentaEmbargo.getIban()!=null && !cuentaEmbargo.getIban().isEmpty()) {
-		        				
-		        				//Seteo de datos obtenidos de DWH en cuentaEmbargo:
-		        				AccountDTO accountDTO = customerAccountsMap.get(cuentaEmbargo.getIban());     				
-		        				if(accountDTO!=null) {
-		        					cuentaEmbargo.setCuenta(accountDTO.getAccountNum());
-		        				}
-		        				
+		        			if (cuentaEmbargo.getCuenta()!=null && !cuentaEmbargo.getCuenta().isEmpty()) {
+		        						        				
 		        				seizureBankAccountRepository.save(cuentaEmbargo);
 		        			}
 		        		}
 		        		
+		        		//Para almacenar los numeros de cuenta del cliente que vienen en el fichero de embargos:
+		        		List<String> accountNumClienteFicheroEmbargoList = new ArrayList<>();
+		        		BigDecimal numeroOrdenCuenta = new BigDecimal(0);
 		        		
-		        		//- Se guardan en CUENTA_TRABA las cuentas obtenidas de Datawarehouse:
-		        		if(customerDTO!=null) {
+		        		//- Se guardan las cuentas obtenidas del fichero de embargo en CUENTA_TRABA:
+		        		for (CuentaTraba cuentaTraba : traba.getCuentaTrabas()) {
 		        			
-		        			BigDecimal numeroOrdenCuenta = new BigDecimal(0);
+		        			//TODO mirar si se tiene que comprobar si es nulo el Iban o bien la "cuenta":
+		        			if (cuentaTraba.getIban()!=null && !cuentaTraba.getIban().isEmpty()) {
+
+		        				accountNumClienteFicheroEmbargoList.add(cuentaTraba.getCuenta());
+		        				
+		        				numeroOrdenCuenta = (cuentaTraba.getNumeroOrdenCuenta()!=null && cuentaTraba.getNumeroOrdenCuenta().compareTo(numeroOrdenCuenta) > 0) ?
+		        						cuentaTraba.getNumeroOrdenCuenta() : numeroOrdenCuenta;
+		        				
+		        				seizedBankAccountRepository.save(cuentaTraba);
+		        			}
+		        		}
+		        	
+		        		
+		        		
+		        		//- Se guardan en CUENTA_TRABA las cuentas obtenidas de Datawarehouse que no se encuentren en el fichero de Embargos:
+		        		if(customerDTO!=null) {
 		        			
 		        			for (AccountDTO accountDTO : customerDTO.getBankAccounts()) {
 			
+		        				//Se guarda la cuenta si no se encuentra en el fichero de embargos:
+		        				if(!accountNumClienteFicheroEmbargoList.contains(accountDTO.getAccountNum())) {
+		        					
 		        					numeroOrdenCuenta = numeroOrdenCuenta.add(BigDecimal.valueOf(1));
 		        					
 		        					CuentaTraba cuentaTrabaExtra = seizedBankAccountMapper.accountDTOToCuentaTraba(accountDTO, numeroOrdenCuenta, traba);
 		        					seizedBankAccountRepository.save(cuentaTrabaExtra);
+		        				}
 		        			}
 		        		}
 		        	}       	
@@ -241,14 +253,18 @@ public class AEATServiceImpl implements AEATService{
 	        EntidadesComunicadora entidadComunicadora = entidadOrdenante.getEntidadesComunicadora();
 	        controlFicheroEmbargo.setEntidadesComunicadora(entidadOrdenante.getEntidadesComunicadora());
 			
-			//- Se guarda la fecha de la cabecera en el campo fechaCreacion de ControlFichero:
-			BigDecimal fechaObtencionFicheroOrganismoBigDec = fechaObtencionFicheroOrganismo!=null ? ICEDateUtils.dateToBigDecimal(fechaObtencionFicheroOrganismo, ICEDateUtils.FORMAT_yyyyMMdd) : null;
-			controlFicheroEmbargo.setFechaCreacion(fechaObtencionFicheroOrganismoBigDec);
-			controlFicheroEmbargo.setFechaComienzoCiclo(fechaObtencionFicheroOrganismoBigDec);
+			//- Fechas de creacion y de comienzo de ciclo:
+			Date fechaCreacionFicheroTransmision = entidadTransmisora.getFechaCreacionFicheroTransmision();
+	        BigDecimal fechaCreacionFicheroTransmisionBigDec = fechaCreacionFicheroTransmision!=null ? ICEDateUtils.dateToBigDecimal(fechaCreacionFicheroTransmision, ICEDateUtils.FORMAT_yyyyMMdd) : null;
+			controlFicheroEmbargo.setFechaCreacion(fechaCreacionFicheroTransmisionBigDec);
+			
+			Date fechaInicioCiclo = entidadTransmisora.getFechaInicioCiclo();
+			BigDecimal fechaInicioCicloBigDec = fechaInicioCiclo!=null ? ICEDateUtils.dateToBigDecimal(fechaInicioCiclo, ICEDateUtils.FORMAT_yyyyMMdd) : null;
+			controlFicheroEmbargo.setFechaComienzoCiclo(fechaInicioCicloBigDec);
 	       
 			//- Se guarda la fecha maxima de respuesta (now + dias de margen)
-			long diasRespuestaF1 = entidadComunicadora.getDiasRespuestaF1()!=null ? entidadComunicadora.getDiasRespuestaF1().longValue() : 0;
-			Date lastDateResponse = DateUtils.convertToDate(LocalDate.now().plusDays(diasRespuestaF1));
+			long diasRespuestaF3 = entidadComunicadora.getDiasRespuestaF3()!=null ? entidadComunicadora.getDiasRespuestaF3().longValue() : 0;
+			Date lastDateResponse = DateUtils.convertToDate(LocalDate.now().plusDays(diasRespuestaF3));
 			BigDecimal limitResponseDate = ICEDateUtils.dateToBigDecimal(lastDateResponse, ICEDateUtils.FORMAT_yyyyMMdd);
 			controlFicheroEmbargo.setFechaMaximaRespuesta(limitResponseDate);
 			

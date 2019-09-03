@@ -5,12 +5,12 @@ import java.math.BigDecimal;
 public class FinEntidadCredito {
 
 	private String indicadorRegistro;
-	private Integer delegacionAgenciaEmisora;
+	private String delegacionAgenciaEmisora;
 	private Integer codigoEntidadCredito;
 	private Integer numeroDiligenciasIncluidasEnvio;
 	private BigDecimal importeTotalAEmbargar;
 	private BigDecimal importeTotalTrabado;
-	private Integer codigoEntidadTransmisora;
+	private String codigoEntidadTransmisora;
 	private Integer codigoError1;
 	private Integer numeroCampoError1;
 	private Integer codigoError2;
@@ -58,10 +58,10 @@ public class FinEntidadCredito {
 	public void setIndicadorRegistro(String indicadorRegistro) {
 		this.indicadorRegistro = indicadorRegistro;
 	}
-	public Integer getDelegacionAgenciaEmisora() {
+	public String getDelegacionAgenciaEmisora() {
 		return delegacionAgenciaEmisora;
 	}
-	public void setDelegacionAgenciaEmisora(Integer delegacionAgenciaEmisora) {
+	public void setDelegacionAgenciaEmisora(String delegacionAgenciaEmisora) {
 		this.delegacionAgenciaEmisora = delegacionAgenciaEmisora;
 	}
 	public Integer getCodigoEntidadCredito() {
@@ -88,10 +88,10 @@ public class FinEntidadCredito {
 	public void setImporteTotalTrabado(BigDecimal importeTotalTrabado) {
 		this.importeTotalTrabado = importeTotalTrabado;
 	}
-	public Integer getCodigoEntidadTransmisora() {
+	public String getCodigoEntidadTransmisora() {
 		return codigoEntidadTransmisora;
 	}
-	public void setCodigoEntidadTransmisora(Integer codigoEntidadTransmisora) {
+	public void setCodigoEntidadTransmisora(String codigoEntidadTransmisora) {
 		this.codigoEntidadTransmisora = codigoEntidadTransmisora;
 	}
 	public Integer getCodigoError1() {

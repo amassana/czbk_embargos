@@ -14,6 +14,7 @@ public class SeizedBankAccountDTO {
 	private SeizureStatusDTO seizureStatus;
 	private Boolean originEmb;
 	private Boolean addToSeized;
+	private Long orderNumberAccount;
 
 	public Long getIdSeizedBankAccount() {
 		return idSeizedBankAccount;
@@ -94,6 +95,12 @@ public class SeizedBankAccountDTO {
 		this.addToSeized = addToSeized;
 	}
 
+	public Long getOrderNumberAccount() {
+		return orderNumberAccount;
+	}
 
+	public void setOrderNumberAccount(Long orderNumberAccount) {
+		this.orderNumberAccount = orderNumberAccount;
+	}
 
 }

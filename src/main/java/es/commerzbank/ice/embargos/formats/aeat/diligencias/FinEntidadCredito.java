@@ -5,11 +5,11 @@ import java.math.BigDecimal;
 public class FinEntidadCredito {
 
 	private String indicadorRegistro;
-	private Integer delegacionAgenciaEmisora;
+	private String delegacionAgenciaEmisora;
 	private Integer codigoEntidadCredito;
 	private Integer numeroDiligenciasIncluidasEnvio;
 	private BigDecimal importeTotalAEmbargar;
-	private Integer codigoEntidadTransmisora;
+	private String codigoEntidadTransmisora;
 	
 	public String getIndicadorRegistro() {
 		return indicadorRegistro;
@@ -17,10 +17,10 @@ public class FinEntidadCredito {
 	public void setIndicadorRegistro(String indicadorRegistro) {
 		this.indicadorRegistro = indicadorRegistro;
 	}
-	public Integer getDelegacionAgenciaEmisora() {
+	public String getDelegacionAgenciaEmisora() {
 		return delegacionAgenciaEmisora;
 	}
-	public void setDelegacionAgenciaEmisora(Integer delegacionAgenciaEmisora) {
+	public void setDelegacionAgenciaEmisora(String delegacionAgenciaEmisora) {
 		this.delegacionAgenciaEmisora = delegacionAgenciaEmisora;
 	}
 	public Integer getCodigoEntidadCredito() {
@@ -41,10 +41,10 @@ public class FinEntidadCredito {
 	public void setImporteTotalAEmbargar(BigDecimal importeTotalAEmbargar) {
 		this.importeTotalAEmbargar = importeTotalAEmbargar;
 	}
-	public Integer getCodigoEntidadTransmisora() {
+	public String getCodigoEntidadTransmisora() {
 		return codigoEntidadTransmisora;
 	}
-	public void setCodigoEntidadTransmisora(Integer codigoEntidadTransmisora) {
+	public void setCodigoEntidadTransmisora(String codigoEntidadTransmisora) {
 		this.codigoEntidadTransmisora = codigoEntidadTransmisora;
 	}
 		
