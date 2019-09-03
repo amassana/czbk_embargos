@@ -92,11 +92,11 @@ public class FileControlSpecification implements Specification<ControlFichero> {
 		{
 			predicate = criteriaBuilder.equal(root.get(ControlFichero_.IND_PROCESADO), EmbargosConstants.IND_FLAG_NO);
 			predicates.add(predicate);
-		
-		} else if (fileControlFiltersDTO.getIsPending() != null && !fileControlFiltersDTO.getIsPending()) {
-			predicate = criteriaBuilder.equal(root.get(ControlFichero_.IND_PROCESADO), EmbargosConstants.IND_FLAG_SI);
-			predicates.add(predicate);			
 		}
+		//} else if (fileControlFiltersDTO.getIsPending() != null && !fileControlFiltersDTO.getIsPending()) {
+		//	predicate = criteriaBuilder.equal(root.get(ControlFichero_.IND_PROCESADO), EmbargosConstants.IND_FLAG_SI);
+		//	predicates.add(predicate);			
+		//}
 		
 		return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 	}

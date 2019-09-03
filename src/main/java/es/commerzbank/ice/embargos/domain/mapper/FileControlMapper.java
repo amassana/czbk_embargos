@@ -124,8 +124,7 @@ public abstract class FileControlMapper {
 		@Mapping(source = "controlFichero.nombreFichero", target = "fileName"),
 		@Mapping(source = "controlFichero.estadoCtrlfichero.id.codEstado", target = "status.code"),
 		@Mapping(source = "controlFichero.estadoCtrlfichero.descripcion", target = "status.description"),
-		@Mapping(source = "targetTEST", target = "fileTarget"),
-		@Mapping(source = "fechaTEST", target = "deliveryDate"),
+		@Mapping(source = "controlFichero.controlFicheroRespuesta.nombreFichero", target = "fileTarget"),
 		@Mapping(source = "controlFichero.tipoFichero.codTipoFichero", target = "codeFileType"),
 		@Mapping(source = "controlFichero.controlFicheroOrigen.codControlFichero", target = "codeFileOrigin"),
 		@Mapping(source = "controlFichero.controlFicheroRespuesta.codControlFichero", target = "codeFileResponse"),
@@ -139,10 +138,28 @@ public abstract class FileControlMapper {
 	@AfterMapping
 	protected void setFileControlDTOAfterMapping(ControlFichero controlFichero, @MappingTarget FileControlDTO fileControlDTO) {
 		
+		//Delivery date:
+		if (controlFichero.getFechaMaximaRespuesta()!=null) {
+			fileControlDTO.setDeliveryDate(ICEDateUtils.bigDecimalToDate(controlFichero.getFechaMaximaRespuesta(), ICEDateUtils.FORMAT_yyyyMMdd));
+		}
+		
 		//Indicador de procesado (se pasa de String a Boolean):
 		boolean isProcessed = controlFichero.getIndProcesado()!=null && EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndProcesado());
 		fileControlDTO.setIsProcessed(isProcessed);
 		
+		//Indicador para saber si el fichero es de Cuaderno63 y de TGSS:
+		if (controlFichero.getEntidadesComunicadora() != null) {
+			
+			if (controlFichero.getEntidadesComunicadora().getIndNorma63() != null) {
+				boolean isCuaderno63 = EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getEntidadesComunicadora().getIndNorma63());
+				fileControlDTO.setIsCuaderno63(isCuaderno63);
+			}
+			
+			if (controlFichero.getEntidadesComunicadora().getPrefijoFicheros() != null) {
+				boolean isTGSS = EmbargosConstants.PREFIJO_FICHERO_TGSS.equals(controlFichero.getEntidadesComunicadora().getPrefijoFicheros());
+				fileControlDTO.setIsTGSS(isTGSS);
+			}
+		}
 		
 	}
 	

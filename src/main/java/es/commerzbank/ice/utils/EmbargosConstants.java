@@ -37,6 +37,9 @@ public class EmbargosConstants {
 	public static final String FILE_FORMAT_CUADERNO63 = "CUADERNO63";
 	public static final String FILE_FORMAT_CGPJ = "CGPJ";
 	
+	/** Prefijos de fichero **/
+	public static final String PREFIJO_FICHERO_TGSS = "TGSS";
+	
 	/** Estados de ControlFichero **/
 	public static final long COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_ERROR = 0;
 	public static final long COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_LOADING = 1;
