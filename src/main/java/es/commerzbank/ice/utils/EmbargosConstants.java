@@ -98,4 +98,8 @@ public class EmbargosConstants {
 	public static final String BANK_ACCOUNT_STATUS_NORMAL = "NORMAL";
 	public static final String BANK_ACCOUNT_STATUS_BLOQUED = "BLOQUED";
 	public static final String BANK_ACCOUNT_STATUS_CANCELLED = "CANCELLED";
+
+	public static final String LIFTING = "lifting";
+
+	public static final Object BANK_ACCOUNT_LIFTING_LIST = "bankAccountLiftingList";
 }

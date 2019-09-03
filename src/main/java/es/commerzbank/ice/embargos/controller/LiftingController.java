@@ -1,6 +1,7 @@
 package es.commerzbank.ice.embargos.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +40,7 @@ public class LiftingController {
 	
 	@GetMapping(value = "/{codeFileControl}")
 	@ApiOperation(value = "Devuelve la lista de casos de levamtamientos")
-	public ResponseEntity<List<LiftingDTO>> getPetitionCaseListByCodeFileControl(Authentication authentication,
+	public ResponseEntity<List<LiftingDTO>> getLiftingListByCodeFileControl(Authentication authentication,
 			@PathVariable("codeFileControl") Long codeFileControl) {
 		ResponseEntity<List<LiftingDTO>> response = null;
 		List<LiftingDTO> result = null;
@@ -65,7 +66,7 @@ public class LiftingController {
 	
 	@GetMapping(value = "/{codeFileControl}/liftingcase/{codeLifting}/bankAccounts")
 	@ApiOperation(value = "Devuelve la lista de cuentas disponibles para el caso indicado de levantamiento.")
-	public ResponseEntity<List<BankAccountLiftingDTO>> getBankAccountListByCodeFileControlAndPetitionCase(
+	public ResponseEntity<List<BankAccountLiftingDTO>> getBankAccountListByCodeFileControlAndLifting(
 			Authentication authentication, @PathVariable("codeFileControl") Long codeFileControl,
 			@PathVariable("codeLifting") Long codeLifting) {
 		ResponseEntity<List<BankAccountLiftingDTO>> response = null;
@@ -92,9 +93,9 @@ public class LiftingController {
 			produces = {"application/json" }, 
 			consumes = { "application/json" })
 	@ApiOperation(value = "Actualiza el caso de levantamiento indicado, guardando los datos que se traspasen")
-	public ResponseEntity<String> savePetitionCase(Authentication authentication,
+	public ResponseEntity<String> saveLifting(Authentication authentication,
 			@PathVariable("codeFileControl") Long codeFileControl,
-			@PathVariable("codeLifting") Long codeLifting, @RequestBody LiftingDTO lifting) {
+			@PathVariable("codeLifting") Long codeLifting, @RequestBody Map<String, Object> parametros) {
 		
 		ResponseEntity<String> response = null;
 		boolean result = true;
@@ -103,8 +104,7 @@ public class LiftingController {
 		
 			String userModif = authentication.getName();
 		
-			result = liftingService.saveLifting(codeFileControl, codeLifting, lifting,
-					userModif);
+			result = liftingService.saveLifting(codeFileControl, codeLifting, parametros, userModif);
 		
 			if (result) {
 				response = new ResponseEntity<>(HttpStatus.OK);
@@ -132,7 +132,7 @@ public class LiftingController {
 
 		try {
 
-			result = liftingService.getAuditByCodeLiftingCase(codeLiftingCase);
+			//result = liftingService.getAuditByCodeLiftingCase(codeLiftingCase);
 
 			response = new ResponseEntity<>(result, HttpStatus.OK);
 

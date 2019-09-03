@@ -24,7 +24,7 @@ public abstract class LiftingMapper {
 	public abstract LiftingDTO toLiftingDTO(LevantamientoTraba levantamiento);
 	
 	@AfterMapping
-	protected void setInformationPetitionDTOAfterMapping(LevantamientoTraba levatamiento, @MappingTarget LiftingDTO liftingDTO) {
+	protected void setLiftingDTOAfterMapping(LevantamientoTraba levatamiento, @MappingTarget LiftingDTO liftingDTO) {
 		
 		String indCasoRevisado = levatamiento.getIndCasoRevisado();
 		
@@ -33,6 +33,24 @@ public abstract class LiftingMapper {
 		liftingDTO.setStatus(isReviewed);
 		
 		liftingDTO.setAmountPending(liftingDTO.getAmountDebt() - liftingDTO.getAmountLocked());
-	}	
+	}
 
+	@Mappings({
+		@Mapping(source = "codLifting", target = "codLevantamiento"),
+		@Mapping(source = "name", target = "traba.embargo.nombre"),
+		@Mapping(source = "codLifting", target = "traba.embargo.nif"),
+		@Mapping(source = "codLifting", target = "traba.embargo.numeroEmbargo"),
+		@Mapping(source = "codLifting", target = "traba.embargo.importe"),
+		@Mapping(source = "codLifting", target = "traba.importeTrabado")
+	})
+	public abstract LevantamientoTraba toLevantamiento(LiftingDTO dto);	
+
+	@AfterMapping
+	protected void setLevantamientoMapping(@MappingTarget LevantamientoTraba entity, LiftingDTO dto) {
+		if (dto.getStatus()) {
+			entity.setIndCasoRevisado(EmbargosConstants.IND_FLAG_YES);
+		} else {
+			entity.setIndCasoRevisado(EmbargosConstants.IND_FLAG_NO);
+		}
+	}
 }

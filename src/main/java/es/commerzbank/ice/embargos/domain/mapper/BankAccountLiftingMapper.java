@@ -20,4 +20,15 @@ public abstract class BankAccountLiftingMapper {
 		@Mapping(source = "actuacion", target = "action")
 	})
 	public abstract BankAccountLiftingDTO toBankAccountLiftingDTO(CuentaLevantamiento cuentaLevantamiento);
+	
+	@Mappings({
+		@Mapping(source = "codLiftingAccount", target = "codCuentaLevantamiento"),
+		@Mapping(source = "iban", target = "iban"),
+		@Mapping(source = "account", target = "cuenta"),
+		@Mapping(source = "change", target = "cambio"),
+		@Mapping(source = "amount", target = "importe"),
+		@Mapping(source = "indAccounting", target = "indContabilizado"),
+		@Mapping(source = "action", target = "actuacion")
+	})
+	public abstract CuentaLevantamiento toCuentaLevantamiento(BankAccountLiftingDTO account);
 }

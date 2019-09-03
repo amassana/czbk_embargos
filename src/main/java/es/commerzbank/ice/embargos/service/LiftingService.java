@@ -1,6 +1,7 @@
 package es.commerzbank.ice.embargos.service;
 
 import java.util.List;
+import java.util.Map;
 
 import es.commerzbank.ice.embargos.domain.dto.BankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.BankAccountLiftingDTO;
@@ -14,7 +15,7 @@ public interface LiftingService {
 
 	List<BankAccountLiftingDTO> getAllByControlFicheroAndLevantamiento(Long codeFileControl, Long codeLifting);
 
-	boolean saveLifting(Long codeFileControl, Long codeLifting, LiftingDTO lifting, String userModif);
+	boolean saveLifting(Long codeFileControl, Long codeLifting, Map<String, Object> parametros, String userModif);
 
 	List<LiftingAuditDTO> getAuditByCodeLiftingCase(Long codeLiftingCase);
 
