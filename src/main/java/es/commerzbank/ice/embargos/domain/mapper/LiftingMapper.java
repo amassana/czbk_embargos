@@ -15,6 +15,7 @@ public abstract class LiftingMapper {
 
 	@Mappings({
 		@Mapping(source = "levantamiento.codLevantamiento", target = "codLifting"),
+		@Mapping(source = "levantamiento.traba.codTraba", target = "codLock"),
 		@Mapping(source = "levantamiento.traba.embargo.nombre", target = "name"),
 		@Mapping(source = "levantamiento.traba.embargo.nif", target = "nif"),
 		@Mapping(source = "levantamiento.traba.embargo.numeroEmbargo", target = "numSeizure"),
@@ -37,6 +38,7 @@ public abstract class LiftingMapper {
 
 	@Mappings({
 		@Mapping(source = "codLifting", target = "codLevantamiento"),
+		@Mapping(source = "codLock", target = "traba.codTraba"),
 		@Mapping(source = "name", target = "traba.embargo.nombre"),
 		@Mapping(source = "codLifting", target = "traba.embargo.nif"),
 		@Mapping(source = "codLifting", target = "traba.embargo.numeroEmbargo"),

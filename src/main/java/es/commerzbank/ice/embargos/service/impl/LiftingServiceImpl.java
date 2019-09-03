@@ -117,17 +117,20 @@ public class LiftingServiceImpl implements LiftingService {
 
 	@Override
 	public boolean saveLifting(Long codeFileControl, Long codelifting, LiftingDTO lifting, String userModif) throws Exception {
-		boolean response = false; 
+		boolean response = true; 
 		
 		if (lifting != null) {
-			LevantamientoTraba levantamiento = liftingMapper.toLevantamiento(lifting);
 			
-			liftingRepository.save(levantamiento);
+			liftingRepository.updateStatus(codelifting, lifting.getStatus() ? EmbargosConstants.IND_FLAG_YES : EmbargosConstants.IND_FLAG_NO);
+			
+			LevantamientoTraba levantamiento = new LevantamientoTraba();
+			levantamiento.setCodLevantamiento(codelifting);
 			
 			if (lifting.getAccounts() != null) {
 				List<BankAccountLiftingDTO> list = lifting.getAccounts();
 				for (BankAccountLiftingDTO account : list) {
 					CuentaLevantamiento cuenta = bankAccountLiftingMapper.toCuentaLevantamiento(account);
+					cuenta.setLevantamientoTraba(levantamiento);
 					
 					liftingBankAccountRepository.save(cuenta);
 				}

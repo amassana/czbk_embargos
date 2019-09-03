@@ -66,11 +66,11 @@ public class LiftingController {
 	
 	@GetMapping(value = "/{codeFileControl}/liftingcase/{codeLifting}/bankAccounts")
 	@ApiOperation(value = "Devuelve la lista de cuentas disponibles para el caso indicado de levantamiento.")
-	public ResponseEntity<List<BankAccountLiftingDTO>> getBankAccountListByCodeFileControlAndLifting(
+	public ResponseEntity<LiftingDTO> getBankAccountListByCodeFileControlAndLifting(
 			Authentication authentication, @PathVariable("codeFileControl") Long codeFileControl,
 			@PathVariable("codeLifting") Long codeLifting) {
-		ResponseEntity<List<BankAccountLiftingDTO>> response = null;
-		List<BankAccountLiftingDTO> result = null;
+		ResponseEntity<LiftingDTO> response = null;
+		LiftingDTO result = null;
 
 		try {
 
