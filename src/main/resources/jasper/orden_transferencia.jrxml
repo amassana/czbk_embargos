@@ -114,11 +114,11 @@
 				<text><![CDATA[Proposito:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="70" y="210" width="70" height="20" uuid="590cff65-c304-4f7a-a417-b4458ba55da8"/>
+				<reportElement x="70" y="210" width="130" height="20" uuid="590cff65-c304-4f7a-a417-b4458ba55da8"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Proposito:]]></text>
+				<text><![CDATA[Tipo de transferencia:]]></text>
 			</staticText>
 		</band>
 	</detail>

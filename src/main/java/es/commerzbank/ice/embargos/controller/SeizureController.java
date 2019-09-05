@@ -360,8 +360,8 @@ public class SeizureController {
 	}
 
 	@GetMapping("/notification/{idLifting}/liftingReport")
-	@ApiOperation(value = "Devuelve un justificante de embargo")
-	public ResponseEntity<InputStreamResource> generarJustificanteEmbargo3(
+	@ApiOperation(value = "Devuelve un justificante de levantamiento de embargo")
+	public ResponseEntity<InputStreamResource> generarLevantamientoEmbargo(
 			@PathVariable("idLifting") Integer idLifting) {
 
 		DownloadReportFile.setTempFileName("levantamientoReport");
