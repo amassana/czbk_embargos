@@ -361,16 +361,11 @@ public class SeizureServiceImpl implements SeizureService {
 
 			Resource embargosJrxml = ResourcesUtil.getFromJasperFolder("levantamiento_embargo.jasper");
 			Resource logoImage = ResourcesUtil.getImageLogoCommerceResource();
-			// Resource templateStyle = ResourcesUtil.getTemplateStyleResource();
 
 			File image = logoImage.getFile();
 
-			// InputStream templateStyleStream =
-			// getClass().getResourceAsStream("/jasper/CommerzBankStyle.jrtx");
-
 			parameters.put("COD_LEVANTAMIENTO", idLifting);
 			parameters.put("IMAGE_PARAM", image.toString());
-			// parameters.put("TEMPLATE_STYLE_PATH", templateStyleStream);
 
 			InputStream justificanteInputStream = embargosJrxml.getInputStream();
 
@@ -456,19 +451,17 @@ public class SeizureServiceImpl implements SeizureService {
 			Resource anexoJasperFile = ResourcesUtil.getFromJasperFolder("anexo" + num_anexo + ".jasper");
 
 			Resource importeAbonadoSubReport = ResourcesUtil.getFromJasperFolder("importe_abonado.jasper");
-//			Resource simpleHeaderResource = ResourcesUtil.getSimpleHeader();
+
 			Resource logoImage = ResourcesUtil.getImageLogoCommerceResource();
 
 			File image = logoImage.getFile();
 
-//			InputStream subReportSimpleHeaderInputStream = simpleHeaderResource.getInputStream();
-//			JasperReport subReportSimpleHeader = (JasperReport) JRLoader.loadObject(subReportSimpleHeaderInputStream);
-//		
+
+	
 			InputStream importeAbonadoInputStream = importeAbonadoSubReport.getInputStream();
 			JasperReport importeAbonadoReport = (JasperReport) JRLoader.loadObject(importeAbonadoInputStream);
 
 			parameters.put("IMAGE_PARAM", image.toString());
-//			parameters.put("SUBREPORT_SIMPLE_HEADER", subReportSimpleHeader);
 			parameters.put("REPORT_IMPORTE_ABONADO", importeAbonadoReport);
 			parameters.put("COD_USUARIO", cod_usuario);
 			parameters.put("COD_TRABA", cod_traba);
@@ -481,6 +474,69 @@ public class SeizureServiceImpl implements SeizureService {
 
 		} catch (SQLException e) {
 			System.out.println(e);
+			throw new Exception("DB exception while generating the report", e);
+		}
+	}
+	
+	@Override
+	public byte[] generarRespuestaFinalEmbargo(Integer cod_file_control) throws Exception {
+		HashMap<String, Object> parameters = new HashMap<String, Object>();
+
+		try (Connection conn_embargos = oracleDataSourceEmbargos.getEmbargosConnection()) {
+			
+			Resource respFinalEmbargoResource = ResourcesUtil.getFromJasperFolder("respuestaFinalEmbargos.jasper");
+			Resource headerResource = ResourcesUtil.getReportHeaderResource();
+			Resource imageResource = ResourcesUtil.getImageLogoCommerceResource();
+			
+			File image = imageResource.getFile();
+			
+			InputStream subReportHeaderInputStream = headerResource.getInputStream();
+
+			JasperReport subReportHeader = (JasperReport) JRLoader.loadObject(subReportHeaderInputStream);
+			
+			parameters.put("sub_img_param", image.toString());
+			parameters.put("SUBREPORT_HEADER", subReportHeader);
+			parameters.put("COD_FILE_CONTROL", cod_file_control);
+			
+			
+			InputStream finalEmbargosIS = respFinalEmbargoResource.getInputStream();
+			JasperPrint fillReport = JasperFillManager.fillReport(finalEmbargosIS, parameters, conn_embargos);
+			
+			
+			
+			return JasperExportManager.exportReportToPdf(fillReport);
+		} catch (SQLException e) {
+			throw new Exception("DB exception while generating the report", e);
+		}
+	}
+
+	@Override
+	public byte[] generarResumenLevantamiento(Integer cod_file_control) throws Exception {
+		HashMap<String, Object> parameters = new HashMap<String, Object>();
+		try (Connection conn_embargos = oracleDataSourceEmbargos.getEmbargosConnection()) {
+			
+			Resource resumenLevantamiento = ResourcesUtil.getFromJasperFolder("resumen_levantamientos.jasper");
+			Resource headerResource = ResourcesUtil.getReportHeaderResource();
+			Resource imageResource = ResourcesUtil.getImageLogoCommerceResource();
+			
+			File image = imageResource.getFile();
+			
+			InputStream subReportHeaderInputStream = headerResource.getInputStream();
+
+			JasperReport subReportHeader = (JasperReport) JRLoader.loadObject(subReportHeaderInputStream);
+			
+			parameters.put("sub_img_param", image.toString());
+			parameters.put("SUBREPORT_HEADER", subReportHeader);
+			parameters.put("COD_FILE_CONTROL", cod_file_control);
+			
+			
+			InputStream finalEmbargosIS = resumenLevantamiento.getInputStream();
+			JasperPrint fillReport = JasperFillManager.fillReport(finalEmbargosIS, parameters, conn_embargos);
+			
+			
+			
+			return JasperExportManager.exportReportToPdf(fillReport);
+		} catch (SQLException e) {
 			throw new Exception("DB exception while generating the report", e);
 		}
 	}

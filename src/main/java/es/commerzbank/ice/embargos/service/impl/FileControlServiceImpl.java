@@ -295,13 +295,9 @@ public class FileControlServiceImpl implements FileControlService{
 
 	@Override
 	public byte[] generarReporteListado(Integer[] codTipoFichero,
-			Integer codEstado, boolean isPending, Date fechaInicio, Date fechaFin) throws Exception {
-		System.out.println("codTipoFichero: " + codTipoFichero +  " codEstado: " + codEstado + " isPending: " + isPending + " fechaInicio: "
-				+ fechaInicio + " fechaFin: " + fechaFin);
-
+			Integer codEstado, boolean isPending, String estado, Date fechaInicio, Date fechaFin) throws Exception {
+		
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
-
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmSS");
 
 		String query = "WHERE";
 
@@ -322,8 +318,12 @@ public class FileControlServiceImpl implements FileControlService{
 		if (fechaFin != null) {
 			query = query + " c.FECHA_GENERACION_RESPUESTA<=" + ICEDateUtils.dateToBigDecimal(fechaFin, ICEDateUtils.FORMAT_yyyyMMddHHmmss) + " AND";
 		}
+		
+		if (estado != null) {
+			query = query + " s.DESCRIPCION = " + "'" + estado + "' AND";
+		}
 
-		if (codTipoFichero == null && codEstado == null && fechaInicio == null && fechaFin == null) {
+		if (codTipoFichero == null && codEstado == null && fechaInicio == null && fechaFin == null && estado == null) {
 			query = "";
 		} 
 		
@@ -333,24 +333,18 @@ public class FileControlServiceImpl implements FileControlService{
 		}
 		
 		if (isPending) {
-			query = query + " c.IND_PROCESADO<>'S'";
+			query = query + " c.IND_PROCESADO <> 'S'";
 		} else {
-			query = query + " c.IND_PROCESADO='S'";
+			query = query + " c.IND_PROCESADO = 'S'";
 		}
 		
-		
-		
-		
 		System.out.println(query);
-
+		
 		parameters.put("query_param", query);
-		// parameters.put("cod_user", 3);
+
 
 		try (Connection connEmbargos = oracleDataSourceEmbargosConfig.getEmbargosConnection();) {
-//				Connection connComunes = oracleDataSourceEmbargosConfig.getComunesConnection()
-			
 
-//			parameters.put("conn_param", connComunes);
 
 			Resource imageReport = ResourcesUtil.getImageLogoCommerceResource();
 			File image = imageReport.getFile();
@@ -369,6 +363,7 @@ public class FileControlServiceImpl implements FileControlService{
 
 			return JasperExportManager.exportReportToPdf(reporteLleno);
 		} catch (JRException | SQLException ex) {
+			System.out.println(ex);
 			throw new Exception("Error in generarReporteListado()", ex);
 		}
 	}

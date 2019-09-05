@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="resumen_trabas" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="381384b4-cbb7-4993-952a-24656fb910da">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="resumen_trabas_request" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="381384b4-cbb7-4993-952a-24656fb910da">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceBankDAdapterEmbargos.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -72,11 +72,11 @@ ORDER BY
 	<title>
 		<band height="125" splitType="Stretch">
 			<staticText>
-				<reportElement x="5" y="83" width="160" height="20" uuid="abe67322-132f-4faf-aa22-d8c4d7118d6b"/>
+				<reportElement x="5" y="83" width="311" height="20" uuid="abe67322-132f-4faf-aa22-d8c4d7118d6b"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[FICHERO DE TRABAS]]></text>
+				<text><![CDATA[LISTADO DE DILIGENCIAS DE EMBARGO DE]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="630" y="82" width="80" height="20" uuid="6a768ecd-1226-49d2-b679-18655221f4c8"/>
@@ -93,7 +93,7 @@ ORDER BY
 				<text><![CDATA[Fecha Vto:]]></text>
 			</staticText>
 			<textField>
-				<reportElement isPrintRepeatedValues="false" x="165" y="83" width="156" height="21" uuid="fba90554-2346-4bb5-a0e5-a386fcd9d379">
+				<reportElement isPrintRepeatedValues="false" x="315" y="83" width="156" height="21" uuid="fba90554-2346-4bb5-a0e5-a386fcd9d379">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a439b967-a736-41eb-949d-01afc719f1c8"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -225,7 +225,7 @@ ORDER BY
 				</textElement>
 				<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="434" y="0" width="150" height="20" uuid="cae159c1-1a60-4be7-9aae-8d2d82d859b9">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="642a7aec-f048-48fa-99fc-fbe2cb965521"/>
 				</reportElement>

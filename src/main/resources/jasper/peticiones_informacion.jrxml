@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="comm_bank_peti_info" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="847831ee-2e52-4a67-bcb6-888b478b5de8">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="OracleAdapter.xml"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceBankDAdapterEmbargos.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="530"/>
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="456"/>
@@ -13,10 +13,7 @@
 	<queryString>
 		<![CDATA[SELECT NIF, RAZON_SOCIAL, IBAN1, IBAN2, IBAN3, IBAN4, IBAN5, IBAN6, RAZON_SOCIAL_INTERNA,
 b.COD_ENTIDAD_PRESENTADORA, b.FECHA_CREACION, c.DES_ENTIDAD
-
-FROM COMM_EMBARGOS_DES.PETICION_INFORMACION a,COMM_EMBARGOS_DES.CONTROL_FICHERO b
-, COMM_EMBARGOS_DES.ENTIDADES_COMUNICADORAS c
-
+FROM PETICION_INFORMACION a, CONTROL_FICHERO b, ENTIDADES_COMUNICADORAS c
 WHERE a.COD_CONTROL_FICHERO =$P{cod_control_fichero}
 AND b.COD_CONTROL_FICHERO =$P{cod_control_fichero}
 AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>

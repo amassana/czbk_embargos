@@ -275,6 +275,7 @@ public class FileControlController {
 			@RequestParam(name = "codTipoFichero", required = false) Integer[] codTipoFichero,
 			@RequestParam(name = "codEstado", required = false) Integer codEstado,
 			@RequestParam(name = "isPending", required = false) boolean isPending,
+			@RequestParam(name = "estado", required = false) String estado,
 			@RequestBody ReportParamsDTO reportParams) throws Exception {
 
 		DownloadReportFile.setTempFileName("reportList");
@@ -283,7 +284,7 @@ public class FileControlController {
 
 		try {
 
-			DownloadReportFile.writeFile(fileControlService.generarReporteListado(codTipoFichero, codEstado, isPending,
+			DownloadReportFile.writeFile(fileControlService.generarReporteListado(codTipoFichero, codEstado, isPending, estado,
 					reportParams.getFechaInicio(), reportParams.getFechaFin()));
 
 			return DownloadReportFile.returnToDownloadFile();

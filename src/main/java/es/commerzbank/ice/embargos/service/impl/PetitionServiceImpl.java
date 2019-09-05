@@ -90,9 +90,7 @@ public class PetitionServiceImpl implements PetitionService{
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
 		try (
-				Connection connEmbargos = oracleDataSourceEmbargosConfig.getEmbargosConnection();
-//				Connection connComunes = oracleDataSourceEmbargosConfig.getComunesConnection();
-		) {
+				Connection connEmbargos = oracleDataSourceEmbargosConfig.getEmbargosConnection()) {
 
 			Resource jrxmlResource = ResourcesUtil.getFromJasperFolder("peticiones_informacion.jasper");
 			Resource subReportResource = ResourcesUtil.getReportHeaderResource();
@@ -105,9 +103,8 @@ public class PetitionServiceImpl implements PetitionService{
 
 			parameters.put("img_param", image.toString());
 			parameters.put("cod_control_fichero", codeFileControl);
-			// parameters.put("cod_user", 3);
 			parameters.put("file_param", subReport);
-//			parameters.put("conn_param", connComunes);
+
 
 			InputStream resourceInputStream = jrxmlResource.getInputStream();
 

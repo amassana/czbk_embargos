@@ -40,160 +40,153 @@ public class SeizureController {
 
 	@Autowired
 	private SeizureService seizureService;
-	
-    @GetMapping(value = "/{codeFileControl}")
-    @ApiOperation(value="Devuelve la lista de embargos para una petición de embargo.")
-    public ResponseEntity<List<SeizureDTO>> getSeizureListByCodeFileControl(Authentication authentication,
-                                                                                 @PathVariable("codeFileControl") Long codeFileControl){
-    	
-    	ResponseEntity<List<SeizureDTO>> response = null;
-    	List<SeizureDTO> result = new ArrayList<SeizureDTO>();
-    	
-    	try {
-    		
+
+	@GetMapping(value = "/{codeFileControl}")
+	@ApiOperation(value = "Devuelve la lista de embargos para una petición de embargo.")
+	public ResponseEntity<List<SeizureDTO>> getSeizureListByCodeFileControl(Authentication authentication,
+			@PathVariable("codeFileControl") Long codeFileControl) {
+
+		ResponseEntity<List<SeizureDTO>> response = null;
+		List<SeizureDTO> result = new ArrayList<SeizureDTO>();
+
+		try {
+
 			result = seizureService.getSeizureListByCodeFileControl(codeFileControl);
 			response = new ResponseEntity<>(result, HttpStatus.OK);
-    	
-	    } catch (Exception e) {
-			
+
+		} catch (Exception e) {
+
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-			
+
 			LOG.error("ERROR in getSeizureListByCodeFileControl: ", e);
-		}	
-			
+		}
+
 		return response;
 
-    }
-    
-    @GetMapping(value = "/{codeFileControl}/case/{idSeizure}")
-    @ApiOperation(value="Devuelve el embargo a partir de su identificador.")
-    public ResponseEntity<SeizureDTO> getSeizureById(Authentication authentication, @PathVariable("idSeizure") Long idSeizure){
-    	
-    	ResponseEntity<SeizureDTO> response = null;
-    	SeizureDTO result = null;
-    	
-    	try {
-    		  
-    		//TODO: Revisar: idSeizure en este caso esta aplicando por codEmbargo. ¿tiene que ser por codTraba?
-    		
+	}
+
+	@GetMapping(value = "/{codeFileControl}/case/{idSeizure}")
+	@ApiOperation(value = "Devuelve el embargo a partir de su identificador.")
+	public ResponseEntity<SeizureDTO> getSeizureById(Authentication authentication,
+			@PathVariable("idSeizure") Long idSeizure) {
+
+		ResponseEntity<SeizureDTO> response = null;
+		SeizureDTO result = null;
+
+		try {
+
+			// TODO: Revisar: idSeizure en este caso esta aplicando por codEmbargo. ¿tiene
+			// que ser por codTraba?
+
 			result = seizureService.getSeizureById(idSeizure);
 			response = new ResponseEntity<>(result, HttpStatus.OK);
-    	
-	    } catch (Exception e) {
-			
+
+		} catch (Exception e) {
+
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-			
+
 			LOG.error("ERROR in getSeizureListByCodeFileControl: ", e);
-		}	
-			
+		}
+
 		return response;
-    	
-    }
 
-    @GetMapping(value = "/{codeFileControl}/case/{idSeizure}/accounts")
-    @ApiOperation(value="Devuelve el listado de cuentas bancarias asociadas a la traba.")
-    public ResponseEntity<List<SeizedBankAccountDTO>> getBankAccountListBySeizure(Authentication authentication,
-                                                                         		@PathVariable("codeFileControl") Long codeFileControl,
-                                                                         		@PathVariable("idSeizure") Long idSeizure){
-        ResponseEntity<List<SeizedBankAccountDTO>> response = null;
-    	List<SeizedBankAccountDTO> result = new ArrayList<>();
-    	
-    	try {
-    		
-			result = seizureService.getBankAccountListBySeizure(codeFileControl,idSeizure);
+	}
+
+	@GetMapping(value = "/{codeFileControl}/case/{idSeizure}/accounts")
+	@ApiOperation(value = "Devuelve el listado de cuentas bancarias asociadas a la traba.")
+	public ResponseEntity<List<SeizedBankAccountDTO>> getBankAccountListBySeizure(Authentication authentication,
+			@PathVariable("codeFileControl") Long codeFileControl, @PathVariable("idSeizure") Long idSeizure) {
+		ResponseEntity<List<SeizedBankAccountDTO>> response = null;
+		List<SeizedBankAccountDTO> result = new ArrayList<>();
+
+		try {
+
+			result = seizureService.getBankAccountListBySeizure(codeFileControl, idSeizure);
 			response = new ResponseEntity<>(result, HttpStatus.OK);
-    	
-	    } catch (Exception e) {
-			
+
+		} catch (Exception e) {
+
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-			
+
 			LOG.error("ERROR in getBankAccountListByCodeFileControlAndPetitionCase: ", e);
-		}	
+		}
 
-        return response;
-    }
+		return response;
+	}
 
-    @GetMapping(value = "/actions")
-    @ApiOperation(value="Devuelve el listado de acciones posibles de las trabas.")
-    public ResponseEntity<List<SeizureActionDTO>> getSeizureActions(Authentication authentication)
-    {
-    	
-        ResponseEntity<List<SeizureActionDTO>> response = null;
-    	List<SeizureActionDTO> result = new ArrayList<>();
-    	
-    	try {
-    		
+	@GetMapping(value = "/actions")
+	@ApiOperation(value = "Devuelve el listado de acciones posibles de las trabas.")
+	public ResponseEntity<List<SeizureActionDTO>> getSeizureActions(Authentication authentication) {
+
+		ResponseEntity<List<SeizureActionDTO>> response = null;
+		List<SeizureActionDTO> result = new ArrayList<>();
+
+		try {
+
 			result = seizureService.getSeizureActions();
 			response = new ResponseEntity<>(result, HttpStatus.OK);
-    	
-	    } catch (Exception e) {
-			
+
+		} catch (Exception e) {
+
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-			
+
 			LOG.error("ERROR in getSeizureActions: ", e);
-		}	
+		}
 
-        return response;
-    	
-    }
+		return response;
 
-    @GetMapping(value = "/seizureStatus")
-    @ApiOperation(value="Devuelve el listado de estados posibles de las trabas.")
-    public ResponseEntity<List<SeizureStatusDTO>> getSeizureStatusList(Authentication authentication)
-    {
-    	/*
-    	ResponseEntity<List<SeizureStatusDTO>> response = null;
-        List<SeizureStatusDTO> result = new ArrayList<SeizureStatusDTO>();
+	}
 
-        SeizureStatusDTO sstatus = new SeizureStatusDTO();
-        sstatus.setCode("1");
-        sstatus.setCode("Pendiente");
+	@GetMapping(value = "/seizureStatus")
+	@ApiOperation(value = "Devuelve el listado de estados posibles de las trabas.")
+	public ResponseEntity<List<SeizureStatusDTO>> getSeizureStatusList(Authentication authentication) {
+		/*
+		 * ResponseEntity<List<SeizureStatusDTO>> response = null;
+		 * List<SeizureStatusDTO> result = new ArrayList<SeizureStatusDTO>();
+		 * 
+		 * SeizureStatusDTO sstatus = new SeizureStatusDTO(); sstatus.setCode("1");
+		 * sstatus.setCode("Pendiente");
+		 * 
+		 * SeizureStatusDTO sstatus2 = new SeizureStatusDTO(); sstatus2.setCode("2");
+		 * sstatus2.setCode("Pendiente de contabilizacion");
+		 * 
+		 * SeizureStatusDTO sstatus3 = new SeizureStatusDTO(); sstatus3.setCode("3");
+		 * sstatus3.setCode("Contabilizado");
+		 * 
+		 * result.add(sstatus); result.add(sstatus2); result.add(sstatus3);
+		 * 
+		 * response = new ResponseEntity<>(result, HttpStatus.OK);
+		 * 
+		 * return response;
+		 */
 
-        SeizureStatusDTO sstatus2 = new SeizureStatusDTO();
-        sstatus2.setCode("2");
-        sstatus2.setCode("Pendiente de contabilizacion");
+		ResponseEntity<List<SeizureStatusDTO>> response = null;
 
-        SeizureStatusDTO sstatus3 = new SeizureStatusDTO();
-        sstatus3.setCode("3");
-        sstatus3.setCode("Contabilizado");
+		List<SeizureStatusDTO> result = new ArrayList<>();
 
-        result.add(sstatus);
-        result.add(sstatus2);
-        result.add(sstatus3);
-
-        response = new ResponseEntity<>(result, HttpStatus.OK);
-
-        return response;
-        */
-        
-        ResponseEntity<List<SeizureStatusDTO>> response = null;
-
-        List<SeizureStatusDTO> result = new ArrayList<>();
-          
-    	try {
+		try {
 
 			result = seizureService.getSeizureStatusList();
-			
-			response = new ResponseEntity<>(result, HttpStatus.OK);
-    	
-	    } catch (Exception e) {
-			
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-			
-			LOG.error("ERROR in getSeizureStatusList: ", e);
-		}	
-        
-        return response;
-        
-    }
 
-    @PostMapping(value = "/{codeFileControl}/case/{idSeizure}/accounts")
-    @ApiOperation(value="Guarda una actualizacion para las cuentas trabadas.")
-    public ResponseEntity<String> updateSeizedBankAccountList(Authentication authentication,
-    														  @PathVariable("codeFileControl") Long codeFileControl,
-    														  @PathVariable("idSeizure") Long idSeizure,
-    														  @RequestBody List<SeizedBankAccountDTO> seizedBankAccountList){
-    	
+			response = new ResponseEntity<>(result, HttpStatus.OK);
+
+		} catch (Exception e) {
+
+			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+
+			LOG.error("ERROR in getSeizureStatusList: ", e);
+		}
+
+		return response;
+
+	}
+
+	@PostMapping(value = "/{codeFileControl}/case/{idSeizure}/accounts")
+	@ApiOperation(value = "Guarda una actualizacion para las cuentas trabadas.")
+	public ResponseEntity<String> updateSeizedBankAccountList(Authentication authentication,
+			@PathVariable("codeFileControl") Long codeFileControl, @PathVariable("idSeizure") Long idSeizure,
+			@RequestBody List<SeizedBankAccountDTO> seizedBankAccountList) {
+
 		ResponseEntity<String> response = null;
 		boolean result = false;
 
@@ -201,7 +194,8 @@ public class SeizureController {
 
 			String userModif = authentication.getName();
 
-			result = seizureService.updateSeizedBankAccountList(codeFileControl, idSeizure, seizedBankAccountList,userModif);
+			result = seizureService.updateSeizedBankAccountList(codeFileControl, idSeizure, seizedBankAccountList,
+					userModif);
 
 			if (result) {
 				response = new ResponseEntity<>(HttpStatus.OK);
@@ -218,16 +212,14 @@ public class SeizureController {
 
 		return response;
 
-    }
-    
+	}
 
-    @PostMapping(value = "/{codeFileControl}/case/{idSeizure}/status")
-    @ApiOperation(value="Guarda una actualizacion de estado para el caso indicado")
-    public ResponseEntity<String> updateSeizureStatus(Authentication authentication,
-    												  @PathVariable("codeFileControl") Long codeFileControl,
-    												  @PathVariable("idSeizure") Long idSeizure,
-    												  @RequestBody SeizureStatusDTO seizureStatus){
-    	
+	@PostMapping(value = "/{codeFileControl}/case/{idSeizure}/status")
+	@ApiOperation(value = "Guarda una actualizacion de estado para el caso indicado")
+	public ResponseEntity<String> updateSeizureStatus(Authentication authentication,
+			@PathVariable("codeFileControl") Long codeFileControl, @PathVariable("idSeizure") Long idSeizure,
+			@RequestBody SeizureStatusDTO seizureStatus) {
+
 		ResponseEntity<String> response = null;
 		boolean result = false;
 
@@ -252,9 +244,8 @@ public class SeizureController {
 
 		return response;
 
-    }
-    
-    
+	}
+
 //    @PostMapping(value = "/{codeFileControl}/status")
 //    @ApiOperation(value="Guarda una actualizacion de estado para el caso indicado")
 //    public ResponseEntity<String> updateFileControlStatus(Authentication authentication,
@@ -290,13 +281,12 @@ public class SeizureController {
 //		return response;
 //
 //    }
-    
-    @GetMapping(value = "/{codeFileControl}/case/{idSeizure}/audit")
-    @ApiOperation(value="Devuelve el histórico de cambios")
-    public ResponseEntity<List<SeizureDTO>> getAuditSeizure(Authentication authentication,
-    												  @PathVariable("codeFileControl") Long codeFileControl,
-    												  @PathVariable("idSeizure") Long idSeizure){
-    	
+
+	@GetMapping(value = "/{codeFileControl}/case/{idSeizure}/audit")
+	@ApiOperation(value = "Devuelve el histórico de cambios")
+	public ResponseEntity<List<SeizureDTO>> getAuditSeizure(Authentication authentication,
+			@PathVariable("codeFileControl") Long codeFileControl, @PathVariable("idSeizure") Long idSeizure) {
+
 		ResponseEntity<List<SeizureDTO>> response = null;
 		List<SeizureDTO> result = new ArrayList<>();
 
@@ -305,24 +295,23 @@ public class SeizureController {
 			result = seizureService.getAuditSeizure(codeFileControl, idSeizure);
 
 			response = new ResponseEntity<>(result, HttpStatus.OK);
-	    	
-	    } catch (Exception e) {
-			
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-			
-			LOG.error("ERROR in getAudit: ", e);
-		}	
-        
-        return response;
 
-    }
-    
-    @GetMapping(value = "/{codeFileControl}/case/{idSeizure}/accounts/audit/{codAudit}")
-    @ApiOperation(value="Devuelve el histórico de cambios")
-    public ResponseEntity<List<SeizedBankAccountDTO>> getAudit(Authentication authentication,
-    												  @PathVariable("codeFileControl") Long codeFileControl,
-    												  @PathVariable("idSeizure") Long idSeizure,
-    												  @PathVariable("codAudit") Long codAudit) {
+		} catch (Exception e) {
+
+			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+
+			LOG.error("ERROR in getAudit: ", e);
+		}
+
+		return response;
+
+	}
+
+	@GetMapping(value = "/{codeFileControl}/case/{idSeizure}/accounts/audit/{codAudit}")
+	@ApiOperation(value = "Devuelve el histórico de cambios")
+	public ResponseEntity<List<SeizedBankAccountDTO>> getAudit(Authentication authentication,
+			@PathVariable("codeFileControl") Long codeFileControl, @PathVariable("idSeizure") Long idSeizure,
+			@PathVariable("codAudit") Long codAudit) {
 
 		ResponseEntity<List<SeizedBankAccountDTO>> response = null;
 		List<SeizedBankAccountDTO> result = new ArrayList<>();
@@ -369,7 +358,7 @@ public class SeizureController {
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@GetMapping("/notification/{idLifting}/liftingReport")
 	@ApiOperation(value = "Devuelve un justificante de embargo")
 	public ResponseEntity<InputStreamResource> generarJustificanteEmbargo3(
@@ -400,7 +389,8 @@ public class SeizureController {
 
 	@GetMapping("/summary/fileControl/{fileControl}/requestReport")
 	@ApiOperation(value = "Devuelve un fichero de resumen trabas fase 3")
-	public ResponseEntity<InputStreamResource> generarResumentTrabaF3(@PathVariable("fileControl") Integer codControlFichero) {
+	public ResponseEntity<InputStreamResource> generarResumentTrabaF3(
+			@PathVariable("fileControl") Integer codControlFichero) {
 		DownloadReportFile.setTempFileName("resumenTrabasReportF3");
 
 		DownloadReportFile.setFileTempPath(pdfSavedPath);
@@ -482,6 +472,58 @@ public class SeizureController {
 		try {
 
 			DownloadReportFile.writeFile(seizureService.generarAnexo(cod_usuario, cod_traba, num_anexo));
+
+			return DownloadReportFile.returnToDownloadFile();
+
+		} catch (Exception e) {
+			LOG.error("Error in anexoReport", e);
+
+			if (e.getMessage() == null) {
+				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
+			}
+
+			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping("/finalanswer/seizure/{fileControl}")
+	@ApiOperation(value = "Devuelve el fichero de respuesta final de embargos")
+	public ResponseEntity<InputStreamResource> generarRespuestaFinalEmbargo(
+			@PathVariable("fileControl") Integer codFileControl) {
+
+		DownloadReportFile.setTempFileName("respuestaFinalEmbargo");
+
+		DownloadReportFile.setFileTempPath(pdfSavedPath);
+
+		try {
+
+			DownloadReportFile.writeFile(seizureService.generarRespuestaFinalEmbargo(codFileControl));
+
+			return DownloadReportFile.returnToDownloadFile();
+
+		} catch (Exception e) {
+			LOG.error("Error in anexoReport", e);
+
+			if (e.getMessage() == null) {
+				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
+			}
+
+			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping("/summary/fileControl/{fileControl}/liftingReport")
+	@ApiOperation(value = "Devuelve el fichero de resumen de levantamientos")
+	public ResponseEntity<InputStreamResource> generarResumenLevantamiento(
+			@PathVariable("fileControl") Integer codFileControl) {
+
+		DownloadReportFile.setTempFileName("resumenLevantamiento");
+
+		DownloadReportFile.setFileTempPath(pdfSavedPath);
+
+		try {
+
+			DownloadReportFile.writeFile(seizureService.generarResumenLevantamiento(codFileControl));
 
 			return DownloadReportFile.returnToDownloadFile();
 
