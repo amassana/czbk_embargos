@@ -538,4 +538,30 @@ public class SeizureController {
 		}
 	}
 
+	@GetMapping("/transfer/{cod_solicitud_ejecucion}/order")
+	@ApiOperation(value = "Devuelve el fichero de orden de transferencia")
+	public ResponseEntity<InputStreamResource> generarOrdenTransferencia(
+			@PathVariable("cod_solicitud_ejecucion") String cod_solicitud_ejecucion) {
+		
+		DownloadReportFile.setTempFileName("transferenceOrder");
+
+		DownloadReportFile.setFileTempPath(pdfSavedPath);
+
+		try {
+
+			DownloadReportFile.writeFile(seizureService.generarOrdenTransferencia(cod_solicitud_ejecucion));
+
+			return DownloadReportFile.returnToDownloadFile();
+
+		} catch (Exception e) {
+			LOG.error("Error in anexoReport", e);
+
+			if (e.getMessage() == null) {
+				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
+			}
+
+			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 }
