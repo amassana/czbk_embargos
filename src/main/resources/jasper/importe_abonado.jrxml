@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="importe_abonado" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3667eb27-55aa-4fa2-98d2-0c8972b2035d">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceBankDAdapterEmbargos.xml"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<scriptlet name="NumberToLetter" class="es.commerzbank.ice.comun.lib.util.jasper.NumberToLetterConverter">
+		<scriptletDescription><![CDATA[]]></scriptletDescription>
+	</scriptlet>
+	<parameter name="COD_TRABA" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT sum(cl.importe) - sum(t.importe_trabado) AS importe, t.FECHA_TRABA FROM 
+ COMM_EMBARGOS_DES.TRABAS t,  COMM_EMBARGOS_DES.LEVANTAMIENTO_TRABA lt,  COMM_EMBARGOS_DES.CUENTA_LEVANTAMIENTO cl
+WHERE t.COD_TRABA = $P{COD_TRABA} AND cl.COD_LEVANTAMIENTO = lt.COD_LEVANTAMIENTO AND lt.COD_TRABA = $P{COD_TRABA} group by FECHA_TRABA]]>
+	</queryString>
+	<field name="IMPORTE" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="IMPORTE"/>
+	</field>
+	<field name="FECHA_TRABA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="FECHA_TRABA"/>
+	</field>
+	<detail>
+		<band height="76" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="15" y="0" width="110" height="16" uuid="193cea4f-41e4-45e9-9a0e-43908271c51c"/>
+				<box leftPadding="3">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[IMPORTE EN CIFRAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="15" y="16" width="110" height="34" uuid="328ad4e9-aca2-45c3-83b9-6e39b67a3c2a"/>
+				<box topPadding="3" leftPadding="3">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Justified">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[IMPORTE EN LETRAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="15" y="51" width="110" height="15" uuid="726d12fb-9d29-401a-812f-8833ac21768a"/>
+				<box leftPadding="3">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[FECHA DE ABONO]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement mode="Transparent" x="125" y="0" width="364" height="16" uuid="64555580-07b7-4c33-8d54-e0e232c43f9a"/>
+			</rectangle>
+			<rectangle>
+				<reportElement mode="Transparent" x="125" y="16" width="364" height="34" uuid="54f2a509-2d57-4a8c-be7c-4692143edad1"/>
+			</rectangle>
+			<rectangle>
+				<reportElement mode="Transparent" x="125" y="51" width="364" height="15" uuid="7061faf7-82f7-4aab-bc60-8f2907f7561b"/>
+			</rectangle>
+			<textField>
+				<reportElement x="125" y="0" width="364" height="16" uuid="ab75abd7-c47b-45d6-943c-47c97b7f69d4">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0291e386-063e-41df-b3a5-0c8b3acad9d8"/>
+				</reportElement>
+				<box leftPadding="6"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{IMPORTE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="125" y="16" width="364" height="34" uuid="1917c9a5-4c91-4a6d-af32-5fad0870da0e">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0291e386-063e-41df-b3a5-0c8b3acad9d8"/>
+				</reportElement>
+				<box topPadding="3" leftPadding="6"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{NumberToLetter_SCRIPTLET}.Convertir($F{IMPORTE}.toString(), true)]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="125" y="51" width="364" height="15" uuid="4758146d-a4f0-4bf9-a1f9-34857042243c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c6700bce-f58a-4390-b26d-382b64061bdf"/>
+				</reportElement>
+				<box leftPadding="5"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHA_TRABA}.toString()))]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
