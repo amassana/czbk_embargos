@@ -18,4 +18,6 @@ public interface OrderingEntityService {
 
 	List<OrderingEntity> listAll();
 
+	Page<OrderingEntity> filter(Pageable dataPage);
+
 }

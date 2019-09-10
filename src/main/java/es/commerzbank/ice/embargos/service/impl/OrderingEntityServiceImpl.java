@@ -14,12 +14,18 @@ import javax.persistence.criteria.Root;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import es.commerzbank.ice.embargos.domain.dto.CommunicatingEntity;
 import es.commerzbank.ice.embargos.domain.dto.OrderingEntity;
 import es.commerzbank.ice.embargos.domain.entity.Apoderados;
 import es.commerzbank.ice.embargos.domain.entity.Apoderados_;
+import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
+import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora_;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante_;
 import es.commerzbank.ice.embargos.domain.mapper.OrderingEntityMapper;
@@ -123,4 +129,33 @@ public class OrderingEntityServiceImpl implements OrderingEntityService {
 		return response;
 	}
 
+	@Override
+	public Page<OrderingEntity> filter(Pageable dataPage) {
+		Page<OrderingEntity> response = null;
+		List<OrderingEntity> list = null;
+		Page<EntidadesOrdenante> result = null;
+		
+		result = repository.findAll(new Specification<EntidadesOrdenante>() {
+
+			@Override
+			public Predicate toPredicate(Root<EntidadesOrdenante> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicates = new ArrayList<>();
+				
+				predicates.add(criteriaBuilder.equal(root.get(EntidadesOrdenante_.indActivo), EmbargosConstants.IND_FLAG_YES));
+		
+				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+			}
+		}, dataPage);
+		
+		if (result != null && result.getContent() != null && result.getContent().size() > 0) {
+			list = new ArrayList<OrderingEntity>();
+			for (EntidadesOrdenante a : result.getContent()) {
+				list.add(mapper.toOrderingEntity(a));
+			}
+			
+			response = new PageImpl<>(list, result.getPageable(), result.getTotalElements());
+		}
+		
+		return response;
+	}
 }

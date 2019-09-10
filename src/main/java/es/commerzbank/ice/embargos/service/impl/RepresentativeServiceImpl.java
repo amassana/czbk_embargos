@@ -105,7 +105,7 @@ public class RepresentativeServiceImpl implements RepresentativeService {
 		logger.info("filter - start");
 		Page<Apoderados> list = null;
 		List<Representative> response = new ArrayList<>();
-		Page<Representative> pageOffice = null;
+		Page<Representative> page = null;
 		
 		logger.info("filter - Filtros de la consulta - Apoderados = " + parametros.toString());
 		list = apoderadosRepository.findAll(new Specification<Apoderados>() {
@@ -136,11 +136,11 @@ public class RepresentativeServiceImpl implements RepresentativeService {
 				response.add(representativeMapper.toRepresentative(a));
 			}
 			
-			pageOffice = new PageImpl<>(response, list.getPageable(), list.getTotalElements());
+			page = new PageImpl<>(response, list.getPageable(), list.getTotalElements());
 		}
 		
 		logger.info("filter - end");
-		return pageOffice;
+		return page;
 	}
 
 	@Override

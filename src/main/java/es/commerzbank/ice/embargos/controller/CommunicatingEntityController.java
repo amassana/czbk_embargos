@@ -1,10 +1,13 @@
 package es.commerzbank.ice.embargos.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.commerzbank.ice.comun.lib.security.Permissions;
 import es.commerzbank.ice.embargos.domain.dto.CommunicatingEntity;
+import es.commerzbank.ice.embargos.domain.dto.Representative;
 import es.commerzbank.ice.embargos.service.CommunicatingEntityService;
 
 @CrossOrigin("*")
@@ -130,6 +134,29 @@ public class CommunicatingEntityController {
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 		}
 		
+		return response;
+	}
+	
+	@PostMapping(value = "/filter",
+			produces = {"application/json"})
+	public ResponseEntity<Page<CommunicatingEntity>> filter(Authentication authentication, Pageable dataPage) {
+		logger.info("CommunicatingEntityController - filter - start");
+		ResponseEntity<Page<CommunicatingEntity>> response = null;
+		Page<CommunicatingEntity> list = null;
+		
+		list = service.filter(dataPage);
+		
+		if (list != null) {
+			if (list.getContent().size() > 0) {
+				response = new ResponseEntity<>(list, HttpStatus.OK);
+			} else {
+				response = new ResponseEntity<>(list, HttpStatus.NO_CONTENT);
+			}
+		} else {
+			response = new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
+		}
+		
+		logger.info("CommunicatingEntityController - filter - end");
 		return response;
 	}
 	

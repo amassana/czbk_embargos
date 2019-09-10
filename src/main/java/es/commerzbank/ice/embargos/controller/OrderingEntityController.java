@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.commerzbank.ice.comun.lib.security.Permissions;
 import es.commerzbank.ice.embargos.domain.dto.OrderingEntity;
+import es.commerzbank.ice.embargos.domain.dto.Representative;
 import es.commerzbank.ice.embargos.service.OrderingEntityService;
 
 @CrossOrigin("*")
@@ -133,6 +134,29 @@ public class OrderingEntityController {
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 		}
 		
+		return response;
+	}
+	
+	@PostMapping(value = "/filter",
+			produces = {"application/json"})
+	public ResponseEntity<Page<OrderingEntity>> filter(Authentication authentication, Pageable dataPage) {
+		logger.info("OrderingEntityController - filter - start");
+		ResponseEntity<Page<OrderingEntity>> response = null;
+		Page<OrderingEntity> list = null;
+		
+		list = orderingEntityService.filter(dataPage);
+		
+		if (list != null) {
+			if (list.getContent().size() > 0) {
+				response = new ResponseEntity<>(list, HttpStatus.OK);
+			} else {
+				response = new ResponseEntity<>(list, HttpStatus.NO_CONTENT);
+			}
+		} else {
+			response = new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
+		}
+		
+		logger.info("OrderingEntityController - filter - end");
 		return response;
 	}
 	

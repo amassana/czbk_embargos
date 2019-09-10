@@ -13,6 +13,9 @@ import javax.persistence.criteria.Root;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -118,6 +121,36 @@ public class CommunicatingEntityServiceImpl implements CommunicatingEntityServic
 			for (EntidadesComunicadora a : entidades) {
 				response.add(mapper.toCommunicatingEntity(a));
 			}
+		}
+		
+		return response;
+	}
+
+	@Override
+	public Page<CommunicatingEntity> filter(Pageable dataPage) {
+		Page<CommunicatingEntity> response = null;
+		List<CommunicatingEntity> list = null;
+		Page<EntidadesComunicadora> result = null;
+		
+		result = repository.findAll(new Specification<EntidadesComunicadora>() {
+
+			@Override
+			public Predicate toPredicate(Root<EntidadesComunicadora> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicates = new ArrayList<>();
+				
+				predicates.add(criteriaBuilder.equal(root.get(EntidadesComunicadora_.indActivo), EmbargosConstants.IND_FLAG_YES));
+		
+				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+			}
+		}, dataPage);
+		
+		if (result != null && result.getContent() != null && result.getContent().size() > 0) {
+			list = new ArrayList<CommunicatingEntity>();
+			for (EntidadesComunicadora a : result.getContent()) {
+				list.add(mapper.toCommunicatingEntity(a));
+			}
+			
+			response = new PageImpl<>(list, result.getPageable(), result.getTotalElements());
 		}
 		
 		return response;
