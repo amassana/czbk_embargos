@@ -7,6 +7,7 @@ import es.commerzbank.ice.embargos.domain.dto.BankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.BankAccountLiftingDTO;
 import es.commerzbank.ice.embargos.domain.dto.LiftingAuditDTO;
 import es.commerzbank.ice.embargos.domain.dto.LiftingDTO;
+import es.commerzbank.ice.embargos.domain.dto.LiftingStatusDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 
 public interface LiftingService {
@@ -18,5 +19,7 @@ public interface LiftingService {
 	boolean saveLifting(Long codeFileControl, Long codeLifting, LiftingDTO lifting, String userModif) throws Exception;
 
 	List<LiftingAuditDTO> getAuditByCodeLiftingCase(Long codeLiftingCase);
+
+	List<LiftingStatusDTO> getListStatus();
 
 }
