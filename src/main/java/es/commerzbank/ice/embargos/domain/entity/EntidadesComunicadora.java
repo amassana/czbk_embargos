@@ -68,6 +68,9 @@ public class EntidadesComunicadora implements Serializable {
 	@Column(name="USUARIO_ULT_MODIFICACION", length=10)
 	private String usuarioUltModificacion;
 
+	@Column(name="IND_ACTIVO", length=1, nullable=false)
+	private String indActivo;
+	
 	//bi-directional many-to-one association to ControlFichero
 	@OneToMany(mappedBy="entidadesComunicadora")
 	private List<ControlFichero> controlFicheros;
@@ -270,6 +273,14 @@ public class EntidadesComunicadora implements Serializable {
 		entidadesOrdenante.setEntidadesComunicadora(null);
 
 		return entidadesOrdenante;
+	}
+
+	public String getIndActivo() {
+		return indActivo;
+	}
+
+	public void setIndActivo(String indActivo) {
+		this.indActivo = indActivo;
 	}
 
 }

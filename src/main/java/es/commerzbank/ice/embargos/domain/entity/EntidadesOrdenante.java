@@ -55,6 +55,9 @@ public class EntidadesOrdenante implements Serializable {
 
 	@Column(name="RPT_TELENT", length=50)
 	private String rptTelent;
+	
+	@Column(name="IND_ACTIVO", length=1, nullable=false)
+	private String indActivo;
 
 	@Column(name="USUARIO_ULT_MODIFICACION", length=10)
 	private String usuarioUltModificacion;
@@ -237,6 +240,14 @@ public class EntidadesOrdenante implements Serializable {
 		peticionInformacion.setEntidadesOrdenante(null);
 
 		return peticionInformacion;
+	}
+
+	public String getIndActivo() {
+		return indActivo;
+	}
+
+	public void setIndActivo(String indActivo) {
+		this.indActivo = indActivo;
 	}
 
 }
