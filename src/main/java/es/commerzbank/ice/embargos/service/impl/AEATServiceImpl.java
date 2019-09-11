@@ -309,13 +309,10 @@ public class AEATServiceImpl implements AEATService{
 	
 		
 	}
-	
-	public void tratarFicheroLevantamientos(File file) {
-		
-	}
-	
+
+	@Override
 	public void tratarFicheroErrores(File file) {
-		
+		g
 	}
 
 }

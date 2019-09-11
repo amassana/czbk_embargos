@@ -8,6 +8,5 @@ import es.commerzbank.ice.comun.lib.util.ICEParserException;
 public interface AEATService {
 
 	public void tratarFicheroDiligenciasEmbargo(File file) throws IOException, ICEParserException;
-	public void tratarFicheroLevantamientos(File file);
 	public void tratarFicheroErrores(File file);
 }

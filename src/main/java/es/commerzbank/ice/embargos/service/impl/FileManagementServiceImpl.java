@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import es.commerzbank.ice.embargos.service.files.AEATLiftingService;
+import es.commerzbank.ice.embargos.service.files.Cuaderno63LiftingService;
 import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -42,9 +44,15 @@ public class FileManagementServiceImpl implements FileManagementService {
 
 	@Autowired
 	Cuaderno63Service cuaderno63Service;
-	
+
+	@Autowired
+	Cuaderno63LiftingService cuaderno63LiftingService;
+
 	@Autowired
 	AEATService aeatService;
+
+	@Autowired
+	AEATLiftingService aeatLiftingService;
 	
 	public void cargarFicheros() {
 		
@@ -128,7 +136,7 @@ public class FileManagementServiceImpl implements FileManagementService {
 				aeatService.tratarFicheroDiligenciasEmbargo(file);
 				break;
 			case EmbargosConstants.TIPO_FICHERO_LEVANTAMIENTOS:
-				aeatService.tratarFicheroLevantamientos(file);
+				aeatLiftingService.tratarFicheroLevantamientos(file);
 				break;
 			case EmbargosConstants.TIPO_FICHERO_ERRORES:
 				aeatService.tratarFicheroErrores(file);
@@ -153,7 +161,7 @@ public class FileManagementServiceImpl implements FileManagementService {
 				cuaderno63Service.cargarFicheroEmbargos(file);
 				break;	
 			case EmbargosConstants.TIPO_FICHERO_LEVANTAMIENTOS:
-				cuaderno63Service.tratarFicheroLevantamientos(file);
+				cuaderno63LiftingService.tratarFicheroLevantamientos(file);
 				break;			
 			default:
 		}
