@@ -28,8 +28,8 @@ public abstract class  SeizedBankAccountMapper {
 		@Mapping (source = "cambio", target = "fxRate"),
 		@Mapping (source = "cuentaTrabaActuacion.codActuacion", target = "seizureAction.code"),
 		@Mapping (source = "cuentaTrabaActuacion.descripcion", target = "seizureAction.description"),
-		@Mapping (source = "traba.estadoTraba.codEstado", target = "seizureStatus.code"),
-		@Mapping (source = "traba.estadoTraba.desEstado", target = "seizureStatus.description"),
+		@Mapping (source = "estadoTraba.codEstado", target = "seizureStatus.code"),
+		@Mapping (source = "estadoTraba.desEstado", target = "seizureStatus.description"),
 		@Mapping (source = "divisa", target = "bankAccountCurrency"),
 		@Mapping (source = "numeroOrdenCuenta", target = "orderNumberAccount"),
 	})
