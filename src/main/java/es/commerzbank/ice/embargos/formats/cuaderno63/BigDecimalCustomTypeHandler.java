@@ -46,14 +46,15 @@ public class BigDecimalCustomTypeHandler implements TypeHandler{
 	@Override
 	public String format(Object value)
 	{
+		String formato = "%0"+ length +"d";
+		
 		if (value == null) {
-			String formato = "%0"+ length +"d";
 			return String.format(formato, 0);
 		}
 		
 		BigDecimal bd = (BigDecimal) value;
 		
-		return bd.multiply(pontenciaDeDiez).toBigInteger().toString();
+		return String.format(formato, bd.multiply(pontenciaDeDiez).toBigInteger());
 	}
 	
 	@Override

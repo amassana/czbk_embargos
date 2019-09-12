@@ -2,7 +2,7 @@ package es.commerzbank.ice.embargos.formats.aeat.trabas;
 
 import java.util.Date;
 
-public class EntidadTransmisora {
+public class EntidadTransmisoraFase4 {
 
 	private String indicadorRegistro;
 	private Integer delegacionAgenciaReceptora;

@@ -9,6 +9,7 @@ public interface Cuaderno63Service {
 
 	public void cargarFicheroPeticion(File file) throws IOException, ICEParserException ;
 	public void tramitarFicheroInformacion(Long codControlFicheroPeticion, String usuarioTramitador) throws IOException;
+	public void tramitarTrabas(Long codControlFicheroPeticion, String usuarioTramitador) throws IOException, ICEParserException;
 	public void cargarFicheroEmbargos(File file) throws IOException;
 	public void tratarFicheroLevantamientos(File file);
 }

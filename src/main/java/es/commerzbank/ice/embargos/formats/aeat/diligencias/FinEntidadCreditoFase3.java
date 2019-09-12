@@ -1,15 +1,14 @@
-package es.commerzbank.ice.embargos.formats.aeat.trabas;
+package es.commerzbank.ice.embargos.formats.aeat.diligencias;
 
 import java.math.BigDecimal;
 
-public class FinEntidadCredito {
+public class FinEntidadCreditoFase3 {
 
 	private String indicadorRegistro;
-	private Integer delegacionAgenciaReceptora;
+	private String delegacionAgenciaEmisora;
 	private Integer codigoEntidadCredito;
 	private Integer numeroDiligenciasIncluidasEnvio;
 	private BigDecimal importeTotalAEmbargar;
-	private BigDecimal importeTotalTrabado;
 	private String codigoEntidadTransmisora;
 	
 	public String getIndicadorRegistro() {
@@ -18,11 +17,11 @@ public class FinEntidadCredito {
 	public void setIndicadorRegistro(String indicadorRegistro) {
 		this.indicadorRegistro = indicadorRegistro;
 	}
-	public Integer getDelegacionAgenciaReceptora() {
-		return delegacionAgenciaReceptora;
+	public String getDelegacionAgenciaEmisora() {
+		return delegacionAgenciaEmisora;
 	}
-	public void setDelegacionAgenciaReceptora(Integer delegacionAgenciaReceptora) {
-		this.delegacionAgenciaReceptora = delegacionAgenciaReceptora;
+	public void setDelegacionAgenciaEmisora(String delegacionAgenciaEmisora) {
+		this.delegacionAgenciaEmisora = delegacionAgenciaEmisora;
 	}
 	public Integer getCodigoEntidadCredito() {
 		return codigoEntidadCredito;
@@ -42,18 +41,11 @@ public class FinEntidadCredito {
 	public void setImporteTotalAEmbargar(BigDecimal importeTotalAEmbargar) {
 		this.importeTotalAEmbargar = importeTotalAEmbargar;
 	}
-	public BigDecimal getImporteTotalTrabado() {
-		return importeTotalTrabado;
-	}
-	public void setImporteTotalTrabado(BigDecimal importeTotalTrabado) {
-		this.importeTotalTrabado = importeTotalTrabado;
-	}
 	public String getCodigoEntidadTransmisora() {
 		return codigoEntidadTransmisora;
 	}
 	public void setCodigoEntidadTransmisora(String codigoEntidadTransmisora) {
 		this.codigoEntidadTransmisora = codigoEntidadTransmisora;
 	}
-
-	
+		
 }

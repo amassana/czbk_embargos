@@ -17,22 +17,22 @@ public class ComunicacionResultadoRetencionFase4 {
 	private BigDecimal importeTotalRetencionesEfectuadas;
 	private Date fechaEjecucionRetenciones;
 	private String ibanCuenta1;
-	private Integer codigoResultadoRetencionCuenta1;
+	private String codigoResultadoRetencionCuenta1;
 	private BigDecimal importeRetenidoCuenta1;
 	private String ibanCuenta2;
-	private Integer codigoResultadoRetencionCuenta2;
+	private String codigoResultadoRetencionCuenta2;
 	private BigDecimal importeRetenidoCuenta2;
 	private String ibanCuenta3;
-	private Integer codigoResultadoRetencionCuenta3;
+	private String codigoResultadoRetencionCuenta3;
 	private BigDecimal importeRetenidoCuenta3;
 	private String ibanCuenta4;
-	private Integer codigoResultadoRetencionCuenta4;
+	private String codigoResultadoRetencionCuenta4;
 	private BigDecimal importeRetenidoCuenta4;
 	private String ibanCuenta5;
-	private Integer codigoResultadoRetencionCuenta5;
+	private String codigoResultadoRetencionCuenta5;
 	private BigDecimal importeRetenidoCuenta5;
 	private String ibanCuenta6;
-	private Integer codigoResultadoRetencionCuenta6;
+	private String codigoResultadoRetencionCuenta6;
 	private BigDecimal importeRetenidoCuenta6;
 	private String claveSeguridadIban1;
 	private String claveSeguridadIban2;
@@ -113,10 +113,10 @@ public class ComunicacionResultadoRetencionFase4 {
 	public void setIbanCuenta1(String ibanCuenta1) {
 		this.ibanCuenta1 = ibanCuenta1;
 	}
-	public Integer getCodigoResultadoRetencionCuenta1() {
+	public String getCodigoResultadoRetencionCuenta1() {
 		return codigoResultadoRetencionCuenta1;
 	}
-	public void setCodigoResultadoRetencionCuenta1(Integer codigoResultadoRetencionCuenta1) {
+	public void setCodigoResultadoRetencionCuenta1(String codigoResultadoRetencionCuenta1) {
 		this.codigoResultadoRetencionCuenta1 = codigoResultadoRetencionCuenta1;
 	}
 	public BigDecimal getImporteRetenidoCuenta1() {
@@ -131,10 +131,10 @@ public class ComunicacionResultadoRetencionFase4 {
 	public void setIbanCuenta2(String ibanCuenta2) {
 		this.ibanCuenta2 = ibanCuenta2;
 	}
-	public Integer getCodigoResultadoRetencionCuenta2() {
+	public String getCodigoResultadoRetencionCuenta2() {
 		return codigoResultadoRetencionCuenta2;
 	}
-	public void setCodigoResultadoRetencionCuenta2(Integer codigoResultadoRetencionCuenta2) {
+	public void setCodigoResultadoRetencionCuenta2(String codigoResultadoRetencionCuenta2) {
 		this.codigoResultadoRetencionCuenta2 = codigoResultadoRetencionCuenta2;
 	}
 	public BigDecimal getImporteRetenidoCuenta2() {
@@ -149,10 +149,10 @@ public class ComunicacionResultadoRetencionFase4 {
 	public void setIbanCuenta3(String ibanCuenta3) {
 		this.ibanCuenta3 = ibanCuenta3;
 	}
-	public Integer getCodigoResultadoRetencionCuenta3() {
+	public String getCodigoResultadoRetencionCuenta3() {
 		return codigoResultadoRetencionCuenta3;
 	}
-	public void setCodigoResultadoRetencionCuenta3(Integer codigoResultadoRetencionCuenta3) {
+	public void setCodigoResultadoRetencionCuenta3(String codigoResultadoRetencionCuenta3) {
 		this.codigoResultadoRetencionCuenta3 = codigoResultadoRetencionCuenta3;
 	}
 	public BigDecimal getImporteRetenidoCuenta3() {
@@ -167,10 +167,10 @@ public class ComunicacionResultadoRetencionFase4 {
 	public void setIbanCuenta4(String ibanCuenta4) {
 		this.ibanCuenta4 = ibanCuenta4;
 	}
-	public Integer getCodigoResultadoRetencionCuenta4() {
+	public String getCodigoResultadoRetencionCuenta4() {
 		return codigoResultadoRetencionCuenta4;
 	}
-	public void setCodigoResultadoRetencionCuenta4(Integer codigoResultadoRetencionCuenta4) {
+	public void setCodigoResultadoRetencionCuenta4(String codigoResultadoRetencionCuenta4) {
 		this.codigoResultadoRetencionCuenta4 = codigoResultadoRetencionCuenta4;
 	}
 	public BigDecimal getImporteRetenidoCuenta4() {
@@ -185,10 +185,10 @@ public class ComunicacionResultadoRetencionFase4 {
 	public void setIbanCuenta5(String ibanCuenta5) {
 		this.ibanCuenta5 = ibanCuenta5;
 	}
-	public Integer getCodigoResultadoRetencionCuenta5() {
+	public String getCodigoResultadoRetencionCuenta5() {
 		return codigoResultadoRetencionCuenta5;
 	}
-	public void setCodigoResultadoRetencionCuenta5(Integer codigoResultadoRetencionCuenta5) {
+	public void setCodigoResultadoRetencionCuenta5(String codigoResultadoRetencionCuenta5) {
 		this.codigoResultadoRetencionCuenta5 = codigoResultadoRetencionCuenta5;
 	}
 	public BigDecimal getImporteRetenidoCuenta5() {
@@ -203,10 +203,10 @@ public class ComunicacionResultadoRetencionFase4 {
 	public void setIbanCuenta6(String ibanCuenta6) {
 		this.ibanCuenta6 = ibanCuenta6;
 	}
-	public Integer getCodigoResultadoRetencionCuenta6() {
+	public String getCodigoResultadoRetencionCuenta6() {
 		return codigoResultadoRetencionCuenta6;
 	}
-	public void setCodigoResultadoRetencionCuenta6(Integer codigoResultadoRetencionCuenta6) {
+	public void setCodigoResultadoRetencionCuenta6(String codigoResultadoRetencionCuenta6) {
 		this.codigoResultadoRetencionCuenta6 = codigoResultadoRetencionCuenta6;
 	}
 	public BigDecimal getImporteRetenidoCuenta6() {

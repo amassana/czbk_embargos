@@ -18,8 +18,6 @@ public class HCuentaTraba implements Serializable {
 	@EmbeddedId
 	private HCuentaTrabaPK id;
 
-	private String actuacion;
-
 	private BigDecimal cambio;
 
 	@Column(name="COD_ESTADO")
@@ -52,6 +50,11 @@ public class HCuentaTraba implements Serializable {
 	@Column(name="ESTADO_CUENTA", length=10)
 	private String estadoCuenta;
 	
+	//bi-directional many-to-one association to CuentaTrabaActuacion
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="ACTUACION", nullable=true)
+	private CuentaTrabaActuacion cuentaTrabaActuacion;
+	
 	public HCuentaTraba() {
 	}
 
@@ -63,12 +66,12 @@ public class HCuentaTraba implements Serializable {
 		this.id = id;
 	}
 
-	public String getActuacion() {
-		return this.actuacion;
+	public CuentaTrabaActuacion getCuentaTrabaActuacion() {
+		return cuentaTrabaActuacion;
 	}
 
-	public void setActuacion(String actuacion) {
-		this.actuacion = actuacion;
+	public void setCuentaTrabaActuacion(CuentaTrabaActuacion cuentaTrabaActuacion) {
+		this.cuentaTrabaActuacion = cuentaTrabaActuacion;
 	}
 
 	public BigDecimal getCambio() {

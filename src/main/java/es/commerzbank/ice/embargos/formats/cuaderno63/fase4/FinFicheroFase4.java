@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 public class FinFicheroFase4 {
 
 	private Integer codigoRegistro;
-	private Integer codigoNRBE;
+	private String codigoNRBE;
 	private Integer numeroRegistrosFichero;
 	private BigDecimal importeTotalAEmbargar;
 	private BigDecimal importeTotalRetenido;
@@ -19,10 +19,10 @@ public class FinFicheroFase4 {
 	public void setCodigoRegistro(Integer codigoRegistro) {
 		this.codigoRegistro = codigoRegistro;
 	}
-	public Integer getCodigoNRBE() {
+	public String getCodigoNRBE() {
 		return codigoNRBE;
 	}
-	public void setCodigoNRBE(Integer codigoNRBE) {
+	public void setCodigoNRBE(String codigoNRBE) {
 		this.codigoNRBE = codigoNRBE;
 	}
 	public Integer getNumeroRegistrosFichero() {

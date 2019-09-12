@@ -1,27 +1,27 @@
-package es.commerzbank.ice.embargos.formats.aeat.diligencias;
+package es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas;
 
 import java.util.Date;
 
-public class EntidadTransmisora {
+public class EntidadTransmisoraFase5 {
 
 	private String indicadorRegistro;
-	private String delegacionAgenciaEmisora;
+	private Integer delegacionAgenciaReceptora;
 	private String codigoEntidadTransmisora;
 	private Date fechaInicioCiclo;
-	private Date fechaCreacionFicheroTransmision;
+	private Date fechaCreacionFicheroTrabas;
 	private String indicadorTipoFichero;
-	
+
 	public String getIndicadorRegistro() {
 		return indicadorRegistro;
 	}
 	public void setIndicadorRegistro(String indicadorRegistro) {
 		this.indicadorRegistro = indicadorRegistro;
 	}
-	public String getDelegacionAgenciaEmisora() {
-		return delegacionAgenciaEmisora;
+	public Integer getDelegacionAgenciaReceptora() {
+		return delegacionAgenciaReceptora;
 	}
-	public void setDelegacionAgenciaEmisora(String delegacionAgenciaEmisora) {
-		this.delegacionAgenciaEmisora = delegacionAgenciaEmisora;
+	public void setDelegacionAgenciaReceptora(Integer delegacionAgenciaReceptora) {
+		this.delegacionAgenciaReceptora = delegacionAgenciaReceptora;
 	}
 	public String getCodigoEntidadTransmisora() {
 		return codigoEntidadTransmisora;
@@ -35,11 +35,11 @@ public class EntidadTransmisora {
 	public void setFechaInicioCiclo(Date fechaInicioCiclo) {
 		this.fechaInicioCiclo = fechaInicioCiclo;
 	}
-	public Date getFechaCreacionFicheroTransmision() {
-		return fechaCreacionFicheroTransmision;
+	public Date getFechaCreacionFicheroTrabas() {
+		return fechaCreacionFicheroTrabas;
 	}
-	public void setFechaCreacionFicheroTransmision(Date fechaCreacionFicheroTransmision) {
-		this.fechaCreacionFicheroTransmision = fechaCreacionFicheroTransmision;
+	public void setFechaCreacionFicheroTrabas(Date fechaCreacionFicheroTrabas) {
+		this.fechaCreacionFicheroTrabas = fechaCreacionFicheroTrabas;
 	}
 	public String getIndicadorTipoFichero() {
 		return indicadorTipoFichero;
@@ -47,9 +47,5 @@ public class EntidadTransmisora {
 	public void setIndicadorTipoFichero(String indicadorTipoFichero) {
 		this.indicadorTipoFichero = indicadorTipoFichero;
 	}
-	
-	
-
-	
 	
 }

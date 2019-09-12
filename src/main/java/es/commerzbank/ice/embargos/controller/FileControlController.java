@@ -32,6 +32,7 @@ import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.FileControlStatusService;
 import es.commerzbank.ice.embargos.service.FileTypeService;
 import es.commerzbank.ice.utils.DownloadReportFile;
+import es.commerzbank.ice.utils.EmbargosConstants;
 import io.swagger.annotations.ApiOperation;
 
 @CrossOrigin("*")
@@ -149,16 +150,36 @@ public class FileControlController {
 	}
 	
 	@PostMapping(value = "/{codeFileControl}/process")
-	@ApiOperation(value = "Tramitacion de un archivo de peticion.")
+	@ApiOperation(value = "Tramitacion de un archivo.")
 	public ResponseEntity<String> tramitar (Authentication authentication,
 			 @PathVariable("codeFileControl") Long codeFileControl){
 	
 		ResponseEntity<String> response = null;
-		boolean result = true;
+		boolean result = false;
 		
 		try {
 			
-			result = fileControlService.tramitarFicheroInformacion(codeFileControl, authentication.getName());
+			//Dependiendo del tipo de fichero se realizara una tramitacion u otra:
+			FileControlDTO fileControlDTO = fileControlService.getByCodeFileControl(codeFileControl);
+			
+			if (fileControlDTO!=null && fileControlDTO.getCodeFileType()!=null) {
+				
+				if (fileControlDTO.getCodeFileType().equals(EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63)){
+					
+					//Si es de tipo Peticion de informacion --> tramitar Fichero Informacion (fase 2):
+					result = fileControlService.tramitarFicheroInformacion(codeFileControl, authentication.getName());
+				
+				} else if (fileControlDTO.getCodeFileType().equals(EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63)){
+					
+					//Si es de tipo DiligenciaFase3 de Embargos de Cuaderno63 --> tramitar Trabas de Cuaderno 63 (fase 4):
+					result = fileControlService.tramitarTrabasCuaderno63(codeFileControl, authentication.getName());
+					
+				} else if (fileControlDTO.getCodeFileType().equals(EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT)){
+					
+					//Si es de tipo DiligenciaFase3 de Embargos de AEAT --> tramitar Trabas de AEAT (fase 4):
+					result = fileControlService.tramitarTrabasAEAT(codeFileControl, authentication.getName());
+				}
+			}
 			
 			if (result) {
 				response = new ResponseEntity<>(HttpStatus.OK);

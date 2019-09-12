@@ -1,37 +1,27 @@
 package es.commerzbank.ice.embargos.domain.mapper;
 
-import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 
-import com.google.common.math.DoubleMath;
-
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
-import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
+import es.commerzbank.ice.embargos.domain.dto.SeizedBankAccountDTO;
+import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
 import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
 import es.commerzbank.ice.embargos.domain.entity.CuentasInmovilizacion;
 import es.commerzbank.ice.embargos.domain.entity.CuentasRecaudacion;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
-import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
-import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlficheroPK;
 import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
 import es.commerzbank.ice.embargos.domain.entity.PeticionInformacion;
-import es.commerzbank.ice.embargos.domain.entity.TipoFichero;
 import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase1.CabeceraEmisorFase1;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase1.FinFicheroFase1;
@@ -39,9 +29,15 @@ import es.commerzbank.ice.embargos.formats.cuaderno63.fase1.SolicitudInformacion
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase2.CabeceraEmisorFase2;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase2.FinFicheroFase2;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase2.RespuestaSolicitudInformacionFase2;
+import es.commerzbank.ice.embargos.formats.cuaderno63.fase3.CabeceraEmisorFase3;
+import es.commerzbank.ice.embargos.formats.cuaderno63.fase3.FinFicheroFase3;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase3.OrdenEjecucionEmbargoComplementarioFase3;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase3.OrdenEjecucionEmbargoFase3;
+import es.commerzbank.ice.embargos.formats.cuaderno63.fase4.CabeceraEmisorFase4;
+import es.commerzbank.ice.embargos.formats.cuaderno63.fase4.ComunicacionResultadoRetencionFase4;
+import es.commerzbank.ice.embargos.formats.cuaderno63.fase4.FinFicheroFase4;
 import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.utils.EmbargosUtils;
 import es.commerzbank.ice.utils.ICEDateUtils;
 
 @Mapper(componentModel="spring")
@@ -312,9 +308,11 @@ public abstract class Cuaderno63Mapper {
 		
 	}
 	
-
-	public abstract Traba generateTraba(OrdenEjecucionEmbargoFase3 ordenEjecucionEmbargo, 
-			OrdenEjecucionEmbargoComplementarioFase3 ordenEjecucionEmbargoComp, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante);
+	@Mappings({
+		@Mapping(source = "fechaLimiteTraba", target = "fechaLimite"),
+	})
+	public abstract Traba generateTraba(OrdenEjecucionEmbargoFase3 ordenEjecucionEmbargo, OrdenEjecucionEmbargoComplementarioFase3 ordenEjecucionEmbargoComp,
+			 Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante, BigDecimal fechaLimiteTraba);
 	
 	@AfterMapping
 	public void generateTrabaAfterMapping(@MappingTarget Traba traba, OrdenEjecucionEmbargoFase3 ordenEjecucionEmbargo, 
@@ -333,7 +331,7 @@ public abstract class Cuaderno63Mapper {
 		
 		//Estado inicial de la traba al generarse:
 		EstadoTraba estadoTraba = new EstadoTraba();
-		estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_INICIAL);
+		estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE);
 		traba.setEstadoTraba(estadoTraba);
 		
 		
@@ -354,7 +352,7 @@ public abstract class Cuaderno63Mapper {
 			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
 			//TODO: estado cuenta traba tiene que ser el de DWH
 			estadoTraba = new EstadoTraba();
-			estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_INICIAL);
+			estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE);
 			cuentaTraba.setEstadoTraba(estadoTraba);
 			cuentaTraba.setOrigenEmb(EmbargosConstants.IND_FLAG_YES);
 			cuentaTraba.setUsuarioUltModificacion(usuarioModif);
@@ -370,7 +368,7 @@ public abstract class Cuaderno63Mapper {
 			cuentaTraba.setNumeroOrdenCuenta(numeroOrden);
 			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
 			estadoTraba = new EstadoTraba();
-			estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_INICIAL);
+			estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE);
 			cuentaTraba.setEstadoTraba(estadoTraba);
 			cuentaTraba.setOrigenEmb(EmbargosConstants.IND_FLAG_YES);
 			cuentaTraba.setUsuarioUltModificacion(usuarioModif);
@@ -386,7 +384,7 @@ public abstract class Cuaderno63Mapper {
 			cuentaTraba.setNumeroOrdenCuenta(numeroOrden);
 			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
 			estadoTraba = new EstadoTraba();
-			estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_INICIAL);
+			estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE);
 			cuentaTraba.setEstadoTraba(estadoTraba);
 			cuentaTraba.setOrigenEmb(EmbargosConstants.IND_FLAG_YES);
 			cuentaTraba.setUsuarioUltModificacion(usuarioModif);
@@ -402,7 +400,7 @@ public abstract class Cuaderno63Mapper {
 			cuentaTraba.setNumeroOrdenCuenta(numeroOrden);
 			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
 			estadoTraba = new EstadoTraba();
-			estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_INICIAL);
+			estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE);
 			cuentaTraba.setEstadoTraba(estadoTraba);
 			cuentaTraba.setOrigenEmb(EmbargosConstants.IND_FLAG_YES);
 			cuentaTraba.setUsuarioUltModificacion(usuarioModif);
@@ -418,7 +416,7 @@ public abstract class Cuaderno63Mapper {
 			cuentaTraba.setNumeroOrdenCuenta(numeroOrden);
 			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
 			estadoTraba = new EstadoTraba();
-			estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_INICIAL);
+			estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE);
 			cuentaTraba.setEstadoTraba(estadoTraba);
 			cuentaTraba.setOrigenEmb(EmbargosConstants.IND_FLAG_YES);
 			cuentaTraba.setUsuarioUltModificacion(usuarioModif);
@@ -433,7 +431,7 @@ public abstract class Cuaderno63Mapper {
 			cuentaTraba.setIban(ordenEjecucionEmbargo.getIbanCuenta6());
 			cuentaTraba.setNumeroOrdenCuenta(numeroOrden);
 			estadoTraba = new EstadoTraba();
-			estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_INICIAL);
+			estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE);
 			cuentaTraba.setEstadoTraba(estadoTraba);
 			cuentaTraba.setOrigenEmb(EmbargosConstants.IND_FLAG_YES);
 			cuentaTraba.setUsuarioUltModificacion(usuarioModif);
@@ -447,4 +445,108 @@ public abstract class Cuaderno63Mapper {
 		traba.setUsuarioUltModificacion(usuarioModif);
 		traba.setFUltimaModificacion(fechaUltmaModif);
 	}
+	
+	
+	public abstract CabeceraEmisorFase4 generateCabeceraEmisorFase4(CabeceraEmisorFase3 cabeceraEmisorFase3);
+	
+	@AfterMapping
+	public void setCabeceraEmisorFase4AfterMapping(@MappingTarget CabeceraEmisorFase4 cabeceraEmisorFase4) {
+	
+		cabeceraEmisorFase4.setFase(EmbargosConstants.COD_FASE_4);
+	}
+	
+	@Mappings({
+		@Mapping(source = "embargo.nif", target = "nifDeudor"),
+		@Mapping(source = "embargo.nombre", target = "nombreDeudor"),
+		@Mapping(source = "embargo.domicilio", target = "domicilioDeudor"),
+		@Mapping(source = "embargo.municipio", target = "municipio"),
+		@Mapping(source = "embargo.codigoPostal", target = "codigoPostal"),
+		@Mapping(source = "embargo.numeroEmbargo", target = "identificadorDeuda"),
+		@Mapping(source = "embargo.importe", target = "importeTotalAEmbargar"),
+		@Mapping(source = "embargo.codDeudaDeudor", target = "codigoDeuda"),
+		@Mapping(source = "traba.importeTrabado", target = "importeTotalRetencionesEfectuadas"),
+	})
+	public abstract ComunicacionResultadoRetencionFase4 generateComunicacionResultadoRetencionFase4(Embargo embargo, Traba traba, List<CuentaTraba> cuentaTrabaOrderedList);
+	
+	@AfterMapping
+	public void setComunicacionResultadoRetencionFase4AfterMapping(@MappingTarget ComunicacionResultadoRetencionFase4 comunicacionResultadoRetencionFase4,
+			Embargo embargo, Traba traba, List<CuentaTraba> cuentaTrabaOrderedList) {
+		
+		//Obligatorio setear el 'codigo de registro' en el registro de Comunicacion del Resultado de la Retencion:
+		comunicacionResultadoRetencionFase4.setCodigoRegistro(EmbargosConstants.CODIGO_REGISTRO_CUADERNO63_COMUNICACION_RESULTADO_RETENCION_FASE4);
+		
+		//TODO: Si en el mapeo el domicilio es nulo, lo generamos con los campos relacionados al domicilio (calle, puerta, etc.)
+
+		//TODO: falta setear --> fechaEjecucionRetenciones
+		
+		for (CuentaTraba cuentaTraba : cuentaTrabaOrderedList) {
+			
+			int cont = 1;
+			
+			boolean agregarATraba = cuentaTraba.getAgregarATraba() != null && EmbargosConstants.IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba());
+			
+			if (agregarATraba) {
+			
+				String claveSeguridad = EmbargosUtils.generateClaveSeguridad(cuentaTraba.getIban());
+				
+				String resultadoRetencion = cuentaTraba.getCuentaTrabaActuacion() != null ? 
+						cuentaTraba.getCuentaTrabaActuacion().getCodActuacion() : null;
+				
+				switch(cont) {
+					
+					case 1:
+						comunicacionResultadoRetencionFase4.setIbanCuenta1(cuentaTraba.getIban());
+						comunicacionResultadoRetencionFase4.setClaveSeguridadIban1(claveSeguridad);
+						comunicacionResultadoRetencionFase4.setImporteRetenidoCuenta1(cuentaTraba.getImporte());
+						comunicacionResultadoRetencionFase4.setCodigoResultadoRetencionCuenta1(resultadoRetencion);
+						break;
+					case 2:
+						comunicacionResultadoRetencionFase4.setIbanCuenta2(cuentaTraba.getIban());
+						comunicacionResultadoRetencionFase4.setClaveSeguridadIban2(claveSeguridad);
+						comunicacionResultadoRetencionFase4.setImporteRetenidoCuenta2(cuentaTraba.getImporte());
+						comunicacionResultadoRetencionFase4.setCodigoResultadoRetencionCuenta2(resultadoRetencion);
+						break;
+					case 3:
+						comunicacionResultadoRetencionFase4.setIbanCuenta3(cuentaTraba.getIban());
+						comunicacionResultadoRetencionFase4.setClaveSeguridadIban3(claveSeguridad);
+						comunicacionResultadoRetencionFase4.setImporteRetenidoCuenta3(cuentaTraba.getImporte());
+						comunicacionResultadoRetencionFase4.setCodigoResultadoRetencionCuenta3(resultadoRetencion);
+						break;
+					case 4:
+						comunicacionResultadoRetencionFase4.setIbanCuenta4(cuentaTraba.getIban());
+						comunicacionResultadoRetencionFase4.setClaveSeguridadIban4(claveSeguridad);
+						comunicacionResultadoRetencionFase4.setImporteRetenidoCuenta4(cuentaTraba.getImporte());
+						comunicacionResultadoRetencionFase4.setCodigoResultadoRetencionCuenta4(resultadoRetencion);
+						break;
+					case 5:
+						comunicacionResultadoRetencionFase4.setIbanCuenta5(cuentaTraba.getIban());
+						comunicacionResultadoRetencionFase4.setClaveSeguridadIban5(claveSeguridad);
+						comunicacionResultadoRetencionFase4.setImporteRetenidoCuenta5(cuentaTraba.getImporte());
+						comunicacionResultadoRetencionFase4.setCodigoResultadoRetencionCuenta5(resultadoRetencion);
+						break;
+					case 6:
+						comunicacionResultadoRetencionFase4.setIbanCuenta6(cuentaTraba.getIban());
+						comunicacionResultadoRetencionFase4.setClaveSeguridadIban6(claveSeguridad);
+						comunicacionResultadoRetencionFase4.setImporteRetenidoCuenta6(cuentaTraba.getImporte());
+						comunicacionResultadoRetencionFase4.setCodigoResultadoRetencionCuenta6(resultadoRetencion);
+						break;
+					default:
+					
+				}
+				cont++;
+			}
+		}
+	}
+	
+	@Mappings({
+		@Mapping(source = "numeroRegistrosFichero", target = "numeroRegistrosFichero"),
+	})
+	public abstract FinFicheroFase4 generateFinFicheroFase4(FinFicheroFase3 finFicheroFase3, Integer numeroRegistrosFichero);
+	
+	@AfterMapping
+	public void setFinFicheroFase4AfterMapping(@MappingTarget FinFicheroFase4 finFicheroFase4) {
+	
+		//TODO: eliminar este metodo si queda finalmente vacio.
+	}
+	
 }

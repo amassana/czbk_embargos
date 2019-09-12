@@ -5,6 +5,8 @@ import java.time.format.DateTimeFormatter;
 
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.datawarehouse.domain.dto.PersonType;
+import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
+import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlficheroPK;
 import es.commerzbank.ice.embargos.domain.entity.PeticionInformacion;
 
 public class EmbargosUtils {
@@ -30,7 +32,7 @@ public class EmbargosUtils {
 	 * @param iban
 	 * @return
 	 */
-	private static String generateClaveSeguridad(String iban) {
+	public static String generateClaveSeguridad(String iban) {
 
 		//La clave consiste en la fecha del proceso de generacion en formato aaaammdd, seguido
 		//de los 4 primeros digitos de la cuenta y rellenando con ceros el resto del campo:
@@ -82,6 +84,7 @@ public class EmbargosUtils {
 		if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63
 		 || codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63
 		 || codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63
+		 || codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_TRABAS_NORMA63
 		 || codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63
 		 || codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63
 		 ) {
@@ -104,8 +107,6 @@ public class EmbargosUtils {
 			
 		else {}
 			
-		return fileFormat;
-		
-		
+		return fileFormat;	
 	}
 }

@@ -25,10 +25,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
 import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
 import es.commerzbank.ice.embargos.domain.dto.FileControlFiltersDTO;
-import es.commerzbank.ice.embargos.domain.dto.FileControlStatusDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlficheroPK;
@@ -39,6 +39,7 @@ import es.commerzbank.ice.embargos.domain.specification.FileControlSpecification
 import es.commerzbank.ice.embargos.repository.FileControlAuditRepository;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.repository.FileControlStatusRepository;
+import es.commerzbank.ice.embargos.service.AEATService;
 import es.commerzbank.ice.embargos.service.Cuaderno63Service;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.InformationPetitionService;
@@ -62,6 +63,9 @@ public class FileControlServiceImpl implements FileControlService{
 	
 	@Autowired
 	Cuaderno63Service cuaderno63Service;
+	
+	@Autowired
+	AEATService aeatService;
 	
 	@Autowired
 	private FileControlMapper fileControlMapper;
@@ -106,9 +110,7 @@ public class FileControlServiceImpl implements FileControlService{
 									
 		for (ControlFichero controlFichero : controlFicheroList) {
 		
-			FileControlDTO fileSearchResponseDTO = fileControlMapper.toFileControlDTO(controlFichero, 
-					"targetTEST", 
-					new Date());
+			FileControlDTO fileSearchResponseDTO = fileControlMapper.toFileControlDTO(controlFichero);
 			
 			fileSearchResponseDTOList.add(fileSearchResponseDTO);
 		
@@ -132,9 +134,7 @@ public class FileControlServiceImpl implements FileControlService{
 			return null;
 		}
 		
-		return fileControlMapper.toFileControlDTO(controlFicheroOpt.get(), 
-				"targetTEST", 
-				new Date());
+		return fileControlMapper.toFileControlDTO(controlFicheroOpt.get());
 	}
 
 	@Override
@@ -180,6 +180,22 @@ public class FileControlServiceImpl implements FileControlService{
 		return true;
 	}
 
+	@Override
+	public boolean tramitarTrabasCuaderno63(Long codeFileControl, String usuarioTramitador) throws IOException, ICEParserException {
+
+		cuaderno63Service.tramitarTrabas(codeFileControl, usuarioTramitador);
+		
+		return true;
+	}
+
+	@Override
+	public boolean tramitarTrabasAEAT(Long codeFileControl, String usuarioTramitador) throws IOException, ICEParserException {
+
+		aeatService.tramitarTrabas(codeFileControl, usuarioTramitador);
+		
+		return true;
+	}
+	
 	@Override
 	public boolean updateFileControl(Long codeFileControl, FileControlDTO fileControlDTO, String userModif) {
 		
@@ -372,5 +388,7 @@ public class FileControlServiceImpl implements FileControlService{
 			throw new Exception("Error in generarReporteListado()", ex);
 		}
 	}
+
+
 	
 }

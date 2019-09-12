@@ -1,15 +1,37 @@
 package es.commerzbank.ice.embargos.formats.aeat.validaciontrabas;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
-public class EntidadTransmisora {
+public class ErroresTrabaValidacionFase4 {
 
 	private String indicadorRegistro;
-	private Integer delegacionAgenciaTransmisora;
-	private String codigoEntidadTransmisora;
-	private Date fechaInicioCiclo;
-	private Date fechaCreacionFicheroTrabas;                
-	private String indicadorTipoFichero;
+	private String nifDeudor;
+	private String numeroDiligenciaEmbargo;
+	private BigDecimal importeTotalAEmbargar;
+	private Date fechaGeneracionDiligencia;
+	private BigDecimal importeTotalTrabado;
+	private String indicadorExisteMasCuentas;
+	private Date fechaTraba;
+	private Date fechaLimiteIngresoImporteTrabado;
+	private String codigoCuentaCliente1;
+	private Integer codigoResultadoTrabaCC1;
+	private BigDecimal importeTrabadoCC1;
+	private String codigoCuentaCliente2;
+	private Integer codigoResultadoTrabaCC2;
+	private BigDecimal importeTrabadoCC2;
+	private String codigoCuentaCliente3;
+	private Integer codigoResultadoTrabaCC3;
+	private BigDecimal importeTrabadoCC3;
+	private String codigoCuentaCliente4;
+	private Integer codigoResultadoTrabaCC4;
+	private BigDecimal importeTrabadoCC4;
+	private String codigoCuentaCliente5;
+	private Integer codigoResultadoTrabaCC5;
+	private BigDecimal importeTrabadoCC5;
+	private String codigoCuentaCliente6;
+	private Integer codigoResultadoTrabaCC6;
+	private BigDecimal importeTrabadoCC6;
 	private Integer codigoError1;
 	private Integer numeroCampoError1;
 	private Integer codigoError2;
@@ -57,35 +79,161 @@ public class EntidadTransmisora {
 	public void setIndicadorRegistro(String indicadorRegistro) {
 		this.indicadorRegistro = indicadorRegistro;
 	}
-	public Integer getDelegacionAgenciaTransmisora() {
-		return delegacionAgenciaTransmisora;
+	public String getNifDeudor() {
+		return nifDeudor;
 	}
-	public void setDelegacionAgenciaTransmisora(Integer delegacionAgenciaTransmisora) {
-		this.delegacionAgenciaTransmisora = delegacionAgenciaTransmisora;
+	public void setNifDeudor(String nifDeudor) {
+		this.nifDeudor = nifDeudor;
 	}
-	public String getCodigoEntidadTransmisora() {
-		return codigoEntidadTransmisora;
+	public String getNumeroDiligenciaEmbargo() {
+		return numeroDiligenciaEmbargo;
 	}
-	public void setCodigoEntidadTransmisora(String codigoEntidadTransmisora) {
-		this.codigoEntidadTransmisora = codigoEntidadTransmisora;
+	public void setNumeroDiligenciaEmbargo(String numeroDiligenciaEmbargo) {
+		this.numeroDiligenciaEmbargo = numeroDiligenciaEmbargo;
 	}
-	public Date getFechaInicioCiclo() {
-		return fechaInicioCiclo;
+	public BigDecimal getImporteTotalAEmbargar() {
+		return importeTotalAEmbargar;
 	}
-	public void setFechaInicioCiclo(Date fechaInicioCiclo) {
-		this.fechaInicioCiclo = fechaInicioCiclo;
+	public void setImporteTotalAEmbargar(BigDecimal importeTotalAEmbargar) {
+		this.importeTotalAEmbargar = importeTotalAEmbargar;
 	}
-	public Date getFechaCreacionFicheroTrabas() {
-		return fechaCreacionFicheroTrabas;
+	public Date getFechaGeneracionDiligencia() {
+		return fechaGeneracionDiligencia;
 	}
-	public void setFechaCreacionFicheroTrabas(Date fechaCreacionFicheroTrabas) {
-		this.fechaCreacionFicheroTrabas = fechaCreacionFicheroTrabas;
+	public void setFechaGeneracionDiligencia(Date fechaGeneracionDiligencia) {
+		this.fechaGeneracionDiligencia = fechaGeneracionDiligencia;
 	}
-	public String getIndicadorTipoFichero() {
-		return indicadorTipoFichero;
+	public BigDecimal getImporteTotalTrabado() {
+		return importeTotalTrabado;
 	}
-	public void setIndicadorTipoFichero(String indicadorTipoFichero) {
-		this.indicadorTipoFichero = indicadorTipoFichero;
+	public void setImporteTotalTrabado(BigDecimal importeTotalTrabado) {
+		this.importeTotalTrabado = importeTotalTrabado;
+	}
+	public String getIndicadorExisteMasCuentas() {
+		return indicadorExisteMasCuentas;
+	}
+	public void setIndicadorExisteMasCuentas(String indicadorExisteMasCuentas) {
+		this.indicadorExisteMasCuentas = indicadorExisteMasCuentas;
+	}
+	public Date getFechaTraba() {
+		return fechaTraba;
+	}
+	public void setFechaTraba(Date fechaTraba) {
+		this.fechaTraba = fechaTraba;
+	}
+	public Date getFechaLimiteIngresoImporteTrabado() {
+		return fechaLimiteIngresoImporteTrabado;
+	}
+	public void setFechaLimiteIngresoImporteTrabado(Date fechaLimiteIngresoImporteTrabado) {
+		this.fechaLimiteIngresoImporteTrabado = fechaLimiteIngresoImporteTrabado;
+	}
+	public String getCodigoCuentaCliente1() {
+		return codigoCuentaCliente1;
+	}
+	public void setCodigoCuentaCliente1(String codigoCuentaCliente1) {
+		this.codigoCuentaCliente1 = codigoCuentaCliente1;
+	}
+	public Integer getCodigoResultadoTrabaCC1() {
+		return codigoResultadoTrabaCC1;
+	}
+	public void setCodigoResultadoTrabaCC1(Integer codigoResultadoTrabaCC1) {
+		this.codigoResultadoTrabaCC1 = codigoResultadoTrabaCC1;
+	}
+	public BigDecimal getImporteTrabadoCC1() {
+		return importeTrabadoCC1;
+	}
+	public void setImporteTrabadoCC1(BigDecimal importeTrabadoCC1) {
+		this.importeTrabadoCC1 = importeTrabadoCC1;
+	}
+	public String getCodigoCuentaCliente2() {
+		return codigoCuentaCliente2;
+	}
+	public void setCodigoCuentaCliente2(String codigoCuentaCliente2) {
+		this.codigoCuentaCliente2 = codigoCuentaCliente2;
+	}
+	public Integer getCodigoResultadoTrabaCC2() {
+		return codigoResultadoTrabaCC2;
+	}
+	public void setCodigoResultadoTrabaCC2(Integer codigoResultadoTrabaCC2) {
+		this.codigoResultadoTrabaCC2 = codigoResultadoTrabaCC2;
+	}
+	public BigDecimal getImporteTrabadoCC2() {
+		return importeTrabadoCC2;
+	}
+	public void setImporteTrabadoCC2(BigDecimal importeTrabadoCC2) {
+		this.importeTrabadoCC2 = importeTrabadoCC2;
+	}
+	public String getCodigoCuentaCliente3() {
+		return codigoCuentaCliente3;
+	}
+	public void setCodigoCuentaCliente3(String codigoCuentaCliente3) {
+		this.codigoCuentaCliente3 = codigoCuentaCliente3;
+	}
+	public Integer getCodigoResultadoTrabaCC3() {
+		return codigoResultadoTrabaCC3;
+	}
+	public void setCodigoResultadoTrabaCC3(Integer codigoResultadoTrabaCC3) {
+		this.codigoResultadoTrabaCC3 = codigoResultadoTrabaCC3;
+	}
+	public BigDecimal getImporteTrabadoCC3() {
+		return importeTrabadoCC3;
+	}
+	public void setImporteTrabadoCC3(BigDecimal importeTrabadoCC3) {
+		this.importeTrabadoCC3 = importeTrabadoCC3;
+	}
+	public String getCodigoCuentaCliente4() {
+		return codigoCuentaCliente4;
+	}
+	public void setCodigoCuentaCliente4(String codigoCuentaCliente4) {
+		this.codigoCuentaCliente4 = codigoCuentaCliente4;
+	}
+	public Integer getCodigoResultadoTrabaCC4() {
+		return codigoResultadoTrabaCC4;
+	}
+	public void setCodigoResultadoTrabaCC4(Integer codigoResultadoTrabaCC4) {
+		this.codigoResultadoTrabaCC4 = codigoResultadoTrabaCC4;
+	}
+	public BigDecimal getImporteTrabadoCC4() {
+		return importeTrabadoCC4;
+	}
+	public void setImporteTrabadoCC4(BigDecimal importeTrabadoCC4) {
+		this.importeTrabadoCC4 = importeTrabadoCC4;
+	}
+	public String getCodigoCuentaCliente5() {
+		return codigoCuentaCliente5;
+	}
+	public void setCodigoCuentaCliente5(String codigoCuentaCliente5) {
+		this.codigoCuentaCliente5 = codigoCuentaCliente5;
+	}
+	public Integer getCodigoResultadoTrabaCC5() {
+		return codigoResultadoTrabaCC5;
+	}
+	public void setCodigoResultadoTrabaCC5(Integer codigoResultadoTrabaCC5) {
+		this.codigoResultadoTrabaCC5 = codigoResultadoTrabaCC5;
+	}
+	public BigDecimal getImporteTrabadoCC5() {
+		return importeTrabadoCC5;
+	}
+	public void setImporteTrabadoCC5(BigDecimal importeTrabadoCC5) {
+		this.importeTrabadoCC5 = importeTrabadoCC5;
+	}
+	public String getCodigoCuentaCliente6() {
+		return codigoCuentaCliente6;
+	}
+	public void setCodigoCuentaCliente6(String codigoCuentaCliente6) {
+		this.codigoCuentaCliente6 = codigoCuentaCliente6;
+	}
+	public Integer getCodigoResultadoTrabaCC6() {
+		return codigoResultadoTrabaCC6;
+	}
+	public void setCodigoResultadoTrabaCC6(Integer codigoResultadoTrabaCC6) {
+		this.codigoResultadoTrabaCC6 = codigoResultadoTrabaCC6;
+	}
+	public BigDecimal getImporteTrabadoCC6() {
+		return importeTrabadoCC6;
+	}
+	public void setImporteTrabadoCC6(BigDecimal importeTrabadoCC6) {
+		this.importeTrabadoCC6 = importeTrabadoCC6;
 	}
 	public Integer getCodigoError1() {
 		return codigoError1;
@@ -327,5 +475,5 @@ public class EntidadTransmisora {
 	public void setNumeroCampoError20(Integer numeroCampoError20) {
 		this.numeroCampoError20 = numeroCampoError20;
 	}
-	
+
 }

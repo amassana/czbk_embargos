@@ -11,6 +11,7 @@ import org.mapstruct.Mappings;
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizedBankAccountDTO;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
+import es.commerzbank.ice.embargos.domain.entity.CuentaTrabaActuacion;
 import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
 import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.utils.EmbargosConstants;
@@ -25,7 +26,8 @@ public abstract class  SeizedBankAccountMapper {
 		@Mapping (source = "estadoCuenta", target = "bankAccountStatus"),
 		@Mapping (source = "importe", target = "amount"),
 		@Mapping (source = "cambio", target = "fxRate"),
-		@Mapping (source = "actuacion", target = "seizureAction.code"),
+		@Mapping (source = "cuentaTrabaActuacion.codActuacion", target = "seizureAction.code"),
+		@Mapping (source = "cuentaTrabaActuacion.descripcion", target = "seizureAction.description"),
 		@Mapping (source = "traba.estadoTraba.codEstado", target = "seizureStatus.code"),
 		@Mapping (source = "traba.estadoTraba.desEstado", target = "seizureStatus.description"),
 		@Mapping (source = "divisa", target = "bankAccountCurrency"),
@@ -53,7 +55,9 @@ public abstract class  SeizedBankAccountMapper {
 			cuentaTraba.setImporte(seizedBankAccountDTO.getAmount());
 		}		
 		if (seizedBankAccountDTO.getSeizureAction()!=null) {
-			cuentaTraba.setActuacion(seizedBankAccountDTO.getSeizureAction().getCode());
+			CuentaTrabaActuacion cuentaTrabaActuacion = new CuentaTrabaActuacion();
+			cuentaTrabaActuacion.setCodActuacion(seizedBankAccountDTO.getSeizureAction().getCode());
+			cuentaTraba.setCuentaTrabaActuacion(cuentaTrabaActuacion);
 		}
 		if (seizedBankAccountDTO.getFxRate()!=null) {
 			cuentaTraba.setCambio(seizedBankAccountDTO.getFxRate());
@@ -67,7 +71,8 @@ public abstract class  SeizedBankAccountMapper {
 			EstadoTraba estadoTraba = new EstadoTraba();
 			estadoTraba.setCodEstado(Long.valueOf(seizedBankAccountDTO.getSeizureStatus().getCode()));
 			
-			cuentaTraba.getTraba().setEstadoTraba(estadoTraba);
+			//cuentaTraba.getTraba().setEstadoTraba(estadoTraba);
+			cuentaTraba.setEstadoTraba(estadoTraba);
 		}	
 		if (seizedBankAccountDTO.getBankAccountCurrency()!=null) {
 
@@ -112,7 +117,7 @@ public abstract class  SeizedBankAccountMapper {
 		
 		//cuentaTraba.setTraba(traba);
 		EstadoTraba estadoTraba = new EstadoTraba();
-		estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_INICIAL);
+		estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE);
 		cuentaTraba.setEstadoTraba(estadoTraba);
 		cuentaTraba.setOrigenEmb(EmbargosConstants.IND_FLAG_NO);
 		cuentaTraba.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);

@@ -1,12 +1,13 @@
-package es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas;
+package es.commerzbank.ice.embargos.formats.aeat.trabas;
 
 import java.util.Date;
 
-public class FinEntidadTransmisora {
+public class FinEntidadTransmisoraFase4 {
 
 	private String indicadorRegistro;
 	private String codigoEntidadTransmisora;
-	private Date fechaCreacionFicheroLevantamientoTrabas;
+	private Date fechaCreacionFicheroTrabas;
+	
 	
 	public String getIndicadorRegistro() {
 		return indicadorRegistro;
@@ -20,12 +21,11 @@ public class FinEntidadTransmisora {
 	public void setCodigoEntidadTransmisora(String codigoEntidadTransmisora) {
 		this.codigoEntidadTransmisora = codigoEntidadTransmisora;
 	}
-	public Date getFechaCreacionFicheroLevantamientoTrabas() {
-		return fechaCreacionFicheroLevantamientoTrabas;
+	public Date getFechaCreacionFicheroTrabas() {
+		return fechaCreacionFicheroTrabas;
 	}
-	public void setFechaCreacionFicheroLevantamientoTrabas(Date fechaCreacionFicheroLevantamientoTrabas) {
-		this.fechaCreacionFicheroLevantamientoTrabas = fechaCreacionFicheroLevantamientoTrabas;
+	public void setFechaCreacionFicheroTrabas(Date fechaCreacionFicheroTrabas) {
+		this.fechaCreacionFicheroTrabas = fechaCreacionFicheroTrabas;
 	}
-	
 	
 }

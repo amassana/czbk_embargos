@@ -4,6 +4,8 @@ public class EmbargosConstants {
 
 	public static final String AEAT = "AEAT";
 	
+	public static final String ID_APLICACION_EMBARGOS =  "EM";
+	
 	/** Tipos de ficheros **/
 	public static final String TIPO_FICHERO_PETICIONES = "PET";
 	public static final String TIPO_FICHERO_INFORMACION = "INF";
@@ -55,27 +57,45 @@ public class EmbargosConstants {
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_ERROR = 0;
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_LOADING = 1;
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_RECEIVED = 2;
-	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PROCESSING = 3;
-	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PROCESSED = 4;
+	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_ACCOUNTING = 3;
+	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_ACCOUNTING_RESPONSE = 4;
+	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_TO_SEND = 5;
+	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_GENERATED = 6;
+	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_SENT = 7;
+	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_CONFIRMED = 8;
 
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_ERROR = 0;
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_LOADING = 1;
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_RECEIVED = 2;
-	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PROCESSING = 3;
-	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PROCESSED = 4;
+	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_ACCOUNTING = 3;
+	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_ACCOUNTING_RESPONSE = 4;
+	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_TO_SEND = 5;
+	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_GENERATED = 6;
+	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_SENT = 7;
+	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_CONFIRMED = 8;
 	
+	public static final long COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_NORMA63_ERROR = 0;
+	public static final long COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_NORMA63_GENERATING = 1;
+	public static final long COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_NORMA63_GENERATED = 2;
+	public static final long COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_NORMA63_SENT = 3;
+	
+	public static final long COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_AEAT_ERROR = 0;
+	public static final long COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_AEAT_GENERATING = 1;
+	public static final long COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_AEAT_GENERATED = 2;
+	public static final long COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_AEAT_SENT = 3;
 	
 	public static final long COD_ESTADO_CTRLFICHERO_INITIAL_STATUS_DEFAULT = 1;
 
 	/** Estados de la Traba **/
-	public static final long COD_ESTADO_TRABA_INICIAL = 1;
+	public static final long COD_ESTADO_TRABA_PENDIENTE = 1;
 	public static final long COD_ESTADO_TRABA_MODIFICADA = 2;
 	public static final long COD_ESTADO_TRABA_CONTABILIZADA = 3;
 	public static final long COD_ESTADO_TRABA_MODIFICADA_CON_EXTORNO = 4;
 	public static final long COD_ESTADO_TRABA_MODIFICADA_POR_LEVANTAMIENTO_SIN_EXTORNO = 5;
 	public static final long COD_ESTADO_TRABA_MODIFICADA_POR_LEVANTAMIENTO_CON_EXTORNO = 6;
-	public static final long COD_ESTADO_TRABA_PASADA_A_IMPUESTO = 7;
+	public static final long COD_ESTADO_TRABA_FINALIZADA = 7;
 	public static final long COD_ESTADO_TRABA_ESTADO_ERRONEO = 8;
+	public static final long COD_ESTADO_TRABA_ENVIADA_A_CONTABILIDAD = 8;
 	
 	/** Stream names del cuaderno 63 **/
 	public static final String STREAM_NAME_CUADERNO63_FASE1 = "fase1";
@@ -97,10 +117,10 @@ public class EmbargosConstants {
 	public static final String RECORD_NAME_RESULTADOFINALEMBARGO = "resultadoFinalEmbargo";
 	
 	/** Stream names de AEAT **/
-	public static final String STREAM_NAME_AEAT_DILIGENCIAS = "diligencias";
-	public static final String STREAM_NAME_AEAT_TRABAS = "trabas";
-	public static final String STREAM_NAME_AEAT_RESULTADOVALIDACIONTRABAS = "resultadoValidacionTrabas";
-	public static final String STREAM_NAME_AEAT_LEVANTAMIENTOTRABAS = "levantamientoTrabas";
+	public static final String STREAM_NAME_AEAT_DILIGENCIAS = "diligenciasFase3";
+	public static final String STREAM_NAME_AEAT_TRABAS = "trabasFase4";
+	public static final String STREAM_NAME_AEAT_RESULTADOVALIDACIONTRABAS = "resultadoValidacionTrabasFase4";
+	public static final String STREAM_NAME_AEAT_LEVANTAMIENTOTRABAS = "levantamientoTrabasFase5";
 	
 	/** Record names de AEAT **/
 	public static final String RECORD_NAME_AEAT_ENTIDADTRANSMISORA = "entidadTransmisora";
@@ -138,6 +158,22 @@ public class EmbargosConstants {
 	public static final String PERSON_TYPE_ID_FISICA = "F";
 	public static final String PERSON_TYPE_ID_JURIDICA = "J";
 	
-	public static final String CODIGO_ENTIDAD_TRANSMISORA_COMMERZBANK = "0159";
+	public static final String CODIGO_NRBE_COMMERZBANK = "0159";
+	
+	public static final int COD_FASE_1 = 1;
+	public static final int COD_FASE_2 = 2;
+	public static final int COD_FASE_3 = 3;
+	public static final int COD_FASE_4 = 4;
+	public static final int COD_FASE_5 = 5;
+	public static final int COD_FASE_6 = 6;
+	
+	/** Codigos de registro de los ficheros **/
+	public static final int CODIGO_REGISTRO_CUADERNO63_COMUNICACION_RESULTADO_RETENCION_FASE4 = 6;	
+	public static final String CODIGO_REGISTRO_AEAT_TRABA_FASE4 = "2";
+	
+	/** Entradas de la tabla PARAMETROS de Comunes **/
+	public static final String PARAMETRO_EMBARGOS_CUENTA_RECAUDACION = "embargos.cuentaRecaudacion";
+	public static final String PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA = "embargos.cuentaRecaudacion.oficina";
+	public static final String PARAMETRO_EMBARGOS_CONTABILIZACION_CALLBACK = "embargos.contabilizacion.callback";
 	
 }
