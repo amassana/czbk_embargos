@@ -19,7 +19,7 @@ public interface LiftingRepository extends JpaRepository<LevantamientoTraba, Lon
 
 	@Transactional
 	@Modifying
-	@Query("update LevantamientoTraba l set l.indCasoRevisado = :estado where l.codLevantamiento = :id")
-	public void updateStatus(@Param("id") Long codelifting, @Param("estado") String status);
+	@Query("update LevantamientoTraba l set l.estadoContable = :estado where l.codLevantamiento = :id")
+	public void updateStatus(@Param("id") Long codelifting, @Param("estado") long status);
 
 }
