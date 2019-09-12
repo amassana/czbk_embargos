@@ -12,6 +12,10 @@ public class CommunicatingEntity {
 	private Integer responseDaysF1;
 	private Integer responseDaysF3;
 	private Integer responseDaysF6;
+	private boolean indNorma63;
+	private boolean indAeat;
+	private boolean indCgpj;
+	
 	
 	
 	public long getCodCommunicatingEntity() {
@@ -79,5 +83,23 @@ public class CommunicatingEntity {
 	}
 	public void setResponseDaysF6(Integer responseDaysF6) {
 		this.responseDaysF6 = responseDaysF6;
+	}
+	public boolean isIndNorma63() {
+		return indNorma63;
+	}
+	public void setIndNorma63(boolean indNorma63) {
+		this.indNorma63 = indNorma63;
+	}
+	public boolean isIndAeat() {
+		return indAeat;
+	}
+	public void setIndAeat(boolean indAeat) {
+		this.indAeat = indAeat;
+	}
+	public boolean isIndCgpj() {
+		return indCgpj;
+	}
+	public void setIndCgpj(boolean indCgpj) {
+		this.indCgpj = indCgpj;
 	}
 }
