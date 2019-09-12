@@ -6,7 +6,7 @@ import java.util.List;
 public class LiftingDTO {
 	private Long codLifting;
 	private Long codLock;
-	private boolean status;
+	private LiftingStatusDTO status;
 	private String nif;
 	private String name;
 	private String numSeizure;
@@ -22,7 +22,7 @@ public class LiftingDTO {
 	
 	
 	
-	public LiftingDTO(Long codLifting, Long codLock, boolean status, String nif, String name, String numSeizure, Double amountDebt,
+	public LiftingDTO(Long codLifting, Long codLock, LiftingStatusDTO status, String nif, String name, String numSeizure, Double amountDebt,
 			Double amountLocked, Double amountPending, Date modifiedDate, String modifiedUser, List<BankAccountLiftingDTO> accounts) {
 		this.codLifting = codLifting;
 		this.status = status;
@@ -46,10 +46,10 @@ public class LiftingDTO {
 	public void setCodLifting(Long codLifting) {
 		this.codLifting = codLifting;
 	}
-	public boolean getStatus() {
+	public LiftingStatusDTO getStatus() {
 		return status;
 	}
-	public void setStatus(boolean status) {
+	public void setStatus(LiftingStatusDTO status) {
 		this.status = status;
 	}
 	public String getNif() {

@@ -21,6 +21,7 @@ import es.commerzbank.ice.embargos.domain.dto.BankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.BankAccountLiftingDTO;
 import es.commerzbank.ice.embargos.domain.dto.LiftingAuditDTO;
 import es.commerzbank.ice.embargos.domain.dto.LiftingDTO;
+import es.commerzbank.ice.embargos.domain.dto.LiftingStatusDTO;
 import es.commerzbank.ice.embargos.domain.dto.PetitionCaseDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.service.LiftingService;
@@ -133,6 +134,29 @@ public class LiftingController {
 		try {
 
 			//result = liftingService.getAuditByCodeLiftingCase(codeLiftingCase);
+
+			response = new ResponseEntity<>(result, HttpStatus.OK);
+
+		} catch (Exception e) {
+
+			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+
+			LOG.error("ERROR in getAuditPetitionCase: ", e);
+		}
+
+		return response;
+
+	}
+	
+	@GetMapping(value = "/liftingStatus")
+	public ResponseEntity<List<LiftingStatusDTO>> getListStatus(Authentication authentication) {
+
+		ResponseEntity<List<LiftingStatusDTO>> response = null;
+		List<LiftingStatusDTO> result = null;
+
+		try {
+
+			result = liftingService.getListStatus();
 
 			response = new ResponseEntity<>(result, HttpStatus.OK);
 

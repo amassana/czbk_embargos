@@ -19,9 +19,11 @@ import es.commerzbank.ice.embargos.domain.dto.BankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.BankAccountLiftingDTO;
 import es.commerzbank.ice.embargos.domain.dto.LiftingAuditDTO;
 import es.commerzbank.ice.embargos.domain.dto.LiftingDTO;
+import es.commerzbank.ice.embargos.domain.dto.LiftingStatusDTO;
 import es.commerzbank.ice.embargos.domain.dto.PetitionCaseDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
+import es.commerzbank.ice.embargos.domain.entity.EstadoIntLevantamiento;
 import es.commerzbank.ice.embargos.domain.entity.HLevantamientoTraba;
 import es.commerzbank.ice.embargos.domain.entity.HPeticionInformacion;
 import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
@@ -31,9 +33,11 @@ import es.commerzbank.ice.embargos.domain.mapper.BankAccountLiftingMapper;
 import es.commerzbank.ice.embargos.domain.mapper.BankAccountMapper;
 import es.commerzbank.ice.embargos.domain.mapper.LiftingAuditMapper;
 import es.commerzbank.ice.embargos.domain.mapper.LiftingMapper;
+import es.commerzbank.ice.embargos.domain.mapper.LiftingStatusMapper;
 import es.commerzbank.ice.embargos.repository.LiftingAuditRepository;
 import es.commerzbank.ice.embargos.repository.LiftingBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.LiftingRepository;
+import es.commerzbank.ice.embargos.repository.LiftingStatusRepository;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.LiftingService;
 import es.commerzbank.ice.utils.EmbargosConstants;
@@ -68,6 +72,12 @@ public class LiftingServiceImpl implements LiftingService {
 	@Autowired
 	private LiftingAuditMapper liftingAuditMapper;
 	
+	@Autowired
+	private LiftingStatusRepository liftingStatusRepository;
+	
+	@Autowired
+	private LiftingStatusMapper liftingStatusMapper;
+	
 	@Override
 	public List<LiftingDTO> getAllByControlFichero(ControlFichero controlFichero) {
 		List<LevantamientoTraba> liftingList = liftingRepository.findAllByControlFichero(controlFichero);
@@ -76,6 +86,9 @@ public class LiftingServiceImpl implements LiftingService {
 		List<LiftingDTO> liftingDTOList = new ArrayList<>();
 		for(LevantamientoTraba levantamiento : liftingList) {
 			LiftingDTO lifting = liftingMapper.toLiftingDTO(levantamiento);
+			Optional<EstadoIntLevantamiento> estado = liftingStatusRepository.findById(levantamiento.getEstadoContable().longValue());
+			LiftingStatusDTO status = liftingStatusMapper.toLiftingStatus(estado.get());
+			lifting.setStatus(status);
 		
 			liftingDTOList.add(lifting);
 		}
@@ -121,7 +134,7 @@ public class LiftingServiceImpl implements LiftingService {
 		
 		if (lifting != null) {
 			
-			liftingRepository.updateStatus(codelifting, lifting.getStatus() ? EmbargosConstants.IND_FLAG_YES : EmbargosConstants.IND_FLAG_NO);
+			liftingRepository.updateStatus(codelifting, lifting.getStatus().getCode());
 			
 			LevantamientoTraba levantamiento = new LevantamientoTraba();
 			levantamiento.setCodLevantamiento(codelifting);
@@ -156,5 +169,23 @@ public class LiftingServiceImpl implements LiftingService {
 		return liftingList;*/
 		
 		return null;
+	}
+
+	@Override
+	public List<LiftingStatusDTO> getListStatus() {
+		List<LiftingStatusDTO> response = null;
+		List<EstadoIntLevantamiento> list = null;
+		
+		list = liftingStatusRepository.findAll();
+		
+		if (list != null && list.size() > 0) {
+			response = new ArrayList<LiftingStatusDTO>();
+			
+			for (EstadoIntLevantamiento estado : list) {
+				response.add(liftingStatusMapper.toLiftingStatus(estado));
+			}
+		}
+		
+		return response;
 	}
 }

@@ -4,11 +4,11 @@ public class OrderingEntity {
 	private long codOrderingEntity;
 	private String nifEntity;
 	private String desEntity;
-	private String indCgpj;
-	private String indAeat;
-	private String indNorma63;
+	private boolean indCgpj;
+	private boolean indAeat;
+	private boolean indNorma63;
 	private boolean active;
-	private long codCommunicatingEntity;
+	private Item communicatingEntity;
 	
 	
 	public long getCodOrderingEntity() {
@@ -29,22 +29,22 @@ public class OrderingEntity {
 	public void setDesEntity(String desEntity) {
 		this.desEntity = desEntity;
 	}
-	public String getIndCgpj() {
+	public boolean getIndCgpj() {
 		return indCgpj;
 	}
-	public void setIndCgpj(String indCgpj) {
+	public void setIndCgpj(boolean indCgpj) {
 		this.indCgpj = indCgpj;
 	}
-	public String getIndAeat() {
+	public boolean getIndAeat() {
 		return indAeat;
 	}
-	public void setIndAeat(String indAeat) {
+	public void setIndAeat(boolean indAeat) {
 		this.indAeat = indAeat;
 	}
-	public String getIndNorma63() {
+	public boolean getIndNorma63() {
 		return indNorma63;
 	}
-	public void setIndNorma63(String indNorma63) {
+	public void setIndNorma63(boolean indNorma63) {
 		this.indNorma63 = indNorma63;
 	}
 	public boolean isActive() {
@@ -53,10 +53,11 @@ public class OrderingEntity {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-	public long getCodCommunicatingEntity() {
-		return codCommunicatingEntity;
+	public Item getCommunicatingEntity() {
+		return communicatingEntity;
 	}
-	public void setCodCommunicatingEntity(long codCommunicatingEntity) {
-		this.codCommunicatingEntity = codCommunicatingEntity;
+	public void setCommunicatingEntity(Item communicatingEntity) {
+		this.communicatingEntity = communicatingEntity;
 	}
+	
 }

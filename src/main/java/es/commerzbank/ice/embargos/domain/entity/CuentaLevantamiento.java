@@ -40,6 +40,9 @@ public class CuentaLevantamiento implements Serializable {
 
 	@Column(name="IND_CONTABILIZADO", length=1)
 	private String indContabilizado;
+	
+	@Column(name="COD_DIVISA", length=3)
+	private String codDivisa;
 
 	@Column(name="NUMERO_ORDEN_CUENTA")
 	private BigDecimal numeroOrdenCuenta;
@@ -149,6 +152,14 @@ public class CuentaLevantamiento implements Serializable {
 
 	public void setLevantamientoTraba(LevantamientoTraba levantamientoTraba) {
 		this.levantamientoTraba = levantamientoTraba;
+	}
+
+	public String getCodDivisa() {
+		return codDivisa;
+	}
+
+	public void setCodDivisa(String codDivisa) {
+		this.codDivisa = codDivisa;
 	}
 
 }

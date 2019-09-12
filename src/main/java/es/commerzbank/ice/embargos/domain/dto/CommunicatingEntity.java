@@ -9,9 +9,9 @@ public class CommunicatingEntity {
 	private String nif;
 	private String name;
 	private String filePrefix;
-	private int responseDaysF1;
-	private int responseDaysF3;
-	private int responseDaysF6;
+	private Integer responseDaysF1;
+	private Integer responseDaysF3;
+	private Integer responseDaysF6;
 	
 	
 	public long getCodCommunicatingEntity() {
@@ -62,22 +62,22 @@ public class CommunicatingEntity {
 	public void setFilePrefix(String filePrefix) {
 		this.filePrefix = filePrefix;
 	}
-	public int getResponseDaysF1() {
+	public Integer getResponseDaysF1() {
 		return responseDaysF1;
 	}
-	public void setResponseDaysF1(int responseDaysF1) {
+	public void setResponseDaysF1(Integer responseDaysF1) {
 		this.responseDaysF1 = responseDaysF1;
 	}
-	public int getResponseDaysF3() {
+	public Integer getResponseDaysF3() {
 		return responseDaysF3;
 	}
-	public void setResponseDaysF3(int responseDaysF3) {
+	public void setResponseDaysF3(Integer responseDaysF3) {
 		this.responseDaysF3 = responseDaysF3;
 	}
-	public int getResponseDaysF6() {
+	public Integer getResponseDaysF6() {
 		return responseDaysF6;
 	}
-	public void setResponseDaysF6(int responseDaysF6) {
+	public void setResponseDaysF6(Integer responseDaysF6) {
 		this.responseDaysF6 = responseDaysF6;
 	}
 }
