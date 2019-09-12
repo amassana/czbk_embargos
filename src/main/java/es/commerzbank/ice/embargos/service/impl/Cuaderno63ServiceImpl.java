@@ -467,7 +467,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        
 	        //ACTUALIZACIONES DEL FICHERO DE ENTRADA (controlFicheroPeticion):
 	        //1.- Actualizacion del flag IND_PROCESADO:
-	        controlFicheroPeticion.setIndProcesado(EmbargosConstants.IND_FLAG_YES);
+	        controlFicheroPeticion.setIndProcesado(EmbargosConstants.IND_FLAG_SI);
 	        
 	        //2.- Actualizacion del fichero de respuesta:
 	        controlFicheroPeticion.setControlFicheroRespuesta(controlFicheroInformacion);
@@ -948,7 +948,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        
 	        //ACTUALIZACIONES DEL FICHERO DE ENTRADA (controlFicheroEmbargo):
 	        //1.- Actualizacion del flag IND_PROCESADO:
-	        controlFicheroEmbargo.setIndProcesado(EmbargosConstants.IND_FLAG_YES);
+	        controlFicheroEmbargo.setIndProcesado(EmbargosConstants.IND_FLAG_SI);
 	        
 	        //2.- Actualizacion del fichero de respuesta:
 	        controlFicheroEmbargo.setControlFicheroRespuesta(controlFicheroTrabas);

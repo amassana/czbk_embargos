@@ -532,7 +532,7 @@ public class AEATServiceImpl implements AEATService{
 	        
 	        //ACTUALIZACIONES DEL FICHERO DE ENTRADA (controlFicheroEmbargo):
 	        //1.- Actualizacion del flag IND_PROCESADO:
-	        controlFicheroEmbargo.setIndProcesado(EmbargosConstants.IND_FLAG_YES);
+	        controlFicheroEmbargo.setIndProcesado(EmbargosConstants.IND_FLAG_SI);
 	        
 	        //2.- Actualizacion del fichero de respuesta:
 	        controlFicheroEmbargo.setControlFicheroRespuesta(controlFicheroTrabas);
