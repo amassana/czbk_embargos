@@ -48,12 +48,11 @@ public abstract class CommunicatingEntityMapper {
 		if (entidadesComunicadora.getDiasRespuestaF6() != null) {
 			communicatingEntity.setResponseDaysF6(entidadesComunicadora.getDiasRespuestaF6().intValue());
 		}
-		
-		if (entidadesComunicadora.getIndActivo().equals(EmbargosConstants.IND_FLAG_SI)) {
-			communicatingEntity.setActive(true);
-		} else {
-			communicatingEntity.setActive(false);
-		}
+
+		communicatingEntity.setActive(entidadesComunicadora.getIndActivo().equals(EmbargosConstants.IND_FLAG_SI) ? true : false);
+		communicatingEntity.setIndAeat(entidadesComunicadora.getIndFormatoAeat().equals(EmbargosConstants.IND_FLAG_SI) ? true : false);
+		communicatingEntity.setIndCgpj(entidadesComunicadora.getIndCgpj().equals(EmbargosConstants.IND_FLAG_SI) ? true : false);
+		communicatingEntity.setIndNorma63(entidadesComunicadora.getIndNorma63().equals(EmbargosConstants.IND_FLAG_SI) ? true : false);
 	}
 	
 	@AfterMapping
@@ -62,6 +61,11 @@ public abstract class CommunicatingEntityMapper {
 		entidadesComunicadora.setDiasRespuestaF1(new BigDecimal(communicatingEntity.getResponseDaysF1()));
 		entidadesComunicadora.setDiasRespuestaF3(new BigDecimal(communicatingEntity.getResponseDaysF3()));
 		entidadesComunicadora.setDiasRespuestaF6(new BigDecimal(communicatingEntity.getResponseDaysF6()));
+		
+		entidadesComunicadora.setIndFormatoAeat(communicatingEntity.isIndAeat() ? EmbargosConstants.IND_FLAG_SI : EmbargosConstants.IND_FLAG_NO);
+		entidadesComunicadora.setIndCgpj(communicatingEntity.isIndCgpj() ? EmbargosConstants.IND_FLAG_SI : EmbargosConstants.IND_FLAG_NO);
+		entidadesComunicadora.setIndNorma63(communicatingEntity.isIndNorma63() ? EmbargosConstants.IND_FLAG_SI : EmbargosConstants.IND_FLAG_NO);
+		
 	}
 
 }

@@ -53,6 +53,11 @@ commerzbank:
       config-path:
         cuaderno63: beanio/cuaderno63.xml
         aeat: beanio/aeat.xml
+  comunes:
+    beanio:
+      config-path:
+        contabilidad: beanio/contabilidad_salida.xml  
+        mt942: beanio/mt942.xml
   jasper:
     temp: C:/temp/
   comunes:

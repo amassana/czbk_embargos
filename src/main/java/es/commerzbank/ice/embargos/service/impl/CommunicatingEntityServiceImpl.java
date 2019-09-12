@@ -21,12 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.embargos.domain.dto.CommunicatingEntity;
-import es.commerzbank.ice.embargos.domain.dto.OrderingEntity;
-import es.commerzbank.ice.embargos.domain.entity.Apoderados;
-import es.commerzbank.ice.embargos.domain.entity.Apoderados_;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora_;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
 import es.commerzbank.ice.embargos.domain.mapper.CommunicatingEntityMapper;
 import es.commerzbank.ice.embargos.repository.CommunicatingEntityRepository;
 import es.commerzbank.ice.embargos.service.CommunicatingEntityService;
