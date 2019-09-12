@@ -115,7 +115,7 @@ public class OrderingEntityServiceImpl implements OrderingEntityService {
 			public Predicate toPredicate(Root<EntidadesOrdenante> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicates = new ArrayList<>();
 				
-				predicates.add(criteriaBuilder.equal(root.get(EntidadesOrdenante_.indActivo), EmbargosConstants.IND_FLAG_YES));
+				predicates.add(criteriaBuilder.equal(root.get(EntidadesOrdenante_.indActivo), EmbargosConstants.IND_FLAG_SI));
 		
 				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
@@ -143,7 +143,7 @@ public class OrderingEntityServiceImpl implements OrderingEntityService {
 			public Predicate toPredicate(Root<EntidadesOrdenante> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicates = new ArrayList<>();
 				
-				predicates.add(criteriaBuilder.equal(root.get(EntidadesOrdenante_.indActivo), EmbargosConstants.IND_FLAG_YES));
+				predicates.add(criteriaBuilder.equal(root.get(EntidadesOrdenante_.indActivo), EmbargosConstants.IND_FLAG_SI));
 		
 				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			}

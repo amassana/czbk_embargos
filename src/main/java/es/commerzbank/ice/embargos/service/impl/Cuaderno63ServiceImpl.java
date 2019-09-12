@@ -279,7 +279,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        //
 	        task.setAction("0");
 	        task.setState("P");
-	        task.setIndActive("Y");
+	        task.setIndActive(true);
 	        Long codTarea = taskService.addCalendarTask(task);
 	        
 	        // - Se guarda el codigo de tarea del calendario:
@@ -752,7 +752,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        //
 	        task.setAction("0");
 	        task.setState("P");
-	        task.setIndActive("Y");
+	        task.setIndActive(true);
 	        Long codTarea = taskService.addCalendarTask(task);
 	        
 	        // - Se guarda el codigo de tarea del calendario:
