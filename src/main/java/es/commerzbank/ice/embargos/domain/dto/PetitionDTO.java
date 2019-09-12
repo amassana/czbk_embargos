@@ -5,15 +5,15 @@ import java.util.List;
 
 public class PetitionDTO {
 
-	private String codePetition;
+	private Long codePetition;
 	private Long codeStatusPetition;
 	private FileControlDTO fileControl;
 	private List<PetitionCaseDTO> informationPetitionList = new ArrayList<>();
 	
-	public String getCodePetition() {
+	public Long getCodePetition() {
 		return codePetition;
 	}
-	public void setCodePetition(String codePetition) {
+	public void setCodePetition(Long codePetition) {
 		this.codePetition = codePetition;
 	}
 	public Long getCodeStatusPetition() {

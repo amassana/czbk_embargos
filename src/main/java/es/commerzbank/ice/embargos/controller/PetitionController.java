@@ -103,7 +103,7 @@ public class PetitionController {
 	@ApiOperation(value = "Actualiza el caso de PETICION_INFORMACION indicado, guardando los datos que se traspasen")
 	public ResponseEntity<String> savePetitionCase(Authentication authentication,
 			@PathVariable("codeFileControl") Long codeFileControl,
-			@PathVariable("codePetitionCase") String codePetitionCase, @RequestBody PetitionCaseDTO petitionCase) {
+			@PathVariable("codePetitionCase") Long codePetitionCase, @RequestBody PetitionCaseDTO petitionCase) {
 
 		ResponseEntity<String> response = null;
 		boolean result = true;
@@ -135,7 +135,7 @@ public class PetitionController {
 	@GetMapping(value = "/{codeFileControl}/petitioncase/{codePetitionCase}/audit")
 	public ResponseEntity<List<PetitionCaseDTO>> getAuditPetitionCase(Authentication authentication,
 			@PathVariable("codeFileControl") Long codeFileControl,
-			@PathVariable("codePetitionCase") String codePetitionCase) {
+			@PathVariable("codePetitionCase") Long codePetitionCase) {
 
 		ResponseEntity<List<PetitionCaseDTO>> response = null;
 		List<PetitionCaseDTO> result = null;

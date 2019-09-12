@@ -21,9 +21,6 @@ public class CuentaTraba implements Serializable {
 	@Column(name="COD_CUENTA_TRABA", unique=true, nullable=false)
 	private long codCuentaTraba;
 
-	@Column(length=2)
-	private String actuacion;
-
 	private BigDecimal cambio;
 
 	@Column(length=20)
@@ -64,6 +61,11 @@ public class CuentaTraba implements Serializable {
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="COD_TRABA", nullable=false)
 	private Traba traba;
+	
+	//bi-directional many-to-one association to CuentaTrabaActuacion
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="ACTUACION", nullable=true)
+	private CuentaTrabaActuacion cuentaTrabaActuacion;
 
 	public CuentaTraba() {
 	}
@@ -76,12 +78,12 @@ public class CuentaTraba implements Serializable {
 		this.codCuentaTraba = codCuentaTraba;
 	}
 
-	public String getActuacion() {
-		return this.actuacion;
+	public CuentaTrabaActuacion getCuentaTrabaActuacion() {
+		return cuentaTrabaActuacion;
 	}
 
-	public void setActuacion(String actuacion) {
-		this.actuacion = actuacion;
+	public void setCuentaTrabaActuacion(CuentaTrabaActuacion cuentaTrabaActuacion) {
+		this.cuentaTrabaActuacion = cuentaTrabaActuacion;
 	}
 
 	public BigDecimal getCambio() {

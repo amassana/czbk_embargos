@@ -96,13 +96,18 @@ public abstract class FileControlMapper {
 		} else if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63) {	
 
 			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_LOADING;
-			
-		//TODO agregar por cada tipo de fichero el estado incial:
-		//} else if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_TRABAS_NORMA63) {		
 
 		} else if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT) {	
 			
 			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_LOADING;
+			
+		} else if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_TRABAS_NORMA63) {		
+			
+			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_NORMA63_GENERATING;
+		
+		} else if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_TRABAS_AEAT) {		
+			
+			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_AEAT_GENERATING;
 			
 		} else {
 			//Estado inicial por defecto:
@@ -130,9 +135,7 @@ public abstract class FileControlMapper {
 		@Mapping(source = "controlFichero.controlFicheroRespuesta.codControlFichero", target = "codeFileResponse"),
 		@Mapping(source = "controlFichero.usuarioUltModificacion", target = "modifiedUser")
 	})
-	public abstract FileControlDTO toFileControlDTO (ControlFichero controlFichero,
-			String targetTEST,
-			Date fechaTEST);
+	public abstract FileControlDTO toFileControlDTO (ControlFichero controlFichero);
 	
 	
 	@AfterMapping

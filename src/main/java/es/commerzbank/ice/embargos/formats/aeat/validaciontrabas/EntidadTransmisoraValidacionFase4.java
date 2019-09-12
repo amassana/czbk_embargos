@@ -1,16 +1,15 @@
 package es.commerzbank.ice.embargos.formats.aeat.validaciontrabas;
 
-import java.math.BigDecimal;
+import java.util.Date;
 
-public class FinEntidadCredito {
+public class EntidadTransmisoraValidacionFase4 {
 
 	private String indicadorRegistro;
-	private String delegacionAgenciaEmisora;
-	private Integer codigoEntidadCredito;
-	private Integer numeroDiligenciasIncluidasEnvio;
-	private BigDecimal importeTotalAEmbargar;
-	private BigDecimal importeTotalTrabado;
+	private Integer delegacionAgenciaTransmisora;
 	private String codigoEntidadTransmisora;
+	private Date fechaInicioCiclo;
+	private Date fechaCreacionFicheroTrabas;                
+	private String indicadorTipoFichero;
 	private Integer codigoError1;
 	private Integer numeroCampoError1;
 	private Integer codigoError2;
@@ -58,41 +57,35 @@ public class FinEntidadCredito {
 	public void setIndicadorRegistro(String indicadorRegistro) {
 		this.indicadorRegistro = indicadorRegistro;
 	}
-	public String getDelegacionAgenciaEmisora() {
-		return delegacionAgenciaEmisora;
+	public Integer getDelegacionAgenciaTransmisora() {
+		return delegacionAgenciaTransmisora;
 	}
-	public void setDelegacionAgenciaEmisora(String delegacionAgenciaEmisora) {
-		this.delegacionAgenciaEmisora = delegacionAgenciaEmisora;
-	}
-	public Integer getCodigoEntidadCredito() {
-		return codigoEntidadCredito;
-	}
-	public void setCodigoEntidadCredito(Integer codigoEntidadCredito) {
-		this.codigoEntidadCredito = codigoEntidadCredito;
-	}
-	public Integer getNumeroDiligenciasIncluidasEnvio() {
-		return numeroDiligenciasIncluidasEnvio;
-	}
-	public void setNumeroDiligenciasIncluidasEnvio(Integer numeroDiligenciasIncluidasEnvio) {
-		this.numeroDiligenciasIncluidasEnvio = numeroDiligenciasIncluidasEnvio;
-	}
-	public BigDecimal getImporteTotalAEmbargar() {
-		return importeTotalAEmbargar;
-	}
-	public void setImporteTotalAEmbargar(BigDecimal importeTotalAEmbargar) {
-		this.importeTotalAEmbargar = importeTotalAEmbargar;
-	}
-	public BigDecimal getImporteTotalTrabado() {
-		return importeTotalTrabado;
-	}
-	public void setImporteTotalTrabado(BigDecimal importeTotalTrabado) {
-		this.importeTotalTrabado = importeTotalTrabado;
+	public void setDelegacionAgenciaTransmisora(Integer delegacionAgenciaTransmisora) {
+		this.delegacionAgenciaTransmisora = delegacionAgenciaTransmisora;
 	}
 	public String getCodigoEntidadTransmisora() {
 		return codigoEntidadTransmisora;
 	}
 	public void setCodigoEntidadTransmisora(String codigoEntidadTransmisora) {
 		this.codigoEntidadTransmisora = codigoEntidadTransmisora;
+	}
+	public Date getFechaInicioCiclo() {
+		return fechaInicioCiclo;
+	}
+	public void setFechaInicioCiclo(Date fechaInicioCiclo) {
+		this.fechaInicioCiclo = fechaInicioCiclo;
+	}
+	public Date getFechaCreacionFicheroTrabas() {
+		return fechaCreacionFicheroTrabas;
+	}
+	public void setFechaCreacionFicheroTrabas(Date fechaCreacionFicheroTrabas) {
+		this.fechaCreacionFicheroTrabas = fechaCreacionFicheroTrabas;
+	}
+	public String getIndicadorTipoFichero() {
+		return indicadorTipoFichero;
+	}
+	public void setIndicadorTipoFichero(String indicadorTipoFichero) {
+		this.indicadorTipoFichero = indicadorTipoFichero;
 	}
 	public Integer getCodigoError1() {
 		return codigoError1;

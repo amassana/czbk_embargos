@@ -42,7 +42,7 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 	private InformationPetitionAuditRepository informationPetitionAuditRepository;
 
 	@Override
-	public PetitionCaseDTO getByCodeInformationPetition(String codeInformationPetition) {
+	public PetitionCaseDTO getByCodeInformationPetition(Long codeInformationPetition) {
 
 		Optional<PeticionInformacion> peticionInformacionOpt = informationPetitionRepository.findById(codeInformationPetition);
 		
@@ -55,7 +55,7 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 		PeticionInformacion peticionInformacion = peticionInformacionOpt.get();
 			
 		
-		return informationPetitionMapper.toInformationPetitionDTO(peticionInformacion, "02", "Activa");
+		return informationPetitionMapper.toInformationPetitionDTO(peticionInformacion);
 	}
 	
 //	@Override
@@ -166,7 +166,7 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 		
 		List<PetitionCaseDTO> informationPetitionDTOList = new ArrayList<>();
 		for(PeticionInformacion peticionInformacion : peticionInformacionList) {
-			PetitionCaseDTO informationPetition = informationPetitionMapper.toInformationPetitionDTO(peticionInformacion, "02", "Activa");
+			PetitionCaseDTO informationPetition = informationPetitionMapper.toInformationPetitionDTO(peticionInformacion);
 		
 			informationPetitionDTOList.add(informationPetition);
 		}
@@ -196,7 +196,7 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 	}
 	
 	@Override
-	public boolean savePetitionCase(Long codeFileControl, String codePetitionCase, PetitionCaseDTO petitionCase, String userModif) {
+	public boolean savePetitionCase(Long codeFileControl, Long codePetitionCase, PetitionCaseDTO petitionCase, String userModif) {
 
 		
 		Optional<PeticionInformacion> peticionInformacionOpt = informationPetitionRepository.findById(codePetitionCase);
@@ -253,7 +253,7 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 	}
 
 	@Override
-	public List<PetitionCaseDTO> getAuditByCodeInformationPetition(String codeInformationPetition) {
+	public List<PetitionCaseDTO> getAuditByCodeInformationPetition(Long codeInformationPetition) {
 
 		List<HPeticionInformacion> hPeticionInformacionList = informationPetitionAuditRepository.findByCodPeticion(codeInformationPetition);
 		

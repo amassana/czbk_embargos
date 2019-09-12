@@ -3,7 +3,7 @@ package es.commerzbank.ice.embargos.formats.aeat.diligencias;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class Diligencia {
+public class DiligenciaFase3 {
 
 	private String indicadorRegistro;
 	private String nifDeudor;

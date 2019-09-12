@@ -10,9 +10,9 @@
 		<property name="length" value="15" />
 	</typeHandler>
 
-	<stream name="diligencias" format="fixedlength">
+	<stream name="diligenciasFase3" format="fixedlength">
 		<record name="entidadTransmisora"
-			class="es.commerzbank.ice.embargos.formats.aeat.diligencias.EntidadTransmisora">
+			class="es.commerzbank.ice.embargos.formats.aeat.diligencias.EntidadTransmisoraFase3">
 			<field name="indicadorRegistro" rid="true" literal="0" />
 			<field name="delegacionAgenciaEmisora" length="2" />
 			<field name="codigoEntidadTransmisora" length="4" />
@@ -23,7 +23,7 @@
 			<field name="posicionesLibres" length="476" ignore="true" />
 		</record>
 		<record name="entidadCredito"
-			class="es.commerzbank.ice.embargos.formats.aeat.diligencias.EntidadCredito">
+			class="es.commerzbank.ice.embargos.formats.aeat.diligencias.EntidadCreditoFase3">
 			<field name="indicadorRegistro" rid="true" literal="1" />
 			<field name="delegacionAgenciaEmisora" length="2" />
 			<field name="codigoEntidadCredito" type="int" length="4" />
@@ -39,7 +39,7 @@
 			<field name="posicionesLibres" length="330" ignore="true" />
 		</record>
 		<record name="diligencia"
-			class="es.commerzbank.ice.embargos.formats.aeat.diligencias.Diligencia">
+			class="es.commerzbank.ice.embargos.formats.aeat.diligencias.DiligenciaFase3">
 			<field name="indicadorRegistro" rid="true" literal="2" />
 			<field name="nifDeudor" length="9" />
 			<field name="nombreDeudor" length="40" />
@@ -67,7 +67,7 @@
 			<field name="posicionesLibres" length="232" ignore="true" />
 		</record>
 		<record name="finEntidadCredito"
-			class="es.commerzbank.ice.embargos.formats.aeat.diligencias.FinEntidadCredito">
+			class="es.commerzbank.ice.embargos.formats.aeat.diligencias.FinEntidadCreditoFase3">
 			<field name="indicadorRegistro" rid="true" literal="3" />
 			<field name="delegacionAgenciaEmisora" length="2" />
 			<field name="codigoEntidadCredito" type="int" length="4" />
@@ -77,7 +77,7 @@
 			<field name="posicionesLibres" length="468" ignore="true" />
 		</record>
 		<record name="finEntidadTransmisora"
-			class="es.commerzbank.ice.embargos.formats.aeat.diligencias.FinEntidadTransmisora">
+			class="es.commerzbank.ice.embargos.formats.aeat.diligencias.FinEntidadTransmisoraFase3">
 			<field name="indicadorRegistro" rid="true" literal="8" />
 			<field name="codigoEntidadTransmisora" length="4" />
 			<field name="fechaCreacionFicheroTransmision" type="date" length="8"
@@ -85,7 +85,7 @@
 			<field name="posicionesLibres" length="487" ignore="true" />
 		</record>
 		<record name="registroControlEntidadTransmisora" minOccurs="1" maxOccurs="1"
-			class="es.commerzbank.ice.embargos.formats.aeat.diligencias.RegistroControlEntidadTransmisora">
+			class="es.commerzbank.ice.embargos.formats.aeat.diligencias.RegistroControlEntidadTransmisoraFase3">
 			<field name="indicadorRegistro" rid="true" literal="9" />
 			<field name="delegacionAgenciaEmisora" length="2" />
 			<field name="codigoEntidadTransmisora" length="4" />
@@ -105,11 +105,11 @@
 		</record>
 	</stream>
 
-	<stream name="trabas" format="fixedlength">
+	<stream name="trabasFase4" format="fixedlength">
 		<record name="entidadTransmisora"
-			class="es.commerzbank.ice.embargos.formats.aeat.trabas.EntidadTransmisora">
+			class="es.commerzbank.ice.embargos.formats.aeat.trabas.EntidadTransmisoraFase4">
 			<field name="indicadorRegistro" rid="true" literal="0" />
-			<field name="delegacionAgenciaReceptora" type="int" length="2" />
+			<field name="delegacionAgenciaReceptora" type="int" length="2" justify="right" padding="0" />
 			<field name="codigoEntidadTransmisora" length="4" />
 			<field name="fechaInicioCiclo" type="date" length="8" format="yyyyMMdd" />
 			<field name="fechaCreacionFicheroTrabas" type="date" length="8"
@@ -118,10 +118,10 @@
 			<field name="posicionesLibres" length="376" ignore="true" />
 		</record>
 		<record name="entidadCredito"
-			class="es.commerzbank.ice.embargos.formats.aeat.trabas.EntidadCredito">
+			class="es.commerzbank.ice.embargos.formats.aeat.trabas.EntidadCreditoFase4">
 			<field name="indicadorRegistro" rid="true" literal="1" />
-			<field name="delegacionAgenciaReceptora" type="int" length="2" />
-			<field name="codigoEntidadCredito" type="int" length="4" />
+			<field name="delegacionAgenciaReceptora" type="int" length="2" justify="right" padding="0" />
+			<field name="codigoEntidadCredito" type="int" length="4" justify="right" padding="0"  />
 			<field name="numeroEnvio" type="int" length="8" />
 			<field name="fechaCreacionFicheroTrabas" type="date" length="8"
 				format="yyyyMMdd" />
@@ -131,7 +131,7 @@
 			<field name="posicionesLibres" length="371" ignore="true" />
 		</record>
 		<record name="traba"
-			class="es.commerzbank.ice.embargos.formats.aeat.trabas.Traba">
+			class="es.commerzbank.ice.embargos.formats.aeat.trabas.TrabaFase4">
 			<field name="indicadorRegistro" rid="true" literal="2" />
 			<field name="nifDeudor" length="9" />
 			<field name="nombreDeudor" length="40" />
@@ -172,7 +172,86 @@
 			<field name="importeTrabadoCC6" typeHandler="importe" length="15"/>
 		</record>
 		<record name="finEntidadCredito"
-			class="es.commerzbank.ice.embargos.formats.aeat.trabas.FinEntidadCredito">
+			class="es.commerzbank.ice.embargos.formats.aeat.trabas.FinEntidadCreditoFase4">
+			<field name="indicadorRegistro" rid="true" literal="3" />
+			<field name="delegacionAgenciaReceptora" type="int" length="2" justify="right" padding="0" />
+			<field name="codigoEntidadCredito" type="int" length="4" justify="right" padding="0" />
+			<field name="numeroDiligenciasIncluidasEnvio" type="int" length="6" justify="right" padding="0" />
+			<field name="importeTotalAEmbargar" typeHandler="importe" length="15" />
+			<field name="importeTotalTrabado" typeHandler="importe" length="15" />
+			<field name="codigoEntidadTransmisora" length="4" />
+			<field name="posicionesLibres" length="353" ignore="true" />
+		</record>
+		<record name="finEntidadTransmisora"
+			class="es.commerzbank.ice.embargos.formats.aeat.trabas.FinEntidadTransmisoraFase4">
+			<field name="indicadorRegistro" rid="true" literal="8" />
+			<field name="codigoEntidadTransmisora" length="4" />
+			<field name="fechaCreacionFicheroTrabas" type="date" length="8"
+				format="yyyyMMdd" />
+			<field name="posicionesLibres" length="387" ignore="true" />
+		</record>
+	</stream>
+	
+	<stream name="levantamientoTrabasFase5" format="fixedlength">
+		<record name="entidadTransmisora"
+			class="es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.EntidadTransmisoraFase5">
+			<field name="indicadorRegistro" rid="true" literal="0" />
+			<field name="delegacionAgenciaReceptora" type="int" length="2" />
+			<field name="codigoEntidadTransmisora" length="4" />
+			<field name="fechaInicioCiclo" type="date" length="8" format="yyyyMMdd" />
+			<field name="fechaCreacionFicheroTrabas" type="date" length="8"
+				format="yyyyMMdd" />
+			<field name="indicadorTipoFichero" length="1" />
+			<field name="posicionesLibres" length="376" ignore="true" />
+		</record>
+		<record name="entidadCredito"
+			class="es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.EntidadCreditoFase5">
+			<field name="indicadorRegistro" rid="true" literal="1" />
+			<field name="delegacionAgenciaReceptora" type="int" length="2" />
+			<field name="codigoEntidadCredito" type="int" length="4" />
+			<field name="numeroEnvio" type="int" length="8" />
+			<field name="fechaCreacionFicheroLevantamientoTrabas" type="date" length="8"
+				format="yyyyMMdd" />
+			<field name="indicadorTipoFichero" length="1" />
+			<field name="codigoEntidadTransmisora" length="4" />
+			<field name="indicadorMoneda" length="1" />
+			<field name="posicionesLibres" length="371" ignore="true" />
+		</record>
+		<record name="traba"
+			class="es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.TrabaFase5">
+			<field name="indicadorRegistro" rid="true" literal="2" />
+			<field name="nifDeudor" length="9" />
+			<field name="nombreDeudor" length="40" />
+			<field name="posicionesLibres" length="56" ignore="true" />
+			<field name="numeroDiligenciaEmbargo" length="13" />
+			<field name="importeTotalAEmbargar" typeHandler="importe" length="15" />
+			<field name="fechaGeneracionDiligencia" type="date" length="8" format="yyyyMMdd" />
+			<field name="importeTotalTrabado" typeHandler="importe" length="15" />
+			<field name="posicionesLibres" length="1" ignore="true" />			
+			<field name="fechaTraba" type="date" length="8" format="yyyyMMdd" />
+			<field name="fechaLimiteIngresoImporteTrabado" type="date" length="8" format="yyyyMMdd" />
+			<field name="codigoCuentaCliente1" length="20" />
+			<field name="codigoTipoLevantamientoEmbargoCC1" type="int" length="2" />
+			<field name="importeALevantarCC1" typeHandler="importe" length="15" />
+			<field name="codigoCuentaCliente2" length="20" />
+			<field name="codigoTipoLevantamientoEmbargoCC2" type="int" length="2" />
+			<field name="importeALevantarCC2" typeHandler="importe" length="15" />
+			<field name="codigoCuentaCliente3" length="20" />
+			<field name="codigoTipoLevantamientoEmbargoCC3" type="int" length="2" />
+			<field name="importeALevantarCC3" typeHandler="importe" length="15" />
+			<field name="codigoCuentaCliente4" length="20" />
+			<field name="codigoTipoLevantamientoEmbargoCC4" type="int" length="2" />
+			<field name="importeALevantarCC4" typeHandler="importe" length="15" />
+			<field name="codigoCuentaCliente5" length="20" />
+			<field name="codigoTipoLevantamientoEmbargoCC5" type="int" length="2" />
+			<field name="importeALevantarCC5" typeHandler="importe" length="15" />
+			<field name="codigoCuentaCliente6" length="20" />
+			<field name="codigoTipoLevantamientoEmbargoCC6" type="int" length="2" />
+			<field name="importeALevantarCC6" typeHandler="importe" length="15" />
+			<field name="posicionesLibres" length="4" ignore="true" />
+		</record>
+		<record name="finEntidadCredito"
+			class="es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.FinEntidadCreditoFase5">
 			<field name="indicadorRegistro" rid="true" literal="3" />
 			<field name="delegacionAgenciaReceptora" type="int" length="2" />
 			<field name="codigoEntidadCredito" type="int" length="4" />
@@ -183,18 +262,32 @@
 			<field name="posicionesLibres" length="353" ignore="true" />
 		</record>
 		<record name="finEntidadTransmisora"
-			class="es.commerzbank.ice.embargos.formats.aeat.trabas.FinEntidadTransmisora">
+			class="es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.FinEntidadTransmisoraFase5">
 			<field name="indicadorRegistro" rid="true" literal="8" />
 			<field name="codigoEntidadTransmisora" length="4" />
-			<field name="fechaCreacionFicheroTrabas" type="date" length="8"
+			<field name="fechaCreacionFicheroLevantamientoTrabas" type="date" length="8"
 				format="yyyyMMdd" />
 			<field name="posicionesLibres" length="387" ignore="true" />
 		</record>
+		<record name="registroControlEntidadTransmisora" minOccurs="1" maxOccurs="1"
+			class="es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.RegistroControlEntidadTransmisoraFase5">
+			<field name="indicadorRegistro" rid="true" literal="9" />
+			<field name="delegacionAgenciaReceptora" type="int" length="2" />
+			<field name="codigoEntidadTransmisora" length="4" />
+			<field name="fechaInicioCiclo" type="date" length="8" format="yyyyMMdd" />
+			<field name="posicionesLibres" length="9" ignore="true" />
+			<field name="numeroEntidadesCreditoIncluidas" type="int" length="3" />
+			<field name="indicadorEstadoLevantamientos" length="1" />
+			<field name="posicionesLibres" length="16" ignore="true" />
+			<field name="fechaAltaRegistro" type="date" length="8" format="yyyyMMdd" />
+			<field name="horaAltaRegistro" length="7" />
+			<field name="posicionesLibres" length="341" ignore="true" />
+		</record>
 	</stream>
 	
-	<stream name="resultadoValidacionTrabas" format="fixedlength">
+	<stream name="resultadoValidacionTrabasFase4" format="fixedlength">
 		<record name="entidadTransmisora"
-			class="es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.EntidadTransmisora">
+			class="es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.EntidadTransmisoraValidacionFase4">
 			<field name="indicadorRegistro" rid="true" literal="0" />
 			<field name="delegacionAgenciaTransmisora" type="int" length="2" />
 			<field name="codigoEntidadTransmisora" length="4" />
@@ -245,7 +338,7 @@
 			<field name="numeroCampoError20" type="int" length="2" />
 		</record>
 		<record name="entidadCredito"
-			class="es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.EntidadCredito">
+			class="es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.EntidadCreditoValidacionFase4">
 			<field name="indicadorRegistro" rid="true" literal="1" />
 			<field name="delegacionAgenciaEmisora" length="2" />
 			<field name="codigoEntidadCredito" type="int" length="4" />
@@ -299,7 +392,7 @@
 			<field name="numeroCampoError20" type="int" length="2" />
 		</record>
 		<record name="erroresTraba"
-			class="es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.ErroresTraba">
+			class="es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.ErroresTrabaValidacionFase4">
 			<field name="indicadorRegistro" rid="true" literal="2" />
 			<field name="nifDeudor" length="9" />
 			<field name="posicionesLibres" length="96" ignore="true" />
@@ -371,7 +464,7 @@
 			<field name="numeroCampoError20" type="int" length="2" />
 		</record>
 		<record name="finEntidadCredito"
-			class="es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.FinEntidadCredito">
+			class="es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.FinEntidadCreditoValidacionFase4">
 			<field name="indicadorRegistro" rid="true" literal="3" />
 			<field name="delegacionAgenciaEmisora" length="2" />
 			<field name="codigoEntidadCredito" type="int" length="4" />
@@ -422,7 +515,7 @@
 			<field name="numeroCampoError20" type="int" length="2" />
 		</record>
 		<record name="finEntidadTransmisora"
-			class="es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.FinEntidadTransmisora">
+			class="es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.FinEntidadTransmisoraValidacionFase4">
 			<field name="indicadorRegistro" rid="true" literal="8" />
 			<field name="codigoEntidadTransmisora" length="4" />
 			<field name="fechaProcesoValidacion" type="date" length="8"
@@ -470,7 +563,7 @@
 			<field name="numeroCampoError20" type="int" length="2" />
 		</record>
 		<record name="registroControlEntidadTransmisora" minOccurs="1" maxOccurs="1"
-			class="es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.RegistroControlEntidadTransmisora">
+			class="es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.RegistroControlEntidadTransmisoraValidacionFase4">
 			<field name="indicadorRegistro" rid="true" literal="9" />
 			<field name="delegacionAgenciaEmisora" length="2" />
 			<field name="codigoEntidadTransmisora" length="4" />
@@ -487,99 +580,6 @@
 			<field name="fechaAltaRegistro" type="date" length="8" format="yyyyMMdd" />
 			<field name="horaAltaRegistro" length="7" />
 			<field name="posicionesLibres" length="441" ignore="true" />
-		</record>
-	</stream>
-	
-	<stream name="levantamientoTrabas" format="fixedlength">
-		<record name="entidadTransmisora"
-			class="es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.EntidadTransmisora">
-			<field name="indicadorRegistro" rid="true" literal="0" />
-			<field name="delegacionAgenciaReceptora" type="int" length="2" />
-			<field name="codigoEntidadTransmisora" length="4" />
-			<field name="fechaInicioCiclo" type="date" length="8" format="yyyyMMdd" />
-			<field name="fechaCreacionFicheroTrabas" type="date" length="8"
-				format="yyyyMMdd" />
-			<field name="indicadorTipoFichero" length="1" />
-			<field name="posicionesLibres" length="376" ignore="true" />
-		</record>
-		<record name="entidadCredito"
-			class="es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.EntidadCredito">
-			<field name="indicadorRegistro" rid="true" literal="1" />
-			<field name="delegacionAgenciaReceptora" type="int" length="2" />
-			<field name="codigoEntidadCredito" type="int" length="4" />
-			<field name="numeroEnvio" type="int" length="8" />
-			<field name="fechaCreacionFicheroLevantamientoTrabas" type="date" length="8"
-				format="yyyyMMdd" />
-			<field name="indicadorTipoFichero" length="1" />
-			<field name="codigoEntidadTransmisora" length="4" />
-			<field name="indicadorMoneda" length="1" />
-			<field name="posicionesLibres" length="371" ignore="true" />
-		</record>
-		<record name="traba"
-			class="es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.Traba">
-			<field name="indicadorRegistro" rid="true" literal="2" />
-			<field name="nifDeudor" length="9" />
-			<field name="nombreDeudor" length="40" />
-			<field name="posicionesLibres" length="56" ignore="true" />
-			<field name="numeroDiligenciaEmbargo" length="13" />
-			<field name="importeTotalAEmbargar" typeHandler="importe" length="15" />
-			<field name="fechaGeneracionDiligencia" type="date" length="8" format="yyyyMMdd" />
-			<field name="importeTotalTrabado" typeHandler="importe" length="15" />
-			<field name="posicionesLibres" length="1" ignore="true" />			
-			<field name="fechaTraba" type="date" length="8" format="yyyyMMdd" />
-			<field name="fechaLimiteIngresoImporteTrabado" type="date" length="8" format="yyyyMMdd" />
-			<field name="codigoCuentaCliente1" length="20" />
-			<field name="codigoTipoLevantamientoEmbargoCC1" type="int" length="2" />
-			<field name="importeALevantarCC1" typeHandler="importe" length="15" />
-			<field name="codigoCuentaCliente2" length="20" />
-			<field name="codigoTipoLevantamientoEmbargoCC2" type="int" length="2" />
-			<field name="importeALevantarCC2" typeHandler="importe" length="15" />
-			<field name="codigoCuentaCliente3" length="20" />
-			<field name="codigoTipoLevantamientoEmbargoCC3" type="int" length="2" />
-			<field name="importeALevantarCC3" typeHandler="importe" length="15" />
-			<field name="codigoCuentaCliente4" length="20" />
-			<field name="codigoTipoLevantamientoEmbargoCC4" type="int" length="2" />
-			<field name="importeALevantarCC4" typeHandler="importe" length="15" />
-			<field name="codigoCuentaCliente5" length="20" />
-			<field name="codigoTipoLevantamientoEmbargoCC5" type="int" length="2" />
-			<field name="importeALevantarCC5" typeHandler="importe" length="15" />
-			<field name="codigoCuentaCliente6" length="20" />
-			<field name="codigoTipoLevantamientoEmbargoCC6" type="int" length="2" />
-			<field name="importeALevantarCC6" typeHandler="importe" length="15" />
-			<field name="posicionesLibres" length="4" ignore="true" />
-		</record>
-		<record name="finEntidadCredito"
-			class="es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.FinEntidadCredito">
-			<field name="indicadorRegistro" rid="true" literal="3" />
-			<field name="delegacionAgenciaReceptora" type="int" length="2" />
-			<field name="codigoEntidadCredito" type="int" length="4" />
-			<field name="numeroDiligenciasIncluidasEnvio" type="int" length="6" />
-			<field name="importeTotalAEmbargar" typeHandler="importe" length="15" />
-			<field name="importeTotalTrabado" typeHandler="importe" length="15" />
-			<field name="codigoEntidadTransmisora" length="4" />
-			<field name="posicionesLibres" length="353" ignore="true" />
-		</record>
-		<record name="finEntidadTransmisora"
-			class="es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.FinEntidadTransmisora">
-			<field name="indicadorRegistro" rid="true" literal="8" />
-			<field name="codigoEntidadTransmisora" length="4" />
-			<field name="fechaCreacionFicheroLevantamientoTrabas" type="date" length="8"
-				format="yyyyMMdd" />
-			<field name="posicionesLibres" length="387" ignore="true" />
-		</record>
-		<record name="registroControlEntidadTransmisora" minOccurs="1" maxOccurs="1"
-			class="es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.RegistroControlEntidadTransmisora">
-			<field name="indicadorRegistro" rid="true" literal="9" />
-			<field name="delegacionAgenciaReceptora" type="int" length="2" />
-			<field name="codigoEntidadTransmisora" length="4" />
-			<field name="fechaInicioCiclo" type="date" length="8" format="yyyyMMdd" />
-			<field name="posicionesLibres" length="9" ignore="true" />
-			<field name="numeroEntidadesCreditoIncluidas" type="int" length="3" />
-			<field name="indicadorEstadoLevantamientos" length="1" />
-			<field name="posicionesLibres" length="16" ignore="true" />
-			<field name="fechaAltaRegistro" type="date" length="8" format="yyyyMMdd" />
-			<field name="horaAltaRegistro" length="7" />
-			<field name="posicionesLibres" length="341" ignore="true" />
 		</record>
 	</stream>
 	

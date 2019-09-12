@@ -3,9 +3,9 @@ package es.commerzbank.ice.embargos.formats.aeat.trabas;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class Traba {
+public class TrabaFase4 {
 
-	private String indicadorRegistro;;
+	private String indicadorRegistro;
 	private String nifDeudor;
 	private String nombreDeudor;
 	private String siglasViaPublica;

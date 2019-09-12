@@ -1,10 +1,9 @@
-package es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas;
+package es.commerzbank.ice.embargos.formats.aeat.trabas;
 
 import java.math.BigDecimal;
 
-public class FinEntidadCredito {
+public class FinEntidadCreditoFase4 {
 
-	
 	private String indicadorRegistro;
 	private Integer delegacionAgenciaReceptora;
 	private Integer codigoEntidadCredito;
@@ -55,6 +54,6 @@ public class FinEntidadCredito {
 	public void setCodigoEntidadTransmisora(String codigoEntidadTransmisora) {
 		this.codigoEntidadTransmisora = codigoEntidadTransmisora;
 	}
-		
+
 	
 }

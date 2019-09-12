@@ -1,15 +1,16 @@
-package es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas;
+package es.commerzbank.ice.embargos.formats.aeat.diligencias;
 
 import java.util.Date;
 
-public class RegistroControlEntidadTransmisora {
-	
+public class RegistroControlEntidadTransmisoraFase3 {
+
 	private String indicadorRegistro;
-	private Integer delegacionAgenciaReceptora;
+	private String delegacionAgenciaEmisora;
 	private String codigoEntidadTransmisora;
 	private Date fechaInicioCiclo;
 	private Integer numeroEntidadesCreditoIncluidas;
-	private String indicadorEstadoLevantamientos;
+	private String indicadorEstadoDiligencias;
+	private String estadoGeneralEntidadTransmisora;
 	private Date fechaAltaRegistro;
 	private String horaAltaRegistro;
 	
@@ -19,11 +20,11 @@ public class RegistroControlEntidadTransmisora {
 	public void setIndicadorRegistro(String indicadorRegistro) {
 		this.indicadorRegistro = indicadorRegistro;
 	}
-	public Integer getDelegacionAgenciaReceptora() {
-		return delegacionAgenciaReceptora;
+	public String getDelegacionAgenciaEmisora() {
+		return delegacionAgenciaEmisora;
 	}
-	public void setDelegacionAgenciaReceptora(Integer delegacionAgenciaReceptora) {
-		this.delegacionAgenciaReceptora = delegacionAgenciaReceptora;
+	public void setDelegacionAgenciaEmisora(String delegacionAgenciaEmisora) {
+		this.delegacionAgenciaEmisora = delegacionAgenciaEmisora;
 	}
 	public String getCodigoEntidadTransmisora() {
 		return codigoEntidadTransmisora;
@@ -43,11 +44,17 @@ public class RegistroControlEntidadTransmisora {
 	public void setNumeroEntidadesCreditoIncluidas(Integer numeroEntidadesCreditoIncluidas) {
 		this.numeroEntidadesCreditoIncluidas = numeroEntidadesCreditoIncluidas;
 	}
-	public String getIndicadorEstadoLevantamientos() {
-		return indicadorEstadoLevantamientos;
+	public String getIndicadorEstadoDiligencias() {
+		return indicadorEstadoDiligencias;
 	}
-	public void setIndicadorEstadoLevantamientos(String indicadorEstadoLevantamientos) {
-		this.indicadorEstadoLevantamientos = indicadorEstadoLevantamientos;
+	public void setIndicadorEstadoDiligencias(String indicadorEstadoDiligencias) {
+		this.indicadorEstadoDiligencias = indicadorEstadoDiligencias;
+	}
+	public String getEstadoGeneralEntidadTransmisora() {
+		return estadoGeneralEntidadTransmisora;
+	}
+	public void setEstadoGeneralEntidadTransmisora(String estadoGeneralEntidadTransmisora) {
+		this.estadoGeneralEntidadTransmisora = estadoGeneralEntidadTransmisora;
 	}
 	public Date getFechaAltaRegistro() {
 		return fechaAltaRegistro;
@@ -61,5 +68,6 @@ public class RegistroControlEntidadTransmisora {
 	public void setHoraAltaRegistro(String horaAltaRegistro) {
 		this.horaAltaRegistro = horaAltaRegistro;
 	}
+	
 	
 }

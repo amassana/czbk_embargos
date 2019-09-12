@@ -1,6 +1,7 @@
 package es.commerzbank.ice.embargos.domain.mapper;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,8 +23,16 @@ import es.commerzbank.ice.embargos.domain.entity.Embargo;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
 import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
 import es.commerzbank.ice.embargos.domain.entity.Traba;
-import es.commerzbank.ice.embargos.formats.aeat.diligencias.Diligencia;
-import es.commerzbank.ice.embargos.formats.aeat.diligencias.EntidadCredito;
+import es.commerzbank.ice.embargos.formats.aeat.diligencias.DiligenciaFase3;
+import es.commerzbank.ice.embargos.formats.aeat.diligencias.EntidadCreditoFase3;
+import es.commerzbank.ice.embargos.formats.aeat.diligencias.EntidadTransmisoraFase3;
+import es.commerzbank.ice.embargos.formats.aeat.diligencias.FinEntidadCreditoFase3;
+import es.commerzbank.ice.embargos.formats.aeat.diligencias.FinEntidadTransmisoraFase3;
+import es.commerzbank.ice.embargos.formats.aeat.trabas.EntidadCreditoFase4;
+import es.commerzbank.ice.embargos.formats.aeat.trabas.EntidadTransmisoraFase4;
+import es.commerzbank.ice.embargos.formats.aeat.trabas.FinEntidadCreditoFase4;
+import es.commerzbank.ice.embargos.formats.aeat.trabas.FinEntidadTransmisoraFase4;
+import es.commerzbank.ice.embargos.formats.aeat.trabas.TrabaFase4;
 import es.commerzbank.ice.utils.EmbargosConstants;
 import es.commerzbank.ice.utils.ICEDateUtils;
 
@@ -32,29 +41,29 @@ public abstract class AEATMapper {
 
 	
 	@Mappings({
-		@Mapping(source = "diligencia.nifDeudor", target = "nif"),
-		@Mapping(source = "diligencia.nombreDeudor", target = "nombre"),
-		@Mapping(source = "diligencia.siglasViaPublica", target = "siglasVp"),
-		@Mapping(source = "diligencia.nombreViaPublica", target = "nombreVp"),
-		@Mapping(source = "diligencia.numeroPortal", target = "numero"),
-		@Mapping(source = "diligencia.letraPortal", target = "letra"),
-		@Mapping(source = "diligencia.escalera", target = "escalera"),
-		@Mapping(source = "diligencia.piso", target = "piso"),
-		@Mapping(source = "diligencia.puerta", target = "puerta"),
-		@Mapping(source = "diligencia.nombreMunicipio", target = "municipio"),
-		@Mapping(source = "diligencia.codigoPostal", target = "codigoPostal"),
-		@Mapping(source = "diligencia.numeroDiligenciaEmbargo", target = "numeroEmbargo"),
-		@Mapping(source = "diligencia.importeTotalAEmbargar", target = "importe"),
+		@Mapping(source = "diligenciaFase3.nifDeudor", target = "nif"),
+		@Mapping(source = "diligenciaFase3.nombreDeudor", target = "nombre"),
+		@Mapping(source = "diligenciaFase3.siglasViaPublica", target = "siglasVp"),
+		@Mapping(source = "diligenciaFase3.nombreViaPublica", target = "nombreVp"),
+		@Mapping(source = "diligenciaFase3.numeroPortal", target = "numero"),
+		@Mapping(source = "diligenciaFase3.letraPortal", target = "letra"),
+		@Mapping(source = "diligenciaFase3.escalera", target = "escalera"),
+		@Mapping(source = "diligenciaFase3.piso", target = "piso"),
+		@Mapping(source = "diligenciaFase3.puerta", target = "puerta"),
+		@Mapping(source = "diligenciaFase3.nombreMunicipio", target = "municipio"),
+		@Mapping(source = "diligenciaFase3.codigoPostal", target = "codigoPostal"),
+		@Mapping(source = "diligenciaFase3.numeroDiligenciaEmbargo", target = "numeroEmbargo"),
+		@Mapping(source = "diligenciaFase3.importeTotalAEmbargar", target = "importe"),
 		@Mapping(source = "codControlFicheroEmbargo", target = "controlFichero.codControlFichero"),
 		@Mapping(source = "entidadOrdenante", target = "entidadesOrdenante"),
 		@Mapping(source = "razonSocialInterna", target = "razonSocialInterna"),
 	})
-	public abstract Embargo generateEmbargo(Diligencia diligencia, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante, 
-			String razonSocialInterna, EntidadCredito entidadCredito, Map<String, AccountDTO> customerAccountsMap);
+	public abstract Embargo generateEmbargo(DiligenciaFase3 diligenciaFase3, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante, 
+			String razonSocialInterna, EntidadCreditoFase3 entidadCreditoFase3, Map<String, AccountDTO> customerAccountsMap);
 	
 	@AfterMapping
-	public void generateEmbargoAfterMapping(@MappingTarget Embargo embargo, Diligencia diligencia, EntidadesOrdenante entidadOrdenante, 
-			EntidadCredito entidadCredito, Map<String, AccountDTO> customerAccountsMap) {
+	public void generateEmbargoAfterMapping(@MappingTarget Embargo embargo, DiligenciaFase3 diligenciaFase3, EntidadesOrdenante entidadOrdenante, 
+			EntidadCreditoFase3 entidadCreditoFase3, Map<String, AccountDTO> customerAccountsMap) {
 		
 		List<CuentaEmbargo> cuentaEmbargosList = new ArrayList<>();
 		
@@ -64,19 +73,11 @@ public abstract class AEATMapper {
 		String usuarioModif = EmbargosConstants.USER_AUTOMATICO;
 		
 		//seteo de datregcomdet:
-		embargo.setDatregcomdet(entidadCredito!=null ? entidadCredito.getMensajeInformativoParaDeudor() : null);
+		embargo.setDatregcomdet(entidadCreditoFase3!=null ? entidadCreditoFase3.getMensajeInformativoParaDeudor() : null);
 				
 		//Determinacion de la fecha limite de la traba:
-		Date fechaGeneracionDiligencia = diligencia.getFechaGeneracionDiligencia();
-		BigDecimal diasRespuestaFase3 = new BigDecimal(0);
-		if (entidadOrdenante!=null && entidadOrdenante.getEntidadesComunicadora()!=null && entidadOrdenante.getEntidadesComunicadora().getDiasRespuestaF3()!=null) {
-			diasRespuestaFase3 = entidadOrdenante.getEntidadesComunicadora().getDiasRespuestaF3();
-		}       				
-		BigDecimal fechaLimiteTraba = null;
-		if (fechaGeneracionDiligencia!=null) {
-			Date fechaLimiteTrabaDate = DateUtils.convertToDate(DateUtils.convertToLocalDate(fechaGeneracionDiligencia).plusDays(diasRespuestaFase3.longValue()));
-			fechaLimiteTraba = ICEDateUtils.dateToBigDecimal(fechaLimiteTrabaDate, ICEDateUtils.FORMAT_yyyyMMdd);
-		}
+		Date fechaGeneracionDiligencia = diligenciaFase3.getFechaGeneracionDiligencia();
+		BigDecimal fechaLimiteTraba = determineFechaLimiteTraba(entidadOrdenante, fechaGeneracionDiligencia);
 		embargo.setFechaLimiteTraba(fechaLimiteTraba);
 		
 		//Fecha de generacion:
@@ -87,9 +88,9 @@ public abstract class AEATMapper {
 		//Datos cuenta cliente 1:
 		CuentaEmbargo cuentaEmbargo = null;
 		
-		if (diligencia.getCodigoCuentaCliente1()!=null && !diligencia.getCodigoCuentaCliente1().isEmpty()) {
+		if (diligenciaFase3.getCodigoCuentaCliente1()!=null && !diligenciaFase3.getCodigoCuentaCliente1().isEmpty()) {
 			
-			AccountDTO accountDTO = customerAccountsMap.get(diligencia.getCodigoCuentaCliente1());
+			AccountDTO accountDTO = customerAccountsMap.get(diligenciaFase3.getCodigoCuentaCliente1());
 			
 			if (accountDTO!=null) {
 				cuentaEmbargo = new CuentaEmbargo();
@@ -106,9 +107,9 @@ public abstract class AEATMapper {
 		}
 		
 		//Datos cuenta cliente 2:		
-		if (diligencia.getCodigoCuentaCliente2()!=null && !diligencia.getCodigoCuentaCliente2().isEmpty()) {
+		if (diligenciaFase3.getCodigoCuentaCliente2()!=null && !diligenciaFase3.getCodigoCuentaCliente2().isEmpty()) {
 			
-			AccountDTO accountDTO = customerAccountsMap.get(diligencia.getCodigoCuentaCliente2());
+			AccountDTO accountDTO = customerAccountsMap.get(diligenciaFase3.getCodigoCuentaCliente2());
 			
 			if (accountDTO!=null) {
 				cuentaEmbargo = new CuentaEmbargo();
@@ -125,9 +126,9 @@ public abstract class AEATMapper {
 		}
 		
 		//Datos cuenta cliente 3:	
-		if (diligencia.getCodigoCuentaCliente3()!=null && !diligencia.getCodigoCuentaCliente3().isEmpty()) {
+		if (diligenciaFase3.getCodigoCuentaCliente3()!=null && !diligenciaFase3.getCodigoCuentaCliente3().isEmpty()) {
 			
-			AccountDTO accountDTO = customerAccountsMap.get(diligencia.getCodigoCuentaCliente3());
+			AccountDTO accountDTO = customerAccountsMap.get(diligenciaFase3.getCodigoCuentaCliente3());
 			
 			if (accountDTO!=null) {
 				cuentaEmbargo = new CuentaEmbargo();
@@ -151,10 +152,10 @@ public abstract class AEATMapper {
 	}
 	
 
-	public abstract Traba generateTraba(Diligencia diligencia, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante, Map<String, AccountDTO> customerAccountsMap);
+	public abstract Traba generateTraba(DiligenciaFase3 diligenciaFase3, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante, Map<String, AccountDTO> customerAccountsMap);
 	
 	@AfterMapping
-	public void generateTrabaAfterMapping(@MappingTarget Traba traba, Diligencia diligencia, EntidadesOrdenante entidadOrdenante, Map<String, AccountDTO> customerAccountsMap) {
+	public void generateTrabaAfterMapping(@MappingTarget Traba traba, DiligenciaFase3 diligenciaFase3, EntidadesOrdenante entidadOrdenante, Map<String, AccountDTO> customerAccountsMap) {
 		
 		BigDecimal fechaUltmaModif = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
 		String usuarioModif = EmbargosConstants.USER_AUTOMATICO;
@@ -169,9 +170,13 @@ public abstract class AEATMapper {
 		
 		//Estado inicial de la traba al generarse:
 		EstadoTraba estadoTraba = new EstadoTraba();
-		estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_INICIAL);
+		estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE);
 		traba.setEstadoTraba(estadoTraba);
-		
+			
+		//Determinacion de la fecha limite de la traba:
+		Date fechaGeneracionDiligencia = diligenciaFase3.getFechaGeneracionDiligencia();
+		BigDecimal fechaLimiteTraba = determineFechaLimiteTraba(entidadOrdenante, fechaGeneracionDiligencia);
+		traba.setFechaLimite(fechaLimiteTraba);
 		
 		//CUENTAS TRABAS:
 		
@@ -182,9 +187,9 @@ public abstract class AEATMapper {
 		//Datos cuenta cliente 1:
 		CuentaTraba cuentaTraba = null;
 		
-		if (diligencia.getCodigoCuentaCliente1()!=null && !diligencia.getCodigoCuentaCliente1().isEmpty()) {
+		if (diligenciaFase3.getCodigoCuentaCliente1()!=null && !diligenciaFase3.getCodigoCuentaCliente1().isEmpty()) {
 			
-			AccountDTO accountDTO = customerAccountsMap.get(diligencia.getCodigoCuentaCliente1());
+			AccountDTO accountDTO = customerAccountsMap.get(diligenciaFase3.getCodigoCuentaCliente1());
 			
 			if (accountDTO!=null) {
 				cuentaTraba = new CuentaTraba();
@@ -194,7 +199,7 @@ public abstract class AEATMapper {
 				cuentaTraba.setDivisa(accountDTO.getDivisa());
 				cuentaTraba.setEstadoCuenta(accountDTO.getStatus());
 				estadoTraba = new EstadoTraba();
-				estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_INICIAL);
+				estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE);
 				cuentaTraba.setEstadoTraba(estadoTraba);
 				cuentaTraba.setOrigenEmb(EmbargosConstants.IND_FLAG_YES);
 				cuentaTraba.setNumeroOrdenCuenta(numeroOrden);
@@ -206,9 +211,9 @@ public abstract class AEATMapper {
 		}
 		
 		//Datos cuenta cliente 2:
-		if (diligencia.getCodigoCuentaCliente2()!=null && !diligencia.getCodigoCuentaCliente2().isEmpty()) {
+		if (diligenciaFase3.getCodigoCuentaCliente2()!=null && !diligenciaFase3.getCodigoCuentaCliente2().isEmpty()) {
 			
-			AccountDTO accountDTO = customerAccountsMap.get(diligencia.getCodigoCuentaCliente2());
+			AccountDTO accountDTO = customerAccountsMap.get(diligenciaFase3.getCodigoCuentaCliente2());
 			
 			if (accountDTO!=null) {
 				cuentaTraba = new CuentaTraba();
@@ -218,7 +223,7 @@ public abstract class AEATMapper {
 				cuentaTraba.setDivisa(accountDTO.getDivisa());
 				cuentaTraba.setEstadoCuenta(accountDTO.getStatus());
 				estadoTraba = new EstadoTraba();
-				estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_INICIAL);
+				estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE);
 				cuentaTraba.setEstadoTraba(estadoTraba);
 				cuentaTraba.setOrigenEmb(EmbargosConstants.IND_FLAG_YES);
 				cuentaTraba.setNumeroOrdenCuenta(numeroOrden);
@@ -230,9 +235,9 @@ public abstract class AEATMapper {
 		}
 		
 		//Datos cuenta cliente 3:
-		if (diligencia.getCodigoCuentaCliente3()!=null && !diligencia.getCodigoCuentaCliente3().isEmpty()) {
+		if (diligenciaFase3.getCodigoCuentaCliente3()!=null && !diligenciaFase3.getCodigoCuentaCliente3().isEmpty()) {
 			
-			AccountDTO accountDTO = customerAccountsMap.get(diligencia.getCodigoCuentaCliente3());
+			AccountDTO accountDTO = customerAccountsMap.get(diligenciaFase3.getCodigoCuentaCliente3());
 			
 			if (accountDTO!=null) {
 				cuentaTraba = new CuentaTraba();
@@ -242,7 +247,7 @@ public abstract class AEATMapper {
 				cuentaTraba.setDivisa(accountDTO.getDivisa());
 				cuentaTraba.setEstadoCuenta(accountDTO.getStatus());
 				estadoTraba = new EstadoTraba();
-				estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_INICIAL);
+				estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE);
 				cuentaTraba.setEstadoTraba(estadoTraba);
 				cuentaTraba.setOrigenEmb(EmbargosConstants.IND_FLAG_YES);
 				cuentaTraba.setNumeroOrdenCuenta(numeroOrden);
@@ -258,4 +263,81 @@ public abstract class AEATMapper {
 		traba.setUsuarioUltModificacion(usuarioModif);
 		traba.setFUltimaModificacion(fechaUltmaModif);
 	}
+
+	private BigDecimal determineFechaLimiteTraba(EntidadesOrdenante entidadOrdenante, Date fechaGeneracionDiligencia) {
+
+		BigDecimal fechaLimiteTraba = null;
+		BigDecimal diasRespuestaFase3 = new BigDecimal(0);
+		
+		//Sumar los dias de respuesta de la fase 3:
+		if (entidadOrdenante!=null && entidadOrdenante.getEntidadesComunicadora()!=null && entidadOrdenante.getEntidadesComunicadora().getDiasRespuestaF3()!=null) {
+			diasRespuestaFase3 = entidadOrdenante.getEntidadesComunicadora().getDiasRespuestaF3();
+		}       				
+		if (fechaGeneracionDiligencia!=null) {
+			Date fechaLimiteTrabaDate = DateUtils.convertToDate(DateUtils.convertToLocalDate(fechaGeneracionDiligencia).plusDays(diasRespuestaFase3.longValue()));
+			fechaLimiteTraba = ICEDateUtils.dateToBigDecimal(fechaLimiteTrabaDate, ICEDateUtils.FORMAT_yyyyMMdd);
+		}
+		
+		return fechaLimiteTraba;
+	}
+	
+	
+	// GENERACION FICHERO TRABAS:
+	
+	@Mappings({
+		@Mapping(source = "delegacionAgenciaEmisora", target = "delegacionAgenciaReceptora"),
+		@Mapping(expression = "java(new java.util.Date())", target="fechaCreacionFicheroTrabas")
+	})
+	public abstract EntidadTransmisoraFase4 generateEntidadTransmisoraFase4(EntidadTransmisoraFase3 entidadTransmisoraFase3);
+	
+	@Mappings({
+		@Mapping(source = "delegacionAgenciaEmisora", target = "delegacionAgenciaReceptora"),
+	})
+	public abstract EntidadCreditoFase4 generateEntidadCreditoFase4(EntidadCreditoFase3 entidadCreditoFase3);
+	
+	@Mappings({
+		@Mapping(constant = EmbargosConstants.CODIGO_REGISTRO_AEAT_TRABA_FASE4, target = "indicadorRegistro"),
+		@Mapping(source = "embargo.nif", target = "nifDeudor"),
+		@Mapping(source = "embargo.nombre", target = "nombreDeudor"),
+		@Mapping(source = "embargo.siglasVp", target = "siglasViaPublica"),
+		@Mapping(source = "embargo.nombreVp", target = "nombreViaPublica"),
+		@Mapping(source = "embargo.numero", target = "numeroPortal"),
+		@Mapping(source = "embargo.letra", target = "letraPortal"),
+		@Mapping(source = "embargo.escalera", target = "escalera"),
+		@Mapping(source = "embargo.piso", target = "piso"),
+		@Mapping(source = "embargo.puerta", target = "puerta"),
+		@Mapping(source = "embargo.municipio", target = "nombreMunicipio"),
+		@Mapping(source = "embargo.codigoPostal", target = "codigoPostal"),
+		@Mapping(source = "embargo.numeroEmbargo", target = "numeroDiligenciaEmbargo"),
+		@Mapping(source = "embargo.importe", target = "importeTotalAEmbargar"),
+		@Mapping(source = "traba.importeTrabado", target = "importeTotalTrabado"),
+		@Mapping(target = "fechaTraba", ignore=true),
+	})
+	public abstract TrabaFase4 generateTrabaFase4(Embargo embargo, Traba traba, List<CuentaTraba> cuentaTrabaOrderedList);
+	
+	@AfterMapping
+	public void generateTrabaFase4AfterMapping(@MappingTarget TrabaFase4 trabaFase4,
+			Embargo embargo, Traba traba, List<CuentaTraba> cuentaTrabaOrderedList) {
+
+		if (traba.getFechaTraba()!=null) {
+			trabaFase4.setFechaTraba(ICEDateUtils.bigDecimalToDate(traba.getFechaTraba(), ICEDateUtils.FORMAT_yyyyMMdd));
+		}
+		
+//		private String fechaGeneracionDiligencia;
+//		private String indicadorExisteMasCuentas;
+//		private Date fechaLimiteIngresoImporteTrabado;
+
+		
+	}
+	
+	@Mappings({
+		@Mapping(source = "finEntidadCreditoFase3.delegacionAgenciaEmisora", target = "delegacionAgenciaReceptora"),
+		@Mapping(source = "importeTotalTrabado", target = "importeTotalTrabado"),
+	})
+	public abstract FinEntidadCreditoFase4 generateFinEntidadCreditoFase4(FinEntidadCreditoFase3 finEntidadCreditoFase3, BigDecimal importeTotalTrabado);
+	
+	@Mappings({
+		@Mapping(expression = "java(new java.util.Date())", target="fechaCreacionFicheroTrabas")
+	})
+	public abstract FinEntidadTransmisoraFase4 generateFinEntidadTransmisoraFase4(FinEntidadTransmisoraFase3 finEntidadTransmisoraFase3);
 }

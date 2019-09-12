@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class PetitionCaseDTO {
 
-	private String codePetitionCase;
+	private Long codePetitionCase;
 	private String nif;
 	private String name;
 	private String nameInternal;
@@ -18,10 +18,10 @@ public class PetitionCaseDTO {
 	private BankAccountDTO bankAccount5;
 	private BankAccountDTO bankAccount6;
 	
-	public String getCodePetitionCase() {
+	public Long getCodePetitionCase() {
 		return codePetitionCase;
 	}
-	public void setCodePetitionCase(String codePetitionCase) {
+	public void setCodePetitionCase(Long codePetitionCase) {
 		this.codePetitionCase = codePetitionCase;
 	}
 	public String getNif() {

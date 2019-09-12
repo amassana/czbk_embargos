@@ -1,16 +1,19 @@
-package es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas;
+package es.commerzbank.ice.embargos.formats.aeat.trabas;
 
 import java.util.Date;
 
-public class EntidadTransmisora {
+public class EntidadCreditoFase4 {
 
 	private String indicadorRegistro;
 	private Integer delegacionAgenciaReceptora;
-	private String codigoEntidadTransmisora;
-	private Date fechaInicioCiclo;
+	private Integer codigoEntidadCredito;
+	private Integer numeroEnvio;
 	private Date fechaCreacionFicheroTrabas;
 	private String indicadorTipoFichero;
-
+	private String codigoEntidadTransmisora;
+	private String indicadorMoneda;
+	
+	
 	public String getIndicadorRegistro() {
 		return indicadorRegistro;
 	}
@@ -23,17 +26,17 @@ public class EntidadTransmisora {
 	public void setDelegacionAgenciaReceptora(Integer delegacionAgenciaReceptora) {
 		this.delegacionAgenciaReceptora = delegacionAgenciaReceptora;
 	}
-	public String getCodigoEntidadTransmisora() {
-		return codigoEntidadTransmisora;
+	public Integer getCodigoEntidadCredito() {
+		return codigoEntidadCredito;
 	}
-	public void setCodigoEntidadTransmisora(String codigoEntidadTransmisora) {
-		this.codigoEntidadTransmisora = codigoEntidadTransmisora;
+	public void setCodigoEntidadCredito(Integer codigoEntidadCredito) {
+		this.codigoEntidadCredito = codigoEntidadCredito;
 	}
-	public Date getFechaInicioCiclo() {
-		return fechaInicioCiclo;
+	public Integer getNumeroEnvio() {
+		return numeroEnvio;
 	}
-	public void setFechaInicioCiclo(Date fechaInicioCiclo) {
-		this.fechaInicioCiclo = fechaInicioCiclo;
+	public void setNumeroEnvio(Integer numeroEnvio) {
+		this.numeroEnvio = numeroEnvio;
 	}
 	public Date getFechaCreacionFicheroTrabas() {
 		return fechaCreacionFicheroTrabas;
@@ -47,5 +50,19 @@ public class EntidadTransmisora {
 	public void setIndicadorTipoFichero(String indicadorTipoFichero) {
 		this.indicadorTipoFichero = indicadorTipoFichero;
 	}
+	public String getCodigoEntidadTransmisora() {
+		return codigoEntidadTransmisora;
+	}
+	public void setCodigoEntidadTransmisora(String codigoEntidadTransmisora) {
+		this.codigoEntidadTransmisora = codigoEntidadTransmisora;
+	}
+	public String getIndicadorMoneda() {
+		return indicadorMoneda;
+	}
+	public void setIndicadorMoneda(String indicadorMoneda) {
+		this.indicadorMoneda = indicadorMoneda;
+	}
+	
+
 	
 }
