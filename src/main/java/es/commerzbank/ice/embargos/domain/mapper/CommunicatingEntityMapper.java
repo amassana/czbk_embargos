@@ -49,7 +49,7 @@ public abstract class CommunicatingEntityMapper {
 			communicatingEntity.setResponseDaysF6(entidadesComunicadora.getDiasRespuestaF6().intValue());
 		}
 		
-		if (entidadesComunicadora.getIndActivo().equals(EmbargosConstants.IND_FLAG_YES)) {
+		if (entidadesComunicadora.getIndActivo().equals(EmbargosConstants.IND_FLAG_SI)) {
 			communicatingEntity.setActive(true);
 		} else {
 			communicatingEntity.setActive(false);
@@ -58,7 +58,7 @@ public abstract class CommunicatingEntityMapper {
 	
 	@AfterMapping
 	protected void setEntidadComunicadoraAfterMapping(@MappingTarget EntidadesComunicadora entidadesComunicadora, CommunicatingEntity communicatingEntity) {
-		entidadesComunicadora.setIndActivo(EmbargosConstants.IND_FLAG_YES);
+		entidadesComunicadora.setIndActivo(communicatingEntity.isActive() ? EmbargosConstants.IND_FLAG_SI : EmbargosConstants.IND_FLAG_NO);
 		entidadesComunicadora.setDiasRespuestaF1(new BigDecimal(communicatingEntity.getResponseDaysF1()));
 		entidadesComunicadora.setDiasRespuestaF3(new BigDecimal(communicatingEntity.getResponseDaysF3()));
 		entidadesComunicadora.setDiasRespuestaF6(new BigDecimal(communicatingEntity.getResponseDaysF6()));
