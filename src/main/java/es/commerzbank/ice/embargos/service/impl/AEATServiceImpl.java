@@ -287,7 +287,7 @@ public class AEATServiceImpl implements AEATService{
 	        //
 	        task.setAction("0");
 	        task.setState("P");
-	        task.setIndActive("Y");
+	        task.setIndActive(true);
 	        Long codTarea = taskService.addCalendarTask(task);
 	        
 	        // - Se guarda el codigo de tarea del calendario:
