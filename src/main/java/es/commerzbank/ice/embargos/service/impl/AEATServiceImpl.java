@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import es.commerzbank.ice.comun.lib.domain.dto.Element;
 import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
@@ -308,7 +309,11 @@ public class AEATServiceImpl implements AEATService{
 	        task.setDate(ICEDateUtils.bigDecimalToDate(controlFicheroEmbargo.getFechaMaximaRespuesta(), ICEDateUtils.FORMAT_yyyyMMdd));
 	        task.setCodCalendar(1L);
 	        task.setType("T");
-	        task.setCodOffice("1");
+	        
+	        Element e = new Element();
+	        e.setCode(1);
+	        task.setOffice(e);
+
 	        //
 	        task.setAction("0");
 	        task.setState("P");
