@@ -8,7 +8,7 @@ public class OrderingEntity {
 	private String indAeat;
 	private String indNorma63;
 	private boolean active;
-	private long codCommunicatingEntity;
+	private Item communicatingEntity;
 	
 	
 	public long getCodOrderingEntity() {
@@ -53,10 +53,11 @@ public class OrderingEntity {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-	public long getCodCommunicatingEntity() {
-		return codCommunicatingEntity;
+	public Item getCommunicatingEntity() {
+		return communicatingEntity;
 	}
-	public void setCodCommunicatingEntity(long codCommunicatingEntity) {
-		this.codCommunicatingEntity = codCommunicatingEntity;
+	public void setCommunicatingEntity(Item communicatingEntity) {
+		this.communicatingEntity = communicatingEntity;
 	}
+	
 }
