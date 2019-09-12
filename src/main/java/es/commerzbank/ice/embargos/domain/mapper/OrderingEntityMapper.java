@@ -20,7 +20,7 @@ public abstract class OrderingEntityMapper {
 		@Mapping(source = "indCgpj", target = "indCgpj"),
 		@Mapping(source = "indAeat", target = "indFormatoAeat"),
 		@Mapping(source = "indNorma63", target = "indNorma63"),
-		@Mapping(source = "transmitter", target = "entidadesComunicadora.codEntidadPresentadora")
+		@Mapping(source = "codCommunicatingEntity", target = "entidadesComunicadora.codEntidadPresentadora")
 	})
 	public abstract EntidadesOrdenante toEntidadOrdenante(OrderingEntity orderingEntity);
 
@@ -31,7 +31,7 @@ public abstract class OrderingEntityMapper {
 		@Mapping(source = "indCgpj", target = "indCgpj"),
 		@Mapping(source = "indFormatoAeat", target = "indAeat"),
 		@Mapping(source = "indNorma63", target = "indNorma63"),
-		@Mapping(source = "entidadesComunicadora.codEntidadPresentadora", target = "transmitter")
+		@Mapping(source = "entidadesComunicadora.codEntidadPresentadora", target = "codCommunicatingEntity")
 	})
 	public abstract OrderingEntity toOrderingEntity(EntidadesOrdenante entidadesOrdenante);
 

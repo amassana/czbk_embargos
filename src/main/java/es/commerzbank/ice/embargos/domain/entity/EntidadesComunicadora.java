@@ -17,6 +17,11 @@ public class EntidadesComunicadora implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(generator="secuencia_entidadComunicadora")
+	@org.hibernate.annotations.GenericGenerator(
+			name = "secuencia_entidadComunicadora",
+			strategy = "increment"
+	)
 	@Column(name="COD_ENTIDAD_PRESENTADORA", unique=true, nullable=false)
 	private long codEntidadPresentadora;
 

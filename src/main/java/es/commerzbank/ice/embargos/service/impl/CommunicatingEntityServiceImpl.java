@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.embargos.domain.dto.CommunicatingEntity;
 import es.commerzbank.ice.embargos.domain.dto.OrderingEntity;
@@ -32,6 +33,7 @@ import es.commerzbank.ice.embargos.service.CommunicatingEntityService;
 import es.commerzbank.ice.utils.EmbargosConstants;
 
 @Service
+@Transactional("transactionManager")
 public class CommunicatingEntityServiceImpl implements CommunicatingEntityService {
 	private static final Logger logger = LoggerFactory.getLogger(CommunicatingEntityServiceImpl.class);
 	

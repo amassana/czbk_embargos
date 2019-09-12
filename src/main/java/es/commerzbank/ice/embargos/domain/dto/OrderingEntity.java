@@ -7,8 +7,8 @@ public class OrderingEntity {
 	private String indCgpj;
 	private String indAeat;
 	private String indNorma63;
-	private long transmitter;
 	private boolean active;
+	private long codCommunicatingEntity;
 	
 	
 	public long getCodOrderingEntity() {
@@ -47,16 +47,16 @@ public class OrderingEntity {
 	public void setIndNorma63(String indNorma63) {
 		this.indNorma63 = indNorma63;
 	}
-	public long getTransmitter() {
-		return transmitter;
-	}
-	public void setTransmitter(long transmitter) {
-		this.transmitter = transmitter;
-	}
 	public boolean isActive() {
 		return active;
 	}
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+	public long getCodCommunicatingEntity() {
+		return codCommunicatingEntity;
+	}
+	public void setCodCommunicatingEntity(long codCommunicatingEntity) {
+		this.codCommunicatingEntity = codCommunicatingEntity;
 	}
 }
