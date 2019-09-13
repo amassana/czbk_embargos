@@ -171,8 +171,11 @@ public class EmbargosConstants {
 	public static final int CODIGO_REGISTRO_CUADERNO63_COMUNICACION_RESULTADO_RETENCION_FASE4 = 6;	
 	public static final String CODIGO_REGISTRO_AEAT_TRABA_FASE4 = "2";
 	
+	/** Codigos actuacion de CuentaTrabaActuacion **/
+	public static final String CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA = "05";
+	
 	/** Entradas de la tabla PARAMETROS de Comunes **/
-	public static final String PARAMETRO_EMBARGOS_CUENTA_RECAUDACION = "embargos.cuentaRecaudacion";
+	public static final String PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA = "embargos.cuentaRecaudacion.cuenta";
 	public static final String PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA = "embargos.cuentaRecaudacion.oficina";
 	public static final String PARAMETRO_EMBARGOS_CONTABILIZACION_CALLBACK = "embargos.contabilizacion.callback";
 	

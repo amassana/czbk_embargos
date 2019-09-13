@@ -21,8 +21,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import es.commerzbank.ice.comun.lib.domain.dto.Element;
 import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
@@ -37,7 +39,6 @@ import es.commerzbank.ice.embargos.domain.entity.Embargo;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
-import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlficheroPK;
 import es.commerzbank.ice.embargos.domain.entity.PeticionInformacion;
 import es.commerzbank.ice.embargos.domain.entity.PeticionInformacionCuenta;
 import es.commerzbank.ice.embargos.domain.entity.Traba;
@@ -70,13 +71,14 @@ import es.commerzbank.ice.embargos.repository.SeizureBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
 import es.commerzbank.ice.embargos.service.Cuaderno63Service;
 import es.commerzbank.ice.embargos.service.CustomerService;
+import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.utils.EmbargosConstants;
 import es.commerzbank.ice.utils.EmbargosUtils;
 import es.commerzbank.ice.utils.ICEDateUtils;
 
 @Service
-@Transactional(transactionManager="transactionManager")
+@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
 public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 
 	private static final Logger LOG = LoggerFactory.getLogger(Cuaderno63ServiceImpl.class);
@@ -104,6 +106,9 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	
 	@Autowired
 	SeizedBankAccountMapper seizedBankAccountMapper;
+	
+	@Autowired
+	FileControlService fileControlService;
 	
 	@Autowired
 	CustomerService customerService;
@@ -145,7 +150,10 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	@Autowired
 	CommunicatingEntityRepository communicatingEntityRepository;
 	
+
 	@Override
+	//Se comenta '@transactional' ya que se utilizara a nivel de clase:
+	//@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
 	public void cargarFicheroPeticion(File file) throws IOException, ICEParserException {
 		
 		BeanReader beanReader = null;
@@ -163,7 +171,8 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        controlFicheroPeticion = 
 	        		fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63);
 	        
-	        fileControlRepository.save(controlFicheroPeticion);
+	        //fileControlRepository.save(controlFicheroPeticion);
+	        fileControlService.saveFileControlTransaction(controlFicheroPeticion);
 	                        
 	        // use a StreamFactory to create a BeanReader
 	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE1, file);
@@ -275,11 +284,13 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        task.setDate(ICEDateUtils.bigDecimalToDate(controlFicheroPeticion.getFechaMaximaRespuesta(), ICEDateUtils.FORMAT_yyyyMMdd));
 	        task.setCodCalendar(1L);
 	        task.setType("T");
-	        task.setCodOffice("1");
-	        //
+	        Element office = new Element();
+	        office.setCode(1L);
+	        task.setOffice(office);
 	        task.setAction("0");
 	        task.setState("P");
-	        task.setIndActive("Y");
+	        task.setIndActive(true);
+	        task.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
 	        Long codTarea = taskService.addCalendarTask(task);
 	        
 	        // - Se guarda el codigo de tarea del calendario:
@@ -289,20 +300,9 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 
 		} catch (Exception e) {
 			
-			//Si hay excepcion y se ha generado controlFicheroPeticion (tiene seteada la fecha 
-			//de ultima modificacion): guardar estado de controlFicheroPeticion como ERROR:
-			if (controlFicheroPeticion!=null && controlFicheroPeticion.getFUltimaModificacion()!=null) {
-				
-		        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
-		        		EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_ERROR,
-		        		EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63);
-		        controlFicheroPeticion.setEstadoCtrlfichero(estadoCtrlfichero);
-				
-				fileControlRepository.saveAndFlush(controlFicheroPeticion);
-			}
-			
-			
-			//TODO Rollbacks si proceden
+			//Transaccion para cambiar el estado de ControlFichero a ERROR:
+			fileControlService.updateFileControlStatusTransaction(controlFicheroPeticion, 
+					EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_ERROR);		
 			
 			throw e;
 			
@@ -316,7 +316,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	}
 	
 	@Override
-	public void tramitarFicheroInformacion(Long codControlFicheroPeticion, String usuarioTramitador) throws IOException {
+	public void tramitarFicheroInformacion(Long codControlFicheroPeticion, String usuarioTramitador) throws IOException, ICEParserException {
 			
 		
 		BeanReader beanReader = null;
@@ -339,8 +339,15 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        String fileNamePeticion = controlFicheroPeticion.getNombreFichero();
 	        File ficheroEntrada = new File(pathProcessed + "\\" + fileNamePeticion);
 	        
-	        //TODO: comprobar que si no existe el fichero de entrada, mostrar error.
+	        //Comprobar que el fichero de peticiones exista:
+	        if (!ficheroEntrada.exists()) {
+	        	throw new ICEParserException("","ERROR: no se ha encontrado el fichero fisico de Embargos.");
+	        }
 	        
+	        //Comprobar que el CRC del fichero de Peticiones sea el mismo que el guardado en ControlFichero:
+	        if (!controlFicheroPeticion.getNumCrc().equals(Long.toString(FileUtils.checksumCRC32(ficheroEntrada)))){
+	        	throw new ICEParserException("","ERROR: el CRC del fichero de Embargos no coincide con el guardado en ControlFichero.");
+	        }     
 	        
 	        //Se actualiza el estado de controlFicheroPeticion a TRAMITANDO:
 	        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
@@ -348,7 +355,8 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        		EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63);
 	        controlFicheroPeticion.setEstadoCtrlfichero(estadoCtrlfichero);
 	        
-	        fileControlRepository.saveAndFlush(controlFicheroPeticion);
+	        //fileControlRepository.saveAndFlush(controlFicheroPeticion);
+	        fileControlService.saveFileControlTransaction(controlFicheroPeticion);
 	        
 	        //Para determinar el nombre del fichero de salida (Informacion):
 	        // - se obtiene el prefijo indicado a partir de la entidad comunicadora:
@@ -374,7 +382,8 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        //Usuario que realiza la tramitacion:
 	        controlFicheroInformacion.setUsuarioUltModificacion(usuarioTramitador);
 	        	        
-	        fileControlRepository.save(controlFicheroInformacion);
+	        //fileControlRepository.save(controlFicheroInformacion);
+	        fileControlService.saveFileControlTransaction(controlFicheroInformacion);
 	                
 	        // use a StreamFactory to create a BeanReader
 	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE1, ficheroEntrada);
@@ -499,28 +508,14 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        
 	        
 		} catch (Exception e) {
-
-	        //Se actualiza el estado de controlFicheroPeticion (generado si tiene fecha ultima modif) a ERROR:
-			if (controlFicheroPeticion!=null && controlFicheroPeticion.getFUltimaModificacion()!=null) {
-
-		        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
-		        		EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_ERROR,
-		        		EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63);
-		        controlFicheroPeticion.setEstadoCtrlfichero(estadoCtrlfichero);
-		        
-		        fileControlRepository.saveAndFlush(controlFicheroPeticion);
-			}
 			
-	        //Se actualiza el estado de controlFicheroInformacion (generado si tiene fecha ultima modif) a ERROR:
-			if (controlFicheroInformacion!=null && controlFicheroInformacion.getFUltimaModificacion()!=null) {
-
-		        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
-		        		EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_INFORMACION_NORMA63_ERROR,
-		        		EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63);
-		        controlFicheroPeticion.setEstadoCtrlfichero(estadoCtrlfichero);
-		        
-		        fileControlRepository.saveAndFlush(controlFicheroInformacion);
-			}
+			//Transaccion para cambiar el estado de controlFicheroPeticion a ERROR:
+			fileControlService.updateFileControlStatusTransaction(controlFicheroPeticion, 
+					EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_ERROR);
+			
+			//Transaccion para cambiar el estado de controlFicheroInformacion a ERROR:
+			fileControlService.updateFileControlStatusTransaction(controlFicheroInformacion, 
+					EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_INFORMACION_NORMA63_ERROR);
 			
 			throw e;
 			
@@ -552,7 +547,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        controlFicheroEmbargo = 
 	        		fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63);
 	        
-	        fileControlRepository.save(controlFicheroEmbargo);
+	        fileControlService.saveFileControlTransaction(controlFicheroEmbargo);
 	        
 	        // use a StreamFactory to create a BeanReader
 	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE3, file);
@@ -659,6 +654,9 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        				AccountDTO accountDTO = customerAccountsMap.get(cuentaEmbargo.getIban());     				
 	        				if(accountDTO!=null) {
 	        					cuentaEmbargo.setCuenta(accountDTO.getAccountNum());
+	        				} else {
+	        					//Sino, si la cuenta no se encuentra en DWH: indicar motivo de cuenta inexistente
+	        					cuentaEmbargo.setActuacion(EmbargosConstants.CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA);
 	        				}
 	        				
 	        				seizureBankAccountRepository.save(cuentaEmbargo);
@@ -748,11 +746,14 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        task.setDate(ICEDateUtils.bigDecimalToDate(controlFicheroEmbargo.getFechaMaximaRespuesta(), ICEDateUtils.FORMAT_yyyyMMdd));
 	        task.setCodCalendar(1L);
 	        task.setType("T");
-	        task.setCodOffice("1");
+	        Element office = new Element();
+	        office.setCode(1L);
+	        task.setOffice(office);
 	        //
 	        task.setAction("0");
 	        task.setState("P");
-	        task.setIndActive("Y");
+	        task.setIndActive(true);
+	        task.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
 	        Long codTarea = taskService.addCalendarTask(task);
 	        
 	        // - Se guarda el codigo de tarea del calendario:
@@ -761,18 +762,11 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 			fileControlRepository.save(controlFicheroEmbargo);
         
 		} catch (Exception e) {
-        
-	        //Se actualiza el estado de controlFicheroEmbargo (generado si tiene fecha ultima modif) a ERROR:
-			if (controlFicheroEmbargo!=null && controlFicheroEmbargo.getFUltimaModificacion()!=null) {
-
-		        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
-		        		EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_INFORMACION_NORMA63_ERROR,
-		        		EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63);
-		        controlFicheroEmbargo.setEstadoCtrlfichero(estadoCtrlfichero);
-		        
-		        fileControlRepository.saveAndFlush(controlFicheroEmbargo);
-			}
 			
+			//Transaccion para cambiar el estado de controlFicheroPeticion a ERROR:
+			fileControlService.updateFileControlStatusTransaction(controlFicheroEmbargo, 
+					EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_ERROR);
+					
 			throw e;
 			
 		} finally {
@@ -847,7 +841,8 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        //Usuario que realiza la tramitacion:
 	        controlFicheroTrabas.setUsuarioUltModificacion(usuarioTramitador);
 	        	        
-	        fileControlRepository.save(controlFicheroTrabas);
+	        //fileControlRepository.save(controlFicheroTrabas);
+	        fileControlService.saveFileControlTransaction(controlFicheroTrabas);
 	                
 	        // use a StreamFactory to create a BeanReader
 	        beanWriter = factory.createWriter(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE4, ficheroSalida);
@@ -980,30 +975,18 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        
 	        
 		} catch (Exception e) {
+					
+			//Transaccion para cambiar el estado de controlFicheroEmbargo a ERROR:
+			fileControlService.updateFileControlStatusTransaction(controlFicheroEmbargo, 
+					EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_ERROR);
 			
-	        //Se actualiza el estado de controlFicheroEmbargo (generado si tiene fecha ultima modif) a ERROR:
-			if (controlFicheroEmbargo!=null && controlFicheroEmbargo.getFUltimaModificacion()!=null) {
-
-		        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
-		        		EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_ERROR,
-		        		EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63);
-		        controlFicheroEmbargo.setEstadoCtrlfichero(estadoCtrlfichero);
-		        
-		        fileControlRepository.saveAndFlush(controlFicheroEmbargo);
-			}
 			
-	        //Se actualiza el estado de controlFicheroTrabas (generado si tiene fecha ultima modif) a ERROR:
-			if (controlFicheroTrabas!=null && controlFicheroTrabas.getFUltimaModificacion()!=null) {
-
-		        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
-		        		EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_NORMA63_ERROR,
-		        		EmbargosConstants.COD_TIPO_FICHERO_TRABAS_NORMA63);
-		        controlFicheroTrabas.setEstadoCtrlfichero(estadoCtrlfichero);
-		        
-		        fileControlRepository.saveAndFlush(controlFicheroTrabas);
-			}
+			//Transaccion para cambiar el estado de controlFicheroTrabas a ERROR:
+			fileControlService.updateFileControlStatusTransaction(controlFicheroTrabas, 
+					EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_NORMA63_ERROR);
 			
 			LOG.error("ERROR: ", e);
+			
 			throw e;
 			
 		} finally {

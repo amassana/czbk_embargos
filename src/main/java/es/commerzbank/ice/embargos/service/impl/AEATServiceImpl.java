@@ -21,8 +21,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import es.commerzbank.ice.comun.lib.domain.dto.Element;
 import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
@@ -37,7 +39,6 @@ import es.commerzbank.ice.embargos.domain.entity.Embargo;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
-import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlficheroPK;
 import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.embargos.domain.mapper.AEATMapper;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
@@ -62,13 +63,14 @@ import es.commerzbank.ice.embargos.repository.SeizureBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
 import es.commerzbank.ice.embargos.service.AEATService;
 import es.commerzbank.ice.embargos.service.CustomerService;
+import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.utils.EmbargosConstants;
 import es.commerzbank.ice.utils.EmbargosUtils;
 import es.commerzbank.ice.utils.ICEDateUtils;
 
 @Service
-@Transactional(transactionManager="transactionManager")
+@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
 public class AEATServiceImpl implements AEATService{
 
 	private static final Logger LOG = LoggerFactory.getLogger(AEATServiceImpl.class);
@@ -101,6 +103,9 @@ public class AEATServiceImpl implements AEATService{
 	TaskService taskService;
 
 	@Autowired
+	FileControlService fileControlService;
+	
+	@Autowired
 	FileControlRepository fileControlRepository;
 	
 	@Autowired
@@ -129,6 +134,8 @@ public class AEATServiceImpl implements AEATService{
 		
 		BeanReader beanReader = null;
 		
+		ControlFichero controlFicheroEmbargo = null;
+		
 		try {
 		
 	        // create a StreamFactory
@@ -137,10 +144,10 @@ public class AEATServiceImpl implements AEATService{
 	        factory.loadResource(pathFileConfigAEAT);
 	        
 	        //Se guarda el registro de ControlFichero del fichero de entrada:
-	        ControlFichero controlFicheroEmbargo = 
+	        controlFicheroEmbargo = 
 	        		fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT);
 	        
-	        fileControlRepository.save(controlFicheroEmbargo);
+	        fileControlService.saveFileControlTransaction(controlFicheroEmbargo);
 	
 	        
 	        // use a StreamFactory to create a BeanReader
@@ -308,11 +315,14 @@ public class AEATServiceImpl implements AEATService{
 	        task.setDate(ICEDateUtils.bigDecimalToDate(controlFicheroEmbargo.getFechaMaximaRespuesta(), ICEDateUtils.FORMAT_yyyyMMdd));
 	        task.setCodCalendar(1L);
 	        task.setType("T");
-	        task.setCodOffice("1");
+	        Element office = new Element();
+	        office.setCode(1L);
+	        task.setOffice(office);
 	        //
 	        task.setAction("0");
 	        task.setState("P");
-	        task.setIndActive("Y");
+	        task.setIndActive(true);
+	        task.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
 	        Long codTarea = taskService.addCalendarTask(task);
 	        
 	        // - Se guarda el codigo de tarea del calendario:
@@ -323,6 +333,10 @@ public class AEATServiceImpl implements AEATService{
 
 		} catch (Exception e) {
 	        
+			//Transaccion para cambiar el estado de ControlFichero a ERROR:
+			fileControlService.updateFileControlStatusTransaction(controlFicheroEmbargo, 
+					EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_ERROR);	
+			
 			throw e;
 			
 		} finally {
@@ -341,6 +355,9 @@ public class AEATServiceImpl implements AEATService{
 		BeanReader beanReader = null;
 		BeanWriter beanWriter = null;
 		
+		ControlFichero controlFicheroEmbargo = null;
+		ControlFichero controlFicheroTrabas = null;
+		
 		try {
 		
 			// create a StreamFactory
@@ -349,7 +366,7 @@ public class AEATServiceImpl implements AEATService{
 	        factory.loadResource(pathFileConfigAEAT);        
 	        
 	        //Se obtiene el ControlFichero de Embargos:
-	        ControlFichero controlFicheroEmbargo = fileControlRepository.getOne(codControlFicheroEmbargo);
+	        controlFicheroEmbargo = fileControlRepository.getOne(codControlFicheroEmbargo);
 	        
 	        //Fichero de embargos:
 	        String fileNameEmbargo = controlFicheroEmbargo.getNombreFichero();
@@ -389,13 +406,14 @@ public class AEATServiceImpl implements AEATService{
 	        File ficheroSalida = new File(pathGenerated + "\\" + fileNameTrabas);
 	        
 	        //Se guarda el registro de ControlFichero del fichero de salida:
-	        ControlFichero controlFicheroTrabas = 
+	        controlFicheroTrabas = 
 	        		fileControlMapper.generateControlFichero(ficheroSalida, EmbargosConstants.COD_TIPO_FICHERO_TRABAS_AEAT);
 	        
 	        //Usuario que realiza la tramitacion:
 	        controlFicheroTrabas.setUsuarioUltModificacion(usuarioTramitador);
 	        	        
-	        fileControlRepository.save(controlFicheroTrabas);
+	        //fileControlRepository.save(controlFicheroTrabas);
+	        fileControlService.saveFileControlTransaction(controlFicheroTrabas);
 	                
 	        // use a StreamFactory to create a BeanReader
 	        beanWriter = factory.createWriter(EmbargosConstants.STREAM_NAME_AEAT_TRABAS, ficheroSalida);
@@ -565,7 +583,17 @@ public class AEATServiceImpl implements AEATService{
 	        
 		} catch (Exception e) {
 			
+			//Transaccion para cambiar el estado de controlFicheroEmbargo a ERROR:
+			fileControlService.updateFileControlStatusTransaction(controlFicheroEmbargo, 
+					EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_ERROR);
+			
+			
+			//Transaccion para cambiar el estado de controlFicheroTrabas a ERROR:
+			fileControlService.updateFileControlStatusTransaction(controlFicheroTrabas, 
+					EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_AEAT_ERROR);
+			
 			LOG.error("ERROR: ", e);
+			
 			throw e;
 			
 		} finally {
@@ -576,15 +604,17 @@ public class AEATServiceImpl implements AEATService{
 		}
 		
 	}
+
+	@Override
+	public void tratarFicheroErrores(File file) {
+		
+	}
 	
 	@Override
 	public void tratarFicheroLevantamientos(File file) {
 		
 	}
-	@Override
-	public void tratarFicheroErrores(File file) {
-		
-	}
+
 
 
 }
