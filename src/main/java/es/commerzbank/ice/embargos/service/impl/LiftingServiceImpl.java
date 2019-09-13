@@ -87,8 +87,11 @@ public class LiftingServiceImpl implements LiftingService {
 		for(LevantamientoTraba levantamiento : liftingList) {
 			LiftingDTO lifting = liftingMapper.toLiftingDTO(levantamiento);
 			Optional<EstadoIntLevantamiento> estado = liftingStatusRepository.findById(levantamiento.getEstadoContable().longValue());
-			LiftingStatusDTO status = liftingStatusMapper.toLiftingStatus(estado.get());
-			lifting.setStatus(status);
+			if (estado != null) {
+				LiftingStatusDTO status = liftingStatusMapper.toLiftingStatus(estado.get());
+				lifting.setStatus(status);
+			}
+			
 		
 			liftingDTOList.add(lifting);
 		}
