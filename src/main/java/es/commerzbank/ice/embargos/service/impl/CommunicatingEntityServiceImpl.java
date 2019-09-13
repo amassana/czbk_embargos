@@ -48,6 +48,7 @@ public class CommunicatingEntityServiceImpl implements CommunicatingEntityServic
 		entidad = mapper.toEntidadComunicadora(communicatingEntity);
 		
 		if (entidad != null) {
+			entidad.setIndActivo(EmbargosConstants.IND_FLAG_SI);
 			entidad.setFUltimaModificacion(new BigDecimal(System.currentTimeMillis()));
 			entidad.setUsuarioUltModificacion(name);
 			
