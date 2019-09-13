@@ -54,7 +54,7 @@ public class OrderingEntityServiceImpl implements OrderingEntityService {
 		entidad = mapper.toEntidadOrdenante(orderingEntity);
 		
 		if (entidad != null) {
-			entidad.setIndActivo(EmbargosConstants.IND_FLAG_YES);
+			entidad.setIndActivo(EmbargosConstants.IND_FLAG_SI);
 			entidad.setFUltimaModificacion(new BigDecimal(System.currentTimeMillis()));
 			entidad.setUsuarioUltModificacion(name);
 			

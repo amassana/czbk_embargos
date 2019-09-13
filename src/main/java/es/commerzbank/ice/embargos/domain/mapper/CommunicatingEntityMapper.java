@@ -58,9 +58,18 @@ public abstract class CommunicatingEntityMapper {
 	@AfterMapping
 	protected void setEntidadComunicadoraAfterMapping(@MappingTarget EntidadesComunicadora entidadesComunicadora, CommunicatingEntity communicatingEntity) {
 		entidadesComunicadora.setIndActivo(communicatingEntity.isActive() ? EmbargosConstants.IND_FLAG_SI : EmbargosConstants.IND_FLAG_NO);
-		entidadesComunicadora.setDiasRespuestaF1(new BigDecimal(communicatingEntity.getResponseDaysF1()));
-		entidadesComunicadora.setDiasRespuestaF3(new BigDecimal(communicatingEntity.getResponseDaysF3()));
-		entidadesComunicadora.setDiasRespuestaF6(new BigDecimal(communicatingEntity.getResponseDaysF6()));
+		
+		if (communicatingEntity.getResponseDaysF1() != null) {
+			entidadesComunicadora.setDiasRespuestaF1(new BigDecimal(communicatingEntity.getResponseDaysF1()));
+		}
+		
+		if (communicatingEntity.getResponseDaysF3() != null) {
+			entidadesComunicadora.setDiasRespuestaF3(new BigDecimal(communicatingEntity.getResponseDaysF3()));
+		}
+		
+		if (communicatingEntity.getResponseDaysF6() != null) {
+			entidadesComunicadora.setDiasRespuestaF6(new BigDecimal(communicatingEntity.getResponseDaysF6()));
+		}
 		
 		entidadesComunicadora.setIndFormatoAeat(communicatingEntity.isIndAeat() ? EmbargosConstants.IND_FLAG_SI : EmbargosConstants.IND_FLAG_NO);
 		entidadesComunicadora.setIndCgpj(communicatingEntity.isIndCgpj() ? EmbargosConstants.IND_FLAG_SI : EmbargosConstants.IND_FLAG_NO);
