@@ -1,5 +1,7 @@
 package es.commerzbank.ice.embargos.domain.mapper;
 
+import java.math.BigDecimal;
+
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -32,55 +34,19 @@ public abstract class OrderingEntityMapper {
 
 	@AfterMapping
 	protected void setOrderingEntityAfterMapping(@MappingTarget OrderingEntity orderingentity, EntidadesOrdenante entidadesOrdenante) {
-		if (entidadesOrdenante.getIndActivo().equals(EmbargosConstants.IND_FLAG_SI)) {
-			orderingentity.setActive(true);
-		} else {
-			orderingentity.setActive(false);
-		}
 		
-		if (entidadesOrdenante.getIndCgpj().equals(EmbargosConstants.IND_FLAG_SI)) {
-			orderingentity.setIndCgpj(true);
-		} else {
-			orderingentity.setIndCgpj(false);
-		}
-		
-		if (entidadesOrdenante.getIndFormatoAeat().equals(EmbargosConstants.IND_FLAG_SI)) {
-			orderingentity.setIndAeat(true);
-		} else {
-			orderingentity.setIndAeat(false);
-		}
-		
-		if (entidadesOrdenante.getIndNorma63().equals(EmbargosConstants.IND_FLAG_SI)) {
-			orderingentity.setIndNorma63(true);
-		} else {
-			orderingentity.setIndNorma63(false);
-		}
+		orderingentity.setActive(entidadesOrdenante.getIndActivo().equals(EmbargosConstants.IND_FLAG_SI) ? true : false);
+		orderingentity.setIndCgpj(entidadesOrdenante.getIndCgpj() != null && entidadesOrdenante.getIndCgpj().equals(EmbargosConstants.IND_FLAG_SI) ? true : false);
+		orderingentity.setIndAeat(entidadesOrdenante.getIndFormatoAeat() != null && entidadesOrdenante.getIndFormatoAeat().equals(EmbargosConstants.IND_FLAG_SI) ? true : false);
+		orderingentity.setIndNorma63(entidadesOrdenante.getIndNorma63() != null && entidadesOrdenante.getIndNorma63().equals(EmbargosConstants.IND_FLAG_SI) ? true : false);
 	}
 	
 	@AfterMapping
 	protected void setEntidadOrdenanteAfterMapping(@MappingTarget EntidadesOrdenante entidadesOrdenante, OrderingEntity orderingentity) {
-		if (orderingentity.isActive()) {
-			entidadesOrdenante.setIndActivo(EmbargosConstants.IND_FLAG_SI);
-		} else {
-			entidadesOrdenante.setIndActivo(EmbargosConstants.IND_FLAG_NO);
-		}
+		entidadesOrdenante.setIndActivo(orderingentity.isActive() ? EmbargosConstants.IND_FLAG_SI : EmbargosConstants.IND_FLAG_NO);
 		
-		if (orderingentity.getIndCgpj()) {
-			entidadesOrdenante.setIndCgpj(EmbargosConstants.IND_FLAG_SI);
-		} else {
-			entidadesOrdenante.setIndCgpj(EmbargosConstants.IND_FLAG_NO);
-		}
-		
-		if (orderingentity.getIndAeat()) {
-			entidadesOrdenante.setIndFormatoAeat(EmbargosConstants.IND_FLAG_SI);
-		} else {
-			entidadesOrdenante.setIndFormatoAeat(EmbargosConstants.IND_FLAG_NO);
-		}
-		
-		if (orderingentity.getIndNorma63()) {
-			entidadesOrdenante.setIndNorma63(EmbargosConstants.IND_FLAG_SI);
-		} else {
-			entidadesOrdenante.setIndNorma63(EmbargosConstants.IND_FLAG_NO);
-		}
+		entidadesOrdenante.setIndFormatoAeat(orderingentity.getIndAeat() ? EmbargosConstants.IND_FLAG_SI : EmbargosConstants.IND_FLAG_NO);
+		entidadesOrdenante.setIndCgpj(orderingentity.getIndCgpj() ? EmbargosConstants.IND_FLAG_SI : EmbargosConstants.IND_FLAG_NO);
+		entidadesOrdenante.setIndNorma63(orderingentity.getIndNorma63() ? EmbargosConstants.IND_FLAG_SI : EmbargosConstants.IND_FLAG_NO);
 	}
 }

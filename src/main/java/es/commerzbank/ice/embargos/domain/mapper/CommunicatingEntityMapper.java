@@ -50,9 +50,9 @@ public abstract class CommunicatingEntityMapper {
 		}
 
 		communicatingEntity.setActive(entidadesComunicadora.getIndActivo().equals(EmbargosConstants.IND_FLAG_SI) ? true : false);
-		communicatingEntity.setIndAeat(entidadesComunicadora.getIndFormatoAeat().equals(EmbargosConstants.IND_FLAG_SI) ? true : false);
-		communicatingEntity.setIndCgpj(entidadesComunicadora.getIndCgpj().equals(EmbargosConstants.IND_FLAG_SI) ? true : false);
-		communicatingEntity.setIndNorma63(entidadesComunicadora.getIndNorma63().equals(EmbargosConstants.IND_FLAG_SI) ? true : false);
+		communicatingEntity.setIndAeat(entidadesComunicadora.getIndFormatoAeat() != null && entidadesComunicadora.getIndFormatoAeat().equals(EmbargosConstants.IND_FLAG_SI) ? true : false);
+		communicatingEntity.setIndCgpj(entidadesComunicadora.getIndCgpj() != null && entidadesComunicadora.getIndCgpj().equals(EmbargosConstants.IND_FLAG_SI) ? true : false);
+		communicatingEntity.setIndNorma63(entidadesComunicadora.getIndNorma63() != null && entidadesComunicadora.getIndNorma63().equals(EmbargosConstants.IND_FLAG_SI) ? true : false);
 	}
 	
 	@AfterMapping
