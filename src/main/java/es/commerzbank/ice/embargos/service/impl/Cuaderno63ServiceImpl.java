@@ -288,9 +288,9 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        office.setCode(1L);
 	        task.setOffice(office);
 	        task.setAction("0");
-	        task.setState("P");
+	        task.setStatus("P");
 	        task.setIndActive(true);
-	        task.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
+	        task.setApplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
 	        Long codTarea = taskService.addCalendarTask(task);
 	        
 	        // - Se guarda el codigo de tarea del calendario:
