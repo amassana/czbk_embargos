@@ -447,19 +447,7 @@ public class SeizureController {
 			@PathVariable("cod_traba") BigDecimal cod_traba, @PathVariable("num_anexo") Integer num_anexo)
 			throws Exception {
 
-		switch (num_anexo) {
-		case 1:
-			return downloadAnexo(cod_usuario, cod_traba, num_anexo);
-		case 2:
-			return downloadAnexo(cod_usuario, cod_traba, num_anexo);
-		case 3:
-			return downloadAnexo(cod_usuario, cod_traba, num_anexo);
-		default:
-			LOG.info("Error in anexoReport", "error descargando anexos");
-
-		}
-
-		return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+		return downloadAnexo(cod_usuario, cod_traba, num_anexo);
 	}
 
 	private ResponseEntity<InputStreamResource> downloadAnexo(BigDecimal cod_usuario, BigDecimal cod_traba,
@@ -477,7 +465,6 @@ public class SeizureController {
 
 		} catch (Exception e) {
 			LOG.error("Error in anexoReport", e);
-
 			if (e.getMessage() == null) {
 				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
 			}
@@ -542,8 +529,8 @@ public class SeizureController {
 	@ApiOperation(value = "Devuelve el fichero de orden de transferencia")
 	public ResponseEntity<InputStreamResource> generarOrdenTransferencia(
 			@PathVariable("cod_solicitud_ejecucion") String cod_solicitud_ejecucion) {
-		
-		DownloadReportFile.setTempFileName("transferenceOrder");
+
+		DownloadReportFile.setTempFileName("solicitudEjecucion");
 
 		DownloadReportFile.setFileTempPath(pdfSavedPath);
 

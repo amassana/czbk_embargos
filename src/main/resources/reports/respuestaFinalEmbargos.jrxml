@@ -13,6 +13,8 @@
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<parameter name="COD_FILE_CONTROL" class="java.lang.String"/>
+	<parameter name="SUBREPORT_HEADER" class="java.lang.Object" isForPrompting="false"/>
+	<parameter name="sub_img_param" class="java.lang.String" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[SELECT  
 ec.des_entidad AS ENTIDADPRESENTADORA,  
@@ -99,25 +101,25 @@ ORDER BY ct.cod_traba, ct.iban]]>
 		<groupExpression><![CDATA[$F{NUMEROEMBARGO}.concat( $F{NIF}).concat($F{TITULAR})]]></groupExpression>
 	</group>
 	<title>
-		<band height="133" splitType="Stretch">
+		<band height="125" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="83" width="250" height="20" uuid="abe67322-132f-4faf-aa22-d8c4d7118d6b"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="14" isBold="true"/>
+					<font fontName="Serif" size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[FICHERO DE RESPUESTA FINAL DE ]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="630" y="82" width="80" height="20" uuid="6a768ecd-1226-49d2-b679-18655221f4c8"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha Creación:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="630" y="102" width="80" height="20" uuid="dc0c91de-1865-43c9-b636-c165d2240743"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha Vto:]]></text>
 			</staticText>
@@ -126,7 +128,7 @@ ORDER BY ct.cod_traba, ct.iban]]>
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a439b967-a736-41eb-949d-01afc719f1c8"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
-					<font size="14"/>
+					<font fontName="Serif" size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ENTIDADPRESENTADORA}]]></textFieldExpression>
 			</textField>
@@ -135,7 +137,9 @@ ORDER BY ct.cod_traba, ct.iban]]>
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f81bdc1c-0b74-4ed0-8e42-a5e3c8a014e7"/>
 				</reportElement>
 				<box leftPadding="3"/>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHAVTO}.toString()))]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
@@ -143,9 +147,19 @@ ORDER BY ct.cod_traba, ct.iban]]>
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7c7f0214-50a8-4daa-8080-605c59aa8203"/>
 				</reportElement>
 				<box leftPadding="3"/>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHACREACION}.toString()))]]></textFieldExpression>
 			</textField>
+			<subreport>
+				<reportElement x="310" y="0" width="470" height="75" uuid="6e784268-f80b-475f-a507-2a48b0d44f15"/>
+				<subreportParameter name="sub_img_param">
+					<subreportParameterExpression><![CDATA[$P{sub_img_param}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_HEADER}]]></subreportExpression>
+			</subreport>
 		</band>
 	</title>
 	<columnHeader>
@@ -158,7 +172,7 @@ ORDER BY ct.cod_traba, ct.iban]]>
 					<bottomPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Bottom">
-					<font isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[NIF]]></text>
 			</staticText>
@@ -170,7 +184,7 @@ ORDER BY ct.cod_traba, ct.iban]]>
 					<bottomPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Bottom">
-					<font isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TITULAR]]></text>
 			</staticText>
@@ -182,7 +196,7 @@ ORDER BY ct.cod_traba, ct.iban]]>
 					<bottomPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Bottom">
-					<font isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[IBAN]]></text>
 			</staticText>
@@ -197,7 +211,7 @@ ORDER BY ct.cod_traba, ct.iban]]>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
-					<font isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[CLAVE]]></text>
 			</staticText>
@@ -209,7 +223,7 @@ ORDER BY ct.cod_traba, ct.iban]]>
 					<bottomPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Bottom">
-					<font isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[  IMPORTE]]></text>
 			</staticText>
@@ -224,7 +238,7 @@ ORDER BY ct.cod_traba, ct.iban]]>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Bottom">
-					<font isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TRABADO]]></text>
 			</staticText>
@@ -236,7 +250,7 @@ ORDER BY ct.cod_traba, ct.iban]]>
 					<bottomPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Bottom">
-					<font isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[EMBARGO]]></text>
 			</staticText>
@@ -251,7 +265,7 @@ ORDER BY ct.cod_traba, ct.iban]]>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Bottom">
-					<font isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[LEVANTADO]]></text>
 			</staticText>
@@ -266,7 +280,7 @@ ORDER BY ct.cod_traba, ct.iban]]>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Bottom">
-					<font isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[A TRANSFERIR]]></text>
 			</staticText>
@@ -280,7 +294,9 @@ ORDER BY ct.cod_traba, ct.iban]]>
 					<printWhenExpression><![CDATA[$V{EMBARGO_COUNT}==1]]></printWhenExpression>
 				</reportElement>
 				<box leftPadding="2"/>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{NIF}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
@@ -289,7 +305,9 @@ ORDER BY ct.cod_traba, ct.iban]]>
 					<printWhenExpression><![CDATA[$V{EMBARGO_COUNT}==1]]></printWhenExpression>
 				</reportElement>
 				<box leftPadding="2"/>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{TITULAR}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -297,7 +315,9 @@ ORDER BY ct.cod_traba, ct.iban]]>
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="642a7aec-f048-48fa-99fc-fbe2cb965521"/>
 				</reportElement>
 				<box leftPadding="2"/>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{IBAN}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -311,7 +331,9 @@ ORDER BY ct.cod_traba, ct.iban]]>
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{CLAVE}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00#">
@@ -320,7 +342,9 @@ ORDER BY ct.cod_traba, ct.iban]]>
 					<printWhenExpression><![CDATA[$V{EMBARGO_COUNT}==1]]></printWhenExpression>
 				</reportElement>
 				<box leftPadding="0" rightPadding="3"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{IMPORTEDEUDA}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00#">
@@ -333,7 +357,9 @@ ORDER BY ct.cod_traba, ct.iban]]>
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{IMPORTETRABADOCUENTA}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
@@ -341,7 +367,9 @@ ORDER BY ct.cod_traba, ct.iban]]>
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0163664d-e0ac-49e8-958e-78e9430acaf8"/>
 					<printWhenExpression><![CDATA[$V{EMBARGO_COUNT}==1]]></printWhenExpression>
 				</reportElement>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{NUMEROEMBARGO}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00#">
@@ -354,7 +382,9 @@ ORDER BY ct.cod_traba, ct.iban]]>
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{IMPORTELEVANTADOCUENTA}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00#">
@@ -367,7 +397,9 @@ ORDER BY ct.cod_traba, ct.iban]]>
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{ATRANSFERIRCUENTA}]]></textFieldExpression>
 			</textField>
 		</band>
@@ -380,17 +412,22 @@ ORDER BY ct.cod_traba, ct.iban]]>
 					<pen lineWidth="1.25"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="8" isBold="false"/>
+					<font fontName="Serif" size="8" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Códigos: 00 Sin actuación  01 Retención total o parcial   02 Nif o Cif no titual cta.comunicada  03 Inexistencia saldo]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="709" y="80" width="50" height="20" uuid="cbfebc5e-d5a7-4746-a5bd-060637daeb54"/>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
 				<reportElement x="761" y="80" width="30" height="20" uuid="9c2f1333-9442-40ae-a9d1-c5421e8a77d6"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>
@@ -401,7 +438,7 @@ ORDER BY ct.cod_traba, ct.iban]]>
 				<reportElement x="620" y="0" width="100" height="20" uuid="71d046f2-9038-4129-91fa-d9acb4d28c08"/>
 				<box leftPadding="10"/>
 				<textElement verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Total a transferir:]]></text>
 			</staticText>
@@ -414,7 +451,7 @@ ORDER BY ct.cod_traba, ct.iban]]>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{total}]]></textFieldExpression>
 			</textField>

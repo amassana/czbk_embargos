@@ -32,16 +32,16 @@ public class OracleDataSourceEmbargosConfig {
 	/*@Value("${spring.datasource.jndi-name}")
 	private String oracleJNDIName;*/
 	
-	@Value("${spring.datasource.url}")
+	@Value("${spring.ds-embargo.url}")
 	private String url;
 	
-	@Value("${spring.datasource.username}")
+	@Value("${spring.ds-embargo.username}")
 	private String userName;
 	
-	@Value("${spring.datasource.password}")
+	@Value("${spring.ds-embargo.password}")
 	private String password;
 	
-	@Value("${spring.datasource.driverClassName}")
+	@Value("${spring.ds-embargo.driverClassName}")
 	private String driverClassName;
 
 	@Value("${spring.ds-comun.url}")

@@ -111,7 +111,7 @@ public class PetitionServiceImpl implements PetitionService{
 			JasperPrint reporteLleno = JasperFillManager.fillReport(resourceInputStream, parameters, connEmbargos);
 
 			return JasperExportManager.exportReportToPdf(reporteLleno);
-		} catch (JRException | SQLException ex) {
+		} catch (Exception ex) {
 			throw new Exception("Error in generarReporteListado()", ex);
 		}
 	}

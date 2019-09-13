@@ -362,7 +362,7 @@ public class FileControlServiceImpl implements FileControlService{
 			JasperPrint reporteLleno = JasperFillManager.fillReport(resourceInputStream, parameters, connEmbargos);
 
 			return JasperExportManager.exportReportToPdf(reporteLleno);
-		} catch (JRException | SQLException ex) {
+		} catch (Exception ex) {
 			System.out.println(ex);
 			throw new Exception("Error in generarReporteListado()", ex);
 		}

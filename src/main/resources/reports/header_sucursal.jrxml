@@ -14,27 +14,27 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="90" splitType="Stretch">
+		<band height="100" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<image>
-				<reportElement x="31" y="16" width="309" height="70" uuid="73e22134-d71d-4d7c-8c5f-0a4330344fc9">
+				<reportElement x="270" y="15" width="309" height="70" uuid="73e22134-d71d-4d7c-8c5f-0a4330344fc9">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<imageExpression><![CDATA[$P{sub_img_param}]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="350" y="28" width="60" height="30" forecolor="#050505" uuid="070a40e4-b02e-448b-8bed-22d41c5f3ff9">
+				<reportElement x="81" y="30" width="60" height="30" forecolor="#050505" uuid="070a40e4-b02e-448b-8bed-22d41c5f3ff9">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
+					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[ a Fecha: ]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="415" y="28" width="116" height="30" forecolor="#050505" uuid="0c06d7a9-5e46-4c50-9a3d-97593b7f03e0"/>
+				<reportElement x="146" y="30" width="116" height="30" forecolor="#050505" uuid="0c06d7a9-5e46-4c50-9a3d-97593b7f03e0"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
+					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new Date())]]></textFieldExpression>
 			</textField>

@@ -40,44 +40,44 @@ WHERE u.COD_USUARIO = $P{COD_USUARIO}]]>
 			<staticText>
 				<reportElement x="205" y="12" width="99" height="27" uuid="772b009b-decf-4890-baf9-1f7834e4da8c"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="19" isBold="true"/>
+					<font fontName="Serif" size="19" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Anexo II]]></text>
+				<text><![CDATA[Anexo III]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="5" y="42" width="85" height="30" uuid="554b6614-d65a-4b54-9bf7-3471c20a76ad"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="11"/>
+					<font fontName="Serif" size="11"/>
 				</textElement>
 				<text><![CDATA[DESTINATARIO:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="7" y="110" width="523" height="30" uuid="ae37d5df-c4f9-466f-8feb-1e05541bb3e3"/>
 				<textElement verticalAlignment="Middle">
-					<font size="9"/>
+					<font fontName="Serif" size="9"/>
 				</textElement>
 				<text><![CDATA[COMUNICACION DE INGRESOS POR RECAUDACION MEDIANTE PROCEDIMIENTO TELEMATICO DE EMBARGO DE CUENTAS.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="49" y="149" width="150" height="19" uuid="6578fb13-0915-4984-a573-d9f23f1ee1ae"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
+					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[ENTIDAD FINANCIERA:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="93" y="43" width="350" height="30" uuid="5ec315ed-ae85-4a7e-a5e6-fed9582fc8ce"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="11" isBold="true"/>
+					<font fontName="Serif" size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TESORERIA GENERAL DE LA SEGURIDAD SOCIAL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="94" y="73" width="390" height="29" uuid="0d6428cd-e975-4efa-b252-1e018f274be2"/>
+				<reportElement x="94" y="73" width="349" height="29" uuid="0d6428cd-e975-4efa-b252-1e018f274be2"/>
 				<textElement textAlignment="Left" verticalAlignment="Top">
-					<font size="11" isBold="true"/>
+					<font fontName="Serif" size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[SUBDIRECCION GENERAL DE ORDENACION DE PAGOS Y GESTION DEL FONDO RESERVA]]></text>
+				<text><![CDATA[SUBDIRECCION GENERAL DE PROCEDIMIENTOS EJECUTVOS Y ESPECIALES DE RECAUDACION]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
@@ -86,35 +86,35 @@ WHERE u.COD_USUARIO = $P{COD_USUARIO}]]>
 			<staticText>
 				<reportElement x="49" y="29" width="74" height="19" uuid="f5c0705b-5398-4deb-b4f8-387980bbf373"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="10" isBold="true"/>
+					<font fontName="Serif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[CLAVE C.S.B:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="49" y="-1" width="94" height="19" uuid="afd93bdb-8eec-488a-b3ad-677a59bd9126"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="10" isBold="true"/>
+					<font fontName="Serif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[DENOMINACION:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="8" y="66" width="340" height="19" uuid="026f7dfa-cb8e-4275-bc5d-b44009378cab"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
+					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[IMPORTE ABONADO EN CUENTA UNICA CENTRALIZADA]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="153" y="-1" width="280" height="19" uuid="2ef8834d-f5f7-47b2-a997-a1fc1af23a6d"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="10" isBold="false"/>
+					<font fontName="Serif" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[COMMERZBANK AG SUCURSAL EN ESPAÑA]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="153" y="29" width="30" height="19" uuid="bbadd394-f04a-4012-9a08-b9b3ea8da5de"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="10" isBold="false"/>
+					<font fontName="Serif" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[0159]]></text>
 			</staticText>
@@ -149,9 +149,9 @@ WHERE u.COD_USUARIO = $P{COD_USUARIO}]]>
 			<staticText>
 				<reportElement x="5" y="0" width="493" height="40" uuid="39f6952f-95ee-456d-89fd-ee13b2a2f96b"/>
 				<textElement>
-					<font fontName="SansSerif" size="9" isBold="false"/>
+					<font fontName="Serif" size="9" isBold="false"/>
 				</textElement>
-				<text><![CDATA[COMUNICACION A REMITIR AL FAX 915037949 ANTES DE LAS 13:30 DEL DIA 14 O 29 DE CADA MES O INMEDIATO HABIL ANTERIOR CASO DE SER AQUELLOS INHABILES]]></text>
+				<text><![CDATA[COMUNICACION A REMITIR AL FAX 915037881 ANTES DE LAS 13:30 DEL DIA 14 O 29 DE CADA MES O INMEDIATO HABIL ANTERIOR CASO DE SER AQUELLOS INHABILES]]></text>
 			</staticText>
 		</band>
 	</pageFooter>
@@ -160,21 +160,21 @@ WHERE u.COD_USUARIO = $P{COD_USUARIO}]]>
 			<staticText>
 				<reportElement x="23" y="27" width="145" height="19" uuid="ef40d175-4478-4113-a2ca-8a999edfafeb"/>
 				<textElement>
-					<font size="12" isBold="true"/>
+					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[SELLO DE LA ENTIDAD]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="159" y="50" width="31" height="19" uuid="609dccdc-a1b1-4674-be5d-08f5ddf764e9"/>
 				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
+					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[FDO:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="159" y="78" width="145" height="19" uuid="b740bc88-e0ba-4fc3-929c-ae23bd08b1d7"/>
 				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
+					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[CARGO QUE OSTENTA:]]></text>
 			</staticText>
@@ -191,12 +191,16 @@ WHERE u.COD_USUARIO = $P{COD_USUARIO}]]>
 			</line>
 			<staticText>
 				<reportElement x="335" y="17" width="10" height="19" uuid="041f5f27-8fff-42eb-a4cc-a161cedd7ac2"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<text><![CDATA[a]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="371" y="17" width="14" height="19" uuid="33352606-4539-48ea-96f9-1a3d059219d6"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<text><![CDATA[de]]></text>
 			</staticText>
 			<line>
@@ -207,7 +211,9 @@ WHERE u.COD_USUARIO = $P{COD_USUARIO}]]>
 			</line>
 			<staticText>
 				<reportElement x="411" y="17" width="14" height="19" uuid="207a58f4-cd91-4930-ad50-a4cb1b7700b4"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<text><![CDATA[de]]></text>
 			</staticText>
 			<line>
@@ -219,16 +225,25 @@ WHERE u.COD_USUARIO = $P{COD_USUARIO}]]>
 			<textField>
 				<reportElement x="345" y="17" width="26" height="13" uuid="5c249b8e-379a-49a6-8d2a-a0e7e3302f08"/>
 				<box leftPadding="2"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{TodayDate}.split("/")[0]]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="385" y="17" width="26" height="13" uuid="8e6a39e9-285c-4367-9fb1-f7225981dc85"/>
 				<box leftPadding="2"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{TodayDate}.split("/")[1]]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="426" y="17" width="50" height="13" uuid="b643d94c-ab26-4070-8057-74766c151403"/>
 				<box leftPadding="2"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{TodayDate}.split("/")[2]]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -236,7 +251,9 @@ WHERE u.COD_USUARIO = $P{COD_USUARIO}]]>
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="899e72d8-0f8a-45f4-a208-16d3abd6f70e"/>
 				</reportElement>
 				<box topPadding="5" leftPadding="2"/>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{MUNICIPIO}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -245,7 +262,7 @@ WHERE u.COD_USUARIO = $P{COD_USUARIO}]]>
 				</reportElement>
 				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle">
-					<font size="12"/>
+					<font fontName="Serif" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
 			</textField>
@@ -254,7 +271,7 @@ WHERE u.COD_USUARIO = $P{COD_USUARIO}]]>
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="16e5394c-d601-4ed0-8527-a13bae2677cf"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
-					<font size="12"/>
+					<font fontName="Serif" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{CARGO}]]></textFieldExpression>
 			</textField>

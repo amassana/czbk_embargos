@@ -145,17 +145,22 @@
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
-			<version>6.1.0</version>
+			<version>6.9.0</version>
+		</dependency>
+
+
+		<!-- Jasper fonts dependency, necesaria para conservar estilo de fuente -->
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports-fonts</artifactId>
+			<version>6.0.0</version>
 		</dependency>
 
 		<!-- Dependencia del archivo jar del estilo de fuentes -->
-		<dependency>
-			<groupId>local.SerifCommerce</groupId>
-			<artifactId>local.SerifCommerce</artifactId>
-			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/src/main/resources/fonts/jar/pt-serif.jar</systemPath>
-		</dependency>
+		<!-- <dependency> <groupId>local.SerifCommerce</groupId> <artifactId>local.SerifCommerce</artifactId> 
+			<version>1.0</version> <scope>system</scope> <systemPath>${basedir}/src/main/resources/fonts/jar/pt-serif.jar</systemPath> 
+			</dependency> -->
+
 	</dependencies>
 
 	<build>
@@ -224,15 +229,15 @@
 				<configuration>
 					<!-- These are the default configurations: -->
 					<compiler>net.sf.jasperreports.engine.design.JRJdtCompiler</compiler>
-					<sourceDirectory>src/main/resources/jasper</sourceDirectory>
-					<outputDirectory>${project.build.directory}/jasper</outputDirectory>
+					<sourceDirectory>src/main/resources/reports</sourceDirectory>
+					<outputDirectory>${project.build.directory}/reports</outputDirectory>
 					<outputFileExt>.jasper</outputFileExt>
 					<xmlValidation>true</xmlValidation>
 					<verbose>false</verbose>
 					<numberOfThreads>4</numberOfThreads>
 					<failOnMissingSourceDirectory>true</failOnMissingSourceDirectory>
 					<sourceScanner>org.codehaus.plexus.compiler.util.scan.StaleSourceScanner</sourceScanner>
-				
+
 				</configuration>
 			</plugin>
 		</plugins>
@@ -243,22 +248,22 @@
 				<targetPath>beanio/</targetPath>
 			</resource>
 			<resource>
-				<directory>src/main/resources/jasper/</directory>
-				<targetPath>jasper/</targetPath>
+				<directory>src/main/resources/reports/</directory>
+				<targetPath>reports/</targetPath>
 				<includes>
 					<include>**/*</include>
 				</includes>
 			</resource>
 			<resource>
-				<directory>src/main/resources/jasper/images/</directory>
+				<directory>src/main/resources/reports/images/</directory>
 				<targetPath>images/</targetPath>
 				<includes>
 					<include>**/*</include>
 				</includes>
 			</resource>
 			<resource>
-				<directory>${project.build.directory}/jasper/</directory>
-				<targetPath>jasper/</targetPath>
+				<directory>${project.build.directory}/reports/</directory>
+				<targetPath>reports/</targetPath>
 				<includes>
 					<include>**/*</include>
 				</includes>

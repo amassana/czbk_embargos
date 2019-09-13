@@ -30,7 +30,7 @@ WHERE t.COD_TRABA = $P{COD_TRABA} AND cl.COD_LEVANTAMIENTO = lt.COD_LEVANTAMIENT
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="10"/>
+					<font fontName="Serif" size="10"/>
 				</textElement>
 				<text><![CDATA[IMPORTE EN CIFRAS]]></text>
 			</staticText>
@@ -43,7 +43,7 @@ WHERE t.COD_TRABA = $P{COD_TRABA} AND cl.COD_LEVANTAMIENTO = lt.COD_LEVANTAMIENT
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Justified">
-					<font size="10"/>
+					<font fontName="Serif" size="10"/>
 				</textElement>
 				<text><![CDATA[IMPORTE EN LETRAS]]></text>
 			</staticText>
@@ -56,7 +56,7 @@ WHERE t.COD_TRABA = $P{COD_TRABA} AND cl.COD_LEVANTAMIENTO = lt.COD_LEVANTAMIENT
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="10"/>
+					<font fontName="Serif" size="10"/>
 				</textElement>
 				<text><![CDATA[FECHA DE ABONO]]></text>
 			</staticText>
@@ -75,7 +75,7 @@ WHERE t.COD_TRABA = $P{COD_TRABA} AND cl.COD_LEVANTAMIENTO = lt.COD_LEVANTAMIENT
 				</reportElement>
 				<box leftPadding="6"/>
 				<textElement verticalAlignment="Middle">
-					<font size="10"/>
+					<font fontName="Serif" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{IMPORTE}]]></textFieldExpression>
 			</textField>
@@ -85,7 +85,7 @@ WHERE t.COD_TRABA = $P{COD_TRABA} AND cl.COD_LEVANTAMIENTO = lt.COD_LEVANTAMIENT
 				</reportElement>
 				<box topPadding="3" leftPadding="6"/>
 				<textElement verticalAlignment="Top">
-					<font size="10"/>
+					<font fontName="Serif" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{NumberToLetter_SCRIPTLET}.Convertir($F{IMPORTE}.toString(), true)]]></textFieldExpression>
 			</textField>
@@ -94,7 +94,9 @@ WHERE t.COD_TRABA = $P{COD_TRABA} AND cl.COD_LEVANTAMIENTO = lt.COD_LEVANTAMIENT
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c6700bce-f58a-4390-b26d-382b64061bdf"/>
 				</reportElement>
 				<box leftPadding="5"/>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHA_TRABA}.toString()))]]></textFieldExpression>
 			</textField>
 		</band>

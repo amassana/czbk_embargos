@@ -65,7 +65,7 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 				</reportElement>
 				<box leftPadding="4"/>
 				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
+					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["INFORME DE PETICIÓN DE INFORMACIÓN"]]></textFieldExpression>
 			</textField>
@@ -82,7 +82,7 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 					<bottomPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Bottom">
-					<font size="10" isBold="true"/>
+					<font fontName="Serif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[NOMBRE FICHERO]]></text>
 			</staticText>
@@ -95,7 +95,7 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 					<bottomPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Bottom">
-					<font size="10" isBold="true"/>
+					<font fontName="Serif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TIPO FICHERO]]></text>
 			</staticText>
@@ -108,7 +108,7 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 					<bottomPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Bottom">
-					<font size="10" isBold="true"/>
+					<font fontName="Serif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[ESTADO]]></text>
 			</staticText>
@@ -121,7 +121,7 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 					<bottomPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Bottom">
-					<font size="10" isBold="true"/>
+					<font fontName="Serif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[F.INCORPORACIÓN]]></text>
 			</staticText>
@@ -134,7 +134,7 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 					<bottomPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Bottom">
-					<font size="10" isBold="true"/>
+					<font fontName="Serif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[F.RESPUESTA]]></text>
 			</staticText>
@@ -148,7 +148,9 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 				</reportElement>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{NOMBRE_FICHERO}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
@@ -157,7 +159,9 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 				</reportElement>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{DES_TIPO_FICHERO}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
@@ -166,7 +170,9 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 				</reportElement>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{DESCRIPCION}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
@@ -175,7 +181,9 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 				</reportElement>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMddHHmmss").parse($F{FECHA_INCORPORACION}.toString()))]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
@@ -184,7 +192,9 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 				</reportElement>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMddHHmmss").parse($F{FECHA_GENERACION_RESPUESTA}.toString()))]]></textFieldExpression>
 			</textField>
 		</band>
@@ -193,10 +203,16 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 		<band height="80" splitType="Stretch">
 			<textField>
 				<reportElement x="720" y="50" width="20" height="30" uuid="b649f815-4064-4989-b413-c1ca27325e54"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER} + " of "]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
 				<reportElement x="740" y="50" width="28" height="30" uuid="e6fca5b5-211a-4b20-8685-6586fa5c0c62"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>

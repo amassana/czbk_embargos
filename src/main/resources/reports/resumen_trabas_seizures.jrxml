@@ -95,14 +95,14 @@ t.cod_traba]]>
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8b7afc92-88e8-4215-92c0-ecde04ff4aac"/>
 					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font isBold="true"/>
+						<font fontName="Serif" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA["Pendiente " + $F{IMPORTEPENDIENTE}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="350" y="20" width="110" height="30" uuid="50bb0aa2-ca46-4271-b058-70251c42bc73"/>
 					<textElement verticalAlignment="Middle">
-						<font isBold="true"/>
+						<font fontName="Serif" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA["Trabado " + $F{IMPORTETRABADO}]]></textFieldExpression>
 				</textField>
@@ -125,7 +125,7 @@ t.cod_traba]]>
 				<reportElement x="290" y="28" width="79" height="30" uuid="2ff9813b-f750-4e4c-a016-0a677c25c19f"/>
 				<box leftPadding="4"/>
 				<textElement verticalAlignment="Middle">
-					<font size="14"/>
+					<font fontName="Serif" size="14"/>
 				</textElement>
 				<text><![CDATA[Organismo]]></text>
 			</staticText>
@@ -134,7 +134,7 @@ t.cod_traba]]>
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="70be1e8b-a8d5-423d-865c-bf6dfa56a188"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
-					<font size="14"/>
+					<font fontName="Serif" size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DES_ENTIDAD}]]></textFieldExpression>
 			</textField>
@@ -151,7 +151,7 @@ t.cod_traba]]>
 				</reportElement>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
 			</textField>
@@ -160,7 +160,7 @@ t.cod_traba]]>
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="af1705da-d847-410c-91f9-4b46909ef501"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="10" isBold="true"/>
+					<font fontName="Serif" size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["NIF " + $F{NIF}]]></textFieldExpression>
 			</textField>
@@ -169,7 +169,7 @@ t.cod_traba]]>
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="da80972e-2364-4fe4-a20d-b640a07dee37"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Deuda ".concat(String.valueOf($F{IMPORTEDEUDA}))]]></textFieldExpression>
 			</textField>
@@ -177,7 +177,9 @@ t.cod_traba]]>
 				<reportElement x="350" y="0" width="91" height="23" uuid="fec3c2cf-9b0d-4dbc-b6c6-3c1ba60feb21">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="1e777b6b-a90d-4008-af1a-640b01e39b0c"/>
 				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{IMPORTETRABADOCUENTA}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -186,7 +188,9 @@ t.cod_traba]]>
 					<printWhenExpression><![CDATA[$V{CuentasGroup_COUNT} == 1]]></printWhenExpression>
 				</reportElement>
 				<box leftPadding="5"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA["Cuenta: " + $F{IBAN}]]></textFieldExpression>
 			</textField>
 		</band>
@@ -202,7 +206,7 @@ t.cod_traba]]>
 			<textField>
 				<reportElement x="390" y="34" width="140" height="30" uuid="289aea83-2059-456d-aad6-a21b13a94e45"/>
 				<textElement verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Total trabado:  " + $V{IMPORTE_TOTAL_TRABADO}]]></textFieldExpression>
 			</textField>

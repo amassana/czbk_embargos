@@ -349,7 +349,7 @@ public class SeizureServiceImpl implements SeizureService {
 
 			return JasperExportManager.exportReportToPdf(fillReport);
 
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			throw new Exception("DB exception while generating the report", e);
 		}
 	}
@@ -374,7 +374,7 @@ public class SeizureServiceImpl implements SeizureService {
 
 			return JasperExportManager.exportReportToPdf(fillReport);
 
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			System.out.println(e);
 			throw new Exception("DB exception while generating the report", e);
 		}
@@ -401,7 +401,7 @@ public class SeizureServiceImpl implements SeizureService {
 
 			return JasperExportManager.exportReportToPdf(fillReport);
 
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			throw new Exception("DB exception while generating the report", e);
 		}
 	}
@@ -500,7 +500,7 @@ public class SeizureServiceImpl implements SeizureService {
 			JasperPrint fillReport = JasperFillManager.fillReport(finalEmbargosIS, parameters, conn_embargos);
 
 			return JasperExportManager.exportReportToPdf(fillReport);
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			throw new Exception("DB exception while generating the report", e);
 		}
 	}
@@ -528,7 +528,7 @@ public class SeizureServiceImpl implements SeizureService {
 			JasperPrint fillReport = JasperFillManager.fillReport(finalEmbargosIS, parameters, conn_embargos);
 
 			return JasperExportManager.exportReportToPdf(fillReport);
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			throw new Exception("DB exception while generating the report", e);
 		}
 	}
@@ -553,7 +553,7 @@ public class SeizureServiceImpl implements SeizureService {
 
 			return JasperExportManager.exportReportToPdf(transOrderJP);
 
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			throw new Exception("DB exception while generating the report", e);
 		}
 
