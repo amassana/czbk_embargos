@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.comun.lib.util.ICEParserException;
@@ -33,6 +34,7 @@ import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlficheroPK;
 import es.commerzbank.ice.embargos.domain.entity.HControlFichero;
+import es.commerzbank.ice.embargos.domain.entity.TipoFichero;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlAuditMapper;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
 import es.commerzbank.ice.embargos.domain.specification.FileControlSpecification;
@@ -138,7 +140,7 @@ public class FileControlServiceImpl implements FileControlService{
 	}
 
 	@Override
-	public boolean tramitarFicheroInformacion(Long codeFileControl, String usuarioTramitador) throws IOException {
+	public boolean tramitarFicheroInformacion(Long codeFileControl, String usuarioTramitador) throws IOException, ICEParserException {
 
 		//Obtener el codigo del fichero de control:
 		Optional<ControlFichero> controlFicheroOpt = fileControlRepository.findById(codeFileControl);
@@ -272,6 +274,31 @@ public class FileControlServiceImpl implements FileControlService{
 		
 	}
 
+	@Override
+	@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
+	public void updateFileControlStatusTransaction(ControlFichero controlFichero, Long codEstado) {
+			
+		TipoFichero tipoFichero = controlFichero.getTipoFichero();
+		
+		if (controlFichero!=null && controlFichero.getFUltimaModificacion()!=null) {
+				
+	        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
+	        		codEstado,
+	        		tipoFichero.getCodTipoFichero());
+	        controlFichero.setEstadoCtrlfichero(estadoCtrlfichero);
+				
+			fileControlRepository.save(controlFichero);
+		}
+
+	}
+	
+	@Override
+	@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
+	public void saveFileControlTransaction(ControlFichero controlFichero) {
+		
+		fileControlRepository.save(controlFichero);
+	}
+	
 	@Override
 	public List<FileControlDTO> getAuditByCodeFileControl(Long codeFileControl) {
 

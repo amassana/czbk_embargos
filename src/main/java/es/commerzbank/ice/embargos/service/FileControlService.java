@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
 import es.commerzbank.ice.embargos.domain.dto.FileControlFiltersDTO;
+import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 
 public interface FileControlService {
 
@@ -19,7 +20,7 @@ public interface FileControlService {
 	
 	public List<FileControlDTO> getAuditByCodeFileControl(Long codeFileControl);
 	
-	public boolean tramitarFicheroInformacion(Long codeFileControl, String usuarioTramitador) throws IOException;
+	public boolean tramitarFicheroInformacion(Long codeFileControl, String usuarioTramitador) throws IOException, ICEParserException;
 	
 	public boolean tramitarTrabasCuaderno63(Long codeFileControl, String usuarioTramitador) throws IOException, ICEParserException;
 	
@@ -28,6 +29,10 @@ public interface FileControlService {
 	public boolean updateFileControl(Long codeFileControl, FileControlDTO fileControlDTO, String userModif);
 	
 	public boolean updateFileControlStatus(Long codeFileControl, Long codFileControlStatus, String userModif);
+	
+	public void updateFileControlStatusTransaction(ControlFichero controlFichero, Long codEstado);
+	
+	public void saveFileControlTransaction(ControlFichero controlFichero);
 
 	public byte[] generarReporteListado(Integer [] codTipoFichero, Integer codEstado, boolean isPending, Date fechaInicio, Date fechaFin) throws Exception;
 	

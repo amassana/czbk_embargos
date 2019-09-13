@@ -414,8 +414,9 @@ public class SeizureServiceImpl implements SeizureService {
 		
 		Long oficinaCuentaRecaudacion = determineOficinaCuentaRecaudacion();
 		
-		String contabilizacionCallbackParameter = determineContabilizacionCallbackParameter();
-				
+		String contabilizacionCallbackNameParameter = EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_CALLBACK;
+		
+		
 		//Se obtienen la trabas asociadas al fichero:
 		for (Embargo embargo : controlFichero.getEmbargos()) {
 			
@@ -445,7 +446,7 @@ public class SeizureServiceImpl implements SeizureService {
 				accountingNote.setReference2(reference2);
 				accountingNote.setDetailPayment(detailPayment);
 				accountingNote.setChange(cuentaTraba.getCambio());
-				accountingNote.setGeneralParameter(contabilizacionCallbackParameter);
+				accountingNote.setGeneralParameter(contabilizacionCallbackNameParameter);
 				
 				accountingNoteService.Contabilizar(accountingNote);
 				
@@ -468,7 +469,7 @@ public class SeizureServiceImpl implements SeizureService {
 		
 		Long oficinaCuentaRecaudacion = determineOficinaCuentaRecaudacion();
 		
-		String contabilizacionCallbackParameter = determineContabilizacionCallbackParameter();
+		String contabilizacionCallbackNameParameter = EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_CALLBACK;
 		
 		//Se obtienen las peticiones asociadas al fichero:
 		for (Peticion peticion : controlFichero.getPeticiones()) {
@@ -509,7 +510,7 @@ public class SeizureServiceImpl implements SeizureService {
 						accountingNote.setReference2(reference2);
 						accountingNote.setDetailPayment(detailPayment);
 						accountingNote.setChange(cuentaTraba.getCambio());
-						accountingNote.setGeneralParameter(contabilizacionCallbackParameter);
+						accountingNote.setGeneralParameter(contabilizacionCallbackNameParameter);
 						
 						accountingNoteService.Contabilizar(accountingNote);
 						
@@ -543,30 +544,30 @@ public class SeizureServiceImpl implements SeizureService {
 
 	private String determineCuentaRecaudacion() throws ICEException {
 		GeneralParameter cuentaRecaudacionGenParam = 
-				generalParametersService.viewParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION);	
+				generalParametersService.viewParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);	
 		
 		String cuentaRecaudacion = cuentaRecaudacionGenParam!=null ? cuentaRecaudacionGenParam.getValue() :null;		
 		
 		if (cuentaRecaudacion==null || cuentaRecaudacion.isEmpty()) {
-			throw new ICEException("","ERROR: parameter not found: " + EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION);
+			throw new ICEException("","ERROR: parameter not found: " + EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);
 		}
 		
 		return cuentaRecaudacion;
 	}
 	
-	private String determineContabilizacionCallbackParameter() throws ICEException {	
-		GeneralParameter contabilizacionCallbackGenParam = 
-				generalParametersService.viewParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_CALLBACK);
-		
-		String contabilizacionCallback = contabilizacionCallbackGenParam!=null ?
-				contabilizacionCallbackGenParam.getValue() :null;
-		
-		if (contabilizacionCallback==null || contabilizacionCallback.isEmpty()) {
-			throw new ICEException("","ERROR: parameter not found: " + EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_CALLBACK);
-		}
-		
-		return contabilizacionCallback;
-	}
+//	private String determineContabilizacionCallbackParameter() throws ICEException {	
+//		GeneralParameter contabilizacionCallbackGenParam = 
+//				generalParametersService.viewParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_CALLBACK);
+//		
+//		String contabilizacionCallback = contabilizacionCallbackGenParam!=null ?
+//				contabilizacionCallbackGenParam.getValue() :null;
+//		
+//		if (contabilizacionCallback==null || contabilizacionCallback.isEmpty()) {
+//			throw new ICEException("","ERROR: parameter not found: " + EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_CALLBACK);
+//		}
+//		
+//		return contabilizacionCallback;
+//	}
 	
 	@Override
 	public boolean manageAccountingNoteCallback(RespuestaContabilidad respuestaContabilidad, String userName) {
