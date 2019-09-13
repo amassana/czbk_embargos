@@ -6,14 +6,13 @@ public class BankAccountLiftingDTO {
 	private String account;
 	private Double change;
 	private Double amount;
-	private String indAccounting;
-	private String action;
+	private boolean indAccounting;
 	private String codCurrency;
 	
 	public BankAccountLiftingDTO() {}
 	
 	public BankAccountLiftingDTO(Long codLiftingAccount, String iban, String account, Double change, Double amount,
-			String indAccounting, String action, String codCurrency) {
+			boolean indAccounting, String codCurrency) {
 		super();
 		this.codLiftingAccount = codLiftingAccount;
 		this.iban = iban;
@@ -21,7 +20,6 @@ public class BankAccountLiftingDTO {
 		this.change = change;
 		this.amount = amount;
 		this.indAccounting = indAccounting;
-		this.action = action;
 		this.codCurrency = codCurrency;
 	}
 
@@ -57,17 +55,11 @@ public class BankAccountLiftingDTO {
 	public void setAmount(Double amount) {
 		this.amount = amount;
 	}
-	public String getIndAccounting() {
+	public boolean getIndAccounting() {
 		return indAccounting;
 	}
-	public void setIndAccounting(String indAccounting) {
+	public void setIndAccounting(boolean indAccounting) {
 		this.indAccounting = indAccounting;
-	}
-	public String getAction() {
-		return action;
-	}
-	public void setAction(String action) {
-		this.action = action;
 	}
 	public String getCodCurrency() {
 		return codCurrency;
