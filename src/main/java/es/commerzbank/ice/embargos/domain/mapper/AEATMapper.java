@@ -6,6 +6,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
+import es.commerzbank.ice.embargos.domain.entity.*;
+import es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.Levantamiento;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,22 +17,16 @@ import org.mapstruct.Mappings;
 
 import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
-import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
-import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
-import es.commerzbank.ice.embargos.domain.entity.CuentasInmovilizacion;
-import es.commerzbank.ice.embargos.domain.entity.CuentasRecaudacion;
-import es.commerzbank.ice.embargos.domain.entity.Embargo;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
-import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
-import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.Diligencia;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.EntidadCredito;
 import es.commerzbank.ice.utils.EmbargosConstants;
 import es.commerzbank.ice.utils.ICEDateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel="spring")
 public abstract class AEATMapper {
-
+	@Autowired
+	LevantamientoHelperMapper levantamientoHelperMapper;
 	
 	@Mappings({
 		@Mapping(source = "diligencia.nifDeudor", target = "nif"),
@@ -257,5 +254,54 @@ public abstract class AEATMapper {
         //Usuario y fecha ultima modificacion:
 		traba.setUsuarioUltModificacion(usuarioModif);
 		traba.setFUltimaModificacion(fechaUltmaModif);
+	}
+
+	@Mappings({
+			@Mapping(source = "codControlFichero", target = "controlFichero.codControlFichero")
+	})
+	public abstract LevantamientoTraba generateLevantamiento(Long codControlFichero, Levantamiento levantamientoAEAT, Traba traba, CustomerDTO DWHCustomer);
+
+	@AfterMapping
+	public void generateLevantamientoAfterMapping(@MappingTarget LevantamientoTraba levantamiento, Levantamiento levantamientoAEAT, Traba traba, CustomerDTO DWHCustomer) {
+		BigDecimal fechaUltmaModif = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
+		String usuarioModif = EmbargosConstants.USER_AUTOMATICO;
+
+		levantamiento.setUsuarioUltModificacion(usuarioModif);
+		levantamiento.setFUltimaModificacion(fechaUltmaModif);
+		levantamiento.setTraba(traba);
+		// així?
+		levantamiento.setEstadoEjecutado(BigDecimal.ZERO);
+		levantamiento.setEstadoContable(BigDecimal.ZERO);
+		levantamiento.setIndCasoRevisado(EmbargosConstants.IND_FLAG_NO);
+
+		// sempre a null levantamiento.setCodDeudaDeudor();
+
+		List<CuentaLevantamiento> cuentas = new ArrayList<>(6);
+		levantamiento.setCuentaLevantamientos(cuentas);
+
+		if (levantamientoAEAT.getCodigoCuentaCliente1() != null && !levantamientoAEAT.getCodigoCuentaCliente1().isEmpty()) {
+			CuentaLevantamiento cuentaLevantamiento1 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento, levantamientoAEAT.getCodigoCuentaCliente1(), levantamientoAEAT.getImporteALevantarCC1(), DWHCustomer, traba, usuarioModif, fechaUltmaModif);
+			cuentas.add(cuentaLevantamiento1);
+		}
+		if (levantamientoAEAT.getCodigoCuentaCliente2() != null && !levantamientoAEAT.getCodigoCuentaCliente2().isEmpty()) {
+			CuentaLevantamiento cuentaLevantamiento2 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento, levantamientoAEAT.getCodigoCuentaCliente2(), levantamientoAEAT.getImporteALevantarCC2(), DWHCustomer, traba, usuarioModif, fechaUltmaModif);
+			cuentas.add(cuentaLevantamiento2);
+		}
+		if (levantamientoAEAT.getCodigoCuentaCliente3() != null && !levantamientoAEAT.getCodigoCuentaCliente3().isEmpty()) {
+			CuentaLevantamiento cuentaLevantamiento3 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento, levantamientoAEAT.getCodigoCuentaCliente3(), levantamientoAEAT.getImporteALevantarCC3(), DWHCustomer, traba, usuarioModif, fechaUltmaModif);
+			cuentas.add(cuentaLevantamiento3);
+		}
+		if (levantamientoAEAT.getCodigoCuentaCliente4() != null && !levantamientoAEAT.getCodigoCuentaCliente4().isEmpty()) {
+			CuentaLevantamiento cuentaLevantamiento4 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento, levantamientoAEAT.getCodigoCuentaCliente4(), levantamientoAEAT.getImporteALevantarCC4(), DWHCustomer, traba, usuarioModif, fechaUltmaModif);
+			cuentas.add(cuentaLevantamiento4);
+		}
+		if (levantamientoAEAT.getCodigoCuentaCliente5() != null && !levantamientoAEAT.getCodigoCuentaCliente5().isEmpty()) {
+			CuentaLevantamiento cuentaLevantamiento5 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento, levantamientoAEAT.getCodigoCuentaCliente5(), levantamientoAEAT.getImporteALevantarCC5(), DWHCustomer, traba, usuarioModif, fechaUltmaModif);
+			cuentas.add(cuentaLevantamiento5);
+		}
+		if (levantamientoAEAT.getCodigoCuentaCliente6() != null && !levantamientoAEAT.getCodigoCuentaCliente6().isEmpty()) {
+			CuentaLevantamiento cuentaLevantamiento6 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento, levantamientoAEAT.getCodigoCuentaCliente6(), levantamientoAEAT.getImporteALevantarCC6(), DWHCustomer, traba, usuarioModif, fechaUltmaModif);
+			cuentas.add(cuentaLevantamiento6);
+		}
 	}
 }

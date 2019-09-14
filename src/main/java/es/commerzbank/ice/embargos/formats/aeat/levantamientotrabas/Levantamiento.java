@@ -3,7 +3,7 @@ package es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class Traba {
+public class Levantamiento {
 
 	private String indicadorRegistro;
 	private String nifDeudor;

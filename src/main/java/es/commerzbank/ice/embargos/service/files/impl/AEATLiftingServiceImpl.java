@@ -1,9 +1,13 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
 import es.commerzbank.ice.comun.lib.util.ICEParserException;
-import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
+import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
+import es.commerzbank.ice.embargos.domain.entity.*;
+import es.commerzbank.ice.embargos.domain.mapper.AEATMapper;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
-import es.commerzbank.ice.embargos.repository.FileControlRepository;
+import es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.Levantamiento;
+import es.commerzbank.ice.embargos.repository.*;
+import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.embargos.service.files.AEATLiftingService;
 import es.commerzbank.ice.utils.EmbargosConstants;
 import org.beanio.BeanReader;
@@ -17,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @Transactional(transactionManager="transactionManager")
@@ -33,31 +38,110 @@ public class AEATLiftingServiceImpl
 
     @Autowired
     FileControlRepository fileControlRepository;
-
+    @Autowired
+    LiftingRepository liftingRepository;
+    @Autowired
+    SeizureRepository seizureRepository;
+    @Autowired
+    SeizedRepository seizedRepository;
+    @Autowired
+    LiftingBankAccountRepository liftingBankAccountRepository;
+    @Autowired
+    CustomerService customerService;
+    @Autowired
+    AEATMapper aeatMapper;
     @Override
     public void tratarFicheroLevantamientos(File file) throws IOException, ICEParserException {
         BeanReader beanReader = null;
 
         try {
-            // Crear una entrada en Control Fichero
-            ControlFichero controlFicheroEmbargo =
+            // Inicializar control fichero
+            ControlFichero controlFicheroLevantamiento =
                     fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT);
-            fileControlRepository.save(controlFicheroEmbargo);
 
-            // Inicializar el parseador de la AEAT para Levantamientos
+            fileControlRepository.save(controlFicheroLevantamiento);
+
+            // Inicialiar beanIO parser
             StreamFactory factory = StreamFactory.newInstance();
             factory.loadResource(pathFileConfigAEAT);
             beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_LEVANTAMIENTOTRABAS, file);
 
-            Object currentRow = null;
-            while ((currentRow = beanReader.read()) != null)
-            {
+            Object currentRecord = null;
 
+            while ((currentRecord = beanReader.read()) != null) {
+                LOG.info(beanReader.getRecordName());
+
+                if (EmbargosConstants.RECORD_NAME_AEAT_LEVANTAMIENTO.equals(beanReader.getRecordName()))
+                {
+                    Levantamiento levantamientoAEAT = (Levantamiento) currentRecord;
+
+                    List<Embargo> embargos = seizureRepository.findAllByNumeroEmbargo(levantamientoAEAT.getNumeroDiligenciaEmbargo());
+
+                    if (embargos == null && embargos.size() == 0)
+                    {
+                        LOG.info("No embargo found for "+ levantamientoAEAT.getNumeroDiligenciaEmbargo());
+                        // TODO ERROR
+                        continue;
+                    }
+
+                    Embargo embargo = selectEmbargo(embargos);
+
+                    Traba traba = seizedRepository.getByEmbargo(embargo);
+
+                    if (traba == null)
+                    {
+                        LOG.error("Levantamiento not found for embargo "+ embargo.getCodEmbargo() +" code "+ levantamientoAEAT.getNumeroDiligenciaEmbargo());
+                        continue;
+                    }
+
+                    LOG.info("Using traba "+ traba.getCodTraba() +" for embargo "+ embargo.getCodEmbargo() +" code "+ levantamientoAEAT.getNumeroDiligenciaEmbargo());
+
+                    // recuperar account <- razon interna
+                    // recuperar cod traba
+                    // estado contable?
+                    // estado ejecutado?
+                    CustomerDTO customerDTO = customerService.findCustomerByNif(levantamientoAEAT.getNifDeudor());
+
+                    LevantamientoTraba levantamiento = aeatMapper.generateLevantamiento(controlFicheroLevantamiento.getCodControlFichero(), levantamientoAEAT, traba, customerDTO);
+
+                    liftingRepository.save(levantamiento);
+
+                    for (CuentaLevantamiento cuentaLevantamiento : levantamiento.getCuentaLevantamientos())
+                    {
+                        liftingBankAccountRepository.save(cuentaLevantamiento);
+                    }
+                }
+                else
+                   LOG.info(beanReader.getRecordName());// throw new Exception("BeanIO - Unexpected record name: "+ beanReader.getRecordName());
             }
         }
         catch (Exception e)
         {
-            ;
+            LOG.error("Error while treating NORMA63 LEV file", e);
+            // TODO error treatment
         }
+        finally
+        {
+            if (beanReader != null)
+                beanReader.close();
+        }
+    }
+
+    /* criterio: el embargo más reciente */
+    private Embargo selectEmbargo(List<Embargo> embargos)
+    {
+        Embargo embargo = null;
+
+        for (Embargo currentEmbargo : embargos)
+        {
+            if (embargo == null) {
+                embargo = currentEmbargo;
+                continue;
+            }
+            if (embargo.getFUltimaModificacion().compareTo(currentEmbargo.getFUltimaModificacion()) == -1)
+                embargo = currentEmbargo;
+        }
+
+        return embargo;
     }
 }

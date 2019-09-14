@@ -17,6 +17,8 @@ public class LevantamientoTraba implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@SequenceGenerator(name = "levantamiento_traba_seq_gen", sequenceName = "SEC_LEVANTAMIENTO_TRABA", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "levantamiento_traba_seq_gen")
 	@Column(name="COD_LEVANTAMIENTO", unique=true, nullable=false)
 	private long codLevantamiento;
 

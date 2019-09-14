@@ -515,8 +515,8 @@
 			<field name="indicadorMoneda" length="1" />
 			<field name="posicionesLibres" length="371" ignore="true" />
 		</record>
-		<record name="traba"
-			class="es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.Traba">
+		<record name="levantamiento"
+			class="es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.Levantamiento">
 			<field name="indicadorRegistro" rid="true" literal="2" />
 			<field name="nifDeudor" length="9" />
 			<field name="nombreDeudor" length="40" />

@@ -110,6 +110,7 @@ public class EmbargosConstants {
 	public static final String RECORD_NAME_AEAT_FINENTIDADTRANSMISORA = "finEntidadTransmisora";
 	public static final String RECORD_NAME_AEAT_REGISTROCONTROLENTIDADTRANSMISORA = "registroControlEntidadTransmisora";
 	public static final String RECORD_NAME_AEAT_TRABA = "traba";
+	public static final String RECORD_NAME_AEAT_LEVANTAMIENTO = "levantamiento";
 	public static final String RECORD_NAME_AEAT_ERRORESTRABA = "erroresTraba";
 	
 	public static final String SEPARADOR_PUNTO = ".";

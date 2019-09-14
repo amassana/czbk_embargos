@@ -5,7 +5,7 @@ import java.util.List;
 public class EntidadCreditoGroup {
 
 	private EntidadCredito entidadCredito;
-	private List<Traba> trabaList;
+	private List<Levantamiento> levantamientoList;
 	private FinEntidadCredito finEntidadCredito;
 	
 	
@@ -15,11 +15,11 @@ public class EntidadCreditoGroup {
 	public void setEntidadCredito(EntidadCredito entidadCredito) {
 		this.entidadCredito = entidadCredito;
 	}
-	public List<Traba> getTrabaList() {
-		return trabaList;
+	public List<Levantamiento> getLevantamientoList() {
+		return levantamientoList;
 	}
-	public void setTrabaList(List<Traba> trabaList) {
-		this.trabaList = trabaList;
+	public void setLevantamientoList(List<Levantamiento> levantamientoList) {
+		this.levantamientoList = levantamientoList;
 	}
 	public FinEntidadCredito getFinEntidadCredito() {
 		return finEntidadCredito;
