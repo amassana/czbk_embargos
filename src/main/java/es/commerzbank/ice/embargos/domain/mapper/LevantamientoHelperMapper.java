@@ -11,7 +11,7 @@ import es.commerzbank.ice.utils.EmbargosConstants;
 import java.math.BigDecimal;
 
 public class LevantamientoHelperMapper {
-    public  CuentaLevantamiento mapCuentaLevantamiento(LevantamientoTraba levantamientoTraba, String iban, BigDecimal importe, CustomerDTO DWHCustomer, Traba traba, String usuarioModif, BigDecimal fechaUltmaModif)
+    public CuentaLevantamiento mapCuentaLevantamiento(LevantamientoTraba levantamientoTraba, String iban, BigDecimal importe, CustomerDTO DWHCustomer, Traba traba, String usuarioModif, BigDecimal fechaUltmaModif)
     {
         CuentaLevantamiento cuentaLevantamiento = new CuentaLevantamiento();
 

@@ -69,15 +69,21 @@ public class AEATLiftingServiceImpl
             Object currentRecord = null;
 
             while ((currentRecord = beanReader.read()) != null) {
-                LOG.info(beanReader.getRecordName());
-
-                if (EmbargosConstants.RECORD_NAME_AEAT_LEVANTAMIENTO.equals(beanReader.getRecordName()))
+                if (EmbargosConstants.RECORD_NAME_AEAT_ENTIDADTRANSMISORA.equals(beanReader.getRecordName()))
+                {
+                    ;
+                }
+                else if (EmbargosConstants.RECORD_NAME_AEAT_ENTIDADCREDITO.equals(beanReader.getRecordName()))
+                {
+                    ;
+                }
+                else if (EmbargosConstants.RECORD_NAME_AEAT_LEVANTAMIENTO.equals(beanReader.getRecordName()))
                 {
                     Levantamiento levantamientoAEAT = (Levantamiento) currentRecord;
 
                     List<Embargo> embargos = seizureRepository.findAllByNumeroEmbargo(levantamientoAEAT.getNumeroDiligenciaEmbargo());
 
-                    if (embargos == null && embargos.size() == 0)
+                    if (embargos == null || embargos.size() == 0)
                     {
                         LOG.info("No embargo found for "+ levantamientoAEAT.getNumeroDiligenciaEmbargo());
                         // TODO ERROR
@@ -111,13 +117,25 @@ public class AEATLiftingServiceImpl
                         liftingBankAccountRepository.save(cuentaLevantamiento);
                     }
                 }
+                else if (EmbargosConstants.RECORD_NAME_AEAT_FINENTIDADCREDITO.equals(beanReader.getRecordName()))
+                {
+                    ;
+                }
+                else if (EmbargosConstants.RECORD_NAME_AEAT_FINENTIDADTRANSMISORA.equals(beanReader.getRecordName()))
+                {
+                    ;
+                }
+                else if (EmbargosConstants.RECORD_NAME_AEAT_REGISTROCONTROLENTIDADTRANSMISORA.equals(beanReader.getRecordName()))
+                {
+                    ;
+                }
                 else
                    LOG.info(beanReader.getRecordName());// throw new Exception("BeanIO - Unexpected record name: "+ beanReader.getRecordName());
             }
         }
         catch (Exception e)
         {
-            LOG.error("Error while treating NORMA63 LEV file", e);
+            LOG.error("Error while treating AEAT LEV file", e);
             // TODO error treatment
         }
         finally

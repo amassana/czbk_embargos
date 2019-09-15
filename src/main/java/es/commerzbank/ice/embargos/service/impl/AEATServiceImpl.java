@@ -312,7 +312,7 @@ public class AEATServiceImpl implements AEATService{
 
 	@Override
 	public void tratarFicheroErrores(File file) {
-		g
+		;
 	}
 
 }

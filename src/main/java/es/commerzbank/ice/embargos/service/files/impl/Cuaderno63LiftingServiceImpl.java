@@ -94,7 +94,7 @@ public class Cuaderno63LiftingServiceImpl
 
                     List<Embargo> embargos = seizureRepository.findAllByNumeroEmbargo(ordenLevantamientoRetencionFase5.getIdentificadorDeuda());
 
-                    if (embargos == null && embargos.size() == 0)
+                    if (embargos == null || embargos.size() == 0)
                     {
                         LOG.info("No embargo found for "+ ordenLevantamientoRetencionFase5.getIdentificadorDeuda());
                         // TODO ERROR
