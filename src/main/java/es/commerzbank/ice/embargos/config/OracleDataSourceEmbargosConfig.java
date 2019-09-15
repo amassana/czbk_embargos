@@ -16,12 +16,14 @@ import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import oracle.jdbc.pool.OracleDataSource;
 
 @Configuration
+@EnableScheduling
 @EnableJpaRepositories(basePackages = "es.commerzbank.ice.embargos.repository", 
 						entityManagerFactoryRef = "emEmbargos",
 						transactionManagerRef = "transactionManager")

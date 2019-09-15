@@ -87,7 +87,7 @@ public class Traba implements Serializable {
 	private CuentasRecaudacion cuentasRecaudacion;
 
 	//bi-directional many-to-one association to Embargo
-	@ManyToOne(fetch=FetchType.LAZY)
+	@OneToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="COD_EMBARGO", nullable=false)
 	private Embargo embargo;
 

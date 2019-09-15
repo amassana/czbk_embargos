@@ -45,6 +45,7 @@ commerzbank:
         generated: /Seizure_Files/generated/
         error: /Seizure_Files/error/
       monitoring-interval-in-seconds: 5
+      stable-size-time-in-millis: 5000
       suffix-file-filter-pet: pet
       suffix-file-filter-inf: inf
       suffix-file-filter-emb: emb

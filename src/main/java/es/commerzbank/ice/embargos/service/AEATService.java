@@ -9,6 +9,5 @@ public interface AEATService {
 
 	public void tratarFicheroDiligenciasEmbargo(File file) throws IOException, ICEParserException;
 	public void tramitarTrabas(Long codControlFicheroPeticion, String usuarioTramitador) throws IOException, ICEParserException;
-	public void tratarFicheroLevantamientos(File file);
 	public void tratarFicheroErrores(File file);
 }

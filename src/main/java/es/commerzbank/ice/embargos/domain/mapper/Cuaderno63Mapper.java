@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
+import es.commerzbank.ice.embargos.domain.entity.*;
+import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.OrdenLevantamientoRetencionFase5;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,8 +15,6 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
-import es.commerzbank.ice.embargos.domain.dto.SeizedBankAccountDTO;
-import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
 import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
 import es.commerzbank.ice.embargos.domain.entity.CuentasInmovilizacion;
@@ -43,8 +44,7 @@ import es.commerzbank.ice.utils.ICEDateUtils;
 @Mapper(componentModel="spring")
 public abstract class Cuaderno63Mapper {
 
-	
-
+	LevantamientoHelperMapper levantamientoHelperMapper = new LevantamientoHelperMapper();
 	
 	
 //	@Mappings({
@@ -307,13 +307,63 @@ public abstract class Cuaderno63Mapper {
 		embargo.setFUltimaModificacion(fechaUltmaModif);
 		
 	}
-	
+
 	@Mappings({
 		@Mapping(source = "fechaLimiteTraba", target = "fechaLimite"),
 	})
 	public abstract Traba generateTraba(OrdenEjecucionEmbargoFase3 ordenEjecucionEmbargo, OrdenEjecucionEmbargoComplementarioFase3 ordenEjecucionEmbargoComp,
 			 Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante, BigDecimal fechaLimiteTraba);
-	
+
+
+	@Mappings({
+			@Mapping(source = "codControlFichero", target = "controlFichero.codControlFichero")
+	})
+	public abstract LevantamientoTraba generateLevantamiento(Long codControlFichero, OrdenLevantamientoRetencionFase5 ordenLevantamientoRetencionFase5, Traba traba, CustomerDTO DWHCustomer);
+
+	@AfterMapping
+	public void generateLevantamientoAfterMapping(@MappingTarget LevantamientoTraba levantamiento, OrdenLevantamientoRetencionFase5 ordenLevantamientoRetencionFase5, Traba traba, CustomerDTO DWHCustomer) {
+		BigDecimal fechaUltmaModif = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
+		String usuarioModif = EmbargosConstants.USER_AUTOMATICO;
+
+		levantamiento.setUsuarioUltModificacion(usuarioModif);
+		levantamiento.setFUltimaModificacion(fechaUltmaModif);
+		levantamiento.setTraba(traba);
+		// així?
+		levantamiento.setEstadoEjecutado(BigDecimal.ZERO);
+		levantamiento.setEstadoContable(BigDecimal.ZERO);
+		levantamiento.setIndCasoRevisado(EmbargosConstants.IND_FLAG_NO);
+
+		// sempre a null levantamiento.setCodDeudaDeudor();
+
+		List<CuentaLevantamiento> cuentas = new ArrayList<>(6);
+		levantamiento.setCuentaLevantamientos(cuentas);
+
+		if (ordenLevantamientoRetencionFase5.getIbanCuenta1() != null && !ordenLevantamientoRetencionFase5.getIbanCuenta1().isEmpty()) {
+			CuentaLevantamiento cuentaLevantamiento1 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento, ordenLevantamientoRetencionFase5.getIbanCuenta1(), ordenLevantamientoRetencionFase5.getImporteALevantarIban1(), DWHCustomer, traba, usuarioModif, fechaUltmaModif);
+			cuentas.add(cuentaLevantamiento1);
+		}
+		if (ordenLevantamientoRetencionFase5.getIbanCuenta2() != null && !ordenLevantamientoRetencionFase5.getIbanCuenta2().isEmpty()) {
+			CuentaLevantamiento cuentaLevantamiento2 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento, ordenLevantamientoRetencionFase5.getIbanCuenta2(), ordenLevantamientoRetencionFase5.getImporteALevantarIban2(), DWHCustomer, traba, usuarioModif, fechaUltmaModif);
+			cuentas.add(cuentaLevantamiento2);
+		}
+		if (ordenLevantamientoRetencionFase5.getIbanCuenta3() != null && !ordenLevantamientoRetencionFase5.getIbanCuenta3().isEmpty()) {
+			CuentaLevantamiento cuentaLevantamiento3 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento, ordenLevantamientoRetencionFase5.getIbanCuenta3(), ordenLevantamientoRetencionFase5.getImporteALevantarIban3(), DWHCustomer, traba, usuarioModif, fechaUltmaModif);
+			cuentas.add(cuentaLevantamiento3);
+		}
+		if (ordenLevantamientoRetencionFase5.getIbanCuenta4() != null && !ordenLevantamientoRetencionFase5.getIbanCuenta4().isEmpty()) {
+			CuentaLevantamiento cuentaLevantamiento4 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento, ordenLevantamientoRetencionFase5.getIbanCuenta4(), ordenLevantamientoRetencionFase5.getImporteALevantarIban4(), DWHCustomer, traba, usuarioModif, fechaUltmaModif);
+			cuentas.add(cuentaLevantamiento4);
+		}
+		if (ordenLevantamientoRetencionFase5.getIbanCuenta5() != null && !ordenLevantamientoRetencionFase5.getIbanCuenta5().isEmpty()) {
+			CuentaLevantamiento cuentaLevantamiento5 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento, ordenLevantamientoRetencionFase5.getIbanCuenta5(), ordenLevantamientoRetencionFase5.getImporteALevantarIban5(), DWHCustomer, traba, usuarioModif, fechaUltmaModif);
+			cuentas.add(cuentaLevantamiento5);
+		}
+		if (ordenLevantamientoRetencionFase5.getIbanCuenta6() != null && !ordenLevantamientoRetencionFase5.getIbanCuenta6().isEmpty()) {
+			CuentaLevantamiento cuentaLevantamiento6 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento, ordenLevantamientoRetencionFase5.getIbanCuenta6(), ordenLevantamientoRetencionFase5.getImporteALevantarIban6(), DWHCustomer, traba, usuarioModif, fechaUltmaModif);
+			cuentas.add(cuentaLevantamiento6);
+		}
+	}
+
 	@AfterMapping
 	public void generateTrabaAfterMapping(@MappingTarget Traba traba, OrdenEjecucionEmbargoFase3 ordenEjecucionEmbargo, 
 			OrdenEjecucionEmbargoComplementarioFase3 ordenEjecucionEmbargoComp, EntidadesOrdenante entidadOrdenante) {

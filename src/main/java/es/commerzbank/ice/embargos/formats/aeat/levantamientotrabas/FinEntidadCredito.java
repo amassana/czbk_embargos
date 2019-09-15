@@ -2,7 +2,7 @@ package es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas;
 
 import java.math.BigDecimal;
 
-public class FinEntidadCreditoFase5 {
+public class FinEntidadCredito {
 
 	
 	private String indicadorRegistro;
