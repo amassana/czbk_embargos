@@ -183,7 +183,7 @@
 			<field name="posicionesLibres" length="353" ignore="true" />
 		</record>
 		<record name="finEntidadTransmisora"
-			class="es.commerzbank.ice.embargos.formats.aeat.trabas.FinEntidadTrnsmisoraFase4">
+			class="es.commerzbank.ice.embargos.formats.aeat.trabas.FinEntidadTransmisoraFase4">
 			<field name="indicadorRegistro" rid="true" literal="8" />
 			<field name="codigoEntidadTransmisora" length="4" />
 			<field name="fechaCreacionFicheroTrabas" type="date" length="8"

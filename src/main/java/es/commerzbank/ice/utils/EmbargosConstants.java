@@ -120,7 +120,7 @@ public class EmbargosConstants {
 	public static final String STREAM_NAME_AEAT_DILIGENCIAS = "diligenciasFase3";
 	public static final String STREAM_NAME_AEAT_TRABAS = "trabasFase4";
 	public static final String STREAM_NAME_AEAT_RESULTADOVALIDACIONTRABAS = "resultadoValidacionTrabasFase4";
-	public static final String STREAM_NAME_AEAT_LEVANTAMIENTOTRABAS = "levantamientoTrabasFase5";
+	public static final String STREAM_NAME_AEAT_LEVANTAMIENTOTRABAS = "levantamientoTrabas";
 	
 	/** Record names de AEAT **/
 	public static final String RECORD_NAME_AEAT_ENTIDADTRANSMISORA = "entidadTransmisora";
