@@ -402,8 +402,8 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	 		               		
 	        		//Se obtiene la peticionInformacion a partir del correspondiente ControlFichero y NIF:
 	        		PeticionInformacion peticionInformacion = 
-	        				informationPetitionRepository.findByControlFicheroAndNifAndNumeroEmbargo(controlFicheroPeticion,
-	        						solicitudInformacion.getNifDeudor(), solicitudInformacion.getIdentificadorDeuda());		
+	        				informationPetitionRepository.findByControlFicheroAndNif(controlFicheroPeticion,
+	        						solicitudInformacion.getNifDeudor());		
 	        		
 	        		if(peticionInformacion!=null) {
 	        			//Se guardan:
