@@ -282,7 +282,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        task.setOffice(e);
 	        //
 	        task.setAction("0");
-	        task.setState("P");
+	        task.setStatus("P");
 	        task.setIndActive(true);
 	        Long codTarea = taskService.addCalendarTask(task);
 	        
@@ -758,7 +758,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        task.setOffice(e);
 	        //
 	        task.setAction("0");
-	        task.setState("P");
+	        task.setStatus("P");
 	        task.setIndActive(true);
 	        Long codTarea = taskService.addCalendarTask(task);
 	        

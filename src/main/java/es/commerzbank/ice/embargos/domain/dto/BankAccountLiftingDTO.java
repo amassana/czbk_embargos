@@ -6,13 +6,13 @@ public class BankAccountLiftingDTO {
 	private String account;
 	private Double change;
 	private Double amount;
-	private boolean indAccounting;
+	private Item indAccounting;
 	private String codCurrency;
 	
 	public BankAccountLiftingDTO() {}
 	
 	public BankAccountLiftingDTO(Long codLiftingAccount, String iban, String account, Double change, Double amount,
-			boolean indAccounting, String codCurrency) {
+			Item indAccounting, String codCurrency) {
 		super();
 		this.codLiftingAccount = codLiftingAccount;
 		this.iban = iban;
@@ -55,10 +55,10 @@ public class BankAccountLiftingDTO {
 	public void setAmount(Double amount) {
 		this.amount = amount;
 	}
-	public boolean getIndAccounting() {
+	public Item getIndAccounting() {
 		return indAccounting;
 	}
-	public void setIndAccounting(boolean indAccounting) {
+	public void setIndAccounting(Item indAccounting) {
 		this.indAccounting = indAccounting;
 	}
 	public String getCodCurrency() {

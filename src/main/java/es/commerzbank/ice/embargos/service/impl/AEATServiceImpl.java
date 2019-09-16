@@ -316,7 +316,7 @@ public class AEATServiceImpl implements AEATService{
 
 	        //
 	        task.setAction("0");
-	        task.setState("P");
+	        task.setStatus("P");
 	        task.setIndActive(true);
 	        Long codTarea = taskService.addCalendarTask(task);
 	        

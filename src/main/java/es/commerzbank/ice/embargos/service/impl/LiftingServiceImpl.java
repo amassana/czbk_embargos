@@ -123,6 +123,8 @@ public class LiftingServiceImpl implements LiftingService {
 				
 				BankAccountLiftingDTO bankAccountDTO = bankAccountLiftingMapper.toBankAccountLiftingDTO(cuentaLevantamiento);
 				bankAccountList.add(bankAccountDTO);
+				
+				
 			}
 			
 			response.setAccounts(bankAccountList);
