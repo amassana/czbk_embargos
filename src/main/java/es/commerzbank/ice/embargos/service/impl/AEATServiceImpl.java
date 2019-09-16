@@ -73,7 +73,7 @@ import es.commerzbank.ice.utils.ICEDateUtils;
 @Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
 public class AEATServiceImpl implements AEATService{
 
-	private static final Logger LOG = LoggerFactory.getLogger(AEATServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(AEATServiceImpl.class);
 	
 	@Value("${commerzbank.embargos.beanio.config-path.aeat}")
 	String pathFileConfigAEAT;
@@ -131,7 +131,7 @@ public class AEATServiceImpl implements AEATService{
 	
 	@Override
 	public void tratarFicheroDiligenciasEmbargo(File file) throws IOException, ICEParserException{
-		
+		logger.info("AEATServiceImpl - tratarFicheroDiligenciasEmbargo - start");
 		BeanReader beanReader = null;
 		
 		ControlFichero controlFicheroEmbargo = null;
@@ -346,12 +346,13 @@ public class AEATServiceImpl implements AEATService{
 			}
 		}
 	
-		
+		logger.info("AEATServiceImpl - tratarFicheroDiligenciasEmbargo - end");
 	}
 
 	@Override
 	public void tramitarTrabas(Long codControlFicheroEmbargo, String usuarioTramitador) throws IOException, ICEParserException {
-
+		logger.info("AEATServiceImpl - tramitarTrabas - start");
+		
 		BeanReader beanReader = null;
 		BeanWriter beanWriter = null;
 		
@@ -571,11 +572,11 @@ public class AEATServiceImpl implements AEATService{
 	        	closed = taskService.closeCalendarTask(codTarea);
 		      
 	        	if(!closed) {
-		        	LOG.error("ERROR: No se ha cerrado la Tarea");
+	        		logger.error("ERROR: No se ha cerrado la Tarea");
 		        	//TODO: lanzar excepcion si no se ha cerrado la tarea
 		        }
 	        } else {
-	        	LOG.error("ERROR al cerrar la tarea: No se ha encontrado el codigo de la Tarea");
+	        	logger.error("ERROR al cerrar la tarea: No se ha encontrado el codigo de la Tarea");
 	        	//TODO: lanzar excepcion si no se ha encontrado el codigo de tarea
 	        }
 
@@ -592,7 +593,7 @@ public class AEATServiceImpl implements AEATService{
 			fileControlService.updateFileControlStatusTransaction(controlFicheroTrabas, 
 					EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_AEAT_ERROR);
 			
-			LOG.error("ERROR: ", e);
+			logger.error("ERROR: ", e);
 			
 			throw e;
 			

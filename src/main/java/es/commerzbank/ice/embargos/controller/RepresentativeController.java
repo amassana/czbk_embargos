@@ -37,6 +37,7 @@ public class RepresentativeController {
 	        produces = { "application/json" }, 
 	        consumes = { "application/json" })
 	public ResponseEntity<Void> create(Authentication authentication, @RequestBody Representative representative) {
+		logger.info("RepresentativeController - create - start");
 		ResponseEntity<Void> response = null;
 		boolean result = true;
 		
@@ -57,6 +58,7 @@ public class RepresentativeController {
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
+		logger.info("RepresentativeController - create - end");
 		return response;
 	}
 	
@@ -64,6 +66,7 @@ public class RepresentativeController {
 	        produces = { "application/json" }, 
 	        consumes = { "application/json" })
 	public ResponseEntity<Void> update(Authentication authentication,  @RequestBody Representative representative) {
+		logger.info("RepresentativeController - update - start");
 		ResponseEntity<Void> response = null;
 		boolean result = true;
 		
@@ -84,12 +87,14 @@ public class RepresentativeController {
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
+		logger.info("RepresentativeController - update - end");
 		return response;
 	}
 	
 	@DeleteMapping(value = "/representative/{idRepresentative}",
 	        produces = { "application/json" })
 	public ResponseEntity<Void> delete(Authentication authentication, @PathVariable("idRepresentative") Long idRepresentative) {
+		logger.info("RepresentativeController - delete - start");
 		ResponseEntity<Void> response = null;
 		boolean result = true;
 		
@@ -110,12 +115,14 @@ public class RepresentativeController {
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
+		logger.info("RepresentativeController - delete - end");
 		return response;
 	}
 	
 	@GetMapping(value = "/representative/{idRepresentative}",
 	        produces = { "application/json" })
 	public ResponseEntity<Representative> view(Authentication authentication, @PathVariable("idRepresentative") Long idRepresentative) {
+		logger.info("RepresentativeController - view - start");
 		ResponseEntity<Representative> response = null;
 		Representative result = null;
 		
@@ -132,13 +139,14 @@ public class RepresentativeController {
 			response = new ResponseEntity<Representative>(result, HttpStatus.BAD_REQUEST);
 		}
 		
+		logger.info("RepresentativeController - view - end");
 		return response;
 	}
 	
 	@PostMapping(value = "/representative/filter",
 			produces = {"application/json"})
 	public ResponseEntity<Page<Representative>> filter(Authentication authentication, Pageable dataPage, @RequestBody Map<String, Object> parametros) {
-		logger.info("RepresentativeController - listAll - start");
+		logger.info("RepresentativeController - filter - start");
 		ResponseEntity<Page<Representative>> response = null;
 		Page<Representative> list = null;
 		
@@ -154,7 +162,7 @@ public class RepresentativeController {
 			response = new ResponseEntity<Page<Representative>>(list, HttpStatus.BAD_REQUEST);
 		}
 		
-		logger.info("RepresentativeController - listAll - end");
+		logger.info("RepresentativeController - filter - end");
 		return response;
 	}
 	

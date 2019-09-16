@@ -41,7 +41,7 @@ public class CommunicatingEntityServiceImpl implements CommunicatingEntityServic
 	
 	@Override
 	public boolean createUpdateCommunicatingEntity(CommunicatingEntity communicatingEntity, String name) {
-		logger.info("createUpdateCommunicatingEntity - start");
+		logger.info("CommunicatingEntityServiceImpl - createUpdateCommunicatingEntity - start");
 		EntidadesComunicadora result = null, entidad = null;
 		boolean response = true;
 		
@@ -61,13 +61,13 @@ public class CommunicatingEntityServiceImpl implements CommunicatingEntityServic
 			response = false;
 		}
 		
-		logger.info("createUpdateCommunicatingEntity - end");
+		logger.info("CommunicatingEntityServiceImpl - createUpdateCommunicatingEntity - end");
 		return response;
 	}
 
 	@Override
 	public boolean deleteCommunicatingEntity(Long idCommunicatingEntity) {
-		logger.info("deleteCommunicatingEntity - start");
+		logger.info("CommunicatingEntityServiceImpl - deleteCommunicatingEntity - start");
 		boolean response = true;
 		
 		if (repository.existsById(idCommunicatingEntity)) {
@@ -76,30 +76,31 @@ public class CommunicatingEntityServiceImpl implements CommunicatingEntityServic
 			response = false;
 		}
 		
-		logger.info("deleteCommunicatingEntity - end");
+		logger.info("CommunicatingEntityServiceImpl - deleteCommunicatingEntity - end");
 		return response;
 	}
 
 	@Override
 	public CommunicatingEntity viewCommunicatingEntity(Long idCommunicatingEntity) {
-		logger.info("viewCommunicatingEntity - start");
+		logger.info("CommunicatingEntityServiceImpl - viewCommunicatingEntity - start");
 		CommunicatingEntity entity = null;
 
 		if (repository.existsById(idCommunicatingEntity)) {
 			Optional<EntidadesComunicadora> entidad = repository.findById(idCommunicatingEntity);
 			
-			logger.info("viewCommunicatingEntity - Resultado de la consulta - entidad = " + entidad.get().toString());
+			logger.info("CommunicatingEntityServiceImpl - viewCommunicatingEntity - Resultado de la consulta - entidad = " + entidad.get().toString());
 			if (entidad != null) {
 				entity = mapper.toCommunicatingEntity(entidad.get());
 			}
 		}
 		
-		logger.info("viewCommunicatingEntity - end");
+		logger.info("CommunicatingEntityServiceImpl - viewCommunicatingEntity - end");
 		return entity;
 	}
 
 	@Override
 	public List<CommunicatingEntity> listAll() {
+		logger.info("CommunicatingEntityServiceImpl - listAll - start");
 		List<EntidadesComunicadora> entidades = null;
 		List<CommunicatingEntity> response = null;
 		
@@ -122,11 +123,13 @@ public class CommunicatingEntityServiceImpl implements CommunicatingEntityServic
 			}
 		}
 		
+		logger.info("CommunicatingEntityServiceImpl - listAll - end");
 		return response;
 	}
 
 	@Override
 	public Page<CommunicatingEntity> filter(Pageable dataPage) {
+		logger.info("CommunicatingEntityServiceImpl - filter - start");
 		Page<CommunicatingEntity> response = null;
 		List<CommunicatingEntity> list = null;
 		Page<EntidadesComunicadora> result = null;
@@ -152,6 +155,7 @@ public class CommunicatingEntityServiceImpl implements CommunicatingEntityServic
 			response = new PageImpl<>(list, result.getPageable(), result.getTotalElements());
 		}
 		
+		logger.info("CommunicatingEntityServiceImpl - filter - end");
 		return response;
 	}
 
