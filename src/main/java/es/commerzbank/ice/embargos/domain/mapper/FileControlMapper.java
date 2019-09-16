@@ -164,6 +164,11 @@ public abstract class FileControlMapper {
 			}
 		}
 		
+		//Fecha de ultima modificacion:
+		if (controlFichero.getFUltimaModificacion()!=null) {
+			fileControlDTO.setModifiedDate(ICEDateUtils.bigDecimalToDate(controlFichero.getFUltimaModificacion(), ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+		}
+		
 	}
 	
 }

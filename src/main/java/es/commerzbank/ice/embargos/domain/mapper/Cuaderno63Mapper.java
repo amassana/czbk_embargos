@@ -80,6 +80,7 @@ public abstract class Cuaderno63Mapper {
 		@Mapping(source = "solicitudInfo.nombreDeudor", target = "razonSocial"),
 		@Mapping(source = "razonSocialInterna", target = "razonSocialInterna"),
 		@Mapping(source = "solicitudInfo.domicilioDeudor", target = "domicilio"),
+		@Mapping(source = "solicitudInfo.identificadorDeuda", target = "numeroEmbargo"),
 		@Mapping(source = "solicitudInfo.codigoDeuda", target = "codDeudaDeudor"),
 		@Mapping(source = "codControlFicheroPeticion", target = "controlFichero.codControlFichero")
 	})
@@ -490,7 +491,7 @@ public abstract class Cuaderno63Mapper {
 				String claveSeguridad = EmbargosUtils.generateClaveSeguridad(cuentaTraba.getIban());
 				
 				String resultadoRetencion = cuentaTraba.getCuentaTrabaActuacion() != null ? 
-						cuentaTraba.getCuentaTrabaActuacion().getCodActuacion() : null;
+						cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion() : null;
 				
 				switch(cont) {
 					

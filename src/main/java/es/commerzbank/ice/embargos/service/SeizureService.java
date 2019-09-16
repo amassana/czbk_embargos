@@ -24,9 +24,6 @@ public interface SeizureService {
 	public boolean updateSeizureStatus(Long codeFileControl, Long idSeizure, SeizureStatusDTO seizedBankAccountList, String userModif);
 	public List<SeizureDTO> getAuditSeizure(Long codFileControl, Long idSeizure);
 	public List<SeizedBankAccountDTO> getAuditSeizedBankAccounts(Long codFileControl, Long idSeizure, Long codAudit);
-	public boolean sendAccounting(Long codeFileControl, String userName) throws ICEException;
-	public boolean undoAccounting(Long codeFileControl, Long idSeizure, String numAccount, String userName);
-	public boolean manageAccountingNoteCallback(RespuestaContabilidad respuestaContabilidad, String userName);
 	
 	public byte[] generateJustificanteEmbargo(Integer idSeizure) throws Exception;
 	public byte[] generateLevantamientoReport(Integer idLifting) throws Exception;
