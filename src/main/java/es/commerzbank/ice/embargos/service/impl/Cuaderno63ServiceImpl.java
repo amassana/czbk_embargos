@@ -31,10 +31,13 @@ import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
 import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
+import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
+import es.commerzbank.ice.embargos.domain.dto.FileControlStatusDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
+import es.commerzbank.ice.embargos.domain.entity.CuentaTrabaActuacion;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
@@ -399,7 +402,8 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	 		               		
 	        		//Se obtiene la peticionInformacion a partir del correspondiente ControlFichero y NIF:
 	        		PeticionInformacion peticionInformacion = 
-	        				informationPetitionRepository.findByControlFicheroAndNif(controlFicheroPeticion,solicitudInformacion.getNifDeudor());		
+	        				informationPetitionRepository.findByControlFicheroAndNifAndNumeroEmbargo(controlFicheroPeticion,
+	        						solicitudInformacion.getNifDeudor(), solicitudInformacion.getIdentificadorDeuda());		
 	        		
 	        		if(peticionInformacion!=null) {
 	        			//Se guardan:
@@ -653,8 +657,8 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        				if(accountDTO!=null) {
 	        					cuentaEmbargo.setCuenta(accountDTO.getAccountNum());
 	        				} else {
-	        					//Sino, si la cuenta no se encuentra en DWH: indicar motivo de cuenta inexistente
-	        					cuentaEmbargo.setActuacion(EmbargosConstants.CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA);
+	        					//Sino, si la cuenta no se encuentra en DWH: indicar motivo de cuenta embargo a inexistente
+	        					cuentaEmbargo.setActuacion(EmbargosConstants.CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA_NORMA63);
 	        				}
 	        				
 	        				seizureBankAccountRepository.save(cuentaEmbargo);
@@ -682,6 +686,14 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	    	        			cuentaTraba.setCuenta(accountDTO.getAccountNum());
 	    	        			cuentaTraba.setDivisa(accountDTO.getDivisa());
 	    	        			cuentaTraba.setEstadoCuenta(accountDTO.getStatus());
+	    	        		} else {
+	    	        			//Sino, si la cuenta no se encuentra en DWH: indicar la actuacion (motivo) de la cuentaTraba a inexistente:
+	    	        			CuentaTrabaActuacion cuentaTrabaActuacion = new CuentaTrabaActuacion();
+	    	        			cuentaTrabaActuacion.setCodActuacion(EmbargosConstants.CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA_NORMA63);
+	    	        			cuentaTraba.setCuentaTrabaActuacion(cuentaTrabaActuacion);
+	    	        			
+	    	        			//El estado de la cuenta se setea a no encontrada:
+	    	        			cuentaTraba.setEstadoCuenta(EmbargosConstants.BANK_ACCOUNT_STATUS_NOTFOUND);
 	    	        		}
 	        				
 	        				seizedBankAccountRepository.save(cuentaTraba);

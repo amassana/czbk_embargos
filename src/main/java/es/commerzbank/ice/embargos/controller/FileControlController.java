@@ -155,11 +155,13 @@ public class FileControlController {
 	
 	@PostMapping(value = "/{codeFileControl}/process")
 	@ApiOperation(value = "Tramitacion de un archivo.")
-	public ResponseEntity<String> tramitar (Authentication authentication,
+	public ResponseEntity<FileControlDTO> tramitar (Authentication authentication,
 			 @PathVariable("codeFileControl") Long codeFileControl){
 		logger.info("FileControlController - tramitar - start");
-		ResponseEntity<String> response = null;
-		boolean result = false;
+		ResponseEntity<FileControlDTO> response = null;
+		Boolean result = null;
+		
+		FileControlDTO resultFileControlDTO = null;
 		
 		try {
 			
@@ -185,15 +187,18 @@ public class FileControlController {
 				}
 			}
 			
+			//Se obtiene el fileControl que se va a retornar:
+			resultFileControlDTO = fileControlService.getByCodeFileControl(codeFileControl);
+			
 			if (result) {
-				response = new ResponseEntity<>(HttpStatus.OK);
+				response = new ResponseEntity<>(resultFileControlDTO, HttpStatus.OK);
 			} else {
-				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+				response = new ResponseEntity<>(resultFileControlDTO, HttpStatus.BAD_REQUEST);
 			}	
 		
 		} catch (Exception e) {
 			
-			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(resultFileControlDTO, HttpStatus.BAD_REQUEST);
 			
 			logger.error("ERROR in tramitar: ", e);
 		}

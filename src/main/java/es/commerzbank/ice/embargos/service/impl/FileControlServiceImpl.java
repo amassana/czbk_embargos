@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
 import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
@@ -141,13 +142,13 @@ public class FileControlServiceImpl implements FileControlService{
 	}
 
 	@Override
-	public boolean tramitarFicheroInformacion(Long codeFileControl, String usuarioTramitador) throws IOException, ICEParserException {
+	public boolean tramitarFicheroInformacion(Long codeFileControl, String usuarioTramitador) throws IOException, ICEException, ICEParserException {
 		logger.info("FileControlServiceImpl - tramitarFicheroInformacion - start");
 		//Obtener el codigo del fichero de control:
 		Optional<ControlFichero> controlFicheroOpt = fileControlRepository.findById(codeFileControl);
 		
 		if(!controlFicheroOpt.isPresent()) {
-			return false;
+			throw new ICEException("", "ERROR: no se ha encontrado el ControlFichero con id: " +codeFileControl);
 		}
 		
 		ControlFichero controlFichero = controlFicheroOpt.get();
@@ -170,12 +171,17 @@ public class FileControlServiceImpl implements FileControlService{
 		
 		} else {
 			
+			String msg = "";
+			
 			if (countPendingPetitionCases > 0) {
-				logger.debug("No se puede tramitar -> numero de peticiones de informacion pendientes de ser revisadas: " + countPendingPetitionCases);
+				msg = "No se puede tramitar -> numero de peticiones de informacion pendientes de ser revisadas: " + countPendingPetitionCases;
 			
 			} else if (countReviewedPetitionCases.compareTo(countPetitionCases)!=0) {
-				logger.debug("No se puede tramitar: no se ha revisado todas las peticiones de informacion.");
+				msg = "No se puede tramitar: no se ha revisado todas las peticiones de informacion.";
 			}
+			
+			//throw new ICEException("", "ERROR: " + msg);
+			logger.error("ERROR: "+ msg);
 			
 			return false;
 		}
@@ -281,21 +287,39 @@ public class FileControlServiceImpl implements FileControlService{
 		return true;
 		
 	}
-
+	
 	@Override
 	@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
 	public void updateFileControlStatusTransaction(ControlFichero controlFichero, Long codEstado) {
-		logger.info("FileControlServiceImpl - updateFileControlStatusTransaction - start");
-		
-		TipoFichero tipoFichero = controlFichero.getTipoFichero();
 		
 		if (controlFichero!=null && controlFichero.getFUltimaModificacion()!=null) {
-				
-	        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
-	        		codEstado,
-	        		tipoFichero.getCodTipoFichero());
+			
+			TipoFichero tipoFichero = controlFichero.getTipoFichero();
+		logger.info("FileControlServiceImpl - updateFileControlStatusTransaction - start");
+		
+	        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(codEstado, tipoFichero.getCodTipoFichero());
 	        controlFichero.setEstadoCtrlfichero(estadoCtrlfichero);
-				
+				        
+			fileControlRepository.save(controlFichero);
+		}
+	}
+
+	@Override
+	@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
+	public void updateFileControlStatusTransaction(ControlFichero controlFichero, Long codEstado, String userModif) {
+					
+		if (controlFichero!=null && controlFichero.getFUltimaModificacion()!=null) {
+			
+			TipoFichero tipoFichero = controlFichero.getTipoFichero();
+			
+	        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(codEstado, tipoFichero.getCodTipoFichero());
+	        controlFichero.setEstadoCtrlfichero(estadoCtrlfichero);
+			
+	        if (userModif==null) {
+	        	userModif = controlFichero.getUsuarioUltModificacion()!=null ? controlFichero.getUsuarioUltModificacion() : null;
+	        }       
+	        controlFichero.setUsuarioUltModificacion(userModif);
+	        
 			fileControlRepository.save(controlFichero);
 		}
 

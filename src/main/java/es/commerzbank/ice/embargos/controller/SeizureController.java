@@ -26,6 +26,7 @@ import es.commerzbank.ice.embargos.domain.dto.SeizedBankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureActionDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureStatusDTO;
+import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.utils.DownloadReportFile;
 import io.swagger.annotations.ApiOperation;
@@ -42,6 +43,9 @@ public class SeizureController {
 
 	@Autowired
 	private SeizureService seizureService;
+	
+	@Autowired
+	private AccountingService accountingService;
 	
     @GetMapping(value = "/{codeFileControl}")
     @ApiOperation(value="Devuelve la lista de embargos para una petición de embargo.")
@@ -368,7 +372,7 @@ public class SeizureController {
 
 			String userName = authentication.getName();
 		
-			result = seizureService.sendAccounting(codeFileControl, userName);
+			result = accountingService.sendAccounting(codeFileControl, userName);
 			
 			
 			if (result) {
@@ -404,7 +408,7 @@ public class SeizureController {
 
 			String userName = authentication.getName();
 		
-			result = seizureService.undoAccounting(codeFileControl, idSeizure, bankAccount.getCodeBankAccount(), userName);
+			result = accountingService.undoAccounting(codeFileControl, idSeizure, bankAccount.getCodeBankAccount(), userName);
 			
 			
 			if (result) {
@@ -438,7 +442,7 @@ public class SeizureController {
 
 			String userName = authentication.getName();
 		
-			result = seizureService.manageAccountingNoteCallback(respuestaContabilidad, userName);
+			result = accountingService.manageAccountingNoteCallback(respuestaContabilidad, userName);
 			
 			
 			if (result) {
