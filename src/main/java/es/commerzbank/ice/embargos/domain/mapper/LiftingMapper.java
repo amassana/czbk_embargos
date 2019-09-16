@@ -19,15 +19,9 @@ public abstract class LiftingMapper {
 		@Mapping(source = "levantamiento.traba.embargo.nombre", target = "name"),
 		@Mapping(source = "levantamiento.traba.embargo.nif", target = "nif"),
 		@Mapping(source = "levantamiento.traba.embargo.numeroEmbargo", target = "numSeizure"),
-		@Mapping(source = "levantamiento.traba.embargo.importe", target = "amountDebt"),
-		@Mapping(source = "levantamiento.traba.importeTrabado", target = "amountLocked")
+		@Mapping(source = "levantamiento.traba.embargo.importe", target = "amountDebt")
 	})
 	public abstract LiftingDTO toLiftingDTO(LevantamientoTraba levantamiento);
-	
-	@AfterMapping
-	protected void setLiftingDTOAfterMapping(LevantamientoTraba levatamiento, @MappingTarget LiftingDTO liftingDTO) {		
-		liftingDTO.setAmountPending(liftingDTO.getAmountDebt() - liftingDTO.getAmountLocked());
-	}
 
 	@Mappings({
 		@Mapping(source = "codLifting", target = "codLevantamiento"),

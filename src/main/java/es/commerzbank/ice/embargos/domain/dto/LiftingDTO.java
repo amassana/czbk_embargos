@@ -11,8 +11,7 @@ public class LiftingDTO {
 	private String name;
 	private String numSeizure;
 	private Double amountDebt;
-	private Double amountLocked;
-	private Double amountPending;
+	private Double amountRaised;
 	private Date modifiedDate;
 	private String modifiedUser;
 	private List<BankAccountLiftingDTO> accounts;
@@ -23,15 +22,14 @@ public class LiftingDTO {
 	
 	
 	public LiftingDTO(Long codLifting, Long codLock, LiftingStatusDTO status, String nif, String name, String numSeizure, Double amountDebt,
-			Double amountLocked, Double amountPending, Date modifiedDate, String modifiedUser, List<BankAccountLiftingDTO> accounts) {
+			Double amountRaised, Date modifiedDate, String modifiedUser, List<BankAccountLiftingDTO> accounts) {
 		this.codLifting = codLifting;
 		this.status = status;
 		this.nif = nif;
 		this.name = name;
 		this.numSeizure = numSeizure;
 		this.amountDebt = amountDebt;
-		this.amountLocked = amountLocked;
-		this.amountPending = amountPending;
+		this.amountRaised = amountRaised;
 		this.modifiedDate = modifiedDate;
 		this.modifiedUser = modifiedUser;
 		this.accounts = accounts;
@@ -76,17 +74,11 @@ public class LiftingDTO {
 	public void setAmountDebt(Double amountDebt) {
 		this.amountDebt = amountDebt;
 	}
-	public Double getAmountLocked() {
-		return amountLocked;
+	public Double getAmountRaised() {
+		return amountRaised;
 	}
-	public void setAmountLocked(Double amountLocked) {
-		this.amountLocked = amountLocked;
-	}
-	public Double getAmountPending() {
-		return amountPending;
-	}
-	public void setAmountPending(Double amountPending) {
-		this.amountPending = amountPending;
+	public void setAmountRaised(Double amountRaised) {
+		this.amountRaised = amountRaised;
 	}
 	public Date getModifiedDate() {
 		return modifiedDate;
