@@ -39,6 +39,7 @@ public class OrderingEntityController {
 	        produces = { "application/json" }, 
 	        consumes = { "application/json" })
 	public ResponseEntity<Void> create(Authentication authentication, @RequestBody OrderingEntity orderingEntity) {
+		logger.info("OrderingEntityController - create - start");
 		ResponseEntity<Void> response = null;
 		boolean result = true;
 		
@@ -59,6 +60,7 @@ public class OrderingEntityController {
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
+		logger.info("OrderingEntityController - create - end");
 		return response;
 	}
 	
@@ -66,6 +68,7 @@ public class OrderingEntityController {
 	        produces = { "application/json" }, 
 	        consumes = { "application/json" })
 	public ResponseEntity<Void> update(Authentication authentication,  @RequestBody OrderingEntity orderingEntity) {
+		logger.info("OrderingEntityController - update - start");
 		ResponseEntity<Void> response = null;
 		boolean result = true;
 		
@@ -86,12 +89,14 @@ public class OrderingEntityController {
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
+		logger.info("OrderingEntityController - update - end");
 		return response;
 	}
 	
 	@DeleteMapping(value = "/{idOrderingEntity}",
 	        produces = { "application/json" })
 	public ResponseEntity<Void> delete(Authentication authentication, @PathVariable("idOrderingEntity") Long idOrderingEntity) {
+		logger.info("OrderingEntityController - delete - start");
 		ResponseEntity<Void> response = null;
 		boolean result = true;
 		
@@ -112,12 +117,14 @@ public class OrderingEntityController {
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
+		logger.info("OrderingEntityController - delete - end");
 		return response;
 	}
 	
 	@GetMapping(value = "/{idOrderingEntity}",
 	        produces = { "application/json" })
 	public ResponseEntity<OrderingEntity> view(Authentication authentication, @PathVariable("idOrderingEntity") Long idOrderingEntity) {
+		logger.info("OrderingEntityController - view - start");
 		ResponseEntity<OrderingEntity> response = null;
 		OrderingEntity result = null;
 		
@@ -134,6 +141,7 @@ public class OrderingEntityController {
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 		}
 		
+		logger.info("OrderingEntityController - view - end");
 		return response;
 	}
 	

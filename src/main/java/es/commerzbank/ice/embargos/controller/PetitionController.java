@@ -33,7 +33,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping(value = "/petition")
 public class PetitionController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PetitionController.class);
+	private static final Logger logger = LoggerFactory.getLogger(PetitionController.class);
 
 	@Autowired
 	private InformationPetitionService informationPetitionService;
@@ -51,6 +51,7 @@ public class PetitionController {
 	@ApiOperation(value = "Devuelve la lista de casos para una peticion de informacion.")
 	public ResponseEntity<List<PetitionCaseDTO>> getPetitionCaseListByCodeFileControl(Authentication authentication,
 			@PathVariable("codeFileControl") Long codeFileControl) {
+		logger.info("PetitionController - getPetitionCaseListByCodeFileControl - start");
 		ResponseEntity<List<PetitionCaseDTO>> response = null;
 		List<PetitionCaseDTO> result = null;
 
@@ -67,9 +68,10 @@ public class PetitionController {
 
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 
-			LOG.error("ERROR in getPetitionCaseListByCodeFileControl: ", e);
+			logger.error("ERROR in getPetitionCaseListByCodeFileControl: ", e);
 		}
 
+		logger.info("PetitionController - getPetitionCaseListByCodeFileControl - end");
 		return response;
 	}
 
@@ -78,6 +80,7 @@ public class PetitionController {
 	public ResponseEntity<List<BankAccountDTO>> getBankAccountListByCodeFileControlAndPetitionCase(
 			Authentication authentication, @PathVariable("codeFileControl") Long codeFileControl,
 			@PathVariable("codePetitionCase") Long codePetitionCase) {
+		logger.info("PetitionController - getBankAccountListByCodeFileControlAndPetitionCase - start");
 		ResponseEntity<List<BankAccountDTO>> response = null;
 		List<BankAccountDTO> result = null;
 
@@ -92,9 +95,10 @@ public class PetitionController {
 
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 
-			LOG.error("ERROR in getBankAccountListByCodeFileControlAndPetitionCase: ", e);
+			logger.error("ERROR in getBankAccountListByCodeFileControlAndPetitionCase: ", e);
 		}
 
+		logger.info("PetitionController - getBankAccountListByCodeFileControlAndPetitionCase - end");
 		return response;
 	}
 
@@ -104,7 +108,7 @@ public class PetitionController {
 	public ResponseEntity<String> savePetitionCase(Authentication authentication,
 			@PathVariable("codeFileControl") Long codeFileControl,
 			@PathVariable("codePetitionCase") Long codePetitionCase, @RequestBody PetitionCaseDTO petitionCase) {
-
+		logger.info("PetitionController - savePetitionCase - start");
 		ResponseEntity<String> response = null;
 		boolean result = true;
 
@@ -125,9 +129,10 @@ public class PetitionController {
 
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-			LOG.error("ERROR in savePetitionCase: ", e);
+			logger.error("ERROR in savePetitionCase: ", e);
 		}
 
+		logger.info("PetitionController - savePetitionCase - end");
 		return response;
 
 	}
@@ -136,7 +141,7 @@ public class PetitionController {
 	public ResponseEntity<List<PetitionCaseDTO>> getAuditPetitionCase(Authentication authentication,
 			@PathVariable("codeFileControl") Long codeFileControl,
 			@PathVariable("codePetitionCase") Long codePetitionCase) {
-
+		logger.info("PetitionController - getAuditPetitionCase - start");
 		ResponseEntity<List<PetitionCaseDTO>> response = null;
 		List<PetitionCaseDTO> result = null;
 
@@ -150,9 +155,10 @@ public class PetitionController {
 
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 
-			LOG.error("ERROR in getAuditPetitionCase: ", e);
+			logger.error("ERROR in getAuditPetitionCase: ", e);
 		}
 
+		logger.info("PetitionController - getAuditPetitionCase - end");
 		return response;
 
 	}
@@ -184,7 +190,7 @@ public class PetitionController {
 	@GetMapping("/{codeFileControl}/report")
 	public ResponseEntity<InputStreamResource> petitionReport(
 			@PathVariable("codeFileControl") Integer codeFileControl) {
-
+		logger.info("PetitionController - petitionReport - start");
 		DownloadReportFile.setTempFileName("petitionReport");
 
 		DownloadReportFile.setFileTempPath(pdfSavedPath);
@@ -193,10 +199,11 @@ public class PetitionController {
 
 			DownloadReportFile.writeFile(petitionService.generateJasperPDF(codeFileControl));
 
+			logger.info("PetitionController - petitionReport - end");
 			return DownloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
-			LOG.error("Error in petitionReport", e);
+			logger.error("Error in petitionReport", e);
 
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}

@@ -33,7 +33,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping(value = "/lifting")
 public class LiftingController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(LiftingController.class);
+	private static final Logger logger = LoggerFactory.getLogger(LiftingController.class);
 	
 	@Autowired
 	private LiftingService liftingService;
@@ -43,6 +43,7 @@ public class LiftingController {
 	@ApiOperation(value = "Devuelve la lista de casos de levamtamientos")
 	public ResponseEntity<List<LiftingDTO>> getLiftingListByCodeFileControl(Authentication authentication,
 			@PathVariable("codeFileControl") Long codeFileControl) {
+		logger.info("LiftingController - getLiftingListByCodeFileControl - start");
 		ResponseEntity<List<LiftingDTO>> response = null;
 		List<LiftingDTO> result = null;
 
@@ -59,9 +60,10 @@ public class LiftingController {
 
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 
-			LOG.error("ERROR in getPetitionCaseListByCodeFileControl: ", e);
+			logger.error("ERROR in getPetitionCaseListByCodeFileControl: ", e);
 		}
 
+		logger.info("LiftingController - getLiftingListByCodeFileControl - end");
 		return response;
 	}
 	
@@ -70,6 +72,7 @@ public class LiftingController {
 	public ResponseEntity<LiftingDTO> getBankAccountListByCodeFileControlAndLifting(
 			Authentication authentication, @PathVariable("codeFileControl") Long codeFileControl,
 			@PathVariable("codeLifting") Long codeLifting) {
+		logger.info("LiftingController - getBankAccountListByCodeFileControlAndLifting - start");
 		ResponseEntity<LiftingDTO> response = null;
 		LiftingDTO result = null;
 
@@ -84,9 +87,10 @@ public class LiftingController {
 
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 
-			LOG.error("ERROR in getBankAccountListByCodeFileControlAndPetitionCase: ", e);
+			logger.error("ERROR in getBankAccountListByCodeFileControlAndPetitionCase: ", e);
 		}
 
+		logger.info("LiftingController - getBankAccountListByCodeFileControlAndLifting - end");
 		return response;
 	}
 	
@@ -97,7 +101,7 @@ public class LiftingController {
 	public ResponseEntity<String> saveLifting(Authentication authentication,
 			@PathVariable("codeFileControl") Long codeFileControl,
 			@PathVariable("codeLifting") Long codeLifting, @RequestBody LiftingDTO lifting) {
-		
+		logger.info("LiftingController - saveLifting - start");
 		ResponseEntity<String> response = null;
 		boolean result = true;
 		
@@ -117,9 +121,10 @@ public class LiftingController {
 		
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		
-			LOG.error("ERROR in savePetitionCase: ", e);
+			logger.error("ERROR in savePetitionCase: ", e);
 		}
 		
+		logger.info("LiftingController - saveLifting - end");
 		return response;
 
 	}
@@ -127,7 +132,7 @@ public class LiftingController {
 	@GetMapping(value = "/{codeFileControl}/liftingcase/{codeLiftingCase}/audit")
 	public ResponseEntity<List<LiftingAuditDTO>> getAuditPetitionCase(Authentication authentication,
 			@PathVariable("codeLiftingCase") Long codeLiftingCase) {
-
+		logger.info("LiftingController - getAuditPetitionCase - start");
 		ResponseEntity<List<LiftingAuditDTO>> response = null;
 		List<LiftingAuditDTO> result = null;
 
@@ -141,16 +146,17 @@ public class LiftingController {
 
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 
-			LOG.error("ERROR in getAuditPetitionCase: ", e);
+			logger.error("ERROR in getAuditPetitionCase: ", e);
 		}
 
+		logger.info("LiftingController - getAuditPetitionCase - end");
 		return response;
 
 	}
 	
 	@GetMapping(value = "/liftingStatus")
 	public ResponseEntity<List<LiftingStatusDTO>> getListStatus(Authentication authentication) {
-
+		logger.info("LiftingController - getListStatus - start");
 		ResponseEntity<List<LiftingStatusDTO>> response = null;
 		List<LiftingStatusDTO> result = null;
 
@@ -164,9 +170,10 @@ public class LiftingController {
 
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 
-			LOG.error("ERROR in getAuditPetitionCase: ", e);
+			logger.error("ERROR in getAuditPetitionCase: ", e);
 		}
 
+		logger.info("LiftingController - getListStatus - end");
 		return response;
 
 	}

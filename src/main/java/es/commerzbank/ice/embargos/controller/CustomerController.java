@@ -18,7 +18,7 @@ import es.commerzbank.ice.embargos.service.CustomerService;
 @RequestMapping(value = "/customer")
 public class CustomerController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CustomerController.class);
+	private static final Logger logger = LoggerFactory.getLogger(CustomerController.class);
 	
 	@Autowired
 	private CustomerService customerService;
@@ -26,7 +26,7 @@ public class CustomerController {
 	@GetMapping(value = "/{nif}/accounts")
 	public CustomerDTO listAllAccountsByNif(Authentication authentication,
 			@PathVariable("nif") String nif){
-		
+		logger.info("CustomerController - listAllAccountsByNif - start");
 		return customerService.findCustomerByNif(nif);
 		
 	}

@@ -2,15 +2,15 @@ package es.commerzbank.ice.embargos.domain.dto;
 
 public class Item {
 	private Object code;
-	private String name;
+	private String description;
 	
 	public Item() {
 		
 	}
 	
-	public Item(Object code, String name) {
+	public Item(Object code, String description) {
 		this.code = code;
-		this.name = name;
+		this.description = description;
 	}
 
 	
@@ -22,10 +22,12 @@ public class Item {
 		this.code = code;
 	}
 
-	public String getName() {
-		return name;
+	public String getDescription() {
+		return description;
 	}
-	public void setName(String name) {
-		this.name = name;
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
+
 }

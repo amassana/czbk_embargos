@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,7 @@ import es.commerzbank.ice.utils.ICEDateUtils;
 @Transactional(transactionManager="transactionManager")
 public class InformationPetitionServiceImpl implements InformationPetitionService{
 
+	private static final Logger logger = LoggerFactory.getLogger(InformationPetitionServiceImpl.class);
 	
 	@Autowired
 	private CustomerService customerService;
@@ -43,7 +46,8 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 
 	@Override
 	public PetitionCaseDTO getByCodeInformationPetition(Long codeInformationPetition) {
-
+		logger.info("InformationPetitionServiceImpl - getByCodeInformationPetition - start");
+		
 		Optional<PeticionInformacion> peticionInformacionOpt = informationPetitionRepository.findById(codeInformationPetition);
 		
 		if(!peticionInformacionOpt.isPresent()) {
@@ -54,7 +58,7 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 		
 		PeticionInformacion peticionInformacion = peticionInformacionOpt.get();
 			
-		
+		logger.info("InformationPetitionServiceImpl - getByCodeInformationPetition - end");
 		return informationPetitionMapper.toInformationPetitionDTO(peticionInformacion);
 	}
 	
@@ -161,6 +165,7 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 	
 	@Override
 	public List<PetitionCaseDTO> getAllByControlFichero(ControlFichero controlFichero) {
+		logger.info("InformationPetitionServiceImpl - getAllByControlFichero - start");
 
 		List<PeticionInformacion> peticionInformacionList = informationPetitionRepository.findAllByControlFichero(controlFichero);
 		
@@ -171,6 +176,7 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 			informationPetitionDTOList.add(informationPetition);
 		}
 		
+		logger.info("InformationPetitionServiceImpl - getAllByControlFichero - end");
 		return informationPetitionDTOList;
 	}
 
@@ -197,7 +203,7 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 	
 	@Override
 	public boolean savePetitionCase(Long codeFileControl, Long codePetitionCase, PetitionCaseDTO petitionCase, String userModif) {
-
+		logger.info("InformationPetitionServiceImpl - savePetitionCase - start");
 		
 		Optional<PeticionInformacion> peticionInformacionOpt = informationPetitionRepository.findById(codePetitionCase);
 		
@@ -249,11 +255,13 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 		
 		informationPetitionRepository.save(peticionInformacion);
 		
+		logger.info("InformationPetitionServiceImpl - savePetitionCase - end");
 		return true;
 	}
 
 	@Override
 	public List<PetitionCaseDTO> getAuditByCodeInformationPetition(Long codeInformationPetition) {
+		logger.info("InformationPetitionServiceImpl - getAuditByCodeInformationPetition - start");
 
 		List<HPeticionInformacion> hPeticionInformacionList = informationPetitionAuditRepository.findByCodPeticion(codeInformationPetition);
 		
@@ -264,6 +272,7 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 			informationPetitionDTOList.add(informationPetition);
 		}
 		
+		logger.info("InformationPetitionServiceImpl - getAuditByCodeInformationPetition - end");
 		return informationPetitionDTOList;
 	}
 

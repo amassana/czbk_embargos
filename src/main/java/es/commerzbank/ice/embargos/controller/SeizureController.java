@@ -35,7 +35,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping(value = "/seizure")
 public class SeizureController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SeizureController.class);
+	private static final Logger logger = LoggerFactory.getLogger(SeizureController.class);
 
 	@Value("${commerzbank.jasper.temp}")
 	private String pdfSavedPath;
@@ -47,7 +47,7 @@ public class SeizureController {
     @ApiOperation(value="Devuelve la lista de embargos para una petición de embargo.")
     public ResponseEntity<List<SeizureDTO>> getSeizureListByCodeFileControl(Authentication authentication,
                                                                                  @PathVariable("codeFileControl") Long codeFileControl){
-    	
+    	logger.info("SeizureController - getSeizureListByCodeFileControl - start");
     	ResponseEntity<List<SeizureDTO>> response = null;
     	List<SeizureDTO> result = new ArrayList<SeizureDTO>();
     	
@@ -60,9 +60,10 @@ public class SeizureController {
 			
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 			
-			LOG.error("ERROR in getSeizureListByCodeFileControl: ", e);
+			logger.error("ERROR in getSeizureListByCodeFileControl: ", e);
 		}	
-			
+		
+    	logger.info("SeizureController - getSeizureListByCodeFileControl - end");
 		return response;
 
     }
@@ -70,7 +71,7 @@ public class SeizureController {
     @GetMapping(value = "/{codeFileControl}/case/{idSeizure}")
     @ApiOperation(value="Devuelve el embargo a partir de su identificador.")
     public ResponseEntity<SeizureDTO> getSeizureById(Authentication authentication, @PathVariable("idSeizure") Long idSeizure){
-    	
+    	logger.info("SeizureController - getSeizureById - start");
     	ResponseEntity<SeizureDTO> response = null;
     	SeizureDTO result = null;
     	
@@ -85,9 +86,10 @@ public class SeizureController {
 			
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 			
-			LOG.error("ERROR in getSeizureListByCodeFileControl: ", e);
+			logger.error("ERROR in getSeizureListByCodeFileControl: ", e);
 		}	
-			
+		
+    	logger.info("SeizureController - getSeizureById - end");
 		return response;
     	
     }
@@ -97,7 +99,8 @@ public class SeizureController {
     public ResponseEntity<List<SeizedBankAccountDTO>> getBankAccountListBySeizure(Authentication authentication,
                                                                          		@PathVariable("codeFileControl") Long codeFileControl,
                                                                          		@PathVariable("idSeizure") Long idSeizure){
-        ResponseEntity<List<SeizedBankAccountDTO>> response = null;
+    	logger.info("SeizureController - getBankAccountListBySeizure - start");
+    	ResponseEntity<List<SeizedBankAccountDTO>> response = null;
     	List<SeizedBankAccountDTO> result = new ArrayList<>();
     	
     	try {
@@ -109,9 +112,10 @@ public class SeizureController {
 			
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 			
-			LOG.error("ERROR in getBankAccountListByCodeFileControlAndPetitionCase: ", e);
+			logger.error("ERROR in getBankAccountListByCodeFileControlAndPetitionCase: ", e);
 		}	
-
+    	
+    	logger.info("SeizureController - getBankAccountListBySeizure - end");
         return response;
     }
 
@@ -119,7 +123,7 @@ public class SeizureController {
     @ApiOperation(value="Devuelve el listado de acciones posibles de las trabas.")
     public ResponseEntity<List<SeizureActionDTO>> getSeizureActions(Authentication authentication)
     {
-    	
+    	logger.info("SeizureController - getSeizureActions - start");
         ResponseEntity<List<SeizureActionDTO>> response = null;
     	List<SeizureActionDTO> result = new ArrayList<>();
     	
@@ -132,9 +136,10 @@ public class SeizureController {
 			
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 			
-			LOG.error("ERROR in getSeizureActions: ", e);
+			logger.error("ERROR in getSeizureActions: ", e);
 		}	
 
+    	logger.info("SeizureController - getSeizureActions - end");
         return response;
     	
     }
@@ -167,7 +172,7 @@ public class SeizureController {
 
         return response;
         */
-        
+    	logger.info("SeizureController - getSeizureStatusList - start");
         ResponseEntity<List<SeizureStatusDTO>> response = null;
 
         List<SeizureStatusDTO> result = new ArrayList<>();
@@ -182,9 +187,10 @@ public class SeizureController {
 			
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 			
-			LOG.error("ERROR in getSeizureStatusList: ", e);
+			logger.error("ERROR in getSeizureStatusList: ", e);
 		}	
         
+    	logger.info("SeizureController - getSeizureStatusList - end");
         return response;
         
     }
@@ -195,7 +201,7 @@ public class SeizureController {
     														  @PathVariable("codeFileControl") Long codeFileControl,
     														  @PathVariable("idSeizure") Long idSeizure,
     														  @RequestBody List<SeizedBankAccountDTO> seizedBankAccountList){
-    	
+    	logger.info("SeizureController - updateSeizedBankAccountList - start");
 		ResponseEntity<String> response = null;
 		boolean result = false;
 
@@ -215,9 +221,10 @@ public class SeizureController {
 
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-			LOG.error("ERROR in updateSeizedBankAccountList: ", e);
+			logger.error("ERROR in updateSeizedBankAccountList: ", e);
 		}
 
+		logger.info("SeizureController - updateSeizedBankAccountList - end");
 		return response;
 
     }
@@ -229,7 +236,7 @@ public class SeizureController {
     												  @PathVariable("codeFileControl") Long codeFileControl,
     												  @PathVariable("idSeizure") Long idSeizure,
     												  @RequestBody SeizureStatusDTO seizureStatus){
-    	
+    	logger.info("SeizureController - updateSeizureStatus - start");
 		ResponseEntity<String> response = null;
 		boolean result = false;
 
@@ -249,9 +256,10 @@ public class SeizureController {
 
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-			LOG.error("ERROR in updateSeizureStatus: ", e);
+			logger.error("ERROR in updateSeizureStatus: ", e);
 		}
 
+		logger.info("SeizureController - updateSeizureStatus - end");
 		return response;
 
     }
@@ -298,7 +306,7 @@ public class SeizureController {
     public ResponseEntity<List<SeizureDTO>> getAuditSeizure(Authentication authentication,
     												  @PathVariable("codeFileControl") Long codeFileControl,
     												  @PathVariable("idSeizure") Long idSeizure){
-    	
+    	logger.info("SeizureController - getAuditSeizure - start");
 		ResponseEntity<List<SeizureDTO>> response = null;
 		List<SeizureDTO> result = new ArrayList<>();
 
@@ -312,9 +320,10 @@ public class SeizureController {
 			
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 			
-			LOG.error("ERROR in getAudit: ", e);
+			logger.error("ERROR in getAudit: ", e);
 		}	
         
+		logger.info("SeizureController - getAuditSeizure - end");
         return response;
 
     }
@@ -325,7 +334,7 @@ public class SeizureController {
     												  @PathVariable("codeFileControl") Long codeFileControl,
     												  @PathVariable("idSeizure") Long idSeizure,
     												  @PathVariable("codAudit") Long codAudit) {
-
+    	logger.info("SeizureController - getAudit - start");
 		ResponseEntity<List<SeizedBankAccountDTO>> response = null;
 		List<SeizedBankAccountDTO> result = new ArrayList<>();
 
@@ -339,9 +348,10 @@ public class SeizureController {
 
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 
-			LOG.error("ERROR in getAudit: ", e);
+			logger.error("ERROR in getAudit: ", e);
 		}
 
+		logger.info("SeizureController - getAudit - end");
 		return response;
 	}
 
@@ -350,7 +360,7 @@ public class SeizureController {
     @ApiOperation(value="Envio de datos a contabilidad.")
     public ResponseEntity<String> sendAccounting(Authentication authentication,
     										  @PathVariable("codeFileControl") Long codeFileControl){
-		
+    	logger.info("SeizureController - sendAccounting - start");
     	ResponseEntity<String> response = null;
 		boolean result = false;
 
@@ -371,9 +381,10 @@ public class SeizureController {
 
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-			LOG.error("ERROR in doAccounting: ", e);
+			logger.error("ERROR in doAccounting: ", e);
 		}
 
+		logger.info("SeizureController - sendAccounting - end");
 		return response;
     	
     }
@@ -385,7 +396,7 @@ public class SeizureController {
     										  @PathVariable("codeFileControl") Long codeFileControl,
     										  @PathVariable("idSeizure") Long idSeizure,
     										  @RequestBody BankAccountDTO bankAccount){
-		
+    	logger.info("SeizureController - undoAccounting - start");
     	ResponseEntity<String> response = null;
 		boolean result = false;
 
@@ -406,9 +417,10 @@ public class SeizureController {
 
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-			LOG.error("ERROR in doAccounting: ", e);
+			logger.error("ERROR in doAccounting: ", e);
 		}
 
+		logger.info("SeizureController - undoAccounting - end");
 		return response;
     	
     }
@@ -418,7 +430,7 @@ public class SeizureController {
     @ApiOperation(value="Tratamiento de la respuesta de Contabilidad (nota contable).")
     public ResponseEntity<String> manageAccountingNoteCallback(Authentication authentication,
     										  @RequestBody RespuestaContabilidad respuestaContabilidad){
-		
+    	logger.info("SeizureController - manageAccountingNoteCallback - start");
     	ResponseEntity<String> response = null;
 		boolean result = false;
 
@@ -439,9 +451,10 @@ public class SeizureController {
 
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-			LOG.error("ERROR in doAccounting: ", e);
+			logger.error("ERROR in doAccounting: ", e);
 		}
-
+		
+    	logger.info("SeizureController - manageAccountingNoteCallback - end");
 		return response;
     	
     }
@@ -451,7 +464,7 @@ public class SeizureController {
 	@ApiOperation(value = "Devuelve un justificante de embargo")
 	public ResponseEntity<InputStreamResource> generarJustificanteEmbargo(
 			@PathVariable("idSeizure") Integer idSeizure) {
-
+    	logger.info("SeizureController - generarJustificanteEmbargo - start");
 		DownloadReportFile.setTempFileName("justificanteReport");
 
 		DownloadReportFile.setFileTempPath(pdfSavedPath);
@@ -460,11 +473,12 @@ public class SeizureController {
 
 			// seizure service falta
 			DownloadReportFile.writeFile(seizureService.generateJustificanteEmbargo(idSeizure));
-
+			
+			logger.info("SeizureController - generarJustificanteEmbargo - end");
 			return DownloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
-			LOG.error("Error in justificanteReport", e);
+			logger.error("Error in justificanteReport", e);
 
 			if (e.getMessage() == null) {
 				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
@@ -478,7 +492,7 @@ public class SeizureController {
 	@ApiOperation(value = "Devuelve un justificante de embargo")
 	public ResponseEntity<InputStreamResource> generarJustificanteEmbargo3(
 			@PathVariable("idLifting") Integer idLifting) {
-
+		logger.info("SeizureController - generarJustificanteEmbargo3 - start");
 		DownloadReportFile.setTempFileName("levantamientoReport");
 
 		DownloadReportFile.setFileTempPath(pdfSavedPath);
@@ -487,11 +501,12 @@ public class SeizureController {
 
 			// seizure service falta
 			DownloadReportFile.writeFile(seizureService.generateLevantamientoReport(idLifting));
-
+			
+			logger.info("SeizureController - generarJustificanteEmbargo3 - end");
 			return DownloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
-			LOG.error("Error in levantamientoReport", e);
+			logger.error("Error in levantamientoReport", e);
 			System.out.println(e);
 
 			if (e.getMessage() == null) {
@@ -505,6 +520,7 @@ public class SeizureController {
 	@GetMapping("/summary/fileControl/{fileControl}/requestReport")
 	@ApiOperation(value = "Devuelve un fichero de resumen trabas fase 3")
 	public ResponseEntity<InputStreamResource> generarResumentTrabaF3(@PathVariable("fileControl") Integer codControlFichero) {
+		logger.info("SeizureController - generarResumentTrabaF3 - start");
 		DownloadReportFile.setTempFileName("resumenTrabasReportF3");
 
 		DownloadReportFile.setFileTempPath(pdfSavedPath);
@@ -514,10 +530,11 @@ public class SeizureController {
 			// seizure service falta
 			DownloadReportFile.writeFile(seizureService.generarResumenTrabasF3(codControlFichero));
 
+			logger.info("SeizureController - generarResumentTrabaF3 - end");
 			return DownloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
-			LOG.error("Error in resumenTrabas", e);
+			logger.error("Error in resumenTrabas", e);
 
 			if (e.getMessage() == null) {
 				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
@@ -531,7 +548,7 @@ public class SeizureController {
 	@ApiOperation(value = "Devuelve un fichero de resumen trabas fase 4")
 	public ResponseEntity<InputStreamResource> generarResumentTrabasF4(
 			@PathVariable("fileControl") Integer codControlFichero) {
-
+		logger.info("SeizureController - generarResumentTrabasF4 - start");
 		DownloadReportFile.setTempFileName("resumenTrabasReportF4");
 
 		DownloadReportFile.setFileTempPath(pdfSavedPath);
@@ -541,10 +558,11 @@ public class SeizureController {
 			// seizure service falta
 			DownloadReportFile.writeFile(seizureService.generarResumenTrabasF4(codControlFichero));
 
+			logger.info("SeizureController - generarResumentTrabasF4 - end");
 			return DownloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
-			LOG.error("Error in resumenTrabas", e);
+			logger.error("Error in resumenTrabas", e);
 
 			if (e.getMessage() == null) {
 				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
@@ -560,7 +578,7 @@ public class SeizureController {
 	public ResponseEntity<InputStreamResource> generarAnexo(@PathVariable("cod_usuario") BigDecimal cod_usuario,
 			@PathVariable("cod_traba") BigDecimal cod_traba, @PathVariable("num_anexo") Integer num_anexo)
 			throws Exception {
-
+		logger.info("SeizureController - generarAnexo - start");
 		switch (num_anexo) {
 		case 1:
 			return downloadAnexo(cod_usuario, cod_traba, num_anexo);
@@ -569,16 +587,17 @@ public class SeizureController {
 		case 3:
 			return downloadAnexo(cod_usuario, cod_traba, num_anexo);
 		default:
-			LOG.info("Error in anexoReport", "error descargando anexos");
+			logger.info("Error in anexoReport", "error descargando anexos");
 
 		}
 
+		logger.info("SeizureController - generarAnexo - end");
 		return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	private ResponseEntity<InputStreamResource> downloadAnexo(BigDecimal cod_usuario, BigDecimal cod_traba,
 			Integer num_anexo) {
-
+		logger.info("SeizureController - downloadAnexo - start");
 		DownloadReportFile.setTempFileName("anexoReport" + num_anexo);
 
 		DownloadReportFile.setFileTempPath(pdfSavedPath);
@@ -587,10 +606,11 @@ public class SeizureController {
 
 			DownloadReportFile.writeFile(seizureService.generarAnexo(cod_usuario, cod_traba, num_anexo));
 
+			logger.info("SeizureController - downloadAnexo - end");
 			return DownloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
-			LOG.error("Error in anexoReport", e);
+			logger.error("Error in anexoReport", e);
 
 			if (e.getMessage() == null) {
 				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);

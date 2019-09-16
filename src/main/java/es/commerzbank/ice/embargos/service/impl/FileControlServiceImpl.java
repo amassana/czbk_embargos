@@ -58,7 +58,7 @@ import net.sf.jasperreports.engine.util.JRLoader;
 @Transactional(transactionManager="transactionManager")
 public class FileControlServiceImpl implements FileControlService{
 	
-	private static final Logger LOG = LoggerFactory.getLogger(FileControlServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(FileControlServiceImpl.class);
 
 	@Autowired
 	InformationPetitionService informationPetitionService;
@@ -89,7 +89,7 @@ public class FileControlServiceImpl implements FileControlService{
 
 	@Override
 	public Page<FileControlDTO> fileSearch(FileControlFiltersDTO fileControlFiltersDTO, Pageable pageable) throws Exception{
-
+		logger.info("FileControlServiceImpl - fileSearch - start");
 		List<FileControlDTO> fileSearchResponseDTOList = new ArrayList<>();
 				
 		Date startDate = fileControlFiltersDTO.getStartDate();
@@ -118,6 +118,7 @@ public class FileControlServiceImpl implements FileControlService{
 		
 		}
 		
+		logger.info("FileControlServiceImpl - fileSearch - end");
 		return new PageImpl<>(fileSearchResponseDTOList, pageable, controlFicheroList.getTotalElements());
 		
 	}
@@ -129,19 +130,19 @@ public class FileControlServiceImpl implements FileControlService{
 
 	@Override
 	public FileControlDTO getByCodeFileControl(Long codeFileControl) {
-
+		logger.info("FileControlServiceImpl - getByCodeFileControl - start");
 		Optional<ControlFichero> controlFicheroOpt = fileControlRepository.findById(codeFileControl);
 		
 		if(!controlFicheroOpt.isPresent()) {
 			return null;
 		}
-		
+		logger.info("FileControlServiceImpl - getByCodeFileControl - end");
 		return fileControlMapper.toFileControlDTO(controlFicheroOpt.get());
 	}
 
 	@Override
 	public boolean tramitarFicheroInformacion(Long codeFileControl, String usuarioTramitador) throws IOException, ICEParserException {
-
+		logger.info("FileControlServiceImpl - tramitarFicheroInformacion - start");
 		//Obtener el codigo del fichero de control:
 		Optional<ControlFichero> controlFicheroOpt = fileControlRepository.findById(codeFileControl);
 		
@@ -170,37 +171,42 @@ public class FileControlServiceImpl implements FileControlService{
 		} else {
 			
 			if (countPendingPetitionCases > 0) {
-				LOG.debug("No se puede tramitar -> numero de peticiones de informacion pendientes de ser revisadas: " + countPendingPetitionCases);
+				logger.debug("No se puede tramitar -> numero de peticiones de informacion pendientes de ser revisadas: " + countPendingPetitionCases);
 			
 			} else if (countReviewedPetitionCases.compareTo(countPetitionCases)!=0) {
-				LOG.debug("No se puede tramitar: no se ha revisado todas las peticiones de informacion.");
+				logger.debug("No se puede tramitar: no se ha revisado todas las peticiones de informacion.");
 			}
 			
 			return false;
 		}
 		
+		logger.info("FileControlServiceImpl - tramitarFicheroInformacion - end");
 		return true;
 	}
 
 	@Override
 	public boolean tramitarTrabasCuaderno63(Long codeFileControl, String usuarioTramitador) throws IOException, ICEParserException {
-
+		logger.info("FileControlServiceImpl - tramitarTrabasCuaderno63 - start");
+		
 		cuaderno63Service.tramitarTrabas(codeFileControl, usuarioTramitador);
 		
+		logger.info("FileControlServiceImpl - tramitarTrabasCuaderno63 - end");
 		return true;
 	}
 
 	@Override
 	public boolean tramitarTrabasAEAT(Long codeFileControl, String usuarioTramitador) throws IOException, ICEParserException {
-
+		logger.info("FileControlServiceImpl - tramitarTrabasAEAT - start");
+		
 		aeatService.tramitarTrabas(codeFileControl, usuarioTramitador);
 		
+		logger.info("FileControlServiceImpl - tramitarTrabasAEAT - end");
 		return true;
 	}
 	
 	@Override
 	public boolean updateFileControl(Long codeFileControl, FileControlDTO fileControlDTO, String userModif) {
-		
+		logger.info("FileControlServiceImpl - updateFileControl - start");
 		Optional<ControlFichero> controlFicheroOpt = fileControlRepository.findById(codeFileControl);
 		
 		if(!controlFicheroOpt.isPresent()) {
@@ -232,12 +238,13 @@ public class FileControlServiceImpl implements FileControlService{
 		
 		fileControlRepository.save(controlFichero);
 		
+		logger.info("FileControlServiceImpl - updateFileControl - end");
 		return true;
 	}
 	
 	@Override
 	public boolean updateFileControlStatus(Long codeFileControl, Long codFileControlStatus, String userModif) {
-		
+		logger.info("FileControlServiceImpl - updateFileControlStatus - start");
 		Optional<ControlFichero> fileControlOpt = fileControlRepository.findById(codeFileControl);
 		
 		if(!fileControlOpt.isPresent()) {
@@ -270,6 +277,7 @@ public class FileControlServiceImpl implements FileControlService{
 			return false;
 		}
 		
+		logger.info("FileControlServiceImpl - updateFileControlStatus - end");
 		return true;
 		
 	}
@@ -277,7 +285,8 @@ public class FileControlServiceImpl implements FileControlService{
 	@Override
 	@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
 	public void updateFileControlStatusTransaction(ControlFichero controlFichero, Long codEstado) {
-			
+		logger.info("FileControlServiceImpl - updateFileControlStatusTransaction - start");
+		
 		TipoFichero tipoFichero = controlFichero.getTipoFichero();
 		
 		if (controlFichero!=null && controlFichero.getFUltimaModificacion()!=null) {
@@ -290,17 +299,20 @@ public class FileControlServiceImpl implements FileControlService{
 			fileControlRepository.save(controlFichero);
 		}
 
+		logger.info("FileControlServiceImpl - updateFileControlStatusTransaction - end");
 	}
 	
 	@Override
 	@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
 	public void saveFileControlTransaction(ControlFichero controlFichero) {
-		
+		logger.info("FileControlServiceImpl - saveFileControlTransaction - start");
 		fileControlRepository.save(controlFichero);
+		logger.info("FileControlServiceImpl - saveFileControlTransaction - end");
 	}
 	
 	@Override
 	public List<FileControlDTO> getAuditByCodeFileControl(Long codeFileControl) {
+		logger.info("FileControlServiceImpl - getAuditByCodeFileControl - start");
 
 		List<FileControlDTO> fileControlDTOList = new ArrayList<>();
 		
@@ -331,6 +343,7 @@ public class FileControlServiceImpl implements FileControlService{
 			fileControlDTOList.add(fileControlDTO);
 		}
 
+		logger.info("FileControlServiceImpl - getAuditByCodeFileControl - end");
 		return fileControlDTOList;
 		
 		
@@ -339,6 +352,8 @@ public class FileControlServiceImpl implements FileControlService{
 	@Override
 	public byte[] generarReporteListado(Integer[] codTipoFichero,
 			Integer codEstado, boolean isPending, Date fechaInicio, Date fechaFin) throws Exception {
+		logger.info("FileControlServiceImpl - generarReporteListado - start");
+		
 		System.out.println("codTipoFichero: " + codTipoFichero +  " codEstado: " + codEstado + " isPending: " + isPending + " fechaInicio: "
 				+ fechaInicio + " fechaFin: " + fechaFin);
 
@@ -409,7 +424,8 @@ public class FileControlServiceImpl implements FileControlService{
 			InputStream resourceInputStream = resource.getInputStream();
 
 			JasperPrint reporteLleno = JasperFillManager.fillReport(resourceInputStream, parameters, connEmbargos);
-
+			
+			logger.info("FileControlServiceImpl - generarReporteListado - end");
 			return JasperExportManager.exportReportToPdf(reporteLleno);
 		} catch (JRException | SQLException ex) {
 			throw new Exception("Error in generarReporteListado()", ex);
