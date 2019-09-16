@@ -109,7 +109,7 @@ public class CommunicatingEntityServiceImpl implements CommunicatingEntityServic
 			public Predicate toPredicate(Root<EntidadesComunicadora> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicates = new ArrayList<>();
 				
-				predicates.add(criteriaBuilder.equal(root.get(EntidadesComunicadora_.indActivo), EmbargosConstants.IND_FLAG_SI));
+				predicates.add(criteriaBuilder.equal(root.get(EntidadesComunicadora_.IND_ACTIVO), EmbargosConstants.IND_FLAG_SI));
 		
 				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
