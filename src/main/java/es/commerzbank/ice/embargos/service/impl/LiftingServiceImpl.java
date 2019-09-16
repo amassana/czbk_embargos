@@ -119,12 +119,17 @@ public class LiftingServiceImpl implements LiftingService {
 			
 			List<CuentaLevantamiento> cuentasLevantamiento = liftingBankAccountRepository.findByLevantamientoTraba(levantamiento);
 			
+			Double importeLevantado = (double) 0;
+			
 			for (CuentaLevantamiento cuentaLevantamiento : cuentasLevantamiento) {
 				
 				BankAccountLiftingDTO bankAccountDTO = bankAccountLiftingMapper.toBankAccountLiftingDTO(cuentaLevantamiento);
 				bankAccountList.add(bankAccountDTO);
+				
+				importeLevantado += bankAccountDTO.getAmount(); 
 			}
 			
+			response.setAmountRaised(importeLevantado);
 			response.setAccounts(bankAccountList);
 		}
 		

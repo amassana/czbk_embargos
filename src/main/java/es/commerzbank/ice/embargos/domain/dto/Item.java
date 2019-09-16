@@ -1,24 +1,24 @@
 package es.commerzbank.ice.embargos.domain.dto;
 
 public class Item {
-	private long code;
+	private Object code;
 	private String name;
 	
 	public Item() {
 		
 	}
 	
-	public Item(long code, String name) {
+	public Item(Object code, String name) {
 		this.code = code;
 		this.name = name;
 	}
 
 	
-	public long getCode() {
+	public Object getCode() {
 		return code;
 	}
 
-	public void setCode(long code) {
+	public void setCode(Object code) {
 		this.code = code;
 	}
 
