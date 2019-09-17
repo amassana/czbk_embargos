@@ -10,4 +10,5 @@ import es.commerzbank.ice.embargos.domain.entity.Embargo;
 public interface SeizureRepository extends JpaRepository<Embargo, Long>{
 
 	public List<Embargo> findAllByControlFichero(ControlFichero controlFichero);
+	public List<Embargo> findAllByNumeroEmbargo(String numeroEmbargo);
 }

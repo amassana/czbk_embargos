@@ -47,14 +47,14 @@ public class OrderingEntityServiceImpl implements OrderingEntityService {
 	
 	@Override
 	public boolean createUpdateOrderingEntity(OrderingEntity orderingEntity, String name) {
-		logger.info("createUpdateOrderingEntity - start");
+		logger.info("OrderingEntityServiceImpl - createUpdateOrderingEntity - start");
 		EntidadesOrdenante result = null, entidad = null;
 		boolean response = true;
 		
 		entidad = mapper.toEntidadOrdenante(orderingEntity);
 		
 		if (entidad != null) {
-			entidad.setIndActivo(EmbargosConstants.IND_FLAG_YES);
+			entidad.setIndActivo(EmbargosConstants.IND_FLAG_SI);
 			entidad.setFUltimaModificacion(new BigDecimal(System.currentTimeMillis()));
 			entidad.setUsuarioUltModificacion(name);
 			
@@ -67,13 +67,13 @@ public class OrderingEntityServiceImpl implements OrderingEntityService {
 			response = false;
 		}
 		
-		logger.info("createUpdateOrderingEntity - end");
+		logger.info("OrderingEntityServiceImpl - createUpdateOrderingEntity - end");
 		return response;
 	}
 
 	@Override
 	public boolean deleteOrderingEntity(Long idOrderingEntity) {
-		logger.info("deleteOrderingEntity - start");
+		logger.info("OrderingEntityServiceImpl - deleteOrderingEntity - start");
 		boolean response = true;
 		
 		if (repository.existsById(idOrderingEntity)) {
@@ -82,13 +82,13 @@ public class OrderingEntityServiceImpl implements OrderingEntityService {
 			response = false;
 		}
 		
-		logger.info("deleteOrderingEntity - end");
+		logger.info("OrderingEntityServiceImpl - deleteOrderingEntity - end");
 		return response;
 	}
 
 	@Override
 	public OrderingEntity viewOrderingEntity(Long idOrderingEntity) {
-		logger.info("viewOrderingEntity - start");
+		logger.info("OrderingEntityServiceImpl - viewOrderingEntity - start");
 		OrderingEntity entity = null;
 
 		if (repository.existsById(idOrderingEntity)) {
@@ -100,12 +100,13 @@ public class OrderingEntityServiceImpl implements OrderingEntityService {
 			}
 		}
 		
-		logger.info("viewOrderingEntity - end");
+		logger.info("OrderingEntityServiceImpl - viewOrderingEntity - end");
 		return entity;
 	}
 
 	@Override
 	public List<OrderingEntity> listAll() {
+		logger.info("OrderingEntityServiceImpl - listAll - start");
 		List<EntidadesOrdenante> entidades = null;
 		List<OrderingEntity> response = null;
 		
@@ -128,11 +129,13 @@ public class OrderingEntityServiceImpl implements OrderingEntityService {
 			}
 		}
 		
+		logger.info("OrderingEntityServiceImpl - listAll - end");
 		return response;
 	}
 
 	@Override
 	public Page<OrderingEntity> filter(Pageable dataPage) {
+		logger.info("OrderingEntityServiceImpl - filter - start");
 		Page<OrderingEntity> response = null;
 		List<OrderingEntity> list = null;
 		Page<EntidadesOrdenante> result = null;
@@ -158,6 +161,7 @@ public class OrderingEntityServiceImpl implements OrderingEntityService {
 			response = new PageImpl<>(list, result.getPageable(), result.getTotalElements());
 		}
 		
+		logger.info("OrderingEntityServiceImpl - filter - end");
 		return response;
 	}
 }

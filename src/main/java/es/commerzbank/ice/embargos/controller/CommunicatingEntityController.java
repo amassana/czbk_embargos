@@ -39,6 +39,7 @@ public class CommunicatingEntityController {
 	        produces = { "application/json" }, 
 	        consumes = { "application/json" })
 	public ResponseEntity<Void> create(Authentication authentication, @RequestBody CommunicatingEntity communicatingEntity) {
+		logger.info("CommunicatingEntityController - create - start");
 		ResponseEntity<Void> response = null;
 		boolean result = true;
 		
@@ -59,6 +60,7 @@ public class CommunicatingEntityController {
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
+		logger.info("CommunicatingEntityController - create - end");
 		return response;
 	}
 	
@@ -66,6 +68,7 @@ public class CommunicatingEntityController {
 	        produces = { "application/json" }, 
 	        consumes = { "application/json" })
 	public ResponseEntity<Void> update(Authentication authentication,  @RequestBody CommunicatingEntity communicatingEntity) {
+		logger.info("CommunicatingEntityController - update - start");
 		ResponseEntity<Void> response = null;
 		boolean result = true;
 		
@@ -86,12 +89,14 @@ public class CommunicatingEntityController {
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
+		logger.info("CommunicatingEntityController - update - end");
 		return response;
 	}
 	
 	@DeleteMapping(value = "/{idCommunicatingEntity}",
 	        produces = { "application/json" })
 	public ResponseEntity<Void> delete(Authentication authentication, @PathVariable("idCommunicatingEntity") Long idCommunicatingEntity) {
+		logger.info("CommunicatingEntityController - delete - start");
 		ResponseEntity<Void> response = null;
 		boolean result = true;
 		
@@ -112,12 +117,14 @@ public class CommunicatingEntityController {
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
+		logger.info("CommunicatingEntityController - delete - end");
 		return response;
 	}
 	
 	@GetMapping(value = "/{idCommunicatingEntity}",
 	        produces = { "application/json" })
 	public ResponseEntity<CommunicatingEntity> view(Authentication authentication, @PathVariable("idCommunicatingEntity") Long idCommunicatingEntity) {
+		logger.info("CommunicatingEntityController - view - start");
 		ResponseEntity<CommunicatingEntity> response = null;
 		CommunicatingEntity result = null;
 		
@@ -134,6 +141,7 @@ public class CommunicatingEntityController {
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 		}
 		
+		logger.info("CommunicatingEntityController - view - end");
 		return response;
 	}
 	

@@ -62,7 +62,6 @@ public class EmbargosConstants {
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_TO_SEND = 5;
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_GENERATED = 6;
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_SENT = 7;
-	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_CONFIRMED = 8;
 
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_ERROR = 0;
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_LOADING = 1;
@@ -73,6 +72,13 @@ public class EmbargosConstants {
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_GENERATED = 6;
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_SENT = 7;
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_CONFIRMED = 8;
+	
+	public static final long COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_RECEIVED = 2;
+	public static final long COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_ACCOUNTING = 3;
+	public static final long COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_ACCOUNTING_RESPONSE = 4;
+	public static final long COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_TO_SEND = 5;
+	public static final long COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_GENERATED = 6;
+	public static final long COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_SENT = 7;
 	
 	public static final long COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_NORMA63_ERROR = 0;
 	public static final long COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_NORMA63_GENERATING = 1;
@@ -120,7 +126,7 @@ public class EmbargosConstants {
 	public static final String STREAM_NAME_AEAT_DILIGENCIAS = "diligenciasFase3";
 	public static final String STREAM_NAME_AEAT_TRABAS = "trabasFase4";
 	public static final String STREAM_NAME_AEAT_RESULTADOVALIDACIONTRABAS = "resultadoValidacionTrabasFase4";
-	public static final String STREAM_NAME_AEAT_LEVANTAMIENTOTRABAS = "levantamientoTrabasFase5";
+	public static final String STREAM_NAME_AEAT_LEVANTAMIENTOTRABAS = "levantamientoTrabas";
 	
 	/** Record names de AEAT **/
 	public static final String RECORD_NAME_AEAT_ENTIDADTRANSMISORA = "entidadTransmisora";
@@ -130,6 +136,7 @@ public class EmbargosConstants {
 	public static final String RECORD_NAME_AEAT_FINENTIDADTRANSMISORA = "finEntidadTransmisora";
 	public static final String RECORD_NAME_AEAT_REGISTROCONTROLENTIDADTRANSMISORA = "registroControlEntidadTransmisora";
 	public static final String RECORD_NAME_AEAT_TRABA = "traba";
+	public static final String RECORD_NAME_AEAT_LEVANTAMIENTO = "levantamiento";
 	public static final String RECORD_NAME_AEAT_ERRORESTRABA = "erroresTraba";
 	
 	public static final String SEPARADOR_PUNTO = ".";
@@ -152,6 +159,7 @@ public class EmbargosConstants {
 	public static final String BANK_ACCOUNT_STATUS_ACTIVE = "ACTIVE";
 	public static final String BANK_ACCOUNT_STATUS_BLOQUED = "BLOQUED";
 	public static final String BANK_ACCOUNT_STATUS_CANCELLED = "CANCELLED";
+	public static final String BANK_ACCOUNT_STATUS_NOTFOUND = "CANCELLED";
 	
 	public static final long COD_CUENTA_INMOVILIZACION_DEFAULT = 1;
 	
@@ -171,8 +179,12 @@ public class EmbargosConstants {
 	public static final int CODIGO_REGISTRO_CUADERNO63_COMUNICACION_RESULTADO_RETENCION_FASE4 = 6;	
 	public static final String CODIGO_REGISTRO_AEAT_TRABA_FASE4 = "2";
 	
+	/** Codigos actuacion de CuentaTrabaActuacion **/
+	public static final String CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA_AEAT = "5";
+	public static final String CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA_NORMA63 = "5n";
+	
 	/** Entradas de la tabla PARAMETROS de Comunes **/
-	public static final String PARAMETRO_EMBARGOS_CUENTA_RECAUDACION = "embargos.cuentaRecaudacion";
+	public static final String PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA = "embargos.cuentaRecaudacion.cuenta";
 	public static final String PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA = "embargos.cuentaRecaudacion.oficina";
 	public static final String PARAMETRO_EMBARGOS_CONTABILIZACION_CALLBACK = "embargos.contabilizacion.callback";
 	

@@ -12,6 +12,8 @@ import es.commerzbank.ice.embargos.domain.entity.PeticionInformacion;
 public interface InformationPetitionRepository  extends JpaRepository<PeticionInformacion, Long>{
 
 	
+	//public PeticionInformacion findByControlFicheroAndNifAndNumeroEmbargo(ControlFichero controlFichero, String nif, String numeroEmbargo);
+	
 	public PeticionInformacion findByControlFicheroAndNif(ControlFichero controlFichero, String nif);
 	
 	public List<PeticionInformacion> findAllByControlFichero(ControlFichero controlFichero);

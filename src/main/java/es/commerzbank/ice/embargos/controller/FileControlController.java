@@ -40,7 +40,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping(value = "/filecontrol")
 public class FileControlController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(FileControlController.class);
+	private static final Logger logger = LoggerFactory.getLogger(FileControlController.class);
 
 	@Value("${commerzbank.jasper.temp}")
 	private String pdfSavedPath;
@@ -61,14 +61,14 @@ public class FileControlController {
 	public ResponseEntity<Page<FileControlDTO>> filter(Authentication authentication,
 													   @RequestBody FileControlFiltersDTO fileControlFilters,
 													   Pageable pageable){
-		
+		logger.info("FileControlController - filter - start");
 		ResponseEntity<Page<FileControlDTO>> response = null;
 		Page<FileControlDTO> result = null;
 		
 		try {
 		
 			if (!Permissions.hasPermission(authentication, "ui.embargos")) {
-				LOG.info("FileControlController - fileSearch - forbidden");
+				logger.info("FileControlController - fileSearch - forbidden");
 				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 			}
 			
@@ -79,22 +79,24 @@ public class FileControlController {
 			
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 			
-			LOG.error("ERROR in filter: ", e);
+			logger.error("ERROR in filter: ", e);
 		}	
-			
+		
+		logger.info("FileControlController - filter - end");
 		return response;
 	}
 	
 	@GetMapping(value = "/filetype")
 	@ApiOperation(value="Devuelve la lista de tipos de ficheros admitidos en TIPO_FICHERO.")
 	public ResponseEntity<List<FileControlTypeDTO>> getFileTypeList(Authentication authentication){
-		
+		logger.info("FileControlController - getFileTypeList - start");
 		ResponseEntity<List<FileControlTypeDTO>> response = null;
 		List<FileControlTypeDTO> result = null;
 		
 		result = fileTypeService.listAllFileType();
 		response = new ResponseEntity<>(result, HttpStatus.OK);
 		
+		logger.info("FileControlController - getFileTypeList - end");
 		return response;
 	}
 
@@ -103,7 +105,7 @@ public class FileControlController {
 	@ApiOperation(value="Devuelve la lista de estados para un determinado tipo de archivo de ESTADO_CTRLFICHERO.")
 	public ResponseEntity<List<FileControlStatusDTO>> getFileTypeStatusList(Authentication authentication,
 			@PathVariable("idFileType") Long idFileType){
-		
+		logger.info("FileControlController - getFileTypeStatusList - start");
 		ResponseEntity<List<FileControlStatusDTO>> response = null;
 		List<FileControlStatusDTO> result = null;
 	
@@ -116,9 +118,10 @@ public class FileControlController {
 			
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 			
-			LOG.error("ERROR in getFileTypeStatusList: ", e);
+			logger.error("ERROR in getFileTypeStatusList: ", e);
 		}
 			
+		logger.info("FileControlController - getFileTypeStatusList - end");
 		return response;
 	}
 	
@@ -129,7 +132,7 @@ public class FileControlController {
 	//		consumes = { "application/json" })
 	public ResponseEntity<List<FileControlDTO>> getAuditByFileControl(Authentication authentication,
 			@PathVariable("codeFileControl") Long codeFileControl){
-		
+		logger.info("FileControlController - getAuditByFileControl - start");
 		ResponseEntity<List<FileControlDTO>> response = null;
 		List<FileControlDTO> result = null;
 	
@@ -143,19 +146,22 @@ public class FileControlController {
 			
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 			
-			LOG.error("ERROR in getAuditByFileControl: ", e);
+			logger.error("ERROR in getAuditByFileControl: ", e);
 		}
-			
+		
+		logger.info("FileControlController - getAuditByFileControl - end");
 		return response;
 	}
 	
 	@PostMapping(value = "/{codeFileControl}/process")
 	@ApiOperation(value = "Tramitacion de un archivo.")
-	public ResponseEntity<String> tramitar (Authentication authentication,
+	public ResponseEntity<FileControlDTO> tramitar (Authentication authentication,
 			 @PathVariable("codeFileControl") Long codeFileControl){
-	
-		ResponseEntity<String> response = null;
-		boolean result = false;
+		logger.info("FileControlController - tramitar - start");
+		ResponseEntity<FileControlDTO> response = null;
+		Boolean result = null;
+		
+		FileControlDTO resultFileControlDTO = null;
 		
 		try {
 			
@@ -181,19 +187,23 @@ public class FileControlController {
 				}
 			}
 			
+			//Se obtiene el fileControl que se va a retornar:
+			resultFileControlDTO = fileControlService.getByCodeFileControl(codeFileControl);
+			
 			if (result) {
-				response = new ResponseEntity<>(HttpStatus.OK);
+				response = new ResponseEntity<>(resultFileControlDTO, HttpStatus.OK);
 			} else {
-				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+				response = new ResponseEntity<>(resultFileControlDTO, HttpStatus.BAD_REQUEST);
 			}	
 		
 		} catch (Exception e) {
 			
-			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(resultFileControlDTO, HttpStatus.BAD_REQUEST);
 			
-			LOG.error("ERROR in tramitar: ", e);
+			logger.error("ERROR in tramitar: ", e);
 		}
 		
+		logger.info("FileControlController - tramitar - end");
 		return response;
 		
 	}
@@ -204,7 +214,7 @@ public class FileControlController {
 	public ResponseEntity<String> updateFileControl(Authentication authentication,
 																  @PathVariable("codeFileControl") Long codeFileControl,
 																  @RequestBody FileControlDTO fileControl){
-		
+		logger.info("FileControlController - updateFileControl - start");
 		ResponseEntity<String> response = null;
 		boolean result = true;
 		
@@ -224,9 +234,10 @@ public class FileControlController {
 			
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			
-			LOG.error("ERROR in updateFileControl: ", e);
+			logger.error("ERROR in updateFileControl: ", e);
 		}
 		
+		logger.info("FileControlController - updateFileControl - end");
 		return response;
 	}
 	
@@ -236,7 +247,7 @@ public class FileControlController {
 	public ResponseEntity<String> updateFileControlStatus(Authentication authentication,
 	  		@PathVariable("codeFileControl") Long codeFileControl,
 	  		@RequestBody FileControlStatusDTO fileControlStatus){
-		
+		logger.info("FileControlController - updateFileControlStatus - start");
 		ResponseEntity<String> response = null;
 		boolean result = false;
 
@@ -260,9 +271,10 @@ public class FileControlController {
 
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-			LOG.error("ERROR in updateFileControlStatus: ", e);
+			logger.error("ERROR in updateFileControlStatus: ", e);
 		}
-
+		
+		logger.info("FileControlController - updateFileControlStatus - end");
 		return response;
 	}
 	
@@ -272,7 +284,7 @@ public class FileControlController {
 	@ApiOperation(value="Devuelve el detalle de un CONTROL_FICHERO.")
 	public ResponseEntity<FileControlDTO> getByCodeFileControl(Authentication authentication,
 			 @PathVariable("codeFileControl") Long codeFileControl){
-		
+		logger.info("FileControlController - getByCodeFileControl - start");
 		ResponseEntity<FileControlDTO> response = null;
 		FileControlDTO result = null;
 		
@@ -285,9 +297,10 @@ public class FileControlController {
 			
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 			
-			LOG.error("ERROR in getByCodeFileControl: ", e);
+			logger.error("ERROR in getByCodeFileControl: ", e);
 		}	
 			
+		logger.info("FileControlController - getByCodeFileControl - end");
 		return response;
 	}
 
@@ -298,6 +311,7 @@ public class FileControlController {
 			@RequestParam(name = "isPending", required = false) boolean isPending,
 			@RequestBody ReportParamsDTO reportParams) throws Exception {
 
+		logger.info("FileControlController - generarReportLista - start");
 		DownloadReportFile.setTempFileName("reportList");
 
 		DownloadReportFile.setFileTempPath(pdfSavedPath);
@@ -307,9 +321,10 @@ public class FileControlController {
 			DownloadReportFile.writeFile(fileControlService.generarReporteListado(codTipoFichero, codEstado, isPending,
 					reportParams.getFechaInicio(), reportParams.getFechaFin()));
 
+			logger.info("FileControlController - generarReportLista - end");
 			return DownloadReportFile.returnToDownloadFile();
 		} catch (Exception e) {
-			LOG.error("Error in generarReportLista", e);
+			logger.error("Error in generarReportLista", e);
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 

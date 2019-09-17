@@ -43,7 +43,7 @@ public class RepresentativeServiceImpl implements RepresentativeService {
 	
 	@Override
 	public boolean createUpdateRepresentative(Representative representative, String user) {
-		logger.info("createUpdateRepresentative - start");
+		logger.info("RepresentativeServiceImpl - createUpdateRepresentative - start");
 		Apoderados result = null, apoderado;
 		boolean response = true;
 		
@@ -63,13 +63,13 @@ public class RepresentativeServiceImpl implements RepresentativeService {
 			response = false;
 		}
 		
-		logger.info("createUpdateRepresentative - end");
+		logger.info("RepresentativeServiceImpl - createUpdateRepresentative - end");
 		return response;
 	}
 
 	@Override
 	public boolean deleteRepresentative(Long idRepresentative) {
-		logger.info("deleteRepresentative - start");
+		logger.info("RepresentativeServiceImpl - deleteRepresentative - start");
 		boolean response = true;
 		
 		if (apoderadosRepository.existsById(idRepresentative)) {
@@ -78,36 +78,36 @@ public class RepresentativeServiceImpl implements RepresentativeService {
 			response = false;
 		}
 		
-		logger.info("deleteRepresentative - end");
+		logger.info("RepresentativeServiceImpl - deleteRepresentative - end");
 		return response;
 	}
 
 	@Override
 	public Representative viewRepresentative(Long idRepresentative) {
-		logger.info("viewRepresentative - start");
+		logger.info("RepresentativeServiceImpl - viewRepresentative - start");
 		Representative representative = null;
 
 		if (apoderadosRepository.existsById(idRepresentative)) {
 			Optional<Apoderados> apoderado = apoderadosRepository.findById(idRepresentative);
 			
-			logger.info("viewRepresentative - Resultado de la consulta - sucursal = " + apoderado.get().toString());
+			logger.info("RepresentativeServiceImpl - viewRepresentative - Resultado de la consulta - sucursal = " + apoderado.get().toString());
 			if (apoderado != null) {
 				representative = representativeMapper.toRepresentative(apoderado.get());
 			}
 		}
 		
-		logger.info("viewRepresentative - end");
+		logger.info("RepresentativeServiceImpl - viewRepresentative - end");
 		return representative;
 	}
 
 	@Override
 	public Page<Representative> filter(Map<String, Object> parametros, Pageable dataPage) {
-		logger.info("filter - start");
+		logger.info("RepresentativeServiceImpl - filter - start");
 		Page<Apoderados> list = null;
 		List<Representative> response = new ArrayList<>();
 		Page<Representative> page = null;
 		
-		logger.info("filter - Filtros de la consulta - Apoderados = " + parametros.toString());
+		logger.info("RepresentativeServiceImpl - filter - Filtros de la consulta - Apoderados = " + parametros.toString());
 		list = apoderadosRepository.findAll(new Specification<Apoderados>() {
 
 			@Override
@@ -130,7 +130,7 @@ public class RepresentativeServiceImpl implements RepresentativeService {
 			
 		}, dataPage);
 		
-		logger.info("filter - Resultado de la consulta - list = " + list.getContent().toString());
+		logger.info("RepresentativeServiceImpl - filter - Resultado de la consulta - list = " + list.getContent().toString());
 		if (list != null && list.getContent().size() > 0) {
 			for (Apoderados a : list.getContent()) {
 				response.add(representativeMapper.toRepresentative(a));
@@ -139,12 +139,13 @@ public class RepresentativeServiceImpl implements RepresentativeService {
 			page = new PageImpl<>(response, list.getPageable(), list.getTotalElements());
 		}
 		
-		logger.info("filter - end");
+		logger.info("RepresentativeServiceImpl - filter - end");
 		return page;
 	}
 
 	@Override
 	public List<Representative> listAll() {
+		logger.info("RepresentativeServiceImpl - listAll - start");
 		List<Apoderados> apoderados = null;
 		List<Representative> response = null;
 		
@@ -167,6 +168,7 @@ public class RepresentativeServiceImpl implements RepresentativeService {
 			}
 		}
 		
+		logger.info("RepresentativeServiceImpl - listAll - end");
 		return response;
 	}
 

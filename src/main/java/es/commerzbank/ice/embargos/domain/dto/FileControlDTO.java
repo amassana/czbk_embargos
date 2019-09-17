@@ -8,7 +8,6 @@ public class FileControlDTO {
 	private Long codeFileType;
 	private FileControlStatusDTO status;
 	private String fileName;
-	private String responseFileName;
 	private Boolean isProcessed;
 	private String fileTarget;
 	private Date deliveryDate;
@@ -42,12 +41,6 @@ public class FileControlDTO {
 	}
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
-	}
-	public String getResponseFileName() {
-		return responseFileName;
-	}
-	public void setResponseFileName(String responseFileName) {
-		this.responseFileName = responseFileName;
 	}
 	public Boolean getIsProcessed() {
 		return isProcessed;
