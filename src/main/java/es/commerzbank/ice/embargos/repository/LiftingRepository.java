@@ -2,6 +2,7 @@ package es.commerzbank.ice.embargos.repository;
 
 import java.util.List;
 
+import es.commerzbank.ice.embargos.domain.entity.Traba;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -22,4 +23,5 @@ public interface LiftingRepository extends JpaRepository<LevantamientoTraba, Lon
 	@Query("update LevantamientoTraba l set l.estadoContable = :estado where l.codLevantamiento = :id")
 	public void updateStatus(@Param("id") Long codelifting, @Param("estado") long status);
 
+	public List<LevantamientoTraba> findAllByCodTraba(Traba traba);
 }
