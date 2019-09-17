@@ -170,4 +170,37 @@ public class LiftingController {
 		return response;
 
 	}
+	
+	@PostMapping(value = "/{codeLifting}/changeStatus", 
+			produces = {"application/json" }, 
+			consumes = { "application/json" })
+	@ApiOperation(value = "Actualiza el estado de un levantamiento seleccionado")
+	public ResponseEntity<String> changeStatus(Authentication authentication,
+			@PathVariable("codeLifting") Long codeLifting, @RequestBody Long status) {
+		
+		ResponseEntity<String> response = null;
+		boolean result = true;
+		
+		try {
+		
+			String userModif = authentication.getName();
+		
+			result = liftingService.changeStatus(codeLifting, status, userModif);
+		
+			if (result) {
+				response = new ResponseEntity<>(HttpStatus.OK);
+			} else {
+				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+		
+		} catch (Exception e) {
+		
+			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		
+			LOG.error("ERROR in savePetitionCase: ", e);
+		}
+		
+		return response;
+
+	}
 }
