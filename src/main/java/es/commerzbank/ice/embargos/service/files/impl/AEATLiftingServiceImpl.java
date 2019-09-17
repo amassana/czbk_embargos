@@ -1,5 +1,6 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
+import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
 import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.embargos.domain.entity.*;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -33,6 +35,9 @@ public class AEATLiftingServiceImpl
     @Value("${commerzbank.embargos.beanio.config-path.aeat}")
     String pathFileConfigAEAT;
 
+    //@Value("${commerzbank.embargos.beanio.config-path.aeat}")
+    // TODO
+    BigDecimal limiteAutomatico = new BigDecimal(50000);
     @Autowired
     FileControlMapper fileControlMapper;
 
@@ -50,6 +55,8 @@ public class AEATLiftingServiceImpl
     CustomerService customerService;
     @Autowired
     AEATMapper aeatMapper;
+    @Autowired
+    AccountingNoteService accountingNoteService;
     @Override
     public void tratarFicheroLevantamientos(File file) throws IOException, ICEParserException {
         BeanReader beanReader = null;
@@ -115,6 +122,16 @@ public class AEATLiftingServiceImpl
                     for (CuentaLevantamiento cuentaLevantamiento : levantamiento.getCuentaLevantamientos())
                     {
                         liftingBankAccountRepository.save(cuentaLevantamiento);
+
+                        // TODO divisa?
+                        if ("EUR".equals(cuentaLevantamiento.getCodDivisa()) &&
+                        limiteAutomatico.compareTo(cuentaLevantamiento.getImporte()) == -1)
+                            LOG.info("Skipping automating accounting");
+                        else
+                        {
+
+                        }
+
                     }
                 }
                 else if (EmbargosConstants.RECORD_NAME_AEAT_FINENTIDADCREDITO.equals(beanReader.getRecordName()))
