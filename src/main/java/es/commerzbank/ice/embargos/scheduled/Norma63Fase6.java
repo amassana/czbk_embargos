@@ -93,12 +93,14 @@ public class Norma63Fase6
                     List<LevantamientoTraba> levantamientos = liftingRepository.findAllByCodTraba(traba);
 
                     /* TODO probar qué hacer con los levantamientos levantados más de una vez. Agregar? */
+                    /*
                     ResultadoFinalEmbargoFase6 resultadoFinalEmbargoFase6 =
                             cuaderno63Mapper.generateComunicacionResultadoRetencionFase4(embargo, traba, cuentaTrabaOrderedList);
 
                     beanWriter.write(EmbargosConstants.RECORD_NAME_RESULTADOFINALEMBARGO, ResultadoFinalEmbargoFase6);
 
                     beanWriter.flush();
+                     */
                 }
             }
         }
