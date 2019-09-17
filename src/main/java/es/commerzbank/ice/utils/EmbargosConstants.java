@@ -180,7 +180,7 @@ public class EmbargosConstants {
 	public static final String CODIGO_REGISTRO_AEAT_TRABA_FASE4 = "2";
 	
 	/** Codigos actuacion de CuentaTrabaActuacion **/
-	public static final String CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA_AEAT = "5";
+	public static final String CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA_AEAT = "5 "; //dejar espacio detras del numero (en bbdd es un char(2 byte))
 	public static final String CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA_NORMA63 = "5n";
 	
 	/** Entradas de la tabla PARAMETROS de Comunes **/

@@ -207,11 +207,11 @@ public class AEATServiceImpl implements AEATService{
 		        		//- Se obtienen de Datawarehouse los datos del cliente y sus cuentas a partir del NIF del cliente:
 		        		CustomerDTO customerDTO = customerService.findCustomerByNif(diligenciaFase3.getNifDeudor());
 		        		
-		        		//- Se almacenan las cuentas obtenidas de Datawarehouse en una Hash donde la key es el AccountNum:
+		        		//- Se almacenan las cuentas obtenidas de Datawarehouse en una Hash donde la key es el IBAN:
 		        		Map<String, AccountDTO> customerAccountsMap = new HashMap<>(); 
 		        		if (customerDTO!=null) {
 			        		for (AccountDTO accountDTO : customerDTO.getBankAccounts()) {    		
-			        			customerAccountsMap.put(accountDTO.getAccountNum(), accountDTO);
+			        			customerAccountsMap.put(accountDTO.getIban(), accountDTO);
 			        		}
 		        		}
 		        				        		

@@ -628,15 +628,15 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        		if (ordenEjecucionEmbargoComp!=null 
 	        				&& ordenEjecucionEmbargo.getNifDeudor().equals(ordenEjecucionEmbargoComp.getNifDeudor())) {
 	        			
-	        			embargo = cuaderno63Mapper.generateEmbargo(ordenEjecucionEmbargo, ordenEjecucionEmbargoComp, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, razonSocialInterna, fechaLimiteTraba);
+	        			embargo = cuaderno63Mapper.generateEmbargo(ordenEjecucionEmbargo, ordenEjecucionEmbargoComp, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, razonSocialInterna, fechaLimiteTraba, customerAccountsMap);
 	        			
-	        			traba =  cuaderno63Mapper.generateTraba(ordenEjecucionEmbargo, ordenEjecucionEmbargoComp, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, fechaLimiteTraba);        			
+	        			traba =  cuaderno63Mapper.generateTraba(ordenEjecucionEmbargo, ordenEjecucionEmbargoComp, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, fechaLimiteTraba, customerAccountsMap);        			
 	        			traba.setEmbargo(embargo);
 	        			
 	        		} else {
-	        			embargo = cuaderno63Mapper.generateEmbargo(ordenEjecucionEmbargo, new OrdenEjecucionEmbargoComplementarioFase3(), controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, razonSocialInterna, fechaLimiteTraba);
+	        			embargo = cuaderno63Mapper.generateEmbargo(ordenEjecucionEmbargo, new OrdenEjecucionEmbargoComplementarioFase3(), controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, razonSocialInterna, fechaLimiteTraba, customerAccountsMap);
 
-	        			traba =  cuaderno63Mapper.generateTraba(ordenEjecucionEmbargo, ordenEjecucionEmbargoComp, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, fechaLimiteTraba);        			
+	        			traba =  cuaderno63Mapper.generateTraba(ordenEjecucionEmbargo, ordenEjecucionEmbargoComp, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, fechaLimiteTraba, customerAccountsMap);        			
 	        			traba.setEmbargo(embargo);
 	        			
 	        		}
@@ -651,16 +651,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        			
 	        			//TODO mirar si se tiene que comprobar si es nulo el Iban o bien la "cuenta":
 	        			if (cuentaEmbargo.getIban()!=null && !cuentaEmbargo.getIban().isEmpty()) {
-	        				
-	        				//Seteo de datos obtenidos de DWH en cuentaEmbargo:
-	        				AccountDTO accountDTO = customerAccountsMap.get(cuentaEmbargo.getIban());     				
-	        				if(accountDTO!=null) {
-	        					cuentaEmbargo.setCuenta(accountDTO.getAccountNum());
-	        				} else {
-	        					//Sino, si la cuenta no se encuentra en DWH: indicar motivo de cuenta embargo a inexistente
-	        					cuentaEmbargo.setActuacion(EmbargosConstants.CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA_NORMA63);
-	        				}
-	        				
+	        					        				
 	        				seizureBankAccountRepository.save(cuentaEmbargo);
 	        			}
 	        		}
@@ -679,23 +670,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        				
 	        				numeroOrdenCuenta = (cuentaTraba.getNumeroOrdenCuenta()!=null && cuentaTraba.getNumeroOrdenCuenta().compareTo(numeroOrdenCuenta) > 0) ?
 	        						cuentaTraba.getNumeroOrdenCuenta() : numeroOrdenCuenta;
-	        				
-	        				//Seteo de datos obtenidos de DWH en cuentaTraba:
-	    	        		AccountDTO accountDTO = customerAccountsMap.get(cuentaTraba.getIban());     				
-	    	        		if(accountDTO!=null) {
-	    	        			cuentaTraba.setCuenta(accountDTO.getAccountNum());
-	    	        			cuentaTraba.setDivisa(accountDTO.getDivisa());
-	    	        			cuentaTraba.setEstadoCuenta(accountDTO.getStatus());
-	    	        		} else {
-	    	        			//Sino, si la cuenta no se encuentra en DWH: indicar la actuacion (motivo) de la cuentaTraba a inexistente:
-	    	        			CuentaTrabaActuacion cuentaTrabaActuacion = new CuentaTrabaActuacion();
-	    	        			cuentaTrabaActuacion.setCodActuacion(EmbargosConstants.CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA_NORMA63);
-	    	        			cuentaTraba.setCuentaTrabaActuacion(cuentaTrabaActuacion);
-	    	        			
-	    	        			//El estado de la cuenta se setea a no encontrada:
-	    	        			cuentaTraba.setEstadoCuenta(EmbargosConstants.BANK_ACCOUNT_STATUS_NOTFOUND);
-	    	        		}
-	        				
+	        						
 	        				seizedBankAccountRepository.save(cuentaTraba);
 	        			}
 	        		}

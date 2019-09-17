@@ -1,16 +1,11 @@
 package es.commerzbank.ice.embargos.domain.mapper;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
-import es.commerzbank.ice.embargos.domain.entity.*;
-import es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.Levantamiento;
-import es.commerzbank.ice.utils.BankAccountUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -18,8 +13,11 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 
 import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
+import es.commerzbank.ice.comun.lib.util.BankAccountUtils;
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
+import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
+import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTrabaActuacion;
 import es.commerzbank.ice.embargos.domain.entity.CuentasInmovilizacion;
@@ -27,12 +25,14 @@ import es.commerzbank.ice.embargos.domain.entity.CuentasRecaudacion;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
 import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
+import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
 import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.DiligenciaFase3;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.EntidadCreditoFase3;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.EntidadTransmisoraFase3;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.FinEntidadCreditoFase3;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.FinEntidadTransmisoraFase3;
+import es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.Levantamiento;
 import es.commerzbank.ice.embargos.formats.aeat.trabas.EntidadCreditoFase4;
 import es.commerzbank.ice.embargos.formats.aeat.trabas.EntidadTransmisoraFase4;
 import es.commerzbank.ice.embargos.formats.aeat.trabas.FinEntidadCreditoFase4;
@@ -95,11 +95,13 @@ public abstract class AEATMapper {
 		
 		if (diligenciaFase3.getCodigoCuentaCliente1()!=null && !diligenciaFase3.getCodigoCuentaCliente1().isEmpty()) {
 			
-			String codigoCuentaCliente = diligenciaFase3.getCodigoCuentaCliente1();
+			String codigoCuentaCliente1 = diligenciaFase3.getCodigoCuentaCliente1();
 			
-			AccountDTO accountDTO = customerAccountsMap.get(codigoCuentaCliente);
+			String ibanFromCCC1 = BankAccountUtils.convertToIBAN(codigoCuentaCliente1);
 			
-			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, codigoCuentaCliente, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
+			AccountDTO accountDTO = customerAccountsMap.get(ibanFromCCC1);
+			
+			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
 						
 			cuentaEmbargosList.add(cuentaEmbargo);
 
@@ -110,11 +112,13 @@ public abstract class AEATMapper {
 		//Datos cuenta cliente 2:		
 		if (diligenciaFase3.getCodigoCuentaCliente2()!=null && !diligenciaFase3.getCodigoCuentaCliente2().isEmpty()) {
 			
-			String codigoCuentaCliente = diligenciaFase3.getCodigoCuentaCliente2();
+			String codigoCuentaCliente2 = diligenciaFase3.getCodigoCuentaCliente2();
 			
-			AccountDTO accountDTO = customerAccountsMap.get(codigoCuentaCliente);
+			String ibanFromCCC2 = BankAccountUtils.convertToIBAN(codigoCuentaCliente2);
 			
-			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, codigoCuentaCliente, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
+			AccountDTO accountDTO = customerAccountsMap.get(ibanFromCCC2);
+			
+			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
 			
 			cuentaEmbargosList.add(cuentaEmbargo);
 
@@ -124,11 +128,13 @@ public abstract class AEATMapper {
 		//Datos cuenta cliente 3:	
 		if (diligenciaFase3.getCodigoCuentaCliente3()!=null && !diligenciaFase3.getCodigoCuentaCliente3().isEmpty()) {
 			
-			String codigoCuentaCliente = diligenciaFase3.getCodigoCuentaCliente3();
+			String codigoCuentaCliente3 = diligenciaFase3.getCodigoCuentaCliente3();
 			
-			AccountDTO accountDTO = customerAccountsMap.get(codigoCuentaCliente);
+			String ibanFromCCC3 = BankAccountUtils.convertToIBAN(codigoCuentaCliente3);
 			
-			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, codigoCuentaCliente, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
+			AccountDTO accountDTO = customerAccountsMap.get(ibanFromCCC3);
+			
+			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
 			
 			cuentaEmbargosList.add(cuentaEmbargo);
 
@@ -142,7 +148,7 @@ public abstract class AEATMapper {
 		
 	}
 
-	private CuentaEmbargo setCuentaEmbargoFromAccountDTO(AccountDTO accountDTO, String codigoCuentaCliente, Embargo embargo, 
+	private CuentaEmbargo setCuentaEmbargoFromAccountDTO(AccountDTO accountDTO, Embargo embargo, 
 			BigDecimal numeroOrden,	BigDecimal fechaUltmaModif, String usuarioModif) {
 		
 		CuentaEmbargo cuentaEmbargo = new CuentaEmbargo();
@@ -155,13 +161,14 @@ public abstract class AEATMapper {
 			iban = accountDTO.getIban();
 		} else {
 			//Cuenta no encontrada en DWH:
-			cuenta = codigoCuentaCliente;
+			cuenta = null;
 		}
 
 		cuentaEmbargo.setEmbargo(embargo);
 		cuentaEmbargo.setCuenta(cuenta);
 		cuentaEmbargo.setImporte(BigDecimal.valueOf(0));
 		cuentaEmbargo.setIban(iban);
+		//Clave de seguridad del IBAN no viene en el fichero de AEAT (no tiene fase 1 y 2) -> no se setea.
 		cuentaEmbargo.setNumeroOrdenCuenta(numeroOrden);
 		cuentaEmbargo.setUsuarioUltModificacion(usuarioModif);
 		cuentaEmbargo.setFUltimaModificacion(fechaUltmaModif);
@@ -207,11 +214,13 @@ public abstract class AEATMapper {
 		
 		if (diligenciaFase3.getCodigoCuentaCliente1()!=null && !diligenciaFase3.getCodigoCuentaCliente1().isEmpty()) {
 
-			String codigoCuentaCliente = diligenciaFase3.getCodigoCuentaCliente1();
+			String codigoCuentaCliente1 = diligenciaFase3.getCodigoCuentaCliente1();
 			
-			AccountDTO accountDTO = customerAccountsMap.get(codigoCuentaCliente);
+			String ibanFromCCC1 = BankAccountUtils.convertToIBAN(codigoCuentaCliente1);
+			
+			AccountDTO accountDTO = customerAccountsMap.get(ibanFromCCC1);
 		
-			cuentaTraba = setCuentaTrabaFromAccountDTO(accountDTO, codigoCuentaCliente, traba, numeroOrden,	fechaUltmaModif, usuarioModif);
+			cuentaTraba = setCuentaTrabaFromAccountDTO(accountDTO, traba, numeroOrden,	fechaUltmaModif, usuarioModif);
 			
 			cuentaTrabasList.add(cuentaTraba);
 			
@@ -221,11 +230,13 @@ public abstract class AEATMapper {
 		//Datos cuenta cliente 2:
 		if (diligenciaFase3.getCodigoCuentaCliente2()!=null && !diligenciaFase3.getCodigoCuentaCliente2().isEmpty()) {
 			
-			String codigoCuentaCliente = diligenciaFase3.getCodigoCuentaCliente2();
+			String codigoCuentaCliente2 = diligenciaFase3.getCodigoCuentaCliente2();
 			
-			AccountDTO accountDTO = customerAccountsMap.get(codigoCuentaCliente);
+			String ibanFromCCC2 = BankAccountUtils.convertToIBAN(codigoCuentaCliente2);
+			
+			AccountDTO accountDTO = customerAccountsMap.get(ibanFromCCC2);
 		
-			cuentaTraba = setCuentaTrabaFromAccountDTO(accountDTO, codigoCuentaCliente, traba, numeroOrden,	fechaUltmaModif, usuarioModif);
+			cuentaTraba = setCuentaTrabaFromAccountDTO(accountDTO, traba, numeroOrden,	fechaUltmaModif, usuarioModif);
 			
 			cuentaTrabasList.add(cuentaTraba);
 			
@@ -235,11 +246,13 @@ public abstract class AEATMapper {
 		//Datos cuenta cliente 3:
 		if (diligenciaFase3.getCodigoCuentaCliente3()!=null && !diligenciaFase3.getCodigoCuentaCliente3().isEmpty()) {
 			
-			String codigoCuentaCliente = diligenciaFase3.getCodigoCuentaCliente3();
+			String codigoCuentaCliente3 = diligenciaFase3.getCodigoCuentaCliente3();
 			
-			AccountDTO accountDTO = customerAccountsMap.get(codigoCuentaCliente);
+			String ibanFromCCC3 = BankAccountUtils.convertToIBAN(codigoCuentaCliente3);
+			
+			AccountDTO accountDTO = customerAccountsMap.get(ibanFromCCC3);
 		
-			cuentaTraba = setCuentaTrabaFromAccountDTO(accountDTO, codigoCuentaCliente, traba, numeroOrden,	fechaUltmaModif, usuarioModif);
+			cuentaTraba = setCuentaTrabaFromAccountDTO(accountDTO, traba, numeroOrden,	fechaUltmaModif, usuarioModif);
 			
 			cuentaTrabasList.add(cuentaTraba);
 
@@ -252,7 +265,7 @@ public abstract class AEATMapper {
 		traba.setFUltimaModificacion(fechaUltmaModif);
 	}
 
-	private CuentaTraba setCuentaTrabaFromAccountDTO(AccountDTO accountDTO, String codigoCuentaCliente, Traba traba,
+	private CuentaTraba setCuentaTrabaFromAccountDTO(AccountDTO accountDTO, Traba traba,
 			BigDecimal numeroOrden, BigDecimal fechaUltmaModif, String usuarioModif) {
 		
 		EstadoTraba estadoTraba;
@@ -267,7 +280,7 @@ public abstract class AEATMapper {
 		
 		} else {
 			//Cuenta no encontrada en DWH:
-			cuentaTraba.setCuenta(codigoCuentaCliente);
+			cuentaTraba.setCuenta(null);
 			cuentaTraba.setEstadoCuenta(EmbargosConstants.BANK_ACCOUNT_STATUS_NOTFOUND);
 			
 			//Indicar la actuacion (motivo) de la cuentaTraba a inexistente:

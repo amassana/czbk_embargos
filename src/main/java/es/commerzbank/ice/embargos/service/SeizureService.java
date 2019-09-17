@@ -4,8 +4,6 @@ package es.commerzbank.ice.embargos.service;
 import java.math.BigDecimal;
 import java.util.List;
 
-import es.commerzbank.ice.comun.lib.formats.contabilidad.RespuestaContabilidad;
-import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.embargos.domain.dto.SeizedBankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureActionDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
@@ -22,6 +20,7 @@ public interface SeizureService {
 	public boolean updateSeizedBankAccountList(Long codeFileControl, Long idSeizure, List <SeizedBankAccountDTO> seizedBankAccountList, String userModif);
 	public boolean updateSeizedBankStatus(CuentaTraba cuentaTraba, Long codEstado, String userModif);
 	public boolean updateSeizureStatus(Long codeFileControl, Long idSeizure, SeizureStatusDTO seizedBankAccountList, String userModif);
+	public boolean updateSeizureStatusTransaction(Long codeFileControl, Long idSeizure, SeizureStatusDTO seizedBankAccountList, String userModif);
 	public List<SeizureDTO> getAuditSeizure(Long codFileControl, Long idSeizure);
 	public List<SeizedBankAccountDTO> getAuditSeizedBankAccounts(Long codFileControl, Long idSeizure, Long codAudit);
 	

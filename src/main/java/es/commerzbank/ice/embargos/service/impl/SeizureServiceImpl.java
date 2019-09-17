@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.comun.lib.domain.dto.AccountingNote;
@@ -272,20 +273,21 @@ public class SeizureServiceImpl implements SeizureService {
 	
 	@Override
 	public boolean updateSeizedBankStatus(CuentaTraba cuentaTraba, Long codEstado, String userModif) {
+
 		logger.info("SeizureServiceImpl - updateSeizedBankStatus - start");
-		Traba traba = cuentaTraba.getTraba();
+//		Traba traba = cuentaTraba.getTraba();
 		
 		BigDecimal fechaActualBigDec = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
 		
-		traba.setUsuarioUltModificacion(userModif);
-		traba.setFUltimaModificacion(fechaActualBigDec);
-		
-		//Actualizar usuario y fecha ultima modificacion del Embargo (para que se inserte registro en el historico de embargos):			
-		Embargo embargo = traba.getEmbargo();
-		embargo.setUsuarioUltModificacion(userModif);
-		embargo.setFUltimaModificacion(fechaActualBigDec);
-		
-		seizedRepository.save(traba);
+//		traba.setUsuarioUltModificacion(userModif);
+//		traba.setFUltimaModificacion(fechaActualBigDec);
+//		
+//		//Actualizar usuario y fecha ultima modificacion del Embargo (para que se inserte registro en el historico de embargos):			
+//		Embargo embargo = traba.getEmbargo();
+//		embargo.setUsuarioUltModificacion(userModif);
+//		embargo.setFUltimaModificacion(fechaActualBigDec);
+//		
+//		seizedRepository.save(traba);
 		
 		//Estado de la cuenta traba:
 		EstadoTraba estadoTraba = new EstadoTraba();
@@ -341,6 +343,14 @@ public class SeizureServiceImpl implements SeizureService {
 		return true;
 	}
 	
+	@Override
+	@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
+	public boolean updateSeizureStatusTransaction(Long codeFileControl, Long idSeized, SeizureStatusDTO seizureStatusDTO,
+			String userModif) {
+		
+		return updateSeizureStatus(codeFileControl, idSeized, seizureStatusDTO, userModif);
+		
+	}	
 	
 	@Override
 	public List<SeizureDTO> getAuditSeizure(Long codFileControl, Long idSeizure) {

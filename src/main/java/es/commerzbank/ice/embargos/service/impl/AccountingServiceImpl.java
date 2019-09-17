@@ -167,7 +167,7 @@ public class AccountingServiceImpl implements AccountingService{
 			//Cambio de estado de la traba a "Enviada a contabilidad";
 			SeizureStatusDTO seizureStatusDTO = new SeizureStatusDTO();
 			seizureStatusDTO.setCode(Long.toString(EmbargosConstants.COD_ESTADO_TRABA_ENVIADA_A_CONTABILIDAD));
-			seizureService.updateSeizureStatus(controlFichero.getCodControlFichero(), traba.getCodTraba(), seizureStatusDTO, userName);	
+			seizureService.updateSeizureStatusTransaction(controlFichero.getCodControlFichero(), traba.getCodTraba(), seizureStatusDTO, userName);	
 
 		}
 	}
@@ -231,7 +231,7 @@ public class AccountingServiceImpl implements AccountingService{
 					//Cambio de estado de la traba a "Enviada a contabilidad";
 					SeizureStatusDTO seizureStatusDTO = new SeizureStatusDTO();
 					seizureStatusDTO.setCode(Long.toString(EmbargosConstants.COD_ESTADO_TRABA_ENVIADA_A_CONTABILIDAD));
-					seizureService.updateSeizureStatus(controlFichero.getCodControlFichero(), traba.getCodTraba(), seizureStatusDTO, userName);		
+					seizureService.updateSeizureStatusTransaction(controlFichero.getCodControlFichero(), traba.getCodTraba(), seizureStatusDTO, userName);		
 				}
 			}
 		}
@@ -303,15 +303,25 @@ public class AccountingServiceImpl implements AccountingService{
 			throw new ICEException("","ERROR: no se ha encontrado la cuentaTraba [codeFileControl: " + codeFileControl + "; idSeizure: " + idSeizure + "; estadoTraba: "+ estadoTraba);
 		}
 		
+		//Cambio de estado de la cuentaTraba:
+		
 		estadoTraba = new EstadoTraba();
 		estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_MODIFICADA);
 		cuentaTraba.setEstadoTraba(estadoTraba);
 		
 		seizedBankAccountRepository.save(cuentaTraba);
 		
-		//Cambio de estado de la Traba:
+		//Cambio de estado de la traba a "MODIFICADA";
 		Traba traba = cuentaTraba.getTraba();
-		traba.setEstadoTraba(estadoTraba);
+		
+		SeizureStatusDTO seizureStatusDTO = new SeizureStatusDTO();
+		seizureStatusDTO.setCode(Long.toString(EmbargosConstants.COD_ESTADO_TRABA_MODIFICADA));
+		
+		boolean isStatusTrabaUpdated = seizureService.updateSeizureStatus(codeFileControl, traba.getCodTraba(), seizureStatusDTO, userName);	
+		
+		if(!isStatusTrabaUpdated) {
+			throw new ICEException("", "ERROR: no se ha actualizado el estado de la Traba con codTraba: " + traba.getCodTraba());
+		}
 		
 		//Cambio de estado de Control Fichero de Embargos:
 		Long codEstado = null;
@@ -335,10 +345,15 @@ public class AccountingServiceImpl implements AccountingService{
 			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_GENERATED;
 		} else {
 			
-			throw new ICEException("","ERROR: formato de fichero no encontrado para el codigo de tipo de fichero " + controlFichero.getTipoFichero().getCodTipoFichero() +".");
+			throw new ICEException("","ERROR: formato de fichero no encontrado para el codigo de tipo de fichero " 
+							+ controlFichero.getTipoFichero().getCodTipoFichero() +".");
 		}
 		
-		fileControlService.updateFileControlStatusTransaction(controlFichero, codEstado, userName);
+		boolean isStatusFileControlUpdated = fileControlService.updateFileControlStatus(codeFileControl, codEstado, userName);
+		
+		if(!isStatusFileControlUpdated) {
+			throw new ICEException("", "ERROR: no se ha actualizado el estado del Control Fichero con codeFileControl: " + codeFileControl);
+		}
 		
 		
 		return true;
