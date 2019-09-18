@@ -31,7 +31,6 @@ import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
 import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
-import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
@@ -39,6 +38,7 @@ import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
+import es.commerzbank.ice.embargos.domain.entity.ErrorTraba;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
 import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.embargos.domain.mapper.AEATMapper;
@@ -54,6 +54,9 @@ import es.commerzbank.ice.embargos.formats.aeat.trabas.EntidadTransmisoraFase4;
 import es.commerzbank.ice.embargos.formats.aeat.trabas.FinEntidadCreditoFase4;
 import es.commerzbank.ice.embargos.formats.aeat.trabas.FinEntidadTransmisoraFase4;
 import es.commerzbank.ice.embargos.formats.aeat.trabas.TrabaFase4;
+import es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.EntidadCreditoValidacionFase4;
+import es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.EntidadTransmisoraValidacionFase4;
+import es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.ErroresTrabaValidacionFase4;
 import es.commerzbank.ice.embargos.repository.CommunicatingEntityRepository;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.repository.InformationPetitionRepository;
@@ -608,10 +611,115 @@ public class AEATServiceImpl implements AEATService{
 	}
 	
 	@Override
-	public void tratarFicheroErrores(File file) {
-		;
-	}
+	public void tratarFicheroErrores(File file)  {
 
+		logger.info("AEATServiceImpl - tratarFicheroErrores - start");
+		BeanReader beanReader = null;
+		
+		ControlFichero controlFicheroErrores = null;
+		
+		try {
+		
+	        // create a StreamFactory
+	        StreamFactory factory = StreamFactory.newInstance();
+	        // load the mapping file
+	        factory.loadResource(pathFileConfigAEAT);
+	        
+	        //Se guarda el registro de ControlFichero del fichero de entrada:
+	        controlFicheroErrores = 
+	        		fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_ERRORES_TRABAS_ENVIADAS_AEAT);
+	        
+	        fileControlService.saveFileControlTransaction(controlFicheroErrores);
+	
+	        
+	        // use a StreamFactory to create a BeanReader
+	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_RESULTADOVALIDACIONTRABAS, file);
+	        Object record = null;
+	        boolean isEntidadTransmisoraCommerzbank = false;
+	        
+	        EntidadTransmisoraValidacionFase4 entidadTransmisoraValidacionFase4 = null;
+	        EntidadCreditoValidacionFase4 entidadCreditoValidacionFase4 = null;
+	        ErroresTrabaValidacionFase4 erroresTrabaValidacionFase4 = null;
+	        
+	        EntidadesOrdenante entidadOrdenante = null;
+	        //Date fechaObtencionFicheroOrganismo = null;
+
+	        while ((record = beanReader.read()) != null) {
+	        	
+	        	if(EmbargosConstants.RECORD_NAME_AEAT_ENTIDADTRANSMISORA.equals(beanReader.getRecordName())) {      	
+	        		
+	        		entidadTransmisoraValidacionFase4 = (EntidadTransmisoraValidacionFase4) record;
+	        		
+	        		//Si la entidad transmisora es Commerzbank:
+	        		if (entidadCreditoValidacionFase4.getCodigoEntidadTransmisora() != null 
+	        				&& entidadCreditoValidacionFase4.getCodigoEntidadTransmisora().equals(EmbargosConstants.CODIGO_NRBE_COMMERZBANK)) {   			
+	        			
+	        			isEntidadTransmisoraCommerzbank = true;
+	        			
+	        		} else {	
+	        			isEntidadTransmisoraCommerzbank = false;
+	        		}
+	        	}
+	        	
+	        	//Tratar registros solo si la entidad transmisora es Commerzbank:
+	        	if (isEntidadTransmisoraCommerzbank) {
+	        	
+		        	if(EmbargosConstants.RECORD_NAME_AEAT_ENTIDADCREDITO.equals(beanReader.getRecordName())) {
+		            	
+		        		entidadCreditoValidacionFase4 = (EntidadCreditoValidacionFase4) record;
+		        		
+		        		String identificadorEntidad = entidadCreditoValidacionFase4.getDelegacionAgenciaEmisora()!=null ? 
+		        				entidadCreditoValidacionFase4.getDelegacionAgenciaEmisora() : null;
+		        		
+		        		entidadOrdenante = orderingEntityRepository.findByIdentificadorEntidad(identificadorEntidad);
+		        		
+		        		if (entidadOrdenante == null) {
+		        			throw new ICEParserException("01", "No se puede procesar el fichero '" + file.getName() +
+		        					"': Entidad Ordenante con identificadorEntidad " + identificadorEntidad + " no encontrada.");
+		        		}
+		        	}
+		        	
+		        	if(EmbargosConstants.RECORD_NAME_AEAT_ERRORESTRABA.equals(beanReader.getRecordName())) {
+		        		
+		        		erroresTrabaValidacionFase4 = (ErroresTrabaValidacionFase4) record;
+		        		
+		        		//Se obtiene el embargo:
+		        		
+		        		String numeroEmbargo = erroresTrabaValidacionFase4.getNumeroDiligenciaEmbargo();
+		        		
+		        		List<Embargo> embargosList = seizureRepository.findAllByNumeroEmbargo(numeroEmbargo);
+
+		        		Embargo embargo = new Embargo();
+		        		//TODO eliminar linea anterior y activar la siguiente (cuando este implementado):
+		        		//Embargo embargo = EmbargosUtils.selectEmbargo(embargosList);
+		        			        		
+		        		//Guardar los errores de la traba:
+		        		
+		        		ErrorTraba errorTraba = new ErrorTraba();
+	
+		        		//TODO: duda -> ha de ser el control fichero del embargo o el del fichero de errores?
+		        		errorTraba.setControlFichero(controlFicheroErrores);
+		        		errorTraba.setTraba(embargo.getTrabas().get(0));
+//		        		errorTraba.setNumeroCampo(erroresTrabaValidacionFase4.getCodigoError1());
+		        	}
+		        }       	
+	        }
+	        
+
+		} catch (Exception e) {
+	        
+			
+			//throw e;
+			
+		} finally {
+			
+			if (beanReader!=null) {
+				beanReader.close();
+			}
+		}
+	
+		logger.info("AEATServiceImpl - tratarFicheroErrores - end");
+	}
 
 
 }
