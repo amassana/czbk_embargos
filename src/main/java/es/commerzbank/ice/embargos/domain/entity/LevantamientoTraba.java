@@ -54,6 +54,10 @@ public class LevantamientoTraba implements Serializable {
 	@JoinColumn(name="COD_TRABA", nullable=false)
 	private Traba traba;
 	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="ESTADO_LEVANTAMIENTO", nullable=false)
+	private EstadoLevantamiento estadoLevantamiento;
+	
 	@Column(name="IND_CASO_REVISADO", length=1)
 	private String indCasoRevisado;
 
@@ -160,6 +164,14 @@ public class LevantamientoTraba implements Serializable {
 
 	public void setImporteLevantado(BigDecimal importeLevantado) {
 		this.importeLevantado = importeLevantado;
+	}
+
+	public EstadoLevantamiento getEstadoLevantamiento() {
+		return estadoLevantamiento;
+	}
+
+	public void setEstadoLevantamiento(EstadoLevantamiento estadoLevantamiento) {
+		this.estadoLevantamiento = estadoLevantamiento;
 	}
 
 }
