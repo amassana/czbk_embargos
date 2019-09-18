@@ -16,9 +16,7 @@ public class EstadoResultadoEmbargo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name = "estado_resultado_embargo_seq_gen", sequenceName = "SEC_ESTADO_RESULTADO_EMBARGO", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "estado_resultado_embargo_seq_gen")
-	@Column(name="COD_ESTADO_RESULTADO_EMBARGO", unique=true, nullable=false)
+@Column(name="COD_ESTADO_RESULTADO_EMBARGO", unique=true, nullable=false)
 	private long codEstadoResultadoEmbargo;
 
 	@Column(length=50)
