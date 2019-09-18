@@ -49,8 +49,9 @@ public class CuentaLevantamiento implements Serializable {
 	@Column(name="NUMERO_ORDEN_CUENTA")
 	private BigDecimal numeroOrdenCuenta;
 	
-	@Column(name="ESTADO")
-	private BigDecimal estado;
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="ESTADO", nullable=false)
+	private EstadoLevantamiento estadoLevantamiento;
 
 	@Column(name="USUARIO_ULT_MODIFICACION", length=10)
 	private String usuarioUltModificacion;
@@ -167,11 +168,13 @@ public class CuentaLevantamiento implements Serializable {
 		this.codDivisa = codDivisa;
 	}
 
-	public BigDecimal getEstado() {
-		return estado;
+	public EstadoLevantamiento getEstadoLevantamiento() {
+		return estadoLevantamiento;
 	}
 
-	public void setEstado(BigDecimal estado) {
-		this.estado = estado;
+	public void setEstadoLevantamiento(EstadoLevantamiento estadoLevantamiento) {
+		this.estadoLevantamiento = estadoLevantamiento;
 	}
+
+	
 }
