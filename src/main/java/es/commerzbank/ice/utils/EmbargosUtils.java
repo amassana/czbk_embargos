@@ -2,9 +2,11 @@ package es.commerzbank.ice.utils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.datawarehouse.domain.dto.PersonType;
+import es.commerzbank.ice.embargos.domain.entity.Embargo;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlficheroPK;
 import es.commerzbank.ice.embargos.domain.entity.PeticionInformacion;
@@ -108,5 +110,23 @@ public class EmbargosUtils {
 		else {}
 			
 		return fileFormat;	
+	}
+
+	/* criterio: el embargo más reciente */
+	public static Embargo selectEmbargo(List<Embargo> embargos)
+	{
+		Embargo embargo = null;
+
+		for (Embargo currentEmbargo : embargos)
+		{
+			if (embargo == null) {
+				embargo = currentEmbargo;
+				continue;
+			}
+			if (embargo.getFUltimaModificacion().compareTo(currentEmbargo.getFUltimaModificacion()) == -1)
+				embargo = currentEmbargo;
+		}
+
+		return embargo;
 	}
 }

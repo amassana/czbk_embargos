@@ -22,4 +22,6 @@ public interface LiftingService {
 
 	List<LiftingStatusDTO> getListStatus();
 
+	boolean changeStatus(Long codeLifting, Long status, String userName) throws Exception;
+
 }

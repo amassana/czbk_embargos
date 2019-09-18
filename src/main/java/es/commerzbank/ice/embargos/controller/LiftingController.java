@@ -60,7 +60,7 @@ public class LiftingController {
 
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 
-			logger.error("ERROR in getPetitionCaseListByCodeFileControl: ", e);
+			logger.error("ERROR in getLiftingListByCodeFileControl: ", e);
 		}
 
 		logger.info("LiftingController - getLiftingListByCodeFileControl - end");
@@ -87,7 +87,7 @@ public class LiftingController {
 
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 
-			logger.error("ERROR in getBankAccountListByCodeFileControlAndPetitionCase: ", e);
+			logger.error("ERROR in getBankAccountListByCodeFileControlAndLifting: ", e);
 		}
 
 		logger.info("LiftingController - getBankAccountListByCodeFileControlAndLifting - end");
@@ -121,7 +121,7 @@ public class LiftingController {
 		
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		
-			logger.error("ERROR in savePetitionCase: ", e);
+			logger.error("ERROR in saveLifting: ", e);
 		}
 		
 		logger.info("LiftingController - saveLifting - end");
@@ -130,7 +130,7 @@ public class LiftingController {
 	}
 	
 	@GetMapping(value = "/{codeFileControl}/liftingcase/{codeLiftingCase}/audit")
-	public ResponseEntity<List<LiftingAuditDTO>> getAuditPetitionCase(Authentication authentication,
+	public ResponseEntity<List<LiftingAuditDTO>> getAuditLiftingCase(Authentication authentication,
 			@PathVariable("codeLiftingCase") Long codeLiftingCase) {
 		logger.info("LiftingController - getAuditPetitionCase - start");
 		ResponseEntity<List<LiftingAuditDTO>> response = null;
@@ -146,7 +146,7 @@ public class LiftingController {
 
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 
-			logger.error("ERROR in getAuditPetitionCase: ", e);
+			logger.error("ERROR in getAuditLiftingCase: ", e);
 		}
 
 		logger.info("LiftingController - getAuditPetitionCase - end");
@@ -170,10 +170,44 @@ public class LiftingController {
 
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 
-			logger.error("ERROR in getAuditPetitionCase: ", e);
+			logger.error("ERROR in getListStatus: ", e);
 		}
 
 		logger.info("LiftingController - getListStatus - end");
+		return response;
+
+	}
+	
+	@PostMapping(value = "/{codeLifting}/changeStatus/{status}", 
+			produces = {"application/json" }, 
+			consumes = { "application/json" })
+	@ApiOperation(value = "Actualiza el estado de un levantamiento seleccionado")
+	public ResponseEntity<String> changeStatus(Authentication authentication,
+			@PathVariable("codeLifting") Long codeLifting, @PathVariable("status") Long status) {
+		logger.info("LiftingController - changeStatus - start");
+		ResponseEntity<String> response = null;
+		boolean result = true;
+		
+		try {
+		
+			String userModif = authentication.getName();
+		
+			result = liftingService.changeStatus(codeLifting, status, userModif);
+		
+			if (result) {
+				response = new ResponseEntity<>(HttpStatus.OK);
+			} else {
+				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+		
+		} catch (Exception e) {
+		
+			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		
+			logger.error("ERROR in changeStatus: ", e);
+		}
+		
+		logger.info("LiftingController - changeStatus - end");
 		return response;
 
 	}
