@@ -1,16 +1,10 @@
 package es.commerzbank.ice.embargos.scheduled;
 
 import es.commerzbank.ice.comun.lib.util.ICEException;
-import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
-import es.commerzbank.ice.embargos.domain.entity.Embargo;
-import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
-import es.commerzbank.ice.embargos.domain.entity.Traba;
+import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase3.OrdenEjecucionEmbargoFase3;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase6.ResultadoFinalEmbargoFase6;
-import es.commerzbank.ice.embargos.repository.FileControlRepository;
-import es.commerzbank.ice.embargos.repository.LiftingRepository;
-import es.commerzbank.ice.embargos.repository.SeizedRepository;
-import es.commerzbank.ice.embargos.repository.SeizureRepository;
+import es.commerzbank.ice.embargos.repository.*;
 import es.commerzbank.ice.utils.EmbargosConstants;
 import org.beanio.BeanReader;
 import org.beanio.BeanWriter;
@@ -19,9 +13,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
+@Service
+@Transactional(transactionManager="transactionManager")
 public class Norma63Fase6
 {
     private static final Logger LOG = LoggerFactory.getLogger(Norma63Fase6.class);
@@ -41,6 +45,15 @@ public class Norma63Fase6
     @Autowired
     FileControlRepository fileControlRepository;
 
+    @Autowired
+    SeizureSummaryRepository seizureSummaryRepository;
+
+    @Autowired
+    SeizureSummaryBankAccountRepository seizureSummaryBankAccountRepository;
+
+    @Value("${commerzbank.embargos.files.path.processed}")
+    private String pathProcessed;
+
     /* to cronify
     @Scheduled("")
     public void doFase6()
@@ -51,7 +64,7 @@ public class Norma63Fase6
     }
     */
 
-    public void generarFase6(Long codControlFichero) throws ICEException {
+    public void generarFase6(Long codControlFichero) throws ICEException, IOException {
         ControlFichero ficheroFase3 = fileControlRepository.getOne(codControlFichero);
 
         // type N63 F3 is assumed - value 8
@@ -61,7 +74,6 @@ public class Norma63Fase6
         if (embargos == null)
             throw new ICEException("", "No seizures found for code "+ codControlFichero);
 
-        BeanWriter beanWriter = null;
         BeanReader beanReader = null;
 
         try {
@@ -69,7 +81,7 @@ public class Norma63Fase6
             StreamFactory factory = StreamFactory.newInstance();
             factory.loadResource(pathFileConfigCuaderno63);
             // TODO: NUEVO CAMPO en control fichero: RUTA INTERNA
-            beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE3, ficheroFase3.getNombreFichero());
+            beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE3, (new File(pathProcessed + ficheroFase3.getNombreFichero()).getCanonicalFile()));
 
             Object currentF3Record = null;
 
@@ -88,37 +100,105 @@ public class Norma63Fase6
 
                     OrdenEjecucionEmbargoFase3 ordenEjecucionEmbargo = (OrdenEjecucionEmbargoFase3) currentF3Record;
 
-                    Embargo embargo = findByNumeroEmbargo(embargos, ordenEjecucionEmbargo.getCodigoDeuda());
+                    LOG.info("Treating "+ ordenEjecucionEmbargo.getCodigoDeuda() +" - "+ ordenEjecucionEmbargo.getIdentificadorDeuda());
+
+                    Embargo embargo = findByNumeroEmbargo(embargos, ordenEjecucionEmbargo.getIdentificadorDeuda());
                     Traba traba = seizedRepository.getByEmbargo(embargo);
-                    List<LevantamientoTraba> levantamientos = liftingRepository.findAllByCodTraba(traba);
+                    List<LevantamientoTraba> levantamientos = liftingRepository.findAllByTraba(traba);
 
-                    /* TODO probar qué hacer con los levantamientos levantados más de una vez. Agregar? */
-                    /*
-                    ResultadoFinalEmbargoFase6 resultadoFinalEmbargoFase6 =
-                            cuaderno63Mapper.generateComunicacionResultadoRetencionFase4(embargo, traba, cuentaTrabaOrderedList);
+                    BigDecimal importeTotalLevantado = BigDecimal.ZERO;
 
-                    beanWriter.write(EmbargosConstants.RECORD_NAME_RESULTADOFINALEMBARGO, ResultadoFinalEmbargoFase6);
+                    ResultadoEmbargo resultadoEmbargo = new ResultadoEmbargo();
+                    resultadoEmbargo.setTraba(traba);
+                    resultadoEmbargo.setEmbargo(embargo);
+                    //resultadoEmbargo.setEstadoResultadoEmbargo();
+                    //resultadoEmbargo.set
 
-                    beanWriter.flush();
-                     */
+                    List<CuentaResultadoEmbargo> cuentasResultadoEmbargo = new ArrayList<>(6);
+                    resultadoEmbargo.setCuentaResultadoEmbargos(cuentasResultadoEmbargo);
+
+                    for (CuentaEmbargo cuentaEmbargo : embargo.getCuentaEmbargos())
+                    {
+                        CuentaResultadoEmbargo cuentaResultadoEmbargo = new CuentaResultadoEmbargo();
+
+                        cuentaResultadoEmbargo.setCuentaEmbargo(cuentaEmbargo);
+
+                        for (CuentaTraba cuentaTraba : traba.getCuentaTrabas())
+                        {
+                            if (cuentaTraba.getCuenta().equals(cuentaEmbargo.getCuenta())) {
+                                cuentaResultadoEmbargo.setCuentaTraba(cuentaTraba);
+                                break;
+                            }
+                        }
+
+                        if (cuentaResultadoEmbargo.getCuentaTraba() != null) {
+                            BigDecimal importeLevantadoCuenta = BigDecimal.ZERO;
+
+                            if (levantamientos != null) {
+                                for (LevantamientoTraba levantamientoTraba : levantamientos) {
+                                    for (CuentaLevantamiento cuentaLevantamiento : levantamientoTraba.getCuentaLevantamientos()) {
+                                        if (cuentaLevantamiento.getCuenta().equals(cuentaEmbargo.getCuenta())) {
+                                            // TODO: DIVISA
+                                            importeLevantadoCuenta = importeLevantadoCuenta.add(cuentaLevantamiento.getImporte());
+                                        }
+                                    }
+                                }
+                            }
+
+                            LOG.info("Importe cuenta traba "+ cuentaResultadoEmbargo.getCuentaTraba().getCodCuentaTraba() +" "+ (cuentaResultadoEmbargo.getCuentaTraba().getImporte() == null) +" "+ importeLevantadoCuenta);
+
+                            if (BigDecimal.ZERO.compareTo(importeLevantadoCuenta) != 0) {
+                                // TODO what if get importe == 0? null? error
+                                if (cuentaResultadoEmbargo.getCuentaTraba().getImporte() != null)
+                                    cuentaResultadoEmbargo.setImporteNeto(cuentaResultadoEmbargo.getCuentaTraba().getImporte().subtract(importeLevantadoCuenta));
+
+                                importeTotalLevantado = importeTotalLevantado.add(importeLevantadoCuenta);
+                            }
+                            // TODO cuentaResultadoEmbargo.setEstadoResultadoEmbargo();
+                        }
+
+                        cuentasResultadoEmbargo.add(cuentaResultadoEmbargo);
+                    }
+
+                    resultadoEmbargo.setTotalLevantado(importeTotalLevantado);
+                    if (traba.getImporteTrabado() != null)
+                        resultadoEmbargo.setTotalNeto(traba.getImporteTrabado().subtract(importeTotalLevantado));
+
+                    // TODO resultadoEmbargo.setEstadoResultadoEmbargo();
+
+                    seizureSummaryRepository.save(resultadoEmbargo);
+
+                    for (CuentaResultadoEmbargo cuentaResultadoEmbargo : cuentasResultadoEmbargo) {
+                        cuentaResultadoEmbargo.setResultadoEmbargo(resultadoEmbargo);
+                        seizureSummaryBankAccountRepository.save(cuentaResultadoEmbargo);
+                    }
+
+                    /* TODO probar qué hacer con los levantamientos levantados más de una vez. Agregar? por ahora sí*/
                 }
             }
         }
         catch (Exception e)
         {
             LOG.error("Error while creating Norma63 - fase 6 file.", e);
+            throw e;
         }
         finally {
             if (beanReader != null)
                 beanReader.close();
-            if (beanWriter != null)
-                beanWriter.close();
         }
     }
 
-    private Embargo findByNumeroEmbargo(List<Embargo> embargos, String embargo)
+    private Embargo findByNumeroEmbargo(List<Embargo> embargos, String codigoDeuda)
     {
+        Embargo embargo = null;
 
+        for (Embargo currentEmbargo : embargos)
+        {
+            if (codigoDeuda.equals(currentEmbargo.getNumeroEmbargo()))
+                embargo = currentEmbargo;
+        }
+
+        return embargo;
     }
 }
 /*
