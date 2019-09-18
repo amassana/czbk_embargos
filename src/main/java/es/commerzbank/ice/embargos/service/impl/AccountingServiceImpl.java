@@ -29,6 +29,7 @@ import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.utils.EmbargosConstants;
 import es.commerzbank.ice.utils.EmbargosUtils;
+import es.commerzbank.ice.utils.ICEDateUtils;
 
 @Service
 @Transactional(transactionManager="transactionManager")
@@ -135,6 +136,10 @@ public class AccountingServiceImpl implements AccountingService{
 			String reference2 = "";
 			String detailPayment = embargo.getDatregcomdet();
 		
+			String codGroupNote = EmbargosConstants.F3 + "_"
+					+ embargo.getControlFichero().getCodControlFichero() +"_"
+					+ ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
+			
 			for(CuentaTraba cuentaTraba : traba.getCuentaTrabas()) {
 				
 				AccountingNote accountingNote = new AccountingNote();
@@ -156,6 +161,7 @@ public class AccountingServiceImpl implements AccountingService{
 				accountingNote.setDetailPayment(detailPayment);
 				accountingNote.setChange(cuentaTraba.getCambio());
 				accountingNote.setGeneralParameter(contabilizacionCallbackNameParameter);
+				accountingNote.setCodGroupNote(codGroupNote);
 				
 				accountingNoteService.Contabilizar(accountingNote);
 				

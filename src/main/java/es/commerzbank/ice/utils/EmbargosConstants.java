@@ -175,6 +175,13 @@ public class EmbargosConstants {
 	public static final int COD_FASE_5 = 5;
 	public static final int COD_FASE_6 = 6;
 	
+	public static final String F1 = "F1";
+	public static final String F2 = "F2";
+	public static final String F3 = "F3";
+	public static final String F4 = "F4";
+	public static final String F5 = "F5";
+	public static final String F6 = "F6";
+	
 	/** Codigos de registro de los ficheros **/
 	public static final int CODIGO_REGISTRO_CUADERNO63_COMUNICACION_RESULTADO_RETENCION_FASE4 = 6;	
 	public static final String CODIGO_REGISTRO_AEAT_TRABA_FASE4 = "2";
