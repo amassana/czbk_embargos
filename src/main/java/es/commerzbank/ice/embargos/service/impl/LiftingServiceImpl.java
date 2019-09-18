@@ -1,5 +1,6 @@
 package es.commerzbank.ice.embargos.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -125,6 +126,13 @@ public class LiftingServiceImpl implements LiftingService {
 			for (CuentaLevantamiento cuentaLevantamiento : cuentasLevantamiento) {
 				
 				BankAccountLiftingDTO bankAccountDTO = bankAccountLiftingMapper.toBankAccountLiftingDTO(cuentaLevantamiento);
+				
+				Optional<EstadoIntLevantamiento> estado = liftingStatusRepository.findById(levantamiento.getEstadoContable().longValue());
+				if (estado != null) {
+					LiftingStatusDTO status = liftingStatusMapper.toLiftingStatus(estado.get());
+					bankAccountDTO.setStatus(status);
+				}
+				
 				bankAccountList.add(bankAccountDTO);
 				
 				importeLevantado += bankAccountDTO.getAmount(); 
@@ -155,6 +163,7 @@ public class LiftingServiceImpl implements LiftingService {
 				List<BankAccountLiftingDTO> list = lifting.getAccounts();
 				for (BankAccountLiftingDTO account : list) {
 					CuentaLevantamiento cuenta = bankAccountLiftingMapper.toCuentaLevantamiento(account);
+					
 					cuenta.setLevantamientoTraba(levantamiento);
 					cuenta.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 					cuenta.setUsuarioUltModificacion(userModif);
@@ -208,7 +217,7 @@ public class LiftingServiceImpl implements LiftingService {
 		boolean response = true;
 		try {
 			if (status != null && codeLifting != null && codeLifting > 0) {
-				liftingRepository.updateStatus(codeLifting, status, userName, ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+				liftingRepository.updateStatus(codeLifting, new BigDecimal(status), userName, ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 			} else {
 				response = false;
 			}
