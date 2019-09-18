@@ -16,7 +16,7 @@ public class CuentaTraba implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name = "cuenta_traba_seq_gen", sequenceName = "CUENTA_TRABA_SEQ", allocationSize = 1)
+	@SequenceGenerator(name = "cuenta_traba_seq_gen", sequenceName = "SEC_CUENTA_TRABA", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cuenta_traba_seq_gen")
 	@Column(name="COD_CUENTA_TRABA", unique=true, nullable=false)
 	private long codCuentaTraba;

@@ -17,7 +17,7 @@ public class Traba implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name = "trabas_seq_gen", sequenceName = "TRABAS_SEQ", allocationSize = 1)
+	@SequenceGenerator(name = "trabas_seq_gen", sequenceName = "SEC_TRABAS", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "trabas_seq_gen")
 	@Column(name="COD_TRABA", unique=true, nullable=false)
 	private long codTraba;
