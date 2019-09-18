@@ -30,6 +30,9 @@ public class LevantamientoTraba implements Serializable {
 
 	@Column(name="ESTADO_EJECUTADO")
 	private BigDecimal estadoEjecutado;
+	
+	@Column(name="IMPORTE_LEVANTADO")
+	private BigDecimal importeLevantado;
 
 	@Column(name="F_ULTIMA_MODIFICACION", precision=14)
 	private BigDecimal fUltimaModificacion;
@@ -149,6 +152,14 @@ public class LevantamientoTraba implements Serializable {
 
 	public void setIndCasoRevisado(String indCasoRevisado) {
 		this.indCasoRevisado = indCasoRevisado;
+	}
+
+	public BigDecimal getImporteLevantado() {
+		return importeLevantado;
+	}
+
+	public void setImporteLevantado(BigDecimal importeLevantado) {
+		this.importeLevantado = importeLevantado;
 	}
 
 }

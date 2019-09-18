@@ -1,5 +1,6 @@
 package es.commerzbank.ice.embargos.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
 import es.commerzbank.ice.embargos.domain.dto.BankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.BankAccountLiftingDTO;
@@ -124,6 +126,13 @@ public class LiftingServiceImpl implements LiftingService {
 			for (CuentaLevantamiento cuentaLevantamiento : cuentasLevantamiento) {
 				
 				BankAccountLiftingDTO bankAccountDTO = bankAccountLiftingMapper.toBankAccountLiftingDTO(cuentaLevantamiento);
+				
+				Optional<EstadoIntLevantamiento> estado = liftingStatusRepository.findById(levantamiento.getEstadoContable().longValue());
+				if (estado != null) {
+					LiftingStatusDTO status = liftingStatusMapper.toLiftingStatus(estado.get());
+					bankAccountDTO.setStatus(status);
+				}
+				
 				bankAccountList.add(bankAccountDTO);
 				
 				importeLevantado += bankAccountDTO.getAmount(); 
@@ -131,6 +140,12 @@ public class LiftingServiceImpl implements LiftingService {
 			
 			response.setAmountRaised(importeLevantado);
 			response.setAccounts(bankAccountList);
+			
+			Optional<EstadoIntLevantamiento> estado = liftingStatusRepository.findById(levantamiento.getEstadoContable().longValue());
+			if (estado != null) {
+				LiftingStatusDTO status = liftingStatusMapper.toLiftingStatus(estado.get());
+				response.setStatus(status);
+			}
 		}
 		
 		return response;
@@ -141,9 +156,6 @@ public class LiftingServiceImpl implements LiftingService {
 		boolean response = true; 
 		
 		if (lifting != null) {
-			
-			liftingRepository.updateStatus(codelifting, lifting.getStatus().getCode());
-			
 			LevantamientoTraba levantamiento = new LevantamientoTraba();
 			levantamiento.setCodLevantamiento(codelifting);
 			
@@ -151,7 +163,10 @@ public class LiftingServiceImpl implements LiftingService {
 				List<BankAccountLiftingDTO> list = lifting.getAccounts();
 				for (BankAccountLiftingDTO account : list) {
 					CuentaLevantamiento cuenta = bankAccountLiftingMapper.toCuentaLevantamiento(account);
+					
 					cuenta.setLevantamientoTraba(levantamiento);
+					cuenta.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+					cuenta.setUsuarioUltModificacion(userModif);
 					
 					liftingBankAccountRepository.save(cuenta);
 				}
@@ -192,6 +207,22 @@ public class LiftingServiceImpl implements LiftingService {
 			for (EstadoIntLevantamiento estado : list) {
 				response.add(liftingStatusMapper.toLiftingStatus(estado));
 			}
+		}
+		
+		return response;
+	}
+
+	@Override
+	public boolean changeStatus(Long codeLifting, Long status, String userName) throws Exception {
+		boolean response = true;
+		try {
+			if (status != null && codeLifting != null && codeLifting > 0) {
+				liftingRepository.updateStatus(codeLifting, new BigDecimal(status), userName, ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+			} else {
+				response = false;
+			}
+		} catch(Exception e) {
+			throw new Exception();
 		}
 		
 		return response;

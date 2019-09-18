@@ -1,5 +1,6 @@
 package es.commerzbank.ice.embargos.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,7 +20,7 @@ public interface LiftingRepository extends JpaRepository<LevantamientoTraba, Lon
 
 	@Transactional
 	@Modifying
-	@Query("update LevantamientoTraba l set l.estadoContable = :estado where l.codLevantamiento = :id")
-	public void updateStatus(@Param("id") Long codelifting, @Param("estado") long status);
+	@Query("update LevantamientoTraba l set l.estadoContable = :estado, l.usuarioUltModificacion = :user, l.fUltimaModificacion = :fecha where l.codLevantamiento = :id")
+	public void updateStatus(@Param("id") Long codelifting, @Param("estado") BigDecimal bigDecimal2, @Param("user") String userName, @Param("fecha") BigDecimal bigDecimal);
 
 }

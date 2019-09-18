@@ -3,6 +3,8 @@ package es.commerzbank.ice.embargos.service.impl;
 import java.util.Date;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +36,8 @@ import es.commerzbank.ice.utils.EmbargosUtils;
 @Transactional(transactionManager="transactionManager")
 public class AccountingServiceImpl implements AccountingService{
 	
+	private static final Logger logger = LoggerFactory.getLogger(AccountingServiceImpl.class);
+	
 	@Autowired
 	FileControlService fileControlService;
 	
@@ -58,7 +62,7 @@ public class AccountingServiceImpl implements AccountingService{
 	
 	@Override
 	public boolean sendAccounting(Long codeFileControl, String userName) throws ICEException {
-			
+		logger.info("AccountingServiceImpl - sendAccounting - start");	
 		//Se obtiene el fichero de control:
 		Optional<ControlFichero> fileControlOpt = fileControlRepository.findById(codeFileControl);
 		if(!fileControlOpt.isPresent()) {
@@ -110,15 +114,16 @@ public class AccountingServiceImpl implements AccountingService{
 					EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_ACCOUNTING_RESPONSE, userName);			
 		
 		} else {
-			
+			logger.info("AccountingServiceImpl - sendAccounting - end");
 			return false;
 		}
 		
+		logger.info("AccountingServiceImpl - sendAccounting - end");
 		return true;
 	}
 
 	private void sendAccountingAEATCuaderno63(ControlFichero controlFichero, String userName) throws ICEException {
-		
+		logger.info("AccountingServiceImpl - sendAccountingAEATCuaderno63 - start");
 		String cuentaRecaudacion = determineCuentaRecaudacion();
 		
 		Long oficinaCuentaRecaudacion = determineOficinaCuentaRecaudacion();
@@ -157,7 +162,7 @@ public class AccountingServiceImpl implements AccountingService{
 				accountingNote.setChange(cuentaTraba.getCambio());
 				accountingNote.setGeneralParameter(contabilizacionCallbackNameParameter);
 				
-				accountingNoteService.Contabilizar(accountingNote);
+				accountingNoteService.contabilizar(accountingNote);
 				
 				//Se actualiza el estado de la Cuenta Traba a "Enviada a contabilidad":
 				seizureService.updateSeizedBankStatus(cuentaTraba, EmbargosConstants.COD_ESTADO_TRABA_ENVIADA_A_CONTABILIDAD, userName);
@@ -170,10 +175,11 @@ public class AccountingServiceImpl implements AccountingService{
 			seizureService.updateSeizureStatus(controlFichero.getCodControlFichero(), traba.getCodTraba(), seizureStatusDTO, userName);	
 
 		}
+		logger.info("AccountingServiceImpl - sendAccountingAEATCuaderno63 - end");
 	}
 	
 	private void sendAccountingCGPJ(ControlFichero controlFichero, String userName) throws ICEException {
-	
+		logger.info("AccountingServiceImpl - sendAccountingCGPJ - start");
 		String cuentaRecaudacion = determineCuentaRecaudacion();
 		
 		Long oficinaCuentaRecaudacion = determineOficinaCuentaRecaudacion();
@@ -221,7 +227,7 @@ public class AccountingServiceImpl implements AccountingService{
 						accountingNote.setChange(cuentaTraba.getCambio());
 						accountingNote.setGeneralParameter(contabilizacionCallbackNameParameter);
 						
-						accountingNoteService.Contabilizar(accountingNote);
+						accountingNoteService.contabilizar(accountingNote);
 						
 						//Se actualiza el estado de la Cuenta Traba a "Enviada a contabilidad":
 						seizureService.updateSeizedBankStatus(cuentaTraba, EmbargosConstants.COD_ESTADO_TRABA_ENVIADA_A_CONTABILIDAD, userName);
@@ -235,9 +241,11 @@ public class AccountingServiceImpl implements AccountingService{
 				}
 			}
 		}
+		logger.info("AccountingServiceImpl - sendAccountingCGPJ - end");
 	}
 	
 	private Long determineOficinaCuentaRecaudacion() throws ICEException {
+		logger.info("AccountingServiceImpl - determineOficinaCuentaRecaudacion - start");
 		GeneralParameter oficinaCuentaRecaudacionGenParam = 
 				generalParametersService.viewParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA);	
 		
@@ -248,10 +256,12 @@ public class AccountingServiceImpl implements AccountingService{
 			throw new ICEException("","ERROR: parameter not found: " + EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA);
 		}
 		
+		logger.info("AccountingServiceImpl - determineOficinaCuentaRecaudacion - end");
 		return oficinaCuentaRecaudacion;
 	}
 
 	private String determineCuentaRecaudacion() throws ICEException {
+		logger.info("AccountingServiceImpl - determineCuentaRecaudacion - start");
 		GeneralParameter cuentaRecaudacionGenParam = 
 				generalParametersService.viewParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);	
 		
@@ -261,6 +271,7 @@ public class AccountingServiceImpl implements AccountingService{
 			throw new ICEException("","ERROR: parameter not found: " + EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);
 		}
 		
+		logger.info("AccountingServiceImpl - determineCuentaRecaudacion - end");
 		return cuentaRecaudacion;
 	}
 	
@@ -290,7 +301,7 @@ public class AccountingServiceImpl implements AccountingService{
 	
 	@Override
 	public boolean undoAccounting(Long codeFileControl, Long idSeizure, String numAccount, String userName) throws ICEException{
-
+		logger.info("AccountingServiceImpl - undoAccounting - start");
 		//Solo se puede retroceder cuando este contabilizado (se haya realizado el callback) y una vez realizado
 		//el retroceso, se cambiara el estado a anterior a contabilizado.
 		
@@ -340,7 +351,7 @@ public class AccountingServiceImpl implements AccountingService{
 		
 		fileControlService.updateFileControlStatusTransaction(controlFichero, codEstado, userName);
 		
-		
+		logger.info("AccountingServiceImpl - undoAccounting - end");
 		return true;
 	}
 	

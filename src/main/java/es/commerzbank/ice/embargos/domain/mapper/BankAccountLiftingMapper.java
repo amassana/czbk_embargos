@@ -1,5 +1,6 @@
 package es.commerzbank.ice.embargos.domain.mapper;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,15 +45,9 @@ public abstract class BankAccountLiftingMapper {
 		@Mapping(source = "codCurrency", target = "codDivisa")
 	})
 	public abstract CuentaLevantamiento toCuentaLevantamiento(BankAccountLiftingDTO account);
-	
-	
-	@AfterMapping
-	protected void setBankAccountLiftingDTOAfterMapping(@MappingTarget BankAccountLiftingDTO dto, CuentaLevantamiento entity) {
-		dto.setIndAccounting(new Item(entity.getIndContabilizado(), statusList.get(entity.getIndContabilizado())));
-	}
-	
+
 	@AfterMapping
 	protected void setCuentaLevantamientoAfterMapping(@MappingTarget CuentaLevantamiento entity, BankAccountLiftingDTO dto) {
-		entity.setIndContabilizado((String) dto.getIndAccounting().getCode());
+		entity.setEstado(new BigDecimal(dto.getStatus().getCode()));
 	}
 }

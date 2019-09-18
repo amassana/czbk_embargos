@@ -48,6 +48,9 @@ public class CuentaLevantamiento implements Serializable {
 
 	@Column(name="NUMERO_ORDEN_CUENTA")
 	private BigDecimal numeroOrdenCuenta;
+	
+	@Column(name="ESTADO")
+	private BigDecimal estado;
 
 	@Column(name="USUARIO_ULT_MODIFICACION", length=10)
 	private String usuarioUltModificacion;
@@ -162,5 +165,13 @@ public class CuentaLevantamiento implements Serializable {
 
 	public void setCodDivisa(String codDivisa) {
 		this.codDivisa = codDivisa;
+	}
+
+	public BigDecimal getEstado() {
+		return estado;
+	}
+
+	public void setEstado(BigDecimal estado) {
+		this.estado = estado;
 	}
 }
