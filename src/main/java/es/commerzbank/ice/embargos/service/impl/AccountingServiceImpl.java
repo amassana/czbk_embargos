@@ -17,9 +17,11 @@ import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.embargos.domain.dto.SeizureStatusDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
+import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
 import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
+import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
 import es.commerzbank.ice.embargos.domain.entity.Peticion;
 import es.commerzbank.ice.embargos.domain.entity.SolicitudesEjecucion;
 import es.commerzbank.ice.embargos.domain.entity.Traba;
@@ -28,6 +30,7 @@ import es.commerzbank.ice.embargos.repository.SeizedBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.SeizedRepository;
 import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.FileControlService;
+import es.commerzbank.ice.embargos.service.LiftingService;
 import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.utils.EmbargosConstants;
 import es.commerzbank.ice.utils.EmbargosUtils;
@@ -58,6 +61,9 @@ public class AccountingServiceImpl implements AccountingService{
 	
 	@Autowired
 	SeizedBankAccountRepository seizedBankAccountRepository;
+	
+	@Autowired
+	LiftingService liftingService;
 	
 	
 	@Override
@@ -120,6 +126,64 @@ public class AccountingServiceImpl implements AccountingService{
 		
 		logger.info("AccountingServiceImpl - sendAccounting - end");
 		return true;
+	}
+	
+	@Override
+	public boolean sendAccountingLifting(Long codeFileControl, String userName)  throws ICEException {
+		logger.info("AccountingServiceImpl - sendAccountingLifting - start");
+		boolean response = true;
+		
+		Optional<ControlFichero> fileControlOpt = fileControlRepository.findById(codeFileControl);
+		if(!fileControlOpt.isPresent()) {
+			response =  false;
+		} else {
+		
+			String cuentaRecaudacion = determineCuentaRecaudacion();
+			Long oficinaCuentaRecaudacion = determineOficinaCuentaRecaudacion();
+			String contabilizacionCallbackNameParameter = EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_CALLBACK;
+			
+			for (LevantamientoTraba levantamiento : fileControlOpt.get().getLevantamientoTrabas()) {
+				
+				String reference1 = levantamiento.getTraba().getEmbargo().getNumeroEmbargo();
+				String reference2 = "";
+				String detailPayment = levantamiento.getTraba().getEmbargo().getDatregcomdet();
+				
+				for (CuentaLevantamiento cuenta : levantamiento.getCuentaLevantamientos()) {
+					AccountingNote accountingNote = new AccountingNote();
+					
+					double amount = cuenta.getImporte()!=null ? cuenta.getImporte().doubleValue() : 0;
+		 			
+					accountingNote.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
+					accountingNote.setCodOffice(oficinaCuentaRecaudacion);
+					//El contador lo gestiona Comunes
+					//accountingNote.setContador(contador);
+					accountingNote.setAmount(amount);
+					accountingNote.setCodCurrency(cuenta.getCodDivisa());
+					accountingNote.setDebitAccount(cuentaRecaudacion);
+					accountingNote.setCreditAccount(cuenta.getCuenta());
+					accountingNote.setActualDate(new Date());
+					//accountingNote.setExecutionDate(new Date());
+					accountingNote.setReference1(reference1);
+					accountingNote.setReference2(reference2);
+					accountingNote.setDetailPayment(detailPayment);
+					accountingNote.setChange(cuenta.getCambio());
+					accountingNote.setGeneralParameter(contabilizacionCallbackNameParameter);
+					accountingNote.setStatus(EmbargosConstants.COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO);
+					
+					int resultado = accountingNoteService.contabilizar(accountingNote);
+					
+					if (resultado == 0) {
+						response = false;
+					}
+					
+					//Se actualiza el estado de la Cuenta Levantamiento a "Enviada a contabilidad":
+					liftingService.updateLiftingBankAccountingStatus(cuenta, EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_CONTABILIZACION, userName);
+				}
+			}
+		}
+		
+		logger.info("AccountingServiceImpl - sendAccountingLifting - end");
+		return response;
 	}
 
 	private void sendAccountingAEATCuaderno63(ControlFichero controlFichero, String userName) throws ICEException {

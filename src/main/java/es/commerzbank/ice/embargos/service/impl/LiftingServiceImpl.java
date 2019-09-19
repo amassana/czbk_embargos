@@ -210,4 +210,17 @@ public class LiftingServiceImpl implements LiftingService {
 		
 		return response;
 	}
+
+	@Override
+	public void updateLiftingBankAccountingStatus(CuentaLevantamiento cuenta, long codEstado, String userName) {
+		
+		EstadoLevantamiento estado = new EstadoLevantamiento();
+		estado.setCodEstado(codEstado);
+		cuenta.setEstadoLevantamiento(estado);
+
+		cuenta.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+		cuenta.setUsuarioUltModificacion(userName);
+		
+		liftingBankAccountRepository.save(cuenta);
+	}
 }

@@ -103,6 +103,11 @@ public class EmbargosConstants {
 	public static final long COD_ESTADO_TRABA_ESTADO_ERRONEO = 8;
 	public static final long COD_ESTADO_TRABA_ENVIADA_A_CONTABILIDAD = 8;
 	
+	/** Estados del Levantamiento **/
+	public static final long COD_ESTADO_LEVANTAMIENTO_PENDIENTE = 1;
+	public static final long COD_ESTADO_LEVANTAMIENTO_PENDIENTE_CONTABILIZACION = 2;
+	public static final long COD_ESTADO_LEVANTAMIENTO_CONTABILIZADO = 3;
+	
 	/** Stream names del cuaderno 63 **/
 	public static final String STREAM_NAME_CUADERNO63_FASE1 = "fase1";
 	public static final String STREAM_NAME_CUADERNO63_FASE2 = "fase2";
@@ -187,6 +192,7 @@ public class EmbargosConstants {
 	public static final String PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA = "embargos.cuentaRecaudacion.cuenta";
 	public static final String PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA = "embargos.cuentaRecaudacion.oficina";
 	public static final String PARAMETRO_EMBARGOS_CONTABILIZACION_CALLBACK = "embargos.contabilizacion.callback";
+	public static final String PARAMETRO_EMBARGOS_CONTABILIZACION_FASE5_CALLBACK = "embargos.contabilizacion.fase5.callback";
 	
 	//Tabla Apoderados
 	public static final String NAME_APODERADO = "name";
@@ -195,5 +201,7 @@ public class EmbargosConstants {
 	//Levantamiento
 	public static final String LIFTING = "lifting";
 	public static final Object BANK_ACCOUNT_LIFTING_LIST = "bankAccountLiftingList";
+
+	public static final String COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO = "P";
 	
 }

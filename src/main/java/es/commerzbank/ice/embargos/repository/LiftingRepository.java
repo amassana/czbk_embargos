@@ -21,7 +21,7 @@ public interface LiftingRepository extends JpaRepository<LevantamientoTraba, Lon
 
 	@Transactional
 	@Modifying
-	@Query("update LevantamientoTraba l set l.estadoLevantamiento = :estado, l.usuarioUltModificacion = :user, l.fUltimaModificacion = :fecha where l.codLevantamiento = :id")
+	@Query(value = "update LEVANTAMIENTO_TRABA l set l.ESTADO_LEVANTAMIENTO = :estado, l.USUARIO_ULT_MODIFICACION = :user, l.F_ULTIMA_MODIFICACION = :fecha where l.COD_LEVANTAMIENTO = :id", nativeQuery = true)
 	public void updateStatus(@Param("id") Long codelifting, @Param("estado") BigDecimal bigDecimal2, @Param("user") String userName, @Param("fecha") BigDecimal bigDecimal);
 
 	public List<LevantamientoTraba> findAllByTraba(Traba traba);

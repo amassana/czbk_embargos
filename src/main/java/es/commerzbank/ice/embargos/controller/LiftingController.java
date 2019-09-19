@@ -24,6 +24,7 @@ import es.commerzbank.ice.embargos.domain.dto.LiftingDTO;
 import es.commerzbank.ice.embargos.domain.dto.LiftingStatusDTO;
 import es.commerzbank.ice.embargos.domain.dto.PetitionCaseDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
+import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.LiftingService;
 import io.swagger.annotations.ApiOperation;
 
@@ -37,6 +38,9 @@ public class LiftingController {
 	
 	@Autowired
 	private LiftingService liftingService;
+	
+	@Autowired
+	private AccountingService accountingService;
 
 	
 	@GetMapping(value = "/{codeFileControl}")
@@ -178,14 +182,15 @@ public class LiftingController {
 
 	}
 	
-	@PostMapping(value = "/{codeLifting}/changeStatus/{status}", 
+	@PostMapping(value = "/{codeFileControl}/liftingcase/{codeLifting}/changeStatus/{status}", 
 			produces = {"application/json" }, 
 			consumes = { "application/json" })
 	@ApiOperation(value = "Actualiza el estado de un levantamiento seleccionado")
-	public ResponseEntity<String> changeStatus(Authentication authentication,
+	public ResponseEntity<Void> changeStatus(Authentication authentication,
+			@PathVariable("codeFileControl") Long codeFileControl,
 			@PathVariable("codeLifting") Long codeLifting, @PathVariable("status") Long status) {
 		logger.info("LiftingController - changeStatus - start");
-		ResponseEntity<String> response = null;
+		ResponseEntity<Void> response = null;
 		boolean result = true;
 		
 		try {
@@ -209,6 +214,38 @@ public class LiftingController {
 		
 		logger.info("LiftingController - changeStatus - end");
 		return response;
-
 	}
+	
+	@GetMapping(value = "/{codeFileControl}/accounting")
+    @ApiOperation(value="Envio de datos a contabilidad.")
+    public ResponseEntity<String> sendAccounting(Authentication authentication,
+    										  @PathVariable("codeFileControl") Long codeFileControl){
+    	logger.info("SeizureController - sendAccounting - start");
+    	ResponseEntity<String> response = null;
+		boolean result = false;
+
+		try {
+
+			String userName = authentication.getName();
+		
+			result = accountingService.sendAccountingLifting(codeFileControl, userName);
+			
+			
+			if (result) {
+				response = new ResponseEntity<>(HttpStatus.OK);
+			} else {
+				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+
+		} catch (Exception e) {
+
+			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+			logger.error("ERROR in doAccounting: ", e);
+		}
+
+		logger.info("SeizureController - sendAccounting - end");
+		return response;
+    	
+    }
 }
