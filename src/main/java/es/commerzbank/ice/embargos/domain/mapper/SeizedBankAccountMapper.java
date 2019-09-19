@@ -1,5 +1,7 @@
 package es.commerzbank.ice.embargos.domain.mapper;
 
+import java.math.BigDecimal;
+
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -9,7 +11,9 @@ import org.mapstruct.Mappings;
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizedBankAccountDTO;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
+import es.commerzbank.ice.embargos.domain.entity.CuentaTrabaActuacion;
 import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
+import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.utils.EmbargosConstants;
 import es.commerzbank.ice.utils.ICEDateUtils;
 
@@ -22,9 +26,12 @@ public abstract class  SeizedBankAccountMapper {
 		@Mapping (source = "estadoCuenta", target = "bankAccountStatus"),
 		@Mapping (source = "importe", target = "amount"),
 		@Mapping (source = "cambio", target = "fxRate"),
-		@Mapping (source = "actuacion", target = "seizureAction.code"),
-		@Mapping (source = "traba.estadoTraba.codEstado", target = "seizureStatus.code"),
+		@Mapping (source = "cuentaTrabaActuacion.codActuacion", target = "seizureAction.code"),
+		@Mapping (source = "cuentaTrabaActuacion.descripcion", target = "seizureAction.description"),
+		@Mapping (source = "estadoTraba.codEstado", target = "seizureStatus.code"),
+		@Mapping (source = "estadoTraba.desEstado", target = "seizureStatus.description"),
 		@Mapping (source = "divisa", target = "bankAccountCurrency"),
+		@Mapping (source = "numeroOrdenCuenta", target = "orderNumberAccount"),
 	})
 	public abstract SeizedBankAccountDTO toSeizedBankAccountDTO (CuentaTraba cuentaTraba);
 
@@ -47,8 +54,10 @@ public abstract class  SeizedBankAccountMapper {
 		if (seizedBankAccountDTO.getAmount()!=null) {
 			cuentaTraba.setImporte(seizedBankAccountDTO.getAmount());
 		}		
-		if (seizedBankAccountDTO.getSeizureAction()!=null) {
-			cuentaTraba.setActuacion(seizedBankAccountDTO.getSeizureAction().getCode());
+		if (seizedBankAccountDTO.getSeizureAction()!=null && seizedBankAccountDTO.getSeizureAction().getCode()!=null) {
+			CuentaTrabaActuacion cuentaTrabaActuacion = new CuentaTrabaActuacion();
+			cuentaTrabaActuacion.setCodActuacion(seizedBankAccountDTO.getSeizureAction().getCode());
+			cuentaTraba.setCuentaTrabaActuacion(cuentaTrabaActuacion);
 		}
 		if (seizedBankAccountDTO.getFxRate()!=null) {
 			cuentaTraba.setCambio(seizedBankAccountDTO.getFxRate());
@@ -62,7 +71,8 @@ public abstract class  SeizedBankAccountMapper {
 			EstadoTraba estadoTraba = new EstadoTraba();
 			estadoTraba.setCodEstado(Long.valueOf(seizedBankAccountDTO.getSeizureStatus().getCode()));
 			
-			cuentaTraba.getTraba().setEstadoTraba(estadoTraba);
+			//cuentaTraba.getTraba().setEstadoTraba(estadoTraba);
+			cuentaTraba.setEstadoTraba(estadoTraba);
 		}	
 		if (seizedBankAccountDTO.getBankAccountCurrency()!=null) {
 
@@ -90,11 +100,29 @@ public abstract class  SeizedBankAccountMapper {
 	}
 	
 	@Mappings({
-		@Mapping (source = "accountNum", target = "cuenta"),
-		@Mapping (source = "iban", target = "iban"),
-		@Mapping (source = "status", target = "estadoCuenta"),
-		@Mapping (source = "divisa", target = "divisa"),
+		@Mapping (source = "accountDTO.accountNum", target = "cuenta"),
+		@Mapping (source = "accountDTO.iban", target = "iban"),
+		@Mapping (source = "accountDTO.status", target = "estadoCuenta"),
+		@Mapping (source = "accountDTO.divisa", target = "divisa"),
+		@Mapping (source = "numeroOrdenCuenta", target = "numeroOrdenCuenta"),
+		@Mapping (source = "traba", target = "traba"),
 	})
-	public abstract CuentaTraba accountDTOToCuentaTraba(AccountDTO accountDTO);
+	public abstract CuentaTraba accountDTOToCuentaTraba(AccountDTO accountDTO, BigDecimal numeroOrdenCuenta, Traba traba);
+	
+	//@AfterMapping
+	//public CuentaTraba accountDTOToCuentaTrabaAfterMapping(@MappingTarget CuentaTraba cuentaTraba, AccountDTO accountDTO, Traba traba) {
+	
+	@AfterMapping
+	public CuentaTraba accountDTOToCuentaTrabaAfterMapping(@MappingTarget CuentaTraba cuentaTraba, AccountDTO accountDTO) {
+		
+		//cuentaTraba.setTraba(traba);
+		EstadoTraba estadoTraba = new EstadoTraba();
+		estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE);
+		cuentaTraba.setEstadoTraba(estadoTraba);
+		cuentaTraba.setOrigenEmb(EmbargosConstants.IND_FLAG_NO);
+		cuentaTraba.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+		cuentaTraba.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+		return cuentaTraba;
+	}
 	
 }

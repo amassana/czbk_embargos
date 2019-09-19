@@ -7,9 +7,9 @@ import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 
 public interface InformationPetitionService {
 
-	public PetitionCaseDTO getByCodeInformationPetition(String codeInformationPetition);
+	public PetitionCaseDTO getByCodeInformationPetition(Long codeInformationPetition);
 	
-	public List<PetitionCaseDTO> getAuditByCodeInformationPetition(String codeInformationPetition);
+	public List<PetitionCaseDTO> getAuditByCodeInformationPetition(Long codeInformationPetition);
 	
 	public List<PetitionCaseDTO> getAllByControlFichero(ControlFichero controlFichero);
 	
@@ -18,9 +18,7 @@ public interface InformationPetitionService {
 	public Integer getCountReviewedPetitionCases(ControlFichero controlFichero);
 	
 	public Integer getCountPetitionCases(ControlFichero controlFichero);
-	
-	//public boolean savePreloadedBankAccounts(String codeInformationPetition, String nif, Boolean revised, List<String>codeAccountList);
-	
-	public boolean savePetitionCase(Long codeFileControl, String codePetitionCase, PetitionCaseDTO petitionCase, String userModif);
+		
+	public boolean savePetitionCase(Long codeFileControl, Long codePetitionCase, PetitionCaseDTO petitionCase, String userModif);
 
 }

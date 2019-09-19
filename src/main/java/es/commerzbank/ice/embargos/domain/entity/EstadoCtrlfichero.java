@@ -33,6 +33,13 @@ public class EstadoCtrlfichero implements Serializable {
 	public EstadoCtrlfichero() {
 	}
 
+	public EstadoCtrlfichero (long codEstado, long codTipoFichero) {
+	    EstadoCtrlficheroPK estadoCtrlficheroPK = new EstadoCtrlficheroPK();
+	    estadoCtrlficheroPK.setCodEstado(codEstado);
+	    estadoCtrlficheroPK.setCodTipoFichero(codTipoFichero);
+	    this.setId(estadoCtrlficheroPK);
+	}
+	
 	public EstadoCtrlficheroPK getId() {
 		return this.id;
 	}

@@ -19,8 +19,8 @@ public abstract class HSeizedBankAccountMapper {
 		@Mapping (source = "codEstado", target = "bankAccountStatus"),
 		@Mapping (source = "importe", target = "amount"),
 		@Mapping (source = "cambio", target = "fxRate"),
-		@Mapping (source = "actuacion", target = "seizureAction.code"),
-//TODO:		@Mapping (source = "traba.estadoTraba.codEstado", target = "seizureStatus.code"),
+		@Mapping (source = "cuentaTrabaActuacion.codActuacion", target = "seizureAction.code"),
+//TODO:		@Mapping (source = "estadoTraba.codEstado", target = "seizureStatus.code"),
 	})
 	public abstract SeizedBankAccountDTO toSeizedBankAccountDTO (HCuentaTraba hCuentaTraba);
 

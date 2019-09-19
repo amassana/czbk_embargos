@@ -8,7 +8,6 @@ public class FileControlDTO {
 	private Long codeFileType;
 	private FileControlStatusDTO status;
 	private String fileName;
-	private String responseFileName;
 	private Boolean isProcessed;
 	private String fileTarget;
 	private Date deliveryDate;
@@ -16,6 +15,8 @@ public class FileControlDTO {
 	private Long codeFileResponse;
 	private Date modifiedDate;
 	private String modifiedUser;
+	private Boolean isTGSS;
+	private Boolean isCuaderno63;
 	
 	public String getCode() {
 		return code;
@@ -40,12 +41,6 @@ public class FileControlDTO {
 	}
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
-	}
-	public String getResponseFileName() {
-		return responseFileName;
-	}
-	public void setResponseFileName(String responseFileName) {
-		this.responseFileName = responseFileName;
 	}
 	public Boolean getIsProcessed() {
 		return isProcessed;
@@ -89,7 +84,17 @@ public class FileControlDTO {
 	public void setModifiedUser(String modifiedUser) {
 		this.modifiedUser = modifiedUser;
 	}
-	
-
-	
+	public Boolean getIsTGSS() {
+		return isTGSS;
+	}
+	public void setIsTGSS(Boolean isTGSS) {
+		this.isTGSS = isTGSS;
+	}
+	public Boolean getIsCuaderno63() {
+		return isCuaderno63;
+	}
+	public void setIsCuaderno63(Boolean isCuaderno63) {
+		this.isCuaderno63 = isCuaderno63;
+	}
+		
 }

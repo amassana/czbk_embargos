@@ -8,10 +8,10 @@ import org.springframework.data.repository.query.Param;
 
 import es.commerzbank.ice.embargos.domain.entity.HPeticionInformacion;
 
-public interface InformationPetitionAuditRepository extends JpaRepository<HPeticionInformacion, String>{
+public interface InformationPetitionAuditRepository extends JpaRepository<HPeticionInformacion, Long>{
 
 	
 	@Query ("from HPeticionInformacion hpi where hpi.id.codPeticion = :codPeticion")
-	public List<HPeticionInformacion> findByCodPeticion(@Param("codPeticion") String codPeticion);
+	public List<HPeticionInformacion> findByCodPeticion(@Param("codPeticion") Long codPeticion);
 	
 }

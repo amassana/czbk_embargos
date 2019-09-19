@@ -16,6 +16,8 @@ public class CuentaLevantamiento implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@SequenceGenerator(name = "cuenta_levantamiento_seq_gen", sequenceName = "SEC_CUENTA_LEVANTAMIENTO", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cuenta_levantamiento_seq_gen")
 	@Column(name="COD_CUENTA_LEVANTAMIENTO", unique=true, nullable=false)
 	private long codCuentaLevantamiento;
 
@@ -40,9 +42,16 @@ public class CuentaLevantamiento implements Serializable {
 
 	@Column(name="IND_CONTABILIZADO", length=1)
 	private String indContabilizado;
+	
+	@Column(name="COD_DIVISA", length=3)
+	private String codDivisa;
 
 	@Column(name="NUMERO_ORDEN_CUENTA")
 	private BigDecimal numeroOrdenCuenta;
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="ESTADO", nullable=false)
+	private EstadoLevantamiento estadoLevantamiento;
 
 	@Column(name="USUARIO_ULT_MODIFICACION", length=10)
 	private String usuarioUltModificacion;
@@ -151,4 +160,21 @@ public class CuentaLevantamiento implements Serializable {
 		this.levantamientoTraba = levantamientoTraba;
 	}
 
+	public String getCodDivisa() {
+		return codDivisa;
+	}
+
+	public void setCodDivisa(String codDivisa) {
+		this.codDivisa = codDivisa;
+	}
+
+	public EstadoLevantamiento getEstadoLevantamiento() {
+		return estadoLevantamiento;
+	}
+
+	public void setEstadoLevantamiento(EstadoLevantamiento estadoLevantamiento) {
+		this.estadoLevantamiento = estadoLevantamiento;
+	}
+
+	
 }

@@ -35,8 +35,14 @@ public abstract class FileControlAuditMapper {
 	
 	@AfterMapping
 	protected void setFileControlDTOAfterMapping(HControlFichero hControlFichero, @MappingTarget FileControlDTO fileControlDTO) {
+
+		//Delivery date:
+		if (hControlFichero.getFechaMaximaRespuesta()!=null) {
+			fileControlDTO.setDeliveryDate(ICEDateUtils.bigDecimalToDate(hControlFichero.getFechaMaximaRespuesta(), ICEDateUtils.FORMAT_yyyyMMdd));
+		}
 		
-		boolean isProcessed = hControlFichero.getIndProcesado()!=null && EmbargosConstants.IND_FLAG_YES.equals(hControlFichero.getIndProcesado());
+		//Indicador de procesado (se pasa de String a Boolean):
+		boolean isProcessed = hControlFichero.getIndProcesado()!=null && EmbargosConstants.IND_FLAG_SI.equals(hControlFichero.getIndProcesado());
 		fileControlDTO.setIsProcessed(isProcessed);
 		
 		if (hControlFichero.getFUltimaModificacion()!=null) {

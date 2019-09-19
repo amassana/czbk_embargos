@@ -1,8 +1,21 @@
 package es.commerzbank.ice.embargos.domain.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 
 /**
@@ -16,7 +29,7 @@ public class PeticionInformacion implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name = "peticion_info_seq_gen", sequenceName = "PETICION_INFO_SEQ", allocationSize = 1)
+	@SequenceGenerator(name = "peticion_info_seq_gen", sequenceName = "SEC_PETICION_INFORMACION", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "peticion_info_seq_gen")
 	@Column(name="COD_PETICION", unique=true, nullable=false)
 	private long codPeticion;
@@ -132,6 +145,10 @@ public class PeticionInformacion implements Serializable {
 	
 	@Column(name="IND_CASO_REVISADO", length=1)
 	private String indCasoRevisado;
+	
+	//bi-directional many-to-one association to PeticionInformacionCuenta
+	@OneToMany(mappedBy="peticionInformacion")
+	private List<PeticionInformacionCuenta> peticionInformacionCuentas;
 
 	public PeticionInformacion() {
 	}
@@ -431,4 +448,28 @@ public class PeticionInformacion implements Serializable {
 	public void setIndCasoRevisado(String indCasoRevisado) {
 		this.indCasoRevisado = indCasoRevisado;
 	}
+	
+	public List<PeticionInformacionCuenta> getPeticionInformacionCuentas() {
+		return this.peticionInformacionCuentas;
+	}
+
+	public void setPeticionInformacionCuentas(List<PeticionInformacionCuenta> peticionInformacionCuentas) {
+		this.peticionInformacionCuentas = peticionInformacionCuentas;
+	}
+
+	public PeticionInformacionCuenta addPeticionInformacionCuenta(PeticionInformacionCuenta peticionInformacionCuenta) {
+		getPeticionInformacionCuentas().add(peticionInformacionCuenta);
+		peticionInformacionCuenta.setPeticionInformacion(this);
+
+		return peticionInformacionCuenta;
+	}
+
+	public PeticionInformacionCuenta removePeticionInformacionCuenta(PeticionInformacionCuenta peticionInformacionCuenta) {
+		getPeticionInformacionCuentas().remove(peticionInformacionCuenta);
+		peticionInformacionCuenta.setPeticionInformacion(null);
+
+		return peticionInformacionCuenta;
+	}
+	
+	
 }

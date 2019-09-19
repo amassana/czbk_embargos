@@ -37,6 +37,7 @@ public abstract class SeizureMapper {
 			
 			SeizureStatusDTO seizureStatusDTO = new SeizureStatusDTO();
 			seizureStatusDTO.setCode(String.valueOf(traba.getEstadoTraba().getCodEstado()));
+			seizureStatusDTO.setDescription(traba.getEstadoTraba().getDesEstado());
 			seizureDTO.setStatus(seizureStatusDTO);
 			
 			//Importe trabado:

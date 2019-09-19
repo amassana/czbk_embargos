@@ -18,8 +18,14 @@ public class CuentaTrabaActuacion implements Serializable {
 	@Column(name="COD_ACTUACION", unique=true, nullable=false, length=2)
 	private String codActuacion;
 
+	@Column(name="COD_EXTERNO_ACTUACION", length=2)
+	private String codExternoActuacion;
+
 	@Column(nullable=false, length=60)
 	private String descripcion;
+
+	@Column(name="TIPO_ENTIDAD", length=10)
+	private String tipoEntidad;
 
 	public CuentaTrabaActuacion() {
 	}
@@ -32,12 +38,28 @@ public class CuentaTrabaActuacion implements Serializable {
 		this.codActuacion = codActuacion;
 	}
 
+	public String getCodExternoActuacion() {
+		return this.codExternoActuacion;
+	}
+
+	public void setCodExternoActuacion(String codExternoActuacion) {
+		this.codExternoActuacion = codExternoActuacion;
+	}
+
 	public String getDescripcion() {
 		return this.descripcion;
 	}
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+
+	public String getTipoEntidad() {
+		return this.tipoEntidad;
+	}
+
+	public void setTipoEntidad(String tipoEntidad) {
+		this.tipoEntidad = tipoEntidad;
 	}
 
 }

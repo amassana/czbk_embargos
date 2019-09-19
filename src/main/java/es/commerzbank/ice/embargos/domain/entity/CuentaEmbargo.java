@@ -16,7 +16,7 @@ public class CuentaEmbargo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name = "cuenta_embargo_seq_gen", sequenceName = "CUENTA_EMBARGO_SEQ", allocationSize = 1)
+	@SequenceGenerator(name = "cuenta_embargo_seq_gen", sequenceName = "SEC_CUENTA_EMBARGO", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cuenta_embargo_seq_gen")
 	@Column(name="COD_CUENTA_EMBARGO", unique=true, nullable=false)
 	private long codCuentaEmbargo;

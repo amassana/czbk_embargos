@@ -153,7 +153,7 @@
 			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase3.CabeceraEmisorFase3">
 			<field name="codigoRegistro" type="int" rid="true" literal="4" />
 			<field name="libre" ignore="true" length="2" />
-			<field name="codigoNRBE" type="int" length="4" />
+			<field name="codigoNRBE" length="4" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="fase" type="int" length="1" />
@@ -229,7 +229,7 @@
 			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase3.FinFicheroFase3">
 			<field name="codigoRegistro" type="int" rid="true" literal="8" />
 			<field name="libre" ignore="true" length="2" />
-			<field name="codigoNRBE" type="int" length="4" />
+			<field name="codigoNRBE" length="4" />
 			<field name="numeroRegistrosFichero" type="int" length="8" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="importeTotalAEmbargar" typeHandler="importe15Digits" length="15" />
@@ -246,7 +246,7 @@
 			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase4.CabeceraEmisorFase4">
 			<field name="codigoRegistro" type="int" rid="true" literal="4" />
 			<field name="libre" ignore="true" length="2" />
-			<field name="codigoNRBE" type="int" length="4" />
+			<field name="codigoNRBE" length="4" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="fase" type="int" length="1" />
@@ -279,22 +279,22 @@
 				format="yyyyMMdd" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="ibanCuenta1" length="24" />
-			<field name="codigoResultadoRetencionCuenta1" type="int" length="2" />
+			<field name="codigoResultadoRetencionCuenta1" length="2" />
 			<field name="importeRetenidoCuenta1" typeHandler="importe15Digits" length="15" />
 			<field name="ibanCuenta2" length="24" />
-			<field name="codigoResultadoRetencionCuenta2" type="int" length="2" />
+			<field name="codigoResultadoRetencionCuenta2" length="2" />
 			<field name="importeRetenidoCuenta2" typeHandler="importe15Digits" length="15" />
 			<field name="ibanCuenta3" length="24" />
-			<field name="codigoResultadoRetencionCuenta3" type="int" length="2" />
+			<field name="codigoResultadoRetencionCuenta3" length="2" />
 			<field name="importeRetenidoCuenta3" typeHandler="importe15Digits" length="15" />
 			<field name="ibanCuenta4" length="24" />
-			<field name="codigoResultadoRetencionCuenta4" type="int" length="2" />
+			<field name="codigoResultadoRetencionCuenta4" length="2" />
 			<field name="importeRetenidoCuenta4" typeHandler="importe15Digits" length="15" />
 			<field name="ibanCuenta5" length="24" />
-			<field name="codigoResultadoRetencionCuenta5" type="int" length="2" />
+			<field name="codigoResultadoRetencionCuenta5" length="2" />
 			<field name="importeRetenidoCuenta5" typeHandler="importe15Digits" length="15" />
 			<field name="ibanCuenta6" length="24" />
-			<field name="codigoResultadoRetencionCuenta6" type="int" length="2" />
+			<field name="codigoResultadoRetencionCuenta6" length="2" />
 			<field name="importeRetenidoCuenta6" typeHandler="importe15Digits" length="15" />
 			<field name="libre" ignore="true" length="6" />
 			<field name="claveSeguridadIban1" length="12" />
@@ -309,13 +309,13 @@
 			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase4.FinFicheroFase4">
 			<field name="codigoRegistro" type="int" rid="true" literal="8" />
 			<field name="libre" ignore="true" length="2" />
-			<field name="codigoNRBE" type="int" length="4" />
-			<field name="numeroRegistrosFichero" type="int" length="8" />
+			<field name="codigoNRBE" length="4" />
+			<field name="numeroRegistrosFichero" type="int" length="8" justify="right" padding="0" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="importeTotalAEmbargar" typeHandler="importe15Digits" length="15" />
 			<field name="importeTotalRetenido" typeHandler="importe15Digits" length="15" />
 			<field name="nifOrganismoEmisor" length="9" />
-			<field name="codigoINEOrganismoEmisor" type="int" length="6" />	
+			<field name="codigoINEOrganismoEmisor" type="int" length="6" justify="right" padding="0" />	
 			<field name="nombreOrganismoEmisor" length="40" />
 			<field name="libre" ignore="true" length="542" />
 		</record>

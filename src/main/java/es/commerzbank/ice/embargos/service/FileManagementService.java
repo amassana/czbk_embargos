@@ -7,7 +7,5 @@ import es.commerzbank.ice.comun.lib.util.ICEParserException;
 
 public interface FileManagementService {
 
-	public void cargarFicheros();
-	
-	public void cargarFichero(File file) throws IOException, ICEParserException;
+	public void procesarFichero(File file);
 }

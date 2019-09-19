@@ -17,6 +17,8 @@ public class EntidadesOrdenante implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@SequenceGenerator(name = "entidades_ordenantes_seq_gen", sequenceName = "SEC_ENTIDADES_ORDENANTES", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "entidades_ordenantes_seq_gen")
 	@Column(name="COD_ENTIDAD_ORDENANTE", unique=true, nullable=false)
 	private long codEntidadOrdenante;
 
@@ -55,6 +57,9 @@ public class EntidadesOrdenante implements Serializable {
 
 	@Column(name="RPT_TELENT", length=50)
 	private String rptTelent;
+	
+	@Column(name="IND_ACTIVO", length=1, nullable=false)
+	private String indActivo;
 
 	@Column(name="USUARIO_ULT_MODIFICACION", length=10)
 	private String usuarioUltModificacion;
@@ -237,6 +242,14 @@ public class EntidadesOrdenante implements Serializable {
 		peticionInformacion.setEntidadesOrdenante(null);
 
 		return peticionInformacion;
+	}
+
+	public String getIndActivo() {
+		return indActivo;
+	}
+
+	public void setIndActivo(String indActivo) {
+		this.indActivo = indActivo;
 	}
 
 }
