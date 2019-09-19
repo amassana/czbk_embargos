@@ -9,4 +9,6 @@ public interface FinalResponseService {
 
 	List<FinalResponseDTO> getAllByControlFichero(ControlFichero controlFichero);
 
+	FinalResponseDTO AddBankAccountList(Long codeFileControl, Long codeFinalResponse);
+
 }

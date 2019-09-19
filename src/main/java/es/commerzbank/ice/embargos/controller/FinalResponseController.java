@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.commerzbank.ice.embargos.domain.dto.FinalResponseDTO;
+import es.commerzbank.ice.embargos.domain.dto.LiftingDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.service.FinalResponseService;
 import io.swagger.annotations.ApiOperation;
@@ -53,6 +54,33 @@ public class FinalResponseController {
 		}
 
 		logger.info("LiftingController - getFinalResponseListByCodeFileControl - end");
+		return response;
+	}
+	
+	@GetMapping(value = "/{codeFileControl}/finalResponseCase/{codeFinalResponse}/bankAccounts")
+	@ApiOperation(value = "Devuelve la lista de cuentas disponibles para el caso indicado de levantamiento.")
+	public ResponseEntity<FinalResponseDTO> getBankAccountListByCodeFileControlAndFinalResponse(
+			Authentication authentication, @PathVariable("codeFileControl") Long codeFileControl,
+			@PathVariable("codeFinalResponse") Long codeFinalResponse) {
+		logger.info("LiftingController - getBankAccountListByCodeFileControlAndFinalResponse - start");
+		ResponseEntity<FinalResponseDTO> response = null;
+		FinalResponseDTO result = null;
+
+		try {
+
+			result = finalResponseService.AddBankAccountList(codeFileControl,
+					codeFinalResponse);
+
+			response = new ResponseEntity<>(result, HttpStatus.OK);
+
+		} catch (Exception e) {
+
+			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+
+			logger.error("ERROR in getBankAccountListByCodeFileControlAndFinalResponse: ", e);
+		}
+
+		logger.info("LiftingController - getBankAccountListByCodeFileControlAndFinalResponse - end");
 		return response;
 	}
 }
