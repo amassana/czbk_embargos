@@ -46,6 +46,7 @@ import es.commerzbank.ice.embargos.service.AEATService;
 import es.commerzbank.ice.embargos.service.Cuaderno63Service;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.InformationPetitionService;
+import es.commerzbank.ice.utils.EmbargosConstants;
 import es.commerzbank.ice.utils.ICEDateUtils;
 import es.commerzbank.ice.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.JRException;
@@ -271,7 +272,13 @@ public class FileControlServiceImpl implements FileControlService{
 				return false;
 			}
 			
-			controlFichero.setEstadoCtrlfichero(estadoCtrlficheroOpt.get());
+			EstadoCtrlfichero estadoCtrlFichero = estadoCtrlficheroOpt.get();
+			
+			controlFichero.setEstadoCtrlfichero(estadoCtrlFichero);
+			
+			//Indicador procesado: al cambiar de estado, determinar si el flag indProcesado tiene que cambiar:
+			String indProcesado = determineIndProcesadoFromEstadoControlFichero(estadoCtrlFichero);
+			controlFichero.setIndProcesado(indProcesado);
 			
 			//Usuario y fecha ultima modificacion:
 			controlFichero.setUsuarioUltModificacion(userModif);
@@ -286,6 +293,25 @@ public class FileControlServiceImpl implements FileControlService{
 		logger.info("FileControlServiceImpl - updateFileControlStatus - end");
 		return true;
 		
+	}
+	
+	private String determineIndProcesadoFromEstadoControlFichero(EstadoCtrlfichero estadoControlFichero) {
+	
+		long codEstadoCtrlFichero = estadoControlFichero.getId().getCodEstado();
+		long codTipoFichero = estadoControlFichero.getId().getCodTipoFichero();
+		
+		//Indicador Procesado a 'SI' cuando se cumplen los siguientes tipos de fichero y estado:
+		if ((codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_PROCESSED
+			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63)
+		 || (codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_GENERATED
+			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63)
+		 || (codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_GENERATED
+			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT)) {
+			
+			return EmbargosConstants.IND_FLAG_SI;
+		}
+		
+		return EmbargosConstants.IND_FLAG_NO;
 	}
 	
 	@Override
