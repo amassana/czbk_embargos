@@ -57,7 +57,7 @@ public abstract class FileControlMapper {
         
         //Indicadores y flags:
         String fileFormat = EmbargosUtils.determineFileFormatByTipoFichero(codTipoFichero);
-        controlFichero.setInd6301(fileFormat!=null && fileFormat.equals(EmbargosConstants.FILE_FORMAT_CUADERNO63) ? EmbargosConstants.IND_FLAG_SI : EmbargosConstants.IND_FLAG_NO);
+        controlFichero.setInd6301(fileFormat!=null && fileFormat.equals(EmbargosConstants.FILE_FORMAT_NORMA63) ? EmbargosConstants.IND_FLAG_SI : EmbargosConstants.IND_FLAG_NO);
         controlFichero.setIndCgpj(fileFormat!=null && fileFormat.equals(EmbargosConstants.FILE_FORMAT_CGPJ) ? EmbargosConstants.IND_FLAG_SI : EmbargosConstants.IND_FLAG_NO);
         controlFichero.setIndProcesado(EmbargosConstants.IND_FLAG_NO);
         

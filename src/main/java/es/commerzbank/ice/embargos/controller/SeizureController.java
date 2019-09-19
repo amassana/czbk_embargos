@@ -123,9 +123,10 @@ public class SeizureController {
         return response;
     }
 
-    @GetMapping(value = "/actions")
-    @ApiOperation(value="Devuelve el listado de acciones posibles de las trabas.")
-    public ResponseEntity<List<SeizureActionDTO>> getSeizureActions(Authentication authentication)
+    @GetMapping(value = "/{codeFileControl}/actions")
+    @ApiOperation(value="Devuelve el listado de acciones posibles dependiendo del tipo de entidad del fichero.")
+    public ResponseEntity<List<SeizureActionDTO>> getSeizureActions(Authentication authentication,
+    																@PathVariable("codeFileControl") Long codeFileControl)
     {
     	logger.info("SeizureController - getSeizureActions - start");
         ResponseEntity<List<SeizureActionDTO>> response = null;
@@ -133,7 +134,7 @@ public class SeizureController {
     	
     	try {
     		
-			result = seizureService.getSeizureActions();
+			result = seizureService.getSeizureActions(codeFileControl);
 			response = new ResponseEntity<>(result, HttpStatus.OK);
     	
 	    } catch (Exception e) {
@@ -152,30 +153,7 @@ public class SeizureController {
     @ApiOperation(value="Devuelve el listado de estados posibles de las trabas.")
     public ResponseEntity<List<SeizureStatusDTO>> getSeizureStatusList(Authentication authentication)
     {
-    	/*
-    	ResponseEntity<List<SeizureStatusDTO>> response = null;
-        List<SeizureStatusDTO> result = new ArrayList<SeizureStatusDTO>();
 
-        SeizureStatusDTO sstatus = new SeizureStatusDTO();
-        sstatus.setCode("1");
-        sstatus.setCode("Pendiente");
-
-        SeizureStatusDTO sstatus2 = new SeizureStatusDTO();
-        sstatus2.setCode("2");
-        sstatus2.setCode("Pendiente de contabilizacion");
-
-        SeizureStatusDTO sstatus3 = new SeizureStatusDTO();
-        sstatus3.setCode("3");
-        sstatus3.setCode("Contabilizado");
-
-        result.add(sstatus);
-        result.add(sstatus2);
-        result.add(sstatus3);
-
-        response = new ResponseEntity<>(result, HttpStatus.OK);
-
-        return response;
-        */
     	logger.info("SeizureController - getSeizureStatusList - start");
         ResponseEntity<List<SeizureStatusDTO>> response = null;
 

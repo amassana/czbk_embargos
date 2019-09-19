@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.comun.lib.domain.dto.AccountingNote;
@@ -186,11 +187,22 @@ public class SeizureServiceImpl implements SeizureService {
 	
 	
 	@Override
-	public List<SeizureActionDTO> getSeizureActions() {		
+	public List<SeizureActionDTO> getSeizureActions(Long codeFileControl) {		
+		
 		logger.info("SeizureServiceImpl - getSeizureActions - start");
 		List<SeizureActionDTO> seizureActionDTOList = new ArrayList<>();
-				
-		List<CuentaTrabaActuacion> cuentaTrabaActuacionList = seizedBankAccountActionRepository.findAll();
+		
+		Optional<ControlFichero> controlFicheroOpt = fileControlRepository.findById(codeFileControl);
+		
+		if (!controlFicheroOpt.isPresent()) {
+			return seizureActionDTOList;
+		}
+		
+		ControlFichero controlFichero = controlFicheroOpt.get();
+		
+		String tipoEntidad = EmbargosUtils.determineFileFormatByTipoFichero(controlFichero.getTipoFichero().getCodTipoFichero());
+		
+		List<CuentaTrabaActuacion> cuentaTrabaActuacionList = seizedBankAccountActionRepository.findAllByTipoEntidadOrderByCodActuacion(tipoEntidad);
 		
 		for(CuentaTrabaActuacion cuentaTrabaActuacion : cuentaTrabaActuacionList) {
 			
@@ -272,6 +284,7 @@ public class SeizureServiceImpl implements SeizureService {
 	
 	@Override
 	public boolean updateSeizedBankStatus(CuentaTraba cuentaTraba, Long codEstado, String userModif) {
+
 		logger.info("SeizureServiceImpl - updateSeizedBankStatus - start");
 		Traba traba = cuentaTraba.getTraba();
 		
@@ -299,6 +312,14 @@ public class SeizureServiceImpl implements SeizureService {
 		
 		logger.info("SeizureServiceImpl - updateSeizedBankStatus - end");
 		return true;
+	}
+	
+	@Override
+	@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
+	public boolean updateSeizedBankStatusTransaction(CuentaTraba cuentaTraba, Long codEstado, String userModif) {
+		
+		return updateSeizedBankStatus(cuentaTraba, codEstado, userModif);
+		
 	}
 	
 	@Override
@@ -341,6 +362,14 @@ public class SeizureServiceImpl implements SeizureService {
 		return true;
 	}
 	
+	@Override
+	@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
+	public boolean updateSeizureStatusTransaction(Long codeFileControl, Long idSeized, SeizureStatusDTO seizureStatusDTO,
+			String userModif) {
+		
+		return updateSeizureStatus(codeFileControl, idSeized, seizureStatusDTO, userModif);
+		
+	}	
 	
 	@Override
 	public List<SeizureDTO> getAuditSeizure(Long codFileControl, Long idSeizure) {
