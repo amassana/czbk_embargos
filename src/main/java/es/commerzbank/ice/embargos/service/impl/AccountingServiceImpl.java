@@ -1,5 +1,6 @@
 package es.commerzbank.ice.embargos.service.impl;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Optional;
 
@@ -11,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.comun.lib.domain.dto.AccountingNote;
 import es.commerzbank.ice.comun.lib.domain.dto.GeneralParameter;
-import es.commerzbank.ice.comun.lib.formats.contabilidad.RespuestaContabilidad;
 import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
@@ -270,7 +270,7 @@ public class AccountingServiceImpl implements AccountingService{
 				
 					SeizureStatusDTO seizureStatusDTO = new SeizureStatusDTO();
 					seizureStatusDTO.setCode(codigoEstadoTraba);
-					seizureService.updateSeizureStatusTransaction(controlFichero.getCodControlFichero(), traba.getCodTraba(), seizureStatusDTO, userName);	
+					seizureService.updateSeizureStatusTransaction(traba.getCodTraba(), seizureStatusDTO, userName);	
 				
 				} else {
 					//Si existe alguna cuentaTraba que no se haya contabilizado:
@@ -352,7 +352,7 @@ public class AccountingServiceImpl implements AccountingService{
 					//Cambio de estado de la traba a "Enviada a contabilidad";
 					SeizureStatusDTO seizureStatusDTO = new SeizureStatusDTO();
 					seizureStatusDTO.setCode(Long.toString(EmbargosConstants.COD_ESTADO_TRABA_ENVIADA_A_CONTABILIDAD));
-					seizureService.updateSeizureStatusTransaction(controlFichero.getCodControlFichero(), traba.getCodTraba(), seizureStatusDTO, userName);		
+					seizureService.updateSeizureStatusTransaction(traba.getCodTraba(), seizureStatusDTO, userName);		
 				}
 			}
 		}
@@ -394,25 +394,98 @@ public class AccountingServiceImpl implements AccountingService{
 	
 
 	@Override
-	public boolean manageAccountingNoteCallback(RespuestaContabilidad respuestaContabilidad, String userName) {
+	public boolean manageAccountingNoteCallback(AccountingNote accountingNote, String userName) {
 		
 		//Se tomaran los campos IBS_CREDIT_ACCOUNT,TRIM(IBS_REFERENCE_1+IBS_REFERENCE_2),IBS_AMOUNT para 
 		//determinar que elemento se ha contabilizado y marcar su estado a contabilizado.
+	
 		
 		//1. Se obtiene la Cuenta Traba:
-//		respuestaContabilidad.ge
 		
-		//2. Se cambia el estado de la Cuenta Traba:
+		String cuenta = accountingNote.getDebitAccount();
+		BigDecimal importe = BigDecimal.valueOf(accountingNote.getAmount());
+		EstadoTraba estadoTraba = new EstadoTraba();
+		estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_ENVIADA_A_CONTABILIDAD);
 		
+		CuentaTraba cuentaTraba = seizedBankAccountRepository.findByCuentaAndImporteAndEstadoTraba(cuenta, importe, estadoTraba);
+		
+		if(cuentaTraba==null) {
+			logger.error("No se ha encontrado la cuentaTraba en estado enviada a contabilidad [cuenta:" + cuenta +";importe:" + importe + "]");;
+			return false;
+		}
+		
+		//2. Se cambia el estado de la Cuenta Traba a Contabilizada:
+		
+		seizureService.updateSeizedBankStatus(cuentaTraba, EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA, userName);
 		
 		//3. Si todas las CuentaTraba asociadas a la Traba han cambiado a estado "Contabilizada", entonces: 
 		// - Cambiar el estado de la Traba a "Contabilizada":
+		
+		Traba traba = cuentaTraba.getTraba();
+		int numCuentaTrabasContabilizadas = 0;
+		for(CuentaTraba cuentaTr : traba.getCuentaTrabas()) {		
+			if (cuentaTr.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA) {
+				numCuentaTrabasContabilizadas++;
+			}
+		}
+		
+		boolean isAllCuentaTrabasContabilizadas = (numCuentaTrabasContabilizadas == traba.getCuentaTrabas().size());
+		
+		if (isAllCuentaTrabasContabilizadas) {
+			
+			SeizureStatusDTO seizureStatusDTO = new SeizureStatusDTO();
+			seizureStatusDTO.setCode(String.valueOf(EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA));
+			
+			seizureService.updateSeizureStatus(traba.getCodTraba(), seizureStatusDTO, userName);
+		}
 		
 		
 		//4. Si todas las Trabas estan contabilizadas, entonces:
 		// - Cambiar el estado de Control Fichero de Embargos (control fichero de la Traba no) a estado "Pendiente de envio". 
 		
-				
+		Embargo embargo = traba.getEmbargo();
+		ControlFichero controlFichero = embargo.getControlFichero();
+		
+		int numTrabasContabilizadas = 0;
+		for (Embargo emb : controlFichero.getEmbargos()) {
+			
+			Traba tra = emb.getTrabas().get(0);
+			
+			if (tra.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA) {
+				numTrabasContabilizadas++;
+			}
+			
+		}
+		
+		boolean isAllTrabasContabilizadas = (numTrabasContabilizadas == controlFichero.getEmbargos().size());
+		
+		if (isAllTrabasContabilizadas) {
+			
+			//Dependiendo del tipo de fichero:
+			String fileFormat = EmbargosUtils.determineFileFormatByTipoFichero(controlFichero.getTipoFichero().getCodTipoFichero());
+			
+			boolean isCGPJ = fileFormat!=null && fileFormat.equals(EmbargosConstants.FILE_FORMAT_CGPJ);
+			boolean isAEAT = fileFormat!=null && fileFormat.equals(EmbargosConstants.FILE_FORMAT_AEAT);
+			boolean isCuaderno63 = fileFormat!=null && fileFormat.equals(EmbargosConstants.FILE_FORMAT_NORMA63);
+			
+			Long estado = null;
+			
+			if (isCGPJ) {
+				estado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_TO_SEND;
+			}
+			else if(isAEAT) {
+				estado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_TO_SEND;
+			}
+			else if (isCuaderno63) {
+				estado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_TO_SEND;
+			}
+			
+			//Se cambia el estado de Control Fichero a "Pendiente de envio"
+			fileControlService.updateFileControlStatusTransaction(controlFichero, estado, userName);
+
+		}
+
+		
 		return true;
 	}
 	
@@ -445,7 +518,7 @@ public class AccountingServiceImpl implements AccountingService{
 		SeizureStatusDTO seizureStatusDTO = new SeizureStatusDTO();
 		seizureStatusDTO.setCode(Long.toString(EmbargosConstants.COD_ESTADO_TRABA_MODIFICADA));
 		
-		boolean isStatusTrabaUpdated = seizureService.updateSeizureStatus(codeFileControl, traba.getCodTraba(), seizureStatusDTO, userName);	
+		boolean isStatusTrabaUpdated = seizureService.updateSeizureStatus(traba.getCodTraba(), seizureStatusDTO, userName);	
 		
 		if(!isStatusTrabaUpdated) {
 			throw new ICEException("", "ERROR: no se ha actualizado el estado de la Traba con codTraba: " + traba.getCodTraba());
