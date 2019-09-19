@@ -1,5 +1,6 @@
 package es.commerzbank.ice.embargos.config;
 
+import java.io.BufferedReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -22,26 +23,25 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import oracle.jdbc.pool.OracleDataSource;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "es.commerzbank.ice.embargos.repository", 
-						entityManagerFactoryRef = "emEmbargos",
-						transactionManagerRef = "transactionManager")
+@EnableJpaRepositories(basePackages = "es.commerzbank.ice.embargos.repository", entityManagerFactoryRef = "emEmbargos", transactionManagerRef = "transactionManager")
 @EnableTransactionManagement
 @EnableCaching
 public class OracleDataSourceEmbargosConfig {
-	
-	/*@Value("${spring.datasource.jndi-name}")
-	private String oracleJNDIName;*/
-	
-	@Value("${spring.ds-embargo.url}")
+
+	/*
+	 * @Value("${spring.datasource.jndi-name}") private String oracleJNDIName;
+	 */
+
+	@Value("${spring.datasource.url}")
 	private String url;
-	
-	@Value("${spring.ds-embargo.username}")
+
+	@Value("${spring.datasource.username}")
 	private String userName;
-	
-	@Value("${spring.ds-embargo.password}")
+
+	@Value("${spring.datasource.password}")
 	private String password;
-	
-	@Value("${spring.ds-embargo.driverClassName}")
+
+	@Value("${spring.datasource.driverClassName}")
 	private String driverClassName;
 
 	@Value("${spring.ds-comun.url}")
@@ -56,60 +56,58 @@ public class OracleDataSourceEmbargosConfig {
 	@Value("${spring.ds-comun.driver-class-name}")
 	private String c_driverClassName;
 
-	@Bean(name="dsEmbargos")
+	@Bean(name = "dsEmbargos")
 	public DataSource oracleDataSource() throws SQLException {
-		/*JndiDataSourceLookup dataSourceLookup = new JndiDataSourceLookup();
-		return dataSourceLookup.getDataSource(oracleJNDIName);*/
+		/*
+		 * JndiDataSourceLookup dataSourceLookup = new JndiDataSourceLookup(); return
+		 * dataSourceLookup.getDataSource(oracleJNDIName);
+		 */
 		OracleDataSource dataSource = new OracleDataSource();
 		dataSource.setUser(userName);
 		dataSource.setURL(url);
 		dataSource.setPassword(password);
 		dataSource.setImplicitCachingEnabled(true);
-        dataSource.setFastConnectionFailoverEnabled(true);
-        return dataSource;
-		
+		dataSource.setFastConnectionFailoverEnabled(true);
+		return dataSource;
+
 	}
-	
+
 	private JpaVendorAdapter jpaVendorAdapter() {
-	    HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
-	    hibernateJpaVendorAdapter.setShowSql(true);
-	    hibernateJpaVendorAdapter.setDatabase(Database.ORACLE);
-	    hibernateJpaVendorAdapter.setDatabasePlatform("org.hibernate.dialect.Oracle10gDialect");
-	    return hibernateJpaVendorAdapter;
+		HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
+		hibernateJpaVendorAdapter.setShowSql(true);
+		hibernateJpaVendorAdapter.setDatabase(Database.ORACLE);
+		hibernateJpaVendorAdapter.setDatabasePlatform("org.hibernate.dialect.Oracle10gDialect");
+		return hibernateJpaVendorAdapter;
 	}
-	
-	@Bean(name="transactionManager")
-    public PlatformTransactionManager transactionManager() throws SQLException{
+
+	@Bean(name = "transactionManager")
+	public PlatformTransactionManager transactionManager() throws SQLException {
 		JpaTransactionManager transactionManager = new JpaTransactionManager();
 		transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
 		return transactionManager;
-    }
-	
-	@Bean(name="emEmbargos")
+	}
+
+	@Bean(name = "emEmbargos")
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() throws SQLException {
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-	    em.setDataSource(oracleDataSource());
-	    em.setPackagesToScan("es.commerzbank.ice.embargos.domain.entity");
-	    em.setJpaVendorAdapter(jpaVendorAdapter());
-	    em.setPersistenceUnitName("dbEmbargosEntityManager");
+		em.setDataSource(oracleDataSource());
+		em.setPackagesToScan("es.commerzbank.ice.embargos.domain.entity");
+		em.setJpaVendorAdapter(jpaVendorAdapter());
+		em.setPersistenceUnitName("dbEmbargosEntityManager");
 
-	    em.afterPropertiesSet();
+		em.afterPropertiesSet();
 
-	    return em;
+		return em;
 
 	}
 
-	public Connection getEmbargosConnection()
-		throws ClassNotFoundException, SQLException
-	{
+	public Connection getEmbargosConnection() throws ClassNotFoundException, SQLException {
 		Class.forName(driverClassName);
 		Connection conn = DriverManager.getConnection(url, userName, password);
 		return conn;
 	}
 
-	public Connection getComunesConnection()
-			throws ClassNotFoundException, SQLException
-	{
+	public Connection getComunesConnection() throws ClassNotFoundException, SQLException {
 		Class.forName(c_driverClassName);
 		Connection conn = DriverManager.getConnection(c_url, c_userName, c_password);
 		return conn;

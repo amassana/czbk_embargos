@@ -28,6 +28,7 @@ import es.commerzbank.ice.embargos.service.InformationPetitionService;
 import es.commerzbank.ice.embargos.service.PetitionService;
 import es.commerzbank.ice.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRPrintPage;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -109,6 +110,10 @@ public class PetitionServiceImpl implements PetitionService{
 			InputStream resourceInputStream = jrxmlResource.getInputStream();
 
 			JasperPrint reporteLleno = JasperFillManager.fillReport(resourceInputStream, parameters, connEmbargos);
+			
+			List<JRPrintPage> pages = reporteLleno.getPages();
+			 
+			 if (pages.size() == 0)  return null;
 
 			return JasperExportManager.exportReportToPdf(reporteLleno);
 		} catch (Exception ex) {

@@ -112,7 +112,7 @@ where t.cod_traba = $P{COD_TRABA}]]>
 					<reportElement isPrintRepeatedValues="false" x="71" y="96" width="104" height="20" uuid="1744d672-39f5-4400-83d8-925eb552fe8f">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="1a6c961d-eb0b-4f68-af21-5d2b826bd1c1"/>
 					</reportElement>
-					<textElement verticalAlignment="Middle" markup="">
+					<textElement verticalAlignment="Middle">
 						<font fontName="Serif" size="12" isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{NIF}]]></textFieldExpression>
@@ -121,7 +121,7 @@ where t.cod_traba = $P{COD_TRABA}]]>
 					<reportElement isPrintRepeatedValues="false" x="91" y="145" width="244" height="20" uuid="e7561877-c18c-42ac-a654-85c83ad97f70">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="891fdffe-38ba-48fd-b302-fe4baa8a541c"/>
 					</reportElement>
-					<textElement verticalAlignment="Middle" markup="">
+					<textElement verticalAlignment="Middle">
 						<font fontName="Serif" size="12" isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{IMPORTEEMBARGO} + " EUR"]]></textFieldExpression>
@@ -169,7 +169,7 @@ where t.cod_traba = $P{COD_TRABA}]]>
 					<reportElement isPrintRepeatedValues="false" x="179" y="7" width="106" height="30" uuid="60c657c7-b3c5-42de-a835-1ae61cb68ce7">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="abf083af-f2f1-4f55-9bf4-792774fea37c"/>
 					</reportElement>
-					<textElement verticalAlignment="Bottom" markup="">
+					<textElement verticalAlignment="Bottom">
 						<font fontName="Serif" size="12" isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{NUMERO_EMBARGO}]]></textFieldExpression>
@@ -178,10 +178,10 @@ where t.cod_traba = $P{COD_TRABA}]]>
 					<reportElement isPrintRepeatedValues="false" x="394" y="7" width="102" height="30" uuid="d274bc75-84f3-430a-a308-a1324ac96093">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c36c65b6-4cba-46e7-86fb-480553b3eb68"/>
 					</reportElement>
-					<textElement verticalAlignment="Bottom" markup="">
+					<textElement verticalAlignment="Bottom">
 						<font fontName="Serif" size="12" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHA_TRABA}.toString()))]]></textFieldExpression>
+					<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHA_TRABA} != null ? $F{FECHA_TRABA}.toString() : null))]]></textFieldExpression>
 				</textField>
 				<line>
 					<reportElement x="392" y="36" width="118" height="1" uuid="aaf472ad-a96b-4a72-8dc0-d89360a8a6c5">
@@ -195,7 +195,7 @@ where t.cod_traba = $P{COD_TRABA}]]>
 					<reportElement isPrintRepeatedValues="false" x="79" y="119" width="421" height="20" uuid="e3848e4c-a64f-4647-9dc9-624a19259395">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="16dcd533-3d49-4634-b336-f64c3a91946b"/>
 					</reportElement>
-					<textElement verticalAlignment="Middle" markup="">
+					<textElement verticalAlignment="Middle">
 						<font fontName="Serif" size="12" isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
@@ -315,7 +315,7 @@ where t.cod_traba = $P{COD_TRABA}]]>
 				<reportElement x="362" y="1" width="94" height="20" uuid="fa2ef9a5-62c3-4267-b9b0-035013747863">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="891fdffe-38ba-48fd-b302-fe4baa8a541c"/>
 				</reportElement>
-				<textElement textAlignment="Right" verticalAlignment="Bottom" markup="">
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font fontName="Serif" size="12" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{IMPORTETRABA} + " EUR"]]></textFieldExpression>
@@ -324,7 +324,7 @@ where t.cod_traba = $P{COD_TRABA}]]>
 				<reportElement x="111" y="25" width="115" height="20" uuid="97ab5fe5-f3c3-405c-9b9f-d394129ec0b3">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c36c65b6-4cba-46e7-86fb-480553b3eb68"/>
 				</reportElement>
-				<textElement verticalAlignment="Bottom" markup="">
+				<textElement verticalAlignment="Bottom">
 					<font fontName="Serif" size="12" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHA_TRABA}.toString()))]]></textFieldExpression>
@@ -357,7 +357,7 @@ where t.cod_traba = $P{COD_TRABA}]]>
 				<reportElement x="88" y="2" width="159" height="19" uuid="793e17ad-46db-4dae-b1cf-30daa7297950">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="165c9378-3303-4148-985b-b0e2bf63a9ce"/>
 				</reportElement>
-				<textElement verticalAlignment="Middle" markup="">
+				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{CUENTA}]]></textFieldExpression>
@@ -400,7 +400,7 @@ Sucursal en España]]></text>
 				<reportElement x="36" y="25" width="464" height="10" uuid="66722ec0-57b3-4571-9724-c9919e79653f">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f9c8ca2d-4dc6-4b24-9ce1-5d02fe847a7f"/>
 				</reportElement>
-				<textElement verticalAlignment="Middle" markup="">
+				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DATREGCOMDET}]]></textFieldExpression>

@@ -44,7 +44,7 @@ import es.commerzbank.ice.embargos.repository.SeizureStatusRepository;
 import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.utils.ICEDateUtils;
 import es.commerzbank.ice.utils.ResourcesUtil;
-
+import net.sf.jasperreports.engine.JRPrintPage;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -347,9 +347,15 @@ public class SeizureServiceImpl implements SeizureService {
 
 			JasperPrint fillReport = JasperFillManager.fillReport(justificanteInputStream, parameters, conn);
 
+			List<JRPrintPage> pages = fillReport.getPages();
+
+			if (pages.size() == 0)
+				return null;
+
 			return JasperExportManager.exportReportToPdf(fillReport);
 
 		} catch (Exception e) {
+
 			throw new Exception("DB exception while generating the report", e);
 		}
 	}
@@ -372,10 +378,14 @@ public class SeizureServiceImpl implements SeizureService {
 
 			JasperPrint fillReport = JasperFillManager.fillReport(justificanteInputStream, parameters, conn);
 
+			List<JRPrintPage> pages = fillReport.getPages();
+
+			if (pages.size() == 0)
+				return null;
+
 			return JasperExportManager.exportReportToPdf(fillReport);
 
 		} catch (Exception e) {
-			System.out.println(e);
 			throw new Exception("DB exception while generating the report", e);
 		}
 	}
@@ -398,6 +408,11 @@ public class SeizureServiceImpl implements SeizureService {
 			InputStream resumenInputStream = resumenTrabasJrxml.getInputStream();
 
 			JasperPrint fillReport = JasperFillManager.fillReport(resumenInputStream, parameters, conn);
+
+			List<JRPrintPage> pages = fillReport.getPages();
+
+			if (pages.size() == 0)
+				return null;
 
 			return JasperExportManager.exportReportToPdf(fillReport);
 
@@ -432,6 +447,11 @@ public class SeizureServiceImpl implements SeizureService {
 			InputStream resumenInputStream = resumenTrabasJrxml.getInputStream();
 
 			JasperPrint fillReport = JasperFillManager.fillReport(resumenInputStream, parameters, conn);
+
+			List<JRPrintPage> pages = fillReport.getPages();
+
+			if (pages.size() == 0)
+				return null;
 
 			return JasperExportManager.exportReportToPdf(fillReport);
 
@@ -468,10 +488,14 @@ public class SeizureServiceImpl implements SeizureService {
 			InputStream anexo1Input = anexoJasperFile.getInputStream();
 			JasperPrint fillReport = JasperFillManager.fillReport(anexo1Input, parameters, conn_comunes);
 
+			List<JRPrintPage> pages = fillReport.getPages();
+
+			if (pages.size() == 0)
+				return null;
+
 			return JasperExportManager.exportReportToPdf(fillReport);
 
 		} catch (SQLException e) {
-			System.out.println(e);
 			throw new Exception("DB exception while generating the report", e);
 		}
 	}
@@ -498,6 +522,11 @@ public class SeizureServiceImpl implements SeizureService {
 
 			InputStream finalEmbargosIS = respFinalEmbargoResource.getInputStream();
 			JasperPrint fillReport = JasperFillManager.fillReport(finalEmbargosIS, parameters, conn_embargos);
+
+			List<JRPrintPage> pages = fillReport.getPages();
+
+			if (pages.size() == 0)
+				return null;
 
 			return JasperExportManager.exportReportToPdf(fillReport);
 		} catch (Exception e) {
@@ -527,6 +556,11 @@ public class SeizureServiceImpl implements SeizureService {
 			InputStream finalEmbargosIS = resumenLevantamiento.getInputStream();
 			JasperPrint fillReport = JasperFillManager.fillReport(finalEmbargosIS, parameters, conn_embargos);
 
+			List<JRPrintPage> pages = fillReport.getPages();
+
+			if (pages.size() == 0)
+				return null;
+
 			return JasperExportManager.exportReportToPdf(fillReport);
 		} catch (Exception e) {
 			throw new Exception("DB exception while generating the report", e);
@@ -550,6 +584,11 @@ public class SeizureServiceImpl implements SeizureService {
 
 			InputStream isOrdenTransferencia = transOrder.getInputStream();
 			JasperPrint transOrderJP = JasperFillManager.fillReport(isOrdenTransferencia, parameters, conn_embargos);
+
+			List<JRPrintPage> pages = transOrderJP.getPages();
+
+			if (pages.size() == 0)
+				return null;
 
 			return JasperExportManager.exportReportToPdf(transOrderJP);
 

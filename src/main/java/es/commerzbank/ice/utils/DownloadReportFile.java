@@ -14,8 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-
-
 public class DownloadReportFile {
 
 	private static String filename;
@@ -38,51 +36,64 @@ public class DownloadReportFile {
 		jasperReportFile = new File(pdfSavedFullPath);
 	}
 
+	private static boolean areBytesNull = false;
+
 	public static void writeFile(byte[] fileBytes) throws Exception {
 
 		FileOutputStream fos = null;
-	
-		// if directory does not exists, it is created dynamically
-		jasperReportFile.getParentFile().mkdirs();
 
-		try {
+		if (fileBytes != null) {
 
-			fos = new FileOutputStream(jasperReportFile);
+			// if directory does not exists, it is created dynamically
+			jasperReportFile.getParentFile().mkdirs();
 
-			fos.write(fileBytes);
-			
-			setRequestHeader(jasperReportFile.length(), filenameAux);
-			
-		} catch (IOException ex) {
+			try {
+
+				fos = new FileOutputStream(jasperReportFile);
+
+				fos.write(fileBytes);
+
+				setRequestHeader(jasperReportFile.length(), filenameAux);
+
+			} catch (IOException ex) {
 				throw new Exception("Exception DownloadFile.writeFile: " + ex);
-		} finally {
-			
-			fos.flush();
-			fos.close();
+			} finally {
+
+				fos.flush();
+				fos.close();
+			}
+
+		} else {
+			areBytesNull = true;
 		}
 
 	}
-	
+
 	public static void setRequestHeader(Long fileLength, String fileNameSuggestion) {
-		
+
 		respHeaders = new HttpHeaders();
 
-		MediaType mediaType = MediaType.parseMediaType("application/" + PDF_EXTENSION);
+		MediaType mediaType = MediaType.parseMediaType("application/pdf");
 
 		respHeaders.setContentType(mediaType);
 		respHeaders.setContentLength(fileLength);
 		respHeaders.setContentDispositionFormData("attachment", fileNameSuggestion.concat(PDF_EXTENSION));
 	}
-	
-
 
 	public static ResponseEntity<InputStreamResource> returnToDownloadFile() throws FileNotFoundException {
 		FileInputStream fis = null;
 		
+		if (areBytesNull) {
+			
+			areBytesNull = false;
+			
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
 		fis = new FileInputStream(jasperReportFile);
-		
+
 		InputStreamResource isr = new InputStreamResource(fis);
-		
+
 		return new ResponseEntity<InputStreamResource>(isr, respHeaders, HttpStatus.OK);
 	}
 

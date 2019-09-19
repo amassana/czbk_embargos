@@ -1,3 +1,4 @@
+
 package es.commerzbank.ice.embargos.domain.entity;
 
 import java.io.Serializable;

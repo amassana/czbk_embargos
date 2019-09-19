@@ -275,7 +275,6 @@ public class FileControlController {
 			@RequestParam(name = "codTipoFichero", required = false) Integer[] codTipoFichero,
 			@RequestParam(name = "codEstado", required = false) Integer codEstado,
 			@RequestParam(name = "isPending", required = false) boolean isPending,
-			@RequestParam(name = "estado", required = false) String estado,
 			@RequestBody ReportParamsDTO reportParams) throws Exception {
 
 		DownloadReportFile.setTempFileName("reportList");
@@ -283,13 +282,16 @@ public class FileControlController {
 		DownloadReportFile.setFileTempPath(pdfSavedPath);
 
 		try {
+			
+			System.out.println(reportParams.toString());
 
-			DownloadReportFile.writeFile(fileControlService.generarReporteListado(codTipoFichero, codEstado, isPending, estado,
+			DownloadReportFile.writeFile(fileControlService.generarReporteListado(codTipoFichero, codEstado, isPending,
 					reportParams.getFechaInicio(), reportParams.getFechaFin()));
 
 			return DownloadReportFile.returnToDownloadFile();
 		} catch (Exception e) {
 			LOG.error("Error in generarReportLista", e);
+			
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 

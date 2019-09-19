@@ -343,7 +343,6 @@ public class SeizureController {
 
 		try {
 
-			// seizure service falta
 			DownloadReportFile.writeFile(seizureService.generateJustificanteEmbargo(idSeizure));
 
 			return DownloadReportFile.returnToDownloadFile();
@@ -351,9 +350,7 @@ public class SeizureController {
 		} catch (Exception e) {
 			LOG.error("Error in justificanteReport", e);
 
-			if (e.getMessage() == null) {
-				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
-			}
+			System.out.println(e);
 
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -377,11 +374,6 @@ public class SeizureController {
 
 		} catch (Exception e) {
 			LOG.error("Error in levantamientoReport", e);
-			System.out.println(e);
-
-			if (e.getMessage() == null) {
-				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
-			}
 
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -405,10 +397,6 @@ public class SeizureController {
 		} catch (Exception e) {
 			LOG.error("Error in resumenTrabas", e);
 
-			if (e.getMessage() == null) {
-				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
-			}
-
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -431,10 +419,6 @@ public class SeizureController {
 
 		} catch (Exception e) {
 			LOG.error("Error in resumenTrabas", e);
-
-			if (e.getMessage() == null) {
-				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
-			}
 
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -465,10 +449,7 @@ public class SeizureController {
 
 		} catch (Exception e) {
 			LOG.error("Error in anexoReport", e);
-			if (e.getMessage() == null) {
-				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
-			}
-
+	
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -490,10 +471,6 @@ public class SeizureController {
 
 		} catch (Exception e) {
 			LOG.error("Error in anexoReport", e);
-
-			if (e.getMessage() == null) {
-				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
-			}
 
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -517,10 +494,6 @@ public class SeizureController {
 		} catch (Exception e) {
 			LOG.error("Error in anexoReport", e);
 
-			if (e.getMessage() == null) {
-				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
-			}
-
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -542,10 +515,6 @@ public class SeizureController {
 
 		} catch (Exception e) {
 			LOG.error("Error in anexoReport", e);
-
-			if (e.getMessage() == null) {
-				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
-			}
 
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}

@@ -24,6 +24,6 @@ public interface FileControlService {
 	
 	public boolean updateFileControlStatus(Long codeFileControl, Long codFileControlStatus, String userModif);
 
-	public byte[] generarReporteListado(Integer [] codTipoFichero, Integer codEstado, boolean isPending, String estado, Date fechaInicio, Date fechaFin) throws Exception;
+	public byte[] generarReporteListado(Integer [] codTipoFichero, Integer codEstado, boolean isPending, Date fechaInicio, Date fechaFin) throws Exception;
 	
 }
