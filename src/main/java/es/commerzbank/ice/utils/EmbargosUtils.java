@@ -87,7 +87,7 @@ public class EmbargosUtils {
 		 || codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63
 		 ) {
 		
-			fileFormat = EmbargosConstants.FILE_FORMAT_CUADERNO63;
+			fileFormat = EmbargosConstants.FILE_FORMAT_NORMA63;
 			
 		} else if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT
 				|| codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_TRABAS_AEAT

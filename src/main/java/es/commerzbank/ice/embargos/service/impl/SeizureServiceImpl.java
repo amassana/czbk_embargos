@@ -187,11 +187,22 @@ public class SeizureServiceImpl implements SeizureService {
 	
 	
 	@Override
-	public List<SeizureActionDTO> getSeizureActions() {		
+	public List<SeizureActionDTO> getSeizureActions(Long codeFileControl) {		
+		
 		logger.info("SeizureServiceImpl - getSeizureActions - start");
 		List<SeizureActionDTO> seizureActionDTOList = new ArrayList<>();
-				
-		List<CuentaTrabaActuacion> cuentaTrabaActuacionList = seizedBankAccountActionRepository.findAll();
+		
+		Optional<ControlFichero> controlFicheroOpt = fileControlRepository.findById(codeFileControl);
+		
+		if (!controlFicheroOpt.isPresent()) {
+			return seizureActionDTOList;
+		}
+		
+		ControlFichero controlFichero = controlFicheroOpt.get();
+		
+		String tipoEntidad = EmbargosUtils.determineFileFormatByTipoFichero(controlFichero.getTipoFichero().getCodTipoFichero());
+		
+		List<CuentaTrabaActuacion> cuentaTrabaActuacionList = seizedBankAccountActionRepository.findAllByTipoEntidadOrderByCodActuacion(tipoEntidad);
 		
 		for(CuentaTrabaActuacion cuentaTrabaActuacion : cuentaTrabaActuacionList) {
 			
@@ -275,19 +286,19 @@ public class SeizureServiceImpl implements SeizureService {
 	public boolean updateSeizedBankStatus(CuentaTraba cuentaTraba, Long codEstado, String userModif) {
 
 		logger.info("SeizureServiceImpl - updateSeizedBankStatus - start");
-//		Traba traba = cuentaTraba.getTraba();
+		Traba traba = cuentaTraba.getTraba();
 		
 		BigDecimal fechaActualBigDec = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
 		
-//		traba.setUsuarioUltModificacion(userModif);
-//		traba.setFUltimaModificacion(fechaActualBigDec);
-//		
-//		//Actualizar usuario y fecha ultima modificacion del Embargo (para que se inserte registro en el historico de embargos):			
-//		Embargo embargo = traba.getEmbargo();
-//		embargo.setUsuarioUltModificacion(userModif);
-//		embargo.setFUltimaModificacion(fechaActualBigDec);
-//		
-//		seizedRepository.save(traba);
+		traba.setUsuarioUltModificacion(userModif);
+		traba.setFUltimaModificacion(fechaActualBigDec);
+		
+		//Actualizar usuario y fecha ultima modificacion del Embargo (para que se inserte registro en el historico de embargos):			
+		Embargo embargo = traba.getEmbargo();
+		embargo.setUsuarioUltModificacion(userModif);
+		embargo.setFUltimaModificacion(fechaActualBigDec);
+		
+		seizedRepository.save(traba);
 		
 		//Estado de la cuenta traba:
 		EstadoTraba estadoTraba = new EstadoTraba();
@@ -301,6 +312,14 @@ public class SeizureServiceImpl implements SeizureService {
 		
 		logger.info("SeizureServiceImpl - updateSeizedBankStatus - end");
 		return true;
+	}
+	
+	@Override
+	@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
+	public boolean updateSeizedBankStatusTransaction(CuentaTraba cuentaTraba, Long codEstado, String userModif) {
+		
+		return updateSeizedBankStatus(cuentaTraba, codEstado, userModif);
+		
 	}
 	
 	@Override
