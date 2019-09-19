@@ -155,7 +155,7 @@ WHERE
 					<textElement verticalAlignment="Bottom">
 						<font fontName="Serif" size="12" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHA_TRABA}.toString()))]]></textFieldExpression>
+					<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHA_TRABA} != null ? $F{FECHA_TRABA}.toString() : null))]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
 					<reportElement isPrintRepeatedValues="false" x="165" y="9" width="106" height="30" uuid="60c657c7-b3c5-42de-a835-1ae61cb68ce7">
@@ -246,7 +246,7 @@ WHERE
 				</textElement>
 				<text><![CDATA[LEVANTAMIENTO DE EMBARGO]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement isPrintRepeatedValues="false" x="307" y="35" width="148" height="19" uuid="c203b3d0-2ea3-4636-a2d9-195ec47d24d2">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c648fae0-c039-4865-a1d0-42532b683eda"/>
 				</reportElement>
@@ -255,7 +255,7 @@ WHERE
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DOMICILIO}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement isPrintRepeatedValues="false" x="307" y="54" width="35" height="16" uuid="8c445234-6b91-4c4b-81cc-91366f779a35">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="329974d2-9737-4fe5-92fe-4cc46942af3a"/>
 				</reportElement>
@@ -264,7 +264,7 @@ WHERE
 				</textElement>
 				<textFieldExpression><![CDATA[$F{CODIGO_POSTAL}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement isPrintRepeatedValues="false" x="343" y="54" width="128" height="16" uuid="9e3852af-cc2a-4f34-a187-3cea6ac56959">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e22efd06-51f1-4844-9183-bc563fe4ba6c"/>
 				</reportElement>
@@ -273,7 +273,7 @@ WHERE
 				</textElement>
 				<textFieldExpression><![CDATA[$F{MUNICIPIO}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement isPrintRepeatedValues="false" x="307" y="20" width="228" height="14" uuid="21b52153-773a-42a5-81b9-f681a42df866">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8dcc0cad-94cb-4250-8bab-bdfa6eff4646"/>
 				</reportElement>

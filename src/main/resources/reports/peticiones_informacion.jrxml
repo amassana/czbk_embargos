@@ -61,7 +61,7 @@ AND c.COD_ENTIDAD_PRESENTADORA = b.COD_ENTIDAD_PRESENTADORA]]>
 		<band height="90" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<subreport>
-				<reportElement x="0" y="0" width="800" height="90" uuid="befc3bba-b2ea-4658-a870-1549923da357">
+				<reportElement x="230" y="0" width="570" height="90" uuid="befc3bba-b2ea-4658-a870-1549923da357">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<subreportParameter name="sub_img_param">
