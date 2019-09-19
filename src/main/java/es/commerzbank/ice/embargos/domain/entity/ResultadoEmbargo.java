@@ -41,6 +41,11 @@ public class ResultadoEmbargo implements Serializable {
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="COD_ESTADO_RESULTADO_EMBARGO")
 	private EstadoResultadoEmbargo estadoResultadoEmbargo;
+	
+	//bi-directional many-to-one association to EstadoResultadoEmbargo
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="COD_CONTROL_FICHERO")
+	private ControlFichero controlFichero;
 
 	//bi-directional many-to-one association to Traba
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -118,6 +123,14 @@ public class ResultadoEmbargo implements Serializable {
 
 	public void setTraba(Traba traba) {
 		this.traba = traba;
+	}
+
+	public ControlFichero getControlFichero() {
+		return controlFichero;
+	}
+
+	public void setControlFichero(ControlFichero controlFichero) {
+		this.controlFichero = controlFichero;
 	}
 
 }
