@@ -147,8 +147,11 @@
 			<artifactId>jasperreports</artifactId>
 			<version>6.9.0</version>
 		</dependency>
-
-
+		<dependency>
+			<groupId>es.commerzbank.ice</groupId>
+			<artifactId>tsp-jasper-fonts</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 		<!-- Jasper fonts dependency, necesaria para conservar estilo de fuente -->
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
