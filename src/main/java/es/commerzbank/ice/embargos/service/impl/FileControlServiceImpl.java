@@ -42,10 +42,11 @@ import es.commerzbank.ice.embargos.domain.specification.FileControlSpecification
 import es.commerzbank.ice.embargos.repository.FileControlAuditRepository;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.repository.FileControlStatusRepository;
-import es.commerzbank.ice.embargos.service.AEATService;
-import es.commerzbank.ice.embargos.service.Cuaderno63Service;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.InformationPetitionService;
+import es.commerzbank.ice.embargos.service.files.AEATSeizedService;
+import es.commerzbank.ice.embargos.service.files.Cuaderno63InformationService;
+import es.commerzbank.ice.embargos.service.files.Cuaderno63SeizedService;
 import es.commerzbank.ice.utils.EmbargosConstants;
 import es.commerzbank.ice.utils.ICEDateUtils;
 import es.commerzbank.ice.utils.ResourcesUtil;
@@ -61,15 +62,18 @@ import net.sf.jasperreports.engine.util.JRLoader;
 public class FileControlServiceImpl implements FileControlService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(FileControlServiceImpl.class);
-
-	@Autowired
-	InformationPetitionService informationPetitionService;
 	
 	@Autowired
-	Cuaderno63Service cuaderno63Service;
+	private InformationPetitionService informationPetitionService;
 	
 	@Autowired
-	AEATService aeatService;
+	private Cuaderno63InformationService cuaderno63InformationService;
+	
+	@Autowired
+	private Cuaderno63SeizedService cuaderno63SeizedService;
+	
+	@Autowired
+	private AEATSeizedService aeatSeizedService;
 	
 	@Autowired
 	private FileControlMapper fileControlMapper;
@@ -168,7 +172,7 @@ public class FileControlServiceImpl implements FileControlService{
 		
 		if (countPendingPetitionCases == 0 && (countReviewedPetitionCases.compareTo(countPetitionCases)==0)) {
 			
-			cuaderno63Service.tramitarFicheroInformacion(codeFileControl, usuarioTramitador);
+			cuaderno63InformationService.tramitarFicheroInformacion(codeFileControl, usuarioTramitador);
 		
 		} else {
 			
@@ -195,7 +199,7 @@ public class FileControlServiceImpl implements FileControlService{
 	public boolean tramitarTrabasCuaderno63(Long codeFileControl, String usuarioTramitador) throws IOException, ICEParserException {
 		logger.info("FileControlServiceImpl - tramitarTrabasCuaderno63 - start");
 		
-		cuaderno63Service.tramitarTrabas(codeFileControl, usuarioTramitador);
+		cuaderno63SeizedService.tramitarTrabas(codeFileControl, usuarioTramitador);
 		
 		logger.info("FileControlServiceImpl - tramitarTrabasCuaderno63 - end");
 		return true;
@@ -205,7 +209,7 @@ public class FileControlServiceImpl implements FileControlService{
 	public boolean tramitarTrabasAEAT(Long codeFileControl, String usuarioTramitador) throws IOException, ICEParserException {
 		logger.info("FileControlServiceImpl - tramitarTrabasAEAT - start");
 		
-		aeatService.tramitarTrabas(codeFileControl, usuarioTramitador);
+		aeatSeizedService.tramitarTrabas(codeFileControl, usuarioTramitador);
 		
 		logger.info("FileControlServiceImpl - tramitarTrabasAEAT - end");
 		return true;

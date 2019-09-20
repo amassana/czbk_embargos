@@ -22,7 +22,6 @@ import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.Peticion;
 import es.commerzbank.ice.embargos.domain.mapper.PetitionMapper;
 import es.commerzbank.ice.embargos.repository.PetitionRepository;
-import es.commerzbank.ice.embargos.service.Cuaderno63Service;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.InformationPetitionService;
 import es.commerzbank.ice.embargos.service.PetitionService;
@@ -51,9 +50,6 @@ public class PetitionServiceImpl implements PetitionService{
 	
 	@Autowired
 	private PetitionMapper petitionMapper;
-		
-	@Autowired
-	private Cuaderno63Service cuaderno63Service;
 	
 	@Autowired
 	private PetitionRepository petitionRepository;

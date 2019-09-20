@@ -2,14 +2,10 @@ package es.commerzbank.ice.embargos.service.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
-import es.commerzbank.ice.embargos.service.files.AEATLiftingService;
-import es.commerzbank.ice.embargos.service.files.Cuaderno63LiftingService;
 import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.LineIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +14,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.comun.lib.util.ICEParserException;
-import es.commerzbank.ice.embargos.service.AEATService;
-import es.commerzbank.ice.embargos.service.Cuaderno63Service;
 import es.commerzbank.ice.embargos.service.FileManagementService;
+import es.commerzbank.ice.embargos.service.files.AEATLiftingService;
+import es.commerzbank.ice.embargos.service.files.AEATSeizedResultService;
+import es.commerzbank.ice.embargos.service.files.AEATSeizedService;
+import es.commerzbank.ice.embargos.service.files.AEATSeizureService;
+import es.commerzbank.ice.embargos.service.files.Cuaderno63InformationService;
+import es.commerzbank.ice.embargos.service.files.Cuaderno63LiftingService;
+import es.commerzbank.ice.embargos.service.files.Cuaderno63PetitionService;
+import es.commerzbank.ice.embargos.service.files.Cuaderno63SeizedService;
+import es.commerzbank.ice.embargos.service.files.Cuaderno63SeizureService;
 import es.commerzbank.ice.utils.EmbargosConstants;
 
 @Service
@@ -43,16 +46,22 @@ public class FileManagementServiceImpl implements FileManagementService {
 	private String pathError;
 
 	@Autowired
-	Cuaderno63Service cuaderno63Service;
-
-	@Autowired
 	Cuaderno63LiftingService cuaderno63LiftingService;
 
 	@Autowired
-	AEATService aeatService;
-
-	@Autowired
 	AEATLiftingService aeatLiftingService;
+	
+	@Autowired
+	private Cuaderno63PetitionService cuaderno63PetitionService;
+	
+	@Autowired
+	private Cuaderno63SeizureService cuaderno63SeizureService;
+	
+	@Autowired
+	private AEATSeizureService aeatSeizureService;
+	
+	@Autowired
+	private AEATSeizedResultService aeatSeizedResultService;
 	
 	public void procesarFichero(File file)
 	{
@@ -86,13 +95,13 @@ public class FileManagementServiceImpl implements FileManagementService {
 		switch (tipoFichero) {						
 			//- Tipos de ficheros AEAT:	
 			case EmbargosConstants.TIPO_FICHERO_EMBARGOS:
-				aeatService.tratarFicheroDiligenciasEmbargo(file);
+				aeatSeizureService.tratarFicheroDiligenciasEmbargo(file);
 				break;
 			case EmbargosConstants.TIPO_FICHERO_LEVANTAMIENTOS:
 				aeatLiftingService.tratarFicheroLevantamientos(file);
 				break;
 			case EmbargosConstants.TIPO_FICHERO_ERRORES:
-				aeatService.tratarFicheroErrores(file);
+				aeatSeizedResultService.tratarFicheroErrores(file);
 				break;	
 			default:
 		}
@@ -108,10 +117,10 @@ public class FileManagementServiceImpl implements FileManagementService {
 		switch (tipoFichero) {
 			//- Tipos de ficheros del Cuaderno63:
 			case EmbargosConstants.TIPO_FICHERO_PETICIONES:
-				cuaderno63Service.cargarFicheroPeticion(file);
+				cuaderno63PetitionService.cargarFicheroPeticion(file);
 				break;
 			case EmbargosConstants.TIPO_FICHERO_EMBARGOS:
-				cuaderno63Service.cargarFicheroEmbargos(file);
+				cuaderno63SeizureService.cargarFicheroEmbargos(file);
 				break;	
 			case EmbargosConstants.TIPO_FICHERO_LEVANTAMIENTOS:
 				cuaderno63LiftingService.tratarFicheroLevantamientos(file);
