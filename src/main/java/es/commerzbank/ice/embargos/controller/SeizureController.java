@@ -618,8 +618,8 @@ public class SeizureController {
 		}
 	}
 
-	@GetMapping("/transfer/{cod_solicitud_ejecucion}/order")
-	@ApiOperation(value = "Devuelve el fichero de orden de transferencia")
+	@GetMapping("/execution/{cod_solicitud_ejecucion}/order")
+	@ApiOperation(value = "Devuelve el fichero de solicitud de ejecucion")
 	public ResponseEntity<InputStreamResource> generarOrdenTransferencia(
 			@PathVariable("cod_solicitud_ejecucion") String cod_solicitud_ejecucion) {
 

@@ -30,7 +30,7 @@ WHERE u.COD_USUARIO = $P{COD_USUARIO}]]>
 	<title>
 		<band height="74" splitType="Stretch">
 			<image>
-				<reportElement x="1" y="0" width="289" height="60" uuid="4e2f76b0-4fe3-4987-afdb-7468e28102af"/>
+				<reportElement x="290" y="16" width="241" height="43" uuid="9a3359ea-ae57-48c1-b516-de63e211053c"/>
 				<imageExpression><![CDATA[$P{IMAGE_PARAM}]]></imageExpression>
 			</image>
 		</band>

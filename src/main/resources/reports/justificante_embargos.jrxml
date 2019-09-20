@@ -387,12 +387,12 @@ Sucursal en España]]></text>
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
-				<text><![CDATA[R.M. Madrid, T. 5464. G 4.553.S.3.L.S.E 110 H. 43.668-C.I.F. N-0041282 E]]></text>
+				<text><![CDATA[R.M. Madrid, T. 5464. G 4.553.S.3.L.S.E 110 H. 43.668-C.I.F. W-0041282 E]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="243" y="114" width="241" height="19" uuid="246dad16-1b90-4132-86bc-9aafbeec34e0"/>
 				<textElement>
-					<font fontName="Serif" size="14" isBold="true"/>
+					<font fontName="Serif" size="13" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Esta notificación no precisa firma.]]></text>
 			</staticText>

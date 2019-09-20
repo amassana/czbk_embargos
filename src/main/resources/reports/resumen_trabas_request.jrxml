@@ -122,7 +122,7 @@ ORDER BY
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHA_CREACION}.toString()))]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement x="0" y="0" width="800" height="70" uuid="41d44598-e197-4d61-aab3-6623c7872b1a"/>
+				<reportElement x="316" y="0" width="483" height="70" uuid="41d44598-e197-4d61-aab3-6623c7872b1a"/>
 				<subreportParameter name="sub_img_param">
 					<subreportParameterExpression><![CDATA[$P{sub_img_param}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -272,16 +272,6 @@ ORDER BY
 	</detail>
 	<pageFooter>
 		<band height="103" splitType="Stretch">
-			<staticText>
-				<reportElement x="0" y="80" width="420" height="20" uuid="1d3f1d6f-94d3-4ad4-9f56-8c6b6b980624"/>
-				<box leftPadding="3">
-					<pen lineWidth="1.25"/>
-				</box>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Serif" size="8" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Códigos: 00 Sin actuación  01 Retención total o parcial   02 Nif o Cif no titual cta.comunicada  03 Inexistencia saldo]]></text>
-			</staticText>
 			<textField>
 				<reportElement x="709" y="80" width="50" height="20" uuid="cbfebc5e-d5a7-4746-a5bd-060637daeb54"/>
 				<textElement textAlignment="Right">

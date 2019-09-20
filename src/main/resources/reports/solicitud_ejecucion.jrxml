@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="solicitud_ejecucion" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1e578dd3-5128-48f4-8dd5-ab5a52f6c583">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceBankDAdapterEmbargos.xml"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="IMAGE_PARAM" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="COD_SOLICITUD_EJECUCION" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT se.ORDENANTE, se.BIC, se.IBAN, se.BENEFICIARIO, se.CONCEPTO, se.PROPOSITOTR, se.TIPOTR, se.IMPORTE_RESPUESTA
+FROM SOLICITUDES_EJECUCION se
+WHERE COD_SOLICITUD_EJECUCION = $P{COD_SOLICITUD_EJECUCION}]]>
+	</queryString>
+	<field name="ORDENANTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ORDENANTE"/>
+	</field>
+	<field name="BIC" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="BIC"/>
+	</field>
+	<field name="IBAN" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="IBAN"/>
+	</field>
+	<field name="BENEFICIARIO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="BENEFICIARIO"/>
+	</field>
+	<field name="CONCEPTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CONCEPTO"/>
+	</field>
+	<field name="PROPOSITOTR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PROPOSITOTR"/>
+	</field>
+	<field name="TIPOTR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="TIPOTR"/>
+	</field>
+	<field name="IMPORTE_RESPUESTA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="IMPORTE_RESPUESTA"/>
+	</field>
+	<variable name="TodayDate" class="java.lang.String">
+		<variableExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new Date())]]></variableExpression>
+		<initialValueExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new Date())]]></initialValueExpression>
+	</variable>
+	<variable name="MONTH_IN_LETTER" class="java.lang.String">
+		<variableExpression><![CDATA[java.time.LocalDate.now().getMonth().getDisplayName(java.time.format.TextStyle.FULL, new Locale("es", "ES"))]]></variableExpression>
+		<initialValueExpression><![CDATA[java.time.LocalDate.now().getMonth().getDisplayName(java.time.format.TextStyle.FULL, new Locale("es", "ES"))]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="144" splitType="Stretch">
+			<image>
+				<reportElement x="290" y="32" width="269" height="38" uuid="7a8b9749-bb33-4153-882e-8d0e4611ce30"/>
+				<imageExpression><![CDATA[$P{IMAGE_PARAM}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="36" y="81" width="220" height="30" uuid="408131c3-18cb-4d54-b269-25e4f6aaaab5"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GS-BO CERI, Payments Madrid]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="317" y="111" width="199" height="30" uuid="02f58a86-dcbf-4cb0-a243-cc97bee360f1"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Madrid  " +$V{TodayDate}.split("/")[0] + " de " +  $V{MONTH_IN_LETTER} + " de " + $V{TodayDate}.split("/")[2]]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="290" y="70" width="148" height="18" forecolor="#ABA6A6" uuid="8e63f2ab-ba92-4267-9b91-b66af23bc685"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[SUCURSAL EN ESPAÑA]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="56" splitType="Stretch">
+			<staticText>
+				<reportElement x="36" y="10" width="320" height="30" uuid="86fc0eba-8474-4cfe-96fd-e3432f5fba05"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Rogamos realicen la siguiente transferencia vía SEPA:]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="322" splitType="Stretch">
+			<staticText>
+				<reportElement x="36" y="20" width="76" height="20" uuid="0d244558-c070-4f57-a8ca-2cde96fa3928"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Oredenante:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="36" y="0" width="50" height="20" uuid="5e7305ba-ca4a-4444-8b64-33fcfe062bf8"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Importe: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="36" y="40" width="190" height="20" uuid="57fdcab2-d078-4a08-b476-21cc7969abe1"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cta adeudo: 170930149000EUR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="108" y="60" width="113" height="20" uuid="0a46d10f-1fc4-42f1-901e-651c44158ceb"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Commerzbank AG.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="36" y="90" width="146" height="20" uuid="c57d745d-f3e4-4d47-a210-5e56c61d7064">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BIC Entidad Beneficiaria:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="36" y="110" width="109" height="20" uuid="5fc7f7f8-6370-43a1-8c6e-8aaaac0b1708">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[IBAN Beneficiario:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="36" y="130" width="125" height="20" uuid="8179ee0d-8ef5-49ea-ab25-fdc6bbb5101d">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre Beneficiario:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="36" y="169" width="60" height="20" uuid="5d8f85b9-6c5a-4573-a752-8cdee28a2fe2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Concepto:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="36" y="190" width="64" height="20" uuid="77b86710-c512-4002-9d18-dbeba9ac7914"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Proposito:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="36" y="210" width="130" height="20" uuid="590cff65-c304-4f7a-a417-b4458ba55da8"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo de transferencia:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="112" y="20" width="414" height="20" uuid="1fb493af-868c-4be9-b091-c79c9be8e15e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ORDENANTE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="182" y="90" width="190" height="20" uuid="eceeb5cb-ac1c-45f1-a23d-9e3ddecea965"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{BIC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="146" y="110" width="330" height="20" uuid="9515e08d-f91f-43be-bfac-49b0e42bcab2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{IBAN}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="161" y="130" width="374" height="38" uuid="d6ad5c76-a9da-422a-94b7-334528556e5d"/>
+				<box topPadding="3"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Serif" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{BENEFICIARIO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="97" y="169" width="410" height="20" uuid="a4ddd71a-4e6c-4334-82ec-751c40a04d5a"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CONCEPTO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="101" y="190" width="150" height="20" uuid="a2ccd20f-b4c0-4eb9-9e12-76c2ef484a2a"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PROPOSITOTR}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="166" y="210" width="180" height="20" uuid="3e817eae-ba4a-4025-bb4c-70307b8c5ef4"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TIPOTR}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="86" y="0" width="220" height="20" uuid="7f5bf497-f6de-4704-9ffc-88e014010aaa"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{IMPORTE_RESPUESTA}  + " EUR"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="19" y="80" width="9" height="234" uuid="ea942b99-dd5d-465e-b95d-e42564b35b90"/>
+				<textElement rotation="Left">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[R. M. Madrid, T. 5.464. G., 4.553. S. 3. L.S.E. 110. H. 43.668 – C.I.F. W-0041282-E]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="96" splitType="Stretch">
+			<staticText>
+				<reportElement x="50" y="18" width="230" height="42" uuid="b1156e12-e321-4264-b86d-0f4c25150305"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Vorsitzender des Aufsichtsrats / Chairman of the Supervisory Board / Presidente del
+Consejo de Vigilancia: Stefan Schmittmann
+Vorstand / Board of Managing Directors / Junta Directiva: Martin Zielke
+(Vorsitzender/Chairman), Jörg Hessenmüller, Marcus Chromik, Stephan Engels,Michael Mandel, Michael Reuther, Bettina Orlopp]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="300" y="18" width="190" height="42" uuid="2a04dbd8-c7da-467f-82a7-50e810c1aed9"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[R.M. Madrid, T. 5.464. G. 4.553. S. 3 L.S.E. 110. H. 43.668 
+C.I.F. W-0041282 E 
+Commerzbank Aktiengesellschaft, Frankfurt am Main 
+Handelsregister / Registered Office / Registro Mercantil: Amtsgericht 
+Frankfurt am main, HRB 32000]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="97" splitType="Stretch">
+			<staticText>
+				<reportElement x="38" y="10" width="108" height="24" uuid="4a3f862d-999f-48d8-a65d-6d82282b6436"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Serif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Commerzbank AG]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="38" y="34" width="120" height="24" uuid="4b242562-2003-4c51-916d-4690d40d6074"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sucursal en España]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="38" y="58" width="220" height="24" uuid="005d2497-95ee-475a-9223-835c280a2609"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Serif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Group Services-Banking Operations]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

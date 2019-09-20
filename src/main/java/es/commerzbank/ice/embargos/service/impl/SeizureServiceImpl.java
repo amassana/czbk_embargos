@@ -687,7 +687,7 @@ public class SeizureServiceImpl implements SeizureService {
 
 		try (Connection conn_embargos = oracleDataSourceEmbargos.getEmbargosConnection()) {
 
-			Resource transOrder = ResourcesUtil.getFromJasperFolder("orden_transferencia.jasper");
+			Resource transOrder = ResourcesUtil.getFromJasperFolder("solicitud_ejecucion.jasper");
 			Resource imageLogo = ResourcesUtil.getImageLogoCommerceResource();
 
 			File logoFile = imageLogo.getFile();

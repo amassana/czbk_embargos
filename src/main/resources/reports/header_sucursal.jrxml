@@ -17,13 +17,13 @@
 		<band height="100" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<image>
-				<reportElement x="370" y="20" width="219" height="40" uuid="73e22134-d71d-4d7c-8c5f-0a4330344fc9">
+				<reportElement x="362" y="20" width="219" height="40" uuid="73e22134-d71d-4d7c-8c5f-0a4330344fc9">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<imageExpression><![CDATA[$P{sub_img_param}]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="215" y="40" width="60" height="30" forecolor="#050505" uuid="070a40e4-b02e-448b-8bed-22d41c5f3ff9">
+				<reportElement x="207" y="40" width="60" height="30" forecolor="#050505" uuid="070a40e4-b02e-448b-8bed-22d41c5f3ff9">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -32,7 +32,7 @@
 				<text><![CDATA[ a Fecha: ]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="280" y="40" width="90" height="30" forecolor="#050505" uuid="0c06d7a9-5e46-4c50-9a3d-97593b7f03e0"/>
+				<reportElement x="272" y="40" width="90" height="30" forecolor="#050505" uuid="0c06d7a9-5e46-4c50-9a3d-97593b7f03e0"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
