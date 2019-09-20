@@ -31,4 +31,7 @@ public interface SeizureService {
 	public byte[] generarResumenTrabasF3(Integer codControlFichero) throws Exception;
 	public byte[] generarResumenTrabasF4(Integer codControlFichero) throws Exception;
 	public byte[] generarAnexo(BigDecimal cod_usuario, BigDecimal cod_traba, Integer num_anexo) throws Exception;
+	public byte[] generarRespuestaFinalEmbargo(Integer cod_file_control) throws Exception;
+	public byte[] generarResumenLevantamiento(Integer cod_file_control) throws Exception;
+	public byte[] generarOrdenTransferencia(String cod_solicitud_ejecucion) throws Exception;
 }

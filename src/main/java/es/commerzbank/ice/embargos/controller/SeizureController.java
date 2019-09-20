@@ -51,7 +51,7 @@ public class SeizureController {
     @ApiOperation(value="Devuelve la lista de embargos para una petición de embargo.")
     public ResponseEntity<List<SeizureDTO>> getSeizureListByCodeFileControl(Authentication authentication,
                                                                                  @PathVariable("codeFileControl") Long codeFileControl){
-    	logger.info("SeizureController - getSeizureListByCodeFileControl - start");
+		logger.info("SeizureController - getSeizureListByCodeFileControl - start");
     	ResponseEntity<List<SeizureDTO>> response = null;
     	List<SeizureDTO> result = new ArrayList<SeizureDTO>();
     	
@@ -462,10 +462,6 @@ public class SeizureController {
 		} catch (Exception e) {
 			logger.error("Error in justificanteReport", e);
 
-			if (e.getMessage() == null) {
-				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
-			}
-
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -491,10 +487,6 @@ public class SeizureController {
 			logger.error("Error in levantamientoReport", e);
 			System.out.println(e);
 
-			if (e.getMessage() == null) {
-				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
-			}
-
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -517,10 +509,6 @@ public class SeizureController {
 
 		} catch (Exception e) {
 			logger.error("Error in resumenTrabas", e);
-
-			if (e.getMessage() == null) {
-				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
-			}
 
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -546,10 +534,6 @@ public class SeizureController {
 		} catch (Exception e) {
 			logger.error("Error in resumenTrabas", e);
 
-			if (e.getMessage() == null) {
-				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
-			}
-
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
@@ -561,20 +545,12 @@ public class SeizureController {
 			@PathVariable("cod_traba") BigDecimal cod_traba, @PathVariable("num_anexo") Integer num_anexo)
 			throws Exception {
 		logger.info("SeizureController - generarAnexo - start");
-		switch (num_anexo) {
-		case 1:
-			return downloadAnexo(cod_usuario, cod_traba, num_anexo);
-		case 2:
-			return downloadAnexo(cod_usuario, cod_traba, num_anexo);
-		case 3:
-			return downloadAnexo(cod_usuario, cod_traba, num_anexo);
-		default:
-			logger.info("Error in anexoReport", "error descargando anexos");
-
-		}
+		
+		ResponseEntity<InputStreamResource> response = downloadAnexo(cod_usuario, cod_traba, num_anexo);
 
 		logger.info("SeizureController - generarAnexo - end");
-		return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+		
+		return response;
 	}
 
 	private ResponseEntity<InputStreamResource> downloadAnexo(BigDecimal cod_usuario, BigDecimal cod_traba,
@@ -594,12 +570,73 @@ public class SeizureController {
 		} catch (Exception e) {
 			logger.error("Error in anexoReport", e);
 
-			if (e.getMessage() == null) {
-				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
-			}
+			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@GetMapping("/finalanswer/seizure/{fileControl}")
+	@ApiOperation(value = "Devuelve el fichero de respuesta final de embargos")
+	public ResponseEntity<InputStreamResource> generarRespuestaFinalEmbargo(
+			@PathVariable("fileControl") Integer codFileControl) {
+
+		DownloadReportFile.setTempFileName("respuestaFinalEmbargo");
+
+		DownloadReportFile.setFileTempPath(pdfSavedPath);
+
+		try {
+
+			DownloadReportFile.writeFile(seizureService.generarRespuestaFinalEmbargo(codFileControl));
+
+			return DownloadReportFile.returnToDownloadFile();
+
+		} catch (Exception e) {
+			logger.error("Error in anexoReport", e);
 
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
+	@GetMapping("/summary/fileControl/{fileControl}/liftingReport")
+	@ApiOperation(value = "Devuelve el fichero de resumen de levantamientos")
+	public ResponseEntity<InputStreamResource> generarResumenLevantamiento(
+			@PathVariable("fileControl") Integer codFileControl) {
+
+		DownloadReportFile.setTempFileName("resumenLevantamiento");
+
+		DownloadReportFile.setFileTempPath(pdfSavedPath);
+
+		try {
+
+			DownloadReportFile.writeFile(seizureService.generarResumenLevantamiento(codFileControl));
+
+			return DownloadReportFile.returnToDownloadFile();
+
+		} catch (Exception e) {
+			logger.error("Error in anexoReport", e);
+
+			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping("/execution/{cod_solicitud_ejecucion}/order")
+	@ApiOperation(value = "Devuelve el fichero de solicitud de ejecucion")
+	public ResponseEntity<InputStreamResource> generarOrdenTransferencia(
+			@PathVariable("cod_solicitud_ejecucion") String cod_solicitud_ejecucion) {
+
+		DownloadReportFile.setTempFileName("solicitudEjecucion");
+
+		DownloadReportFile.setFileTempPath(pdfSavedPath);
+
+		try {
+
+			DownloadReportFile.writeFile(seizureService.generarOrdenTransferencia(cod_solicitud_ejecucion));
+
+			return DownloadReportFile.returnToDownloadFile();
+
+		} catch (Exception e) {
+			logger.error("Error in anexoReport", e);
+
+			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

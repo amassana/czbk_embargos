@@ -18,7 +18,7 @@ public class ResourcesUtil {
 //	}
 	
 	public static Resource getFromJasperFolder(String path) {
-		return new ClassPathResource("jasper/" + path);
+		return new ClassPathResource("reports/" + path);
 	}
 	
 	public static Resource getTemplateStyleResource() {

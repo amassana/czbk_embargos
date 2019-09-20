@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="resumen_trabas" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="381384b4-cbb7-4993-952a-24656fb910da">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="resumen_trabas_request" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="381384b4-cbb7-4993-952a-24656fb910da">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceBankDAdapterEmbargos.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -72,32 +72,32 @@ ORDER BY
 	<title>
 		<band height="125" splitType="Stretch">
 			<staticText>
-				<reportElement x="5" y="83" width="160" height="20" uuid="abe67322-132f-4faf-aa22-d8c4d7118d6b"/>
+				<reportElement x="5" y="83" width="311" height="20" uuid="abe67322-132f-4faf-aa22-d8c4d7118d6b"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="14" isBold="true"/>
+					<font fontName="Serif" size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[FICHERO DE TRABAS]]></text>
+				<text><![CDATA[LISTADO DE DILIGENCIAS DE EMBARGO DE]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="630" y="82" width="80" height="20" uuid="6a768ecd-1226-49d2-b679-18655221f4c8"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha Creación:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="630" y="102" width="80" height="20" uuid="dc0c91de-1865-43c9-b636-c165d2240743"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha Vto:]]></text>
 			</staticText>
 			<textField>
-				<reportElement isPrintRepeatedValues="false" x="165" y="83" width="156" height="21" uuid="fba90554-2346-4bb5-a0e5-a386fcd9d379">
+				<reportElement isPrintRepeatedValues="false" x="315" y="83" width="156" height="21" uuid="fba90554-2346-4bb5-a0e5-a386fcd9d379">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a439b967-a736-41eb-949d-01afc719f1c8"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
-					<font size="14"/>
+					<font fontName="Serif" size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DES_ENTIDAD}]]></textFieldExpression>
 			</textField>
@@ -106,7 +106,9 @@ ORDER BY
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f81bdc1c-0b74-4ed0-8e42-a5e3c8a014e7"/>
 				</reportElement>
 				<box leftPadding="3"/>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHAVTO}.toString()))]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -114,11 +116,13 @@ ORDER BY
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7c7f0214-50a8-4daa-8080-605c59aa8203"/>
 				</reportElement>
 				<box leftPadding="3"/>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHA_CREACION}.toString()))]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement x="0" y="0" width="800" height="70" uuid="41d44598-e197-4d61-aab3-6623c7872b1a"/>
+				<reportElement x="316" y="0" width="483" height="70" uuid="41d44598-e197-4d61-aab3-6623c7872b1a"/>
 				<subreportParameter name="sub_img_param">
 					<subreportParameterExpression><![CDATA[$P{sub_img_param}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -137,7 +141,7 @@ ORDER BY
 					<bottomPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Bottom">
-					<font isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[NIF]]></text>
 			</staticText>
@@ -149,7 +153,7 @@ ORDER BY
 					<bottomPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Bottom">
-					<font isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Titular]]></text>
 			</staticText>
@@ -161,7 +165,7 @@ ORDER BY
 					<bottomPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Bottom">
-					<font isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[IBAN]]></text>
 			</staticText>
@@ -173,7 +177,7 @@ ORDER BY
 					<bottomPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Bottom">
-					<font isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[IMPORTE DEUDA]]></text>
 			</staticText>
@@ -185,7 +189,7 @@ ORDER BY
 					<bottomPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Bottom">
-					<font isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha Gen]]></text>
 			</staticText>
@@ -197,7 +201,7 @@ ORDER BY
 					<bottomPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Bottom">
-					<font isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Nº Embargo]]></text>
 			</staticText>
@@ -211,7 +215,7 @@ ORDER BY
 				</reportElement>
 				<box leftPadding="2"/>
 				<textElement verticalAlignment="Middle">
-					<font size="9"/>
+					<font fontName="Serif" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{NIF}]]></textFieldExpression>
 			</textField>
@@ -221,17 +225,17 @@ ORDER BY
 				</reportElement>
 				<box leftPadding="2"/>
 				<textElement verticalAlignment="Middle">
-					<font size="9"/>
+					<font fontName="Serif" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="434" y="0" width="150" height="20" uuid="cae159c1-1a60-4be7-9aae-8d2d82d859b9">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="642a7aec-f048-48fa-99fc-fbe2cb965521"/>
 				</reportElement>
 				<box leftPadding="2"/>
 				<textElement verticalAlignment="Middle">
-					<font size="9"/>
+					<font fontName="Serif" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{IBAN}]]></textFieldExpression>
 			</textField>
@@ -241,7 +245,7 @@ ORDER BY
 				</reportElement>
 				<box leftPadding="0" rightPadding="3"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="9"/>
+					<font fontName="Serif" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{IMPORTEDEUDA}]]></textFieldExpression>
 			</textField>
@@ -251,7 +255,7 @@ ORDER BY
 				</reportElement>
 				<box leftPadding="0"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="Serif" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHA_GENERACION}.toString()))]]></textFieldExpression>
 			</textField>
@@ -260,7 +264,7 @@ ORDER BY
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="121150ee-091f-4793-8f41-85d198c3e6c0"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
-					<font size="9"/>
+					<font fontName="Serif" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{NUMERO_EMBARGO}]]></textFieldExpression>
 			</textField>
@@ -268,23 +272,18 @@ ORDER BY
 	</detail>
 	<pageFooter>
 		<band height="103" splitType="Stretch">
-			<staticText>
-				<reportElement x="0" y="80" width="420" height="20" uuid="1d3f1d6f-94d3-4ad4-9f56-8c6b6b980624"/>
-				<box leftPadding="3">
-					<pen lineWidth="1.25"/>
-				</box>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="8" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Códigos: 00 Sin actuación  01 Retención total o parcial   02 Nif o Cif no titual cta.comunicada  03 Inexistencia saldo]]></text>
-			</staticText>
 			<textField>
 				<reportElement x="709" y="80" width="50" height="20" uuid="cbfebc5e-d5a7-4746-a5bd-060637daeb54"/>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
 				<reportElement x="761" y="80" width="30" height="20" uuid="9c2f1333-9442-40ae-a9d1-c5421e8a77d6"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>
