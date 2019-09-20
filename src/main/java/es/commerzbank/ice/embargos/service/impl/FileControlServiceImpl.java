@@ -49,6 +49,7 @@ import es.commerzbank.ice.embargos.service.InformationPetitionService;
 import es.commerzbank.ice.utils.ICEDateUtils;
 import es.commerzbank.ice.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRPrintPage;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;

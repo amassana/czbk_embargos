@@ -51,7 +51,7 @@ public class SeizureController {
     @ApiOperation(value="Devuelve la lista de embargos para una petición de embargo.")
     public ResponseEntity<List<SeizureDTO>> getSeizureListByCodeFileControl(Authentication authentication,
                                                                                  @PathVariable("codeFileControl") Long codeFileControl){
-    	logger.info("SeizureController - getSeizureListByCodeFileControl - start");
+		logger.info("SeizureController - getSeizureListByCodeFileControl - start");
     	ResponseEntity<List<SeizureDTO>> response = null;
     	List<SeizureDTO> result = new ArrayList<SeizureDTO>();
     	
@@ -590,7 +590,7 @@ public class SeizureController {
 			return DownloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
-			LOG.error("Error in anexoReport", e);
+			logger.error("Error in anexoReport", e);
 
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -612,7 +612,7 @@ public class SeizureController {
 			return DownloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
-			LOG.error("Error in anexoReport", e);
+			logger.error("Error in anexoReport", e);
 
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -634,7 +634,7 @@ public class SeizureController {
 			return DownloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
-			LOG.error("Error in anexoReport", e);
+			logger.error("Error in anexoReport", e);
 
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
