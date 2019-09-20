@@ -364,8 +364,8 @@ where t.cod_traba = $P{COD_TRABA}]]>
 			</textField>
 		</band>
 	</detail>
-	<pageFooter>
-		<band height="136" splitType="Stretch">
+	<lastPageFooter>
+		<band height="133">
 			<staticText>
 				<reportElement x="36" y="35" width="314" height="19" uuid="a6bcf41e-55e5-4c50-8c93-ab971483b873"/>
 				<textElement verticalAlignment="Middle">
@@ -413,5 +413,5 @@ Sucursal en España]]></text>
 				<text><![CDATA[Información Organismo Emisor]]></text>
 			</staticText>
 		</band>
-	</pageFooter>
+	</lastPageFooter>
 </jasperReport>

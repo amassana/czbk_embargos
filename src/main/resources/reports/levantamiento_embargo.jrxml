@@ -386,8 +386,8 @@ WHERE
 			</textField>
 		</band>
 	</detail>
-	<pageFooter>
-		<band height="108" splitType="Stretch">
+	<lastPageFooter>
+		<band height="108">
 			<staticText>
 				<reportElement x="37" y="0" width="314" height="19" uuid="a6bcf41e-55e5-4c50-8c93-ab971483b873"/>
 				<textElement verticalAlignment="Middle">
@@ -419,5 +419,5 @@ Sucursal en España]]></text>
 				<text><![CDATA[Esta notificación no precisa firma.]]></text>
 			</staticText>
 		</band>
-	</pageFooter>
+	</lastPageFooter>
 </jasperReport>
