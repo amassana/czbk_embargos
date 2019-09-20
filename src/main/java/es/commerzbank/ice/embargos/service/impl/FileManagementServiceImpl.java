@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.embargos.service.files.AEATLiftingService;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63LiftingService;
 import org.apache.commons.io.FileExistsException;
@@ -79,7 +80,7 @@ public class FileManagementServiceImpl implements FileManagementService {
 	}
 
 
-	private void parsearFicheroAEAT(File file) throws IOException, ICEParserException {
+	private void parsearFicheroAEAT(File file) throws IOException, ICEException {
 		
 		String tipoFichero = FilenameUtils.getExtension(file.getCanonicalPath()).toUpperCase();
 				

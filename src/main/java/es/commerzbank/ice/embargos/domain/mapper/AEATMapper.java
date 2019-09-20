@@ -64,11 +64,11 @@ public abstract class AEATMapper {
 		@Mapping(source = "razonSocialInterna", target = "razonSocialInterna"),
 	})
 	public abstract Embargo generateEmbargo(DiligenciaFase3 diligenciaFase3, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante, 
-			String razonSocialInterna, EntidadCreditoFase3 entidadCreditoFase3, Map<String, AccountDTO> customerAccountsMap);
+			String razonSocialInterna, EntidadCreditoFase3 entidadCreditoFase3, Map<String, AccountDTO> customerAccountsMap) throws ICEException;
 	
 	@AfterMapping
 	public void generateEmbargoAfterMapping(@MappingTarget Embargo embargo, DiligenciaFase3 diligenciaFase3, EntidadesOrdenante entidadOrdenante, 
-			EntidadCreditoFase3 entidadCreditoFase3, Map<String, AccountDTO> customerAccountsMap) {
+			EntidadCreditoFase3 entidadCreditoFase3, Map<String, AccountDTO> customerAccountsMap) throws ICEException {
 		
 		List<CuentaEmbargo> cuentaEmbargosList = new ArrayList<>();
 		
@@ -177,10 +177,10 @@ public abstract class AEATMapper {
 	}
 	
 
-	public abstract Traba generateTraba(DiligenciaFase3 diligenciaFase3, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante, Map<String, AccountDTO> customerAccountsMap);
+	public abstract Traba generateTraba(DiligenciaFase3 diligenciaFase3, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante, Map<String, AccountDTO> customerAccountsMap) throws ICEException;
 	
 	@AfterMapping
-	public void generateTrabaAfterMapping(@MappingTarget Traba traba, DiligenciaFase3 diligenciaFase3, EntidadesOrdenante entidadOrdenante, Map<String, AccountDTO> customerAccountsMap) {
+	public void generateTrabaAfterMapping(@MappingTarget Traba traba, DiligenciaFase3 diligenciaFase3, EntidadesOrdenante entidadOrdenante, Map<String, AccountDTO> customerAccountsMap) throws ICEException {
 		
 		BigDecimal fechaUltmaModif = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
 		String usuarioModif = EmbargosConstants.USER_AUTOMATICO;

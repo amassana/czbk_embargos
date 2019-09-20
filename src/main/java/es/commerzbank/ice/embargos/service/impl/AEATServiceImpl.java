@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import org.apache.commons.io.FileUtils;
 import org.beanio.BeanReader;
 import org.beanio.BeanWriter;
@@ -142,7 +143,7 @@ public class AEATServiceImpl implements AEATService{
 	ErrorRepository errorRepository;
 	
 	@Override
-	public void tratarFicheroDiligenciasEmbargo(File file) throws IOException, ICEParserException{
+	public void tratarFicheroDiligenciasEmbargo(File file) throws IOException, ICEException {
 		logger.info("AEATServiceImpl - tratarFicheroDiligenciasEmbargo - start");
 		BeanReader beanReader = null;
 		
