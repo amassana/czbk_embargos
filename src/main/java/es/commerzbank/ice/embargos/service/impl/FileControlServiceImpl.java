@@ -274,9 +274,9 @@ public class FileControlServiceImpl implements FileControlService{
 			}
 			
 			EstadoCtrlfichero estadoCtrlFichero = estadoCtrlficheroOpt.get();
-
+			
 			controlFichero.setEstadoCtrlfichero(estadoCtrlFichero);
-
+			
 			//Indicador procesado: al cambiar de estado, determinar si el flag indProcesado tiene que cambiar:
 			String indProcesado = determineIndProcesadoFromEstadoControlFichero(estadoCtrlFichero);
 			controlFichero.setIndProcesado(indProcesado);
@@ -297,24 +297,31 @@ public class FileControlServiceImpl implements FileControlService{
 	}
 	
 	private String determineIndProcesadoFromEstadoControlFichero(EstadoCtrlfichero estadoControlFichero) {
-
+	
 		long codEstadoCtrlFichero = estadoControlFichero.getId().getCodEstado();
 		long codTipoFichero = estadoControlFichero.getId().getCodTipoFichero();
-
+		
 		//Indicador Procesado a 'SI' cuando se cumplen los siguientes tipos de fichero y estado:
 		if ((codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_PROCESSED
 			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63)
 		 || (codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_GENERATED
 			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63)
 		 || (codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_GENERATED
-			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT)) {
-
+			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT)
+		 || (codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_PROCESSING
+			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63)
+		 || (codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_TO_SEND
+			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63)
+		 || (codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_TO_SEND
+			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT)
+		 ){
+			
 			return EmbargosConstants.IND_FLAG_SI;
 		}
-
+		
 		return EmbargosConstants.IND_FLAG_NO;
 	}
-
+	
 	@Override
 	@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
 	public void updateFileControlStatusTransaction(ControlFichero controlFichero, Long codEstado) {

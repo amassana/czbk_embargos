@@ -301,9 +301,12 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 
 		} catch (Exception e) {
 			
+			//TODO Estado de ERROR pendiente de ser eliminado, se comenta:
+			/*
 			//Transaccion para cambiar el estado de ControlFichero a ERROR:
 			fileControlService.updateFileControlStatusTransaction(controlFicheroPeticion, 
-					EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_ERROR);		
+					EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_ERROR);			
+			*/
 
 			throw e;
 
@@ -355,6 +358,9 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        		EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_PROCESSING,
 	        		EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63);
 	        controlFicheroPeticion.setEstadoCtrlfichero(estadoCtrlfichero);
+	        
+	        //Actualizacion del flag IND_PROCESADO al iniciar la tramitacion:
+	        controlFicheroPeticion.setIndProcesado(EmbargosConstants.IND_FLAG_SI);
 	        
 	        //fileControlRepository.saveAndFlush(controlFicheroPeticion);
 	        fileControlService.saveFileControlTransaction(controlFicheroPeticion);
@@ -511,6 +517,8 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        
 		} catch (Exception e) {
 			
+			//TODO Estado de ERROR pendiente de ser eliminado, se comenta:
+			/*
 			//Transaccion para cambiar el estado de controlFicheroPeticion a ERROR:
 			fileControlService.updateFileControlStatusTransaction(controlFicheroPeticion, 
 					EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_ERROR);
@@ -518,6 +526,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 			//Transaccion para cambiar el estado de controlFicheroInformacion a ERROR:
 			fileControlService.updateFileControlStatusTransaction(controlFicheroInformacion, 
 					EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_INFORMACION_NORMA63_ERROR);
+			*/
 
 			throw e;
 
@@ -748,9 +757,12 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 
 		} catch (Exception e) {
 
+			//TODO Estado de ERROR pendiente de ser eliminado, se comenta:
+			/*
 			//Transaccion para cambiar el estado de controlFicheroPeticion a ERROR:
 			fileControlService.updateFileControlStatusTransaction(controlFicheroEmbargo, 
 					EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_ERROR);
+			*/
 
 			throw e;
 
@@ -796,6 +808,16 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        	throw new ICEParserException("","ERROR: el CRC del fichero de Embargos no coincide con el guardado en ControlFichero.");
 	        }
 	        
+	        //Se actualiza el estado de controlFicheroEmbargo a Pendiente de envio:
+	        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
+	        		EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_TO_SEND,
+	        		EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63);
+	        controlFicheroEmbargo.setEstadoCtrlfichero(estadoCtrlfichero);
+	        
+	        //Actualizacion del flag IND_PROCESADO al iniciar la tramitacion:
+	        controlFicheroEmbargo.setIndProcesado(EmbargosConstants.IND_FLAG_SI);
+	        
+	        fileControlService.saveFileControlTransaction(controlFicheroEmbargo);
 	        
 	        //Para determinar el nombre del fichero de salida (Informacion):
 	        // - se obtiene el prefijo indicado a partir de la entidad comunicadora:
@@ -916,7 +938,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        controlFicheroTrabas.setEntidadesComunicadora(entidadComunicadora);
 	        
 	        //3.- Se actualiza el estado del fichero de Trabas a GENERADO:     
-	        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
+	        estadoCtrlfichero = new EstadoCtrlfichero(
 	        				EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_NORMA63_GENERATED,
 	        				EmbargosConstants.COD_TIPO_FICHERO_TRABAS_NORMA63);
 	        controlFicheroTrabas.setEstadoCtrlfichero(estadoCtrlfichero);
@@ -960,7 +982,9 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 	        
 	        
 		} catch (Exception e) {
-					
+			
+			//TODO Estado de ERROR pendiente de ser eliminado, se comenta:
+			/*
 			//Transaccion para cambiar el estado de controlFicheroEmbargo a ERROR:
 			fileControlService.updateFileControlStatusTransaction(controlFicheroEmbargo, 
 					EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_ERROR);
@@ -969,6 +993,7 @@ public class Cuaderno63ServiceImpl implements Cuaderno63Service{
 			//Transaccion para cambiar el estado de controlFicheroTrabas a ERROR:
 			fileControlService.updateFileControlStatusTransaction(controlFicheroTrabas, 
 					EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_NORMA63_ERROR);
+			*/
 			
 			LOG.error("ERROR: ", e);
 			

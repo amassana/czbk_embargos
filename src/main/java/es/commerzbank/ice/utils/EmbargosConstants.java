@@ -209,6 +209,9 @@ public class EmbargosConstants {
 	public static final String LIFTING = "lifting";
 	public static final Object BANK_ACCOUNT_LIFTING_LIST = "bankAccountLiftingList";
 
+	//Contabilidad
 	public static final String COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO = "P";
-	
+	public static final String LITERAL_EMBARG_IBS_REFERENCE2 = "Embarg";
+	public static final String LITERAL_LEVANT_IBS_REFERENCE2 = "Levant";
+
 }

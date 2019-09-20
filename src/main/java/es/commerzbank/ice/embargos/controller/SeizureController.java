@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.commerzbank.ice.comun.lib.formats.contabilidad.RespuestaContabilidad;
+import es.commerzbank.ice.comun.lib.domain.dto.AccountingNote;
 import es.commerzbank.ice.embargos.domain.dto.BankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizedBankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureActionDTO;
@@ -226,7 +226,7 @@ public class SeizureController {
 
 			String userModif = authentication.getName();
 
-			result = seizureService.updateSeizureStatus(codeFileControl, idSeizure, seizureStatus, userModif);
+			result = seizureService.updateSeizureStatus(idSeizure, seizureStatus, userModif);
 
 			if (result) {
 				response = new ResponseEntity<>(HttpStatus.OK);
@@ -411,7 +411,7 @@ public class SeizureController {
     @PostMapping(value = "/accountingNote")
     @ApiOperation(value="Tratamiento de la respuesta de Contabilidad (nota contable).")
     public ResponseEntity<String> manageAccountingNoteCallback(Authentication authentication,
-    										  @RequestBody RespuestaContabilidad respuestaContabilidad){
+    										  @RequestBody AccountingNote accountingNote){
     	logger.info("SeizureController - manageAccountingNoteCallback - start");
     	ResponseEntity<String> response = null;
 		boolean result = false;
@@ -420,7 +420,7 @@ public class SeizureController {
 
 			String userName = authentication.getName();
 		
-			result = accountingService.manageAccountingNoteCallback(respuestaContabilidad, userName);
+			result = accountingService.manageAccountingNoteCallback(accountingNote, userName);
 			
 			
 			if (result) {
@@ -545,11 +545,11 @@ public class SeizureController {
 			@PathVariable("cod_traba") BigDecimal cod_traba, @PathVariable("num_anexo") Integer num_anexo)
 			throws Exception {
 		logger.info("SeizureController - generarAnexo - start");
-		
+
 		ResponseEntity<InputStreamResource> response = downloadAnexo(cod_usuario, cod_traba, num_anexo);
 
 		logger.info("SeizureController - generarAnexo - end");
-		
+
 		return response;
 	}
 
@@ -573,7 +573,7 @@ public class SeizureController {
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@GetMapping("/finalanswer/seizure/{fileControl}")
 	@ApiOperation(value = "Devuelve el fichero de respuesta final de embargos")
 	public ResponseEntity<InputStreamResource> generarRespuestaFinalEmbargo(
@@ -639,4 +639,5 @@ public class SeizureController {
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
 }

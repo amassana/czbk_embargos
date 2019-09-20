@@ -21,8 +21,8 @@ public interface SeizureService {
 	public boolean updateSeizedBankAccountList(Long codeFileControl, Long idSeizure, List <SeizedBankAccountDTO> seizedBankAccountList, String userModif);
 	public boolean updateSeizedBankStatus(CuentaTraba cuentaTraba, Long codEstado, String userModif);
 	public boolean updateSeizedBankStatusTransaction(CuentaTraba cuentaTraba, Long codEstado, String userModif);
-	public boolean updateSeizureStatus(Long codeFileControl, Long idSeizure, SeizureStatusDTO seizedBankAccountList, String userModif);
-	public boolean updateSeizureStatusTransaction(Long codeFileControl, Long idSeizure, SeizureStatusDTO seizedBankAccountList, String userModif);
+	public boolean updateSeizureStatus(Long idSeizure, SeizureStatusDTO seizureStatusDTO, String userModif);
+	public boolean updateSeizureStatusTransaction(Long idSeizure, SeizureStatusDTO seizureStatusDTO, String userModif);
 	public List<SeizureDTO> getAuditSeizure(Long codFileControl, Long idSeizure);
 	public List<SeizedBankAccountDTO> getAuditSeizedBankAccounts(Long codFileControl, Long idSeizure, Long codAudit);
 	
