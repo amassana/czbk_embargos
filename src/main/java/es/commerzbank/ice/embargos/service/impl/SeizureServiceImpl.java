@@ -323,7 +323,7 @@ public class SeizureServiceImpl implements SeizureService {
 	}
 	
 	@Override
-	public boolean updateSeizureStatus(Long codeFileControl, Long idSeized, SeizureStatusDTO seizureStatusDTO,
+	public boolean updateSeizureStatus(Long idSeized, SeizureStatusDTO seizureStatusDTO,
 			String userModif) {
 		logger.info("SeizureServiceImpl - updateSeizureStatus - start");
 		Optional<Traba> trabaOpt = seizedRepository.findById(idSeized);
@@ -364,10 +364,10 @@ public class SeizureServiceImpl implements SeizureService {
 	
 	@Override
 	@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
-	public boolean updateSeizureStatusTransaction(Long codeFileControl, Long idSeized, SeizureStatusDTO seizureStatusDTO,
+	public boolean updateSeizureStatusTransaction(Long idSeized, SeizureStatusDTO seizureStatusDTO,
 			String userModif) {
 		
-		return updateSeizureStatus(codeFileControl, idSeized, seizureStatusDTO, userModif);
+		return updateSeizureStatus(idSeized, seizureStatusDTO, userModif);
 		
 	}	
 	

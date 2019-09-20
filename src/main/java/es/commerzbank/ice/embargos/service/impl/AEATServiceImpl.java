@@ -345,9 +345,12 @@ public class AEATServiceImpl implements AEATService{
 
 		} catch (Exception e) {
 	        
+			//TODO Estado de ERROR pendiente de ser eliminado, se comenta:
+			/*
 			//Transaccion para cambiar el estado de ControlFichero a ERROR:
 			fileControlService.updateFileControlStatusTransaction(controlFicheroEmbargo, 
-					EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_ERROR);	
+					EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_ERROR);
+			*/
 			
 			throw e;
 			
@@ -394,6 +397,17 @@ public class AEATServiceImpl implements AEATService{
 	        if (!controlFicheroEmbargo.getNumCrc().equals(Long.toString(FileUtils.checksumCRC32(ficheroEmbargo)))){
 	        	throw new ICEParserException("","ERROR: el CRC del fichero de Embargos no coincide con el guardado en ControlFichero.");
 	        }
+	        
+	        //Se actualiza el estado de controlFicheroEmbargo a Pendiente de envio:
+	        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
+	        		EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_TO_SEND,
+	        		EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT);
+	        controlFicheroEmbargo.setEstadoCtrlfichero(estadoCtrlfichero);
+	        
+	        //Actualizacion del flag IND_PROCESADO al iniciar la tramitacion:
+	        controlFicheroEmbargo.setIndProcesado(EmbargosConstants.IND_FLAG_SI);
+	        
+	        fileControlService.saveFileControlTransaction(controlFicheroEmbargo);
 	        
 	        
 	        //Para determinar el nombre del fichero de salida (Informacion):
@@ -551,7 +565,7 @@ public class AEATServiceImpl implements AEATService{
 	        controlFicheroTrabas.setEntidadesComunicadora(entidadComunicadora);
 	        
 	        //3.- Se actualiza el estado del fichero de Trabas a GENERADO:
-	        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
+	        estadoCtrlfichero = new EstadoCtrlfichero(
 	        		EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_AEAT_GENERATED,
 	        		EmbargosConstants.COD_TIPO_FICHERO_TRABAS_AEAT);
 	        controlFicheroTrabas.setEstadoCtrlfichero(estadoCtrlfichero);
@@ -596,6 +610,8 @@ public class AEATServiceImpl implements AEATService{
 	        
 		} catch (Exception e) {
 			
+			//TODO Estado de ERROR pendiente de ser eliminado, se comenta:
+			/*
 			//Transaccion para cambiar el estado de controlFicheroEmbargo a ERROR:
 			fileControlService.updateFileControlStatusTransaction(controlFicheroEmbargo, 
 					EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_ERROR);
@@ -604,6 +620,7 @@ public class AEATServiceImpl implements AEATService{
 			//Transaccion para cambiar el estado de controlFicheroTrabas a ERROR:
 			fileControlService.updateFileControlStatusTransaction(controlFicheroTrabas, 
 					EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_AEAT_ERROR);
+			*/
 			
 			logger.error("ERROR: ", e);
 			
