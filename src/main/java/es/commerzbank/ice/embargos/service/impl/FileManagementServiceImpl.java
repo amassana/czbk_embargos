@@ -167,12 +167,12 @@ public class FileManagementServiceImpl implements FileManagementService {
 			return true;
 		} catch (IOException e) {
 			try {
-				LOG.error("Could not move the file " + srcFile.getName() + " to the destination " + destDir, e);
+				LOG.error("Could not move the file " + srcFile.getName() + " to the destination " + destDir +": "+ e.getMessage());
 				FileUtils.copyFileToDirectory(srcFile, new File(destDir));
 				FileUtils.forceDelete(srcFile);
 				return true;
 			} catch (IOException e2) {
-				LOG.error("Could not move the file " + srcFile.getName() + " to the destination " + destDir, e2);
+				LOG.error("Could not move the file " + srcFile.getName() + " to the destination " + destDir +": "+ e2.getMessage());
 				return false;
 			}
 		}
