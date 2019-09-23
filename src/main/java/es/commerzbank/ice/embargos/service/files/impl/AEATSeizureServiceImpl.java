@@ -24,6 +24,7 @@ import es.commerzbank.ice.comun.lib.domain.dto.Element;
 import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
@@ -106,7 +107,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	private SeizedBankAccountRepository seizedBankAccountRepository;
 	
 	@Override
-	public void tratarFicheroDiligenciasEmbargo(File file) throws IOException, ICEParserException{
+	public void tratarFicheroDiligenciasEmbargo(File file) throws IOException, ICEException {
 		logger.info("AEATSeizureServiceImpl - tratarFicheroDiligenciasEmbargo - start");
 		BeanReader beanReader = null;
 		

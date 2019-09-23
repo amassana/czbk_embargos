@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.embargos.service.FileManagementService;
 import es.commerzbank.ice.embargos.service.files.AEATLiftingService;
@@ -85,7 +86,7 @@ public class FileManagementServiceImpl implements FileManagementService {
 	}
 
 
-	private void parsearFicheroAEAT(File file) throws IOException, ICEParserException {
+	private void parsearFicheroAEAT(File file) throws IOException, ICEException {
 		
 		String tipoFichero = FilenameUtils.getExtension(file.getCanonicalPath()).toUpperCase();
 				
