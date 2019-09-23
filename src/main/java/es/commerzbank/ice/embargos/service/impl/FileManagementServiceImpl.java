@@ -54,35 +54,56 @@ public class FileManagementServiceImpl implements FileManagementService {
 	
 	@Autowired
 	private Cuaderno63SeizureService cuaderno63SeizureService;
-	
+
 	@Autowired
 	private AEATSeizureService aeatSeizureService;
 	
 	@Autowired
 	private AEATSeizedResultService aeatSeizedResultService;
-	
-	public void procesarFichero(File file)
+
+	private static final String PENDING_TO_SUCCESS = "PENDING_TO_SUCCESS";
+	private static final String PENDING_TO_ERROR = "PENDING_TO_ERROR";
+
+	public String procesarFichero(File file)
 	{
-			try {
-				//Si fichero es de la AEAT (tiene prefijo "AEAT_")
-				if (FilenameUtils.getBaseName(file.getCanonicalPath()).toLowerCase().contains(EmbargosConstants.AEAT.toLowerCase())) {
+		try {
+			//Si fichero es de la AEAT (tiene prefijo "AEAT_")
+			if (FilenameUtils.getBaseName(file.getCanonicalPath()).toLowerCase().contains(EmbargosConstants.AEAT.toLowerCase())) {
 
-					parsearFicheroAEAT(file);
+				parsearFicheroAEAT(file);
 
-				} else {
+			} else {
 
-					parsearFicheroCuaderno63(file);
-				}
-
-				moverFichero(file, pathProcessed);
-				LOG.debug("The file " + FilenameUtils.getName(file.getCanonicalPath()) + " has been moved to the path " + pathProcessed);
-
-			} catch (Exception e) {
-				try {
-					moverFichero(file, pathError);
-					LOG.debug("The file " + FilenameUtils.getName(file.getCanonicalPath()) + " has been moved to the path " + pathError);
-				} catch (IOException ioe) { LOG.error("Could not move the file "+ file + " to the target path "+ pathError); }
+				parsearFicheroCuaderno63(file);
 			}
+
+			boolean moveResult = moverFichero(file, pathProcessed);
+
+			if (moveResult)
+			{
+				LOG.debug("The file " + file.getName() + " has been moved to the path " + pathProcessed);
+				return null;
+			}
+			else
+			{
+				LOG.info("Failed to move the file The file " + file.getName() + " to the path " + pathProcessed);
+				return PENDING_TO_SUCCESS;
+			}
+		} catch (Exception e) {
+			LOG.error("Error while processing "+ file.getName(), e);
+
+			boolean moveResult = moverFichero(file, pathError);
+
+			if (moveResult) {
+				LOG.debug("The file " + file.getName() + " has been moved to the path " + pathError);
+				return null;
+			}
+			else
+			{
+				LOG.info("Failed to move the file The file " + file.getName() + " to the path " + pathProcessed);
+				return PENDING_TO_ERROR;
+			}
+		}
 	}
 
 
@@ -127,21 +148,33 @@ public class FileManagementServiceImpl implements FileManagementService {
 		}
 	}
 
-	
-	private void moverFichero(File srcFile, String destDir) throws IOException{
-		
-		try {
-			FileUtils.moveFileToDirectory(srcFile,new File(destDir),true);
-		
-		} catch (FileExistsException fee) {
-			
-			FileUtils.copyFileToDirectory(srcFile, new File(destDir));
-			FileUtils.forceDelete(srcFile);
+	public boolean pendingMove(File srcFile, String pendingAction)
+	{
+		if (PENDING_TO_SUCCESS.equals(pendingAction))
+		{
+			return moverFichero(srcFile, pathProcessed);
 		}
-		
+		else
+		{
+			return moverFichero(srcFile, pathError);
+		}
 	}
 
-
-
-	
+	private boolean moverFichero(File srcFile, String destDir)
+	{
+		try {
+			FileUtils.moveFileToDirectory(srcFile,new File(destDir),true);
+			return true;
+		} catch (IOException e) {
+			try {
+				LOG.error("Could not move the file " + srcFile.getName() + " to the destination " + destDir, e);
+				FileUtils.copyFileToDirectory(srcFile, new File(destDir));
+				FileUtils.forceDelete(srcFile);
+				return true;
+			} catch (IOException e2) {
+				LOG.error("Could not move the file " + srcFile.getName() + " to the destination " + destDir, e2);
+				return false;
+			}
+		}
+	}
 }
