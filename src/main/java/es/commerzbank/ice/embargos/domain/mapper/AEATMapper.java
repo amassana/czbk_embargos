@@ -184,9 +184,12 @@ public abstract class AEATMapper {
 		
 		BigDecimal fechaUltmaModif = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
 		String usuarioModif = EmbargosConstants.USER_AUTOMATICO;
-		
+
+		/*
+		MAPEO ELIMINADO
 		CuentasRecaudacion cuentaRecaudacion = entidadOrdenante.getEntidadesComunicadora().getCuentasRecaudacion();	
 		traba.setCuentasRecaudacion(cuentaRecaudacion);
+		*/
 		
 		//TODO revisar --> Cuenta de inmovilizacion: la asignada por defecto (sucursal de Madrid con codigo=1):
 		CuentasInmovilizacion cuentaInmovilizacion = new CuentasInmovilizacion();
