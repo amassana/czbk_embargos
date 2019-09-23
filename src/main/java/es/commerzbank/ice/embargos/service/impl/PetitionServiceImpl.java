@@ -3,7 +3,6 @@ package es.commerzbank.ice.embargos.service.impl;
 import java.io.File;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,12 +21,10 @@ import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.Peticion;
 import es.commerzbank.ice.embargos.domain.mapper.PetitionMapper;
 import es.commerzbank.ice.embargos.repository.PetitionRepository;
-import es.commerzbank.ice.embargos.service.Cuaderno63Service;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.InformationPetitionService;
 import es.commerzbank.ice.embargos.service.PetitionService;
 import es.commerzbank.ice.utils.ResourcesUtil;
-import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRPrintPage;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -53,9 +50,6 @@ public class PetitionServiceImpl implements PetitionService{
 	@Autowired
 	private PetitionMapper petitionMapper;
 		
-	@Autowired
-	private Cuaderno63Service cuaderno63Service;
-	
 	@Autowired
 	private PetitionRepository petitionRepository;
 	
