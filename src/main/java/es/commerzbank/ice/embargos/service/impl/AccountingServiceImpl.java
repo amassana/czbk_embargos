@@ -91,18 +91,13 @@ public class AccountingServiceImpl implements AccountingService{
 		
 		if (isCGPJ) {
 
-			//Para contabilizar, el estado de ControlFichero tiene que ser previo o igual a "Pendiente de contabilizacion":
-			if (codEstadoCtrlFichero != EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_RECEIVED
-					&& codEstadoCtrlFichero != EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_ACCOUNTING) {
+			//Para contabilizar, el estado de ControlFichero tiene que ser previo o igual a "Recibido":
+			if (codEstadoCtrlFichero != EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_RECEIVED) {
 
 				logger.debug(generateMessageCtrlFicheroCannotSendAccounting(controlFichero));
 				
 				return false;
 			}
-			
-			//Se cambia el estado de Control Fichero a "Pendiente de contabilizacion"
-			fileControlService.updateFileControlStatusTransaction(controlFichero, 
-					EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_ACCOUNTING, userName);
 
 			isAccountingSent = sendAccountingCGPJ(controlFichero, userName);
 			
@@ -114,18 +109,13 @@ public class AccountingServiceImpl implements AccountingService{
 		
 		} else if (isAEAT){
 
-			//Para contabilizar, el estado de ControlFichero tiene que ser previo o igual a "Pendiente de contabilizacion":
-			if (codEstadoCtrlFichero != EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_RECEIVED
-					&& codEstadoCtrlFichero != EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_ACCOUNTING) {
-				
+			//Para contabilizar, el estado de ControlFichero tiene que ser previo o igual a "Recibido":
+			if (codEstadoCtrlFichero != EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_RECEIVED) {
+
 				logger.debug(generateMessageCtrlFicheroCannotSendAccounting(controlFichero));
-				
+
 				return false;
 			}
-			
-			//Se cambia el estado de Control Fichero a "Pendiente de contabilizacion"
-			fileControlService.updateFileControlStatusTransaction(controlFichero, 
-					EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_ACCOUNTING, userName);
 			
 			isAccountingSent = sendAccountingAEATCuaderno63(controlFichero, userName);
 
@@ -137,19 +127,14 @@ public class AccountingServiceImpl implements AccountingService{
 			
 		} else if (isCuaderno63) {
 			
-			//Para contabilizar, el estado de ControlFichero tiene que ser previo o igual a "Pendiente de contabilizacion":
-			if (codEstadoCtrlFichero != EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_RECEIVED
-					&& codEstadoCtrlFichero != EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_ACCOUNTING) {
+			//Para contabilizar, el estado de ControlFichero tiene que ser previo o igual a "Recibido":
+			if (codEstadoCtrlFichero != EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_RECEIVED) {
 			
 				logger.debug(generateMessageCtrlFicheroCannotSendAccounting(controlFichero));
 				
 				return false;
 			}
-			
-			//Se cambia el estado de Control Fichero a "Pendiente de contabilizacion"
-			fileControlService.updateFileControlStatusTransaction(controlFichero, 
-					EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_ACCOUNTING, userName);
-			
+						
 			isAccountingSent = sendAccountingAEATCuaderno63(controlFichero, userName);
 
 			if (isAccountingSent) {	
