@@ -78,12 +78,12 @@ public class Traba implements Serializable {
 
 	//bi-directional many-to-one association to CuentasInmovilizacion
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="COD_CUENTA_INMOVILIZACION", nullable=false)
+	@JoinColumn(name="COD_CUENTA_INMOVILIZACION")
 	private CuentasInmovilizacion cuentasInmovilizacion;
 
 	//bi-directional many-to-one association to CuentasRecaudacion
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="COD_CUENTA_RECAUDACION", nullable=false)
+	@JoinColumn(name="COD_CUENTA_RECAUDACION")
 	private CuentasRecaudacion cuentasRecaudacion;
 
 	//bi-directional many-to-one association to Embargo
