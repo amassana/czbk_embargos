@@ -119,26 +119,40 @@ public class FileMonitorProcess {
                 }
                 else
                 {
-                    if (currentLength != pendingFile.getLastsize())
+                    if (pendingFile.getPendingMove() != null)
                     {
-                        LOG.info("Size difference for "+ currentPath + " "+ currentLength +" vs previous "+ pendingFile.getLastsize());
-
-                        pendingFile.setLastsize(currentFile.length());
-                        pendingFile.setSnapshotTime(currentTime);
+                        LOG.debug("Ignoring processed file "+ pendingFile.getFile().getCanonicalFile());
+                        boolean reMove = fileManagementService.pendingMove(pendingFile.getFile(), pendingFile.getPendingMove());
+                        if (reMove)
+                        {
+                            pendingFiles.remove(currentPath);
+                        }
                     }
                     else {
-                        long needsToWait = pendingFile.getSnapshotTime() + stableTime - currentTime;
-                        if (needsToWait > 0) {
-                            LOG.info(currentPath + " still needs to wait at least "+ needsToWait +" more milliseconds.");
+                        if (currentLength != pendingFile.getLastsize()) {
+                            LOG.info("Size difference for " + currentPath + " " + currentLength + " vs previous " + pendingFile.getLastsize());
 
-                            continue;
-                        }
-                        else
-                        {
-                            LOG.info("Processing "+ currentPath);
+                            pendingFile.setLastsize(currentFile.length());
+                            pendingFile.setSnapshotTime(currentTime);
+                        } else {
+                            long needsToWait = pendingFile.getSnapshotTime() + stableTime - currentTime;
+                            if (needsToWait > 0) {
+                                LOG.info(currentPath + " still needs to wait at least " + needsToWait + " more milliseconds.");
 
-                            pendingFiles.remove(currentPath);
-                            fileManagementService.procesarFichero(currentFile);
+                                continue;
+                            } else {
+                                LOG.info("Processing " + currentPath);
+
+                                String pendingMove = fileManagementService.procesarFichero(currentFile);
+
+                                if (pendingMove == null) {
+                                    pendingFiles.remove(currentPath);
+                                }
+                                else
+                                {
+                                    pendingFile.setPendingMove(pendingMove);
+                                }
+                            }
                         }
                     }
                 }
