@@ -89,6 +89,12 @@ public class EmbargosConstants {
 	public static final long COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_AEAT_GENERATING = 1;
 	public static final long COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_AEAT_GENERATED = 2;
 	public static final long COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_AEAT_SENT = 3;
+
+	public static final long COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_AEAT_ERROR = 0;
+	public static final long COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_LOADING = 1;
+	public static final long COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED = 2;
+	public static final long COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_ACCOUNTING_RESPONSE = 3;
+	public static final long COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_ACCOUNTED = 4;
 	
 	public static final long COD_ESTADO_CTRLFICHERO_INITIAL_STATUS_DEFAULT = 1;
 
@@ -105,7 +111,7 @@ public class EmbargosConstants {
 	
 	/** Estados del Levantamiento **/
 	public static final long COD_ESTADO_LEVANTAMIENTO_PENDIENTE = 1;
-	public static final long COD_ESTADO_LEVANTAMIENTO_PENDIENTE_CONTABILIZACION = 2;
+	public static final long COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION = 2;
 	public static final long COD_ESTADO_LEVANTAMIENTO_CONTABILIZADO = 3;
 	
 	/** Stream names del cuaderno 63 **/

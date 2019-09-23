@@ -105,11 +105,19 @@ public abstract class FileControlMapper {
 			
 			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_NORMA63_GENERATING;
 		
-		} else if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_TRABAS_AEAT) {		
-			
+		} else if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_TRABAS_AEAT) {
+
 			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_AEAT_GENERATING;
-			
-		} else {
+
+		}  else if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT) {
+
+			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_LOADING;
+		}
+		else if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63) {
+
+			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_LOADING;
+		}
+		else {
 			//Estado inicial por defecto:
 			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_INITIAL_STATUS_DEFAULT;
 		}

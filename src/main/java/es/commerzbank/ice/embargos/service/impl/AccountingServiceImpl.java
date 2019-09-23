@@ -716,7 +716,7 @@ public class AccountingServiceImpl implements AccountingService{
 					}
 					
 					//Se actualiza el estado de la Cuenta Levantamiento a "Enviada a contabilidad":
-					liftingService.updateLiftingBankAccountingStatus(cuenta, EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_CONTABILIZACION, userName);
+					liftingService.updateLiftingBankAccountingStatus(cuenta, EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION, userName);
 				}
 			}
 		}

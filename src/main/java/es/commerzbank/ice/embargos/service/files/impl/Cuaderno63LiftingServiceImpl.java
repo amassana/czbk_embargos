@@ -132,6 +132,14 @@ public class Cuaderno63LiftingServiceImpl
                 else
                     throw new Exception("BeanIO - Unexpected record name: "+ beanReader.getRecordName());
             }
+
+            //Cambio de estado de CtrlFichero a: RECIBIDO
+            EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
+                    EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED,
+                    EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63);
+            controlFicheroLevantamiento.setEstadoCtrlfichero(estadoCtrlfichero);
+
+            fileControlRepository.save(controlFicheroLevantamiento);
         }
         catch (Exception e)
         {

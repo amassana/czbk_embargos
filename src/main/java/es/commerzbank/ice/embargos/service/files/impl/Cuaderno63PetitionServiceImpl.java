@@ -1,7 +1,6 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
@@ -100,6 +99,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	public void cargarFicheroPeticion(File file) throws IOException, ICEParserException {
 
 		BeanReader beanReader = null;
+		Reader reader = null;
 
 		ControlFichero controlFicheroPeticion = null;
 
@@ -118,8 +118,10 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	        fileControlService.saveFileControlTransaction(controlFicheroPeticion);
 	                        
 	        // use a StreamFactory to create a BeanReader
-	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE1, file);
-	        	        
+
+			reader = new InputStreamReader(new FileInputStream(file), "UTF-8");
+	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE1, reader);
+
 	        CabeceraEmisorFase1 cabeceraEmisor = null;
 	        EntidadesComunicadora entidadComunicadora = null;
 	        Date fechaObtencionFicheroOrganismo = null;
@@ -150,7 +152,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 			        		//Se guarda la PeticionInformacion en bbdd:
 			        		PeticionInformacion peticionInformacion = cuaderno63Mapper.generatePeticionInformacion(solicitudInformacion, 
 			        				controlFicheroPeticion.getCodControlFichero(), accountList, razonSocialInterna);
-			        		
+
 			        		informationPetitionRepository.save(peticionInformacion);
 			        			        		
 		        			//Se guardan todas las cuentas del nif en la tabla PETICION_INFORMACION_CUENTAS:
@@ -253,10 +255,10 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 			throw e;
 
 		} finally {
-
-			if (beanReader != null) {
+			if (reader != null)
+				reader.close();
+			if (beanReader != null)
 				beanReader.close();
-			}
 		}
 
 	}
