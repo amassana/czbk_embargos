@@ -223,4 +223,16 @@ public class LiftingServiceImpl implements LiftingService {
 		
 		liftingBankAccountRepository.save(cuenta);
 	}
+
+	@Override
+	public void updateLiftingtatus(LevantamientoTraba levantamientoTraba, long codEstado, String userName) {
+		EstadoLevantamiento estado = new EstadoLevantamiento();
+		estado.setCodEstado(codEstado);
+		levantamientoTraba.setEstadoLevantamiento(estado);
+
+		levantamientoTraba.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+		levantamientoTraba.setUsuarioUltModificacion(userName);
+
+		liftingRepository.save(levantamientoTraba);
+	}
 }

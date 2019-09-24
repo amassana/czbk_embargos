@@ -12,15 +12,12 @@ public class LevantamientoHelperMapper {
     {
         CuentaLevantamiento cuentaLevantamiento = new CuentaLevantamiento();
 
-        BigDecimal orden = BigDecimal.ONE;
-
         String cuenta = findBankAccount(DWHCustomer, iban);
         CuentaTraba cuentaTraba = findCuentaTraba(traba, iban);
 
         cuentaLevantamiento.setLevantamientoTraba(levantamientoTraba);
         cuentaLevantamiento.setIban(iban);
         cuentaLevantamiento.setCuenta(cuenta);
-        cuentaLevantamiento.setNumeroOrdenCuenta(orden);
         cuentaLevantamiento.setImporte(importe);
         cuentaLevantamiento.setIndContabilizado(EmbargosConstants.IND_FLAG_NO);
         cuentaLevantamiento.setUsuarioUltModificacion(usuarioModif);

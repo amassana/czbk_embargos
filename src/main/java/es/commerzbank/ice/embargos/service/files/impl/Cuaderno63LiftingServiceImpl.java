@@ -92,9 +92,9 @@ public class Cuaderno63LiftingServiceImpl
 
             Object currentRecord = null;
 
-            boolean automaticLiftingsOnly = true;
+            boolean allLevantamientosContabilizados = true;
             // almacena las cuentas que se han contabilizado, para su actualización posterior de estado.
-            List<CuentaLevantamiento> cuentasContabilizadas = new ArrayList<>();
+            List<CuentaLevantamiento> cuentasAContabilizar = new ArrayList<>();
 
             while ((currentRecord = beanReader.read()) != null) {
                 if (EmbargosConstants.RECORD_NAME_CABECERAEMISOR.equals(beanReader.getRecordName())) {
@@ -141,39 +141,58 @@ public class Cuaderno63LiftingServiceImpl
 
                     liftingRepository.save(levantamiento);
 
+                    boolean allCuentasLevantamientoContabilizados = true;
+
                     for (CuentaLevantamiento cuentaLevantamiento : levantamiento.getCuentaLevantamientos())
                     {
-                        liftingBankAccountRepository.save(cuentaLevantamiento);
-                        // IMPORTANTE: POSTERIOR A ESTO SE CAMBIA EL ESTADO. NO MODIFICAR EL ORDEN SIN VIGILAR ESTO
-                        // UNA VEZ CAMBIADO, SI HAY ÉXITO EN LA CONTABILIZACIÓN, SE VUELVEN A GRABAR TODAS LAS CUENTAS
-
                         if (!EmbargosConstants.ISO_MONEDA_EUR.equals(cuentaLevantamiento.getCodDivisa()) &&
                                 importeMaximoAutomaticoDivisa.compareTo(cuentaLevantamiento.getImporte()) < 0) {
-                            automaticLiftingsOnly = false;
+                            allLevantamientosContabilizados = false;
+                            allCuentasLevantamientoContabilizados = false;
                             LOG.info("Cannot perform an automatic seizure lifting: "+ cuentaLevantamiento.getCodDivisa() +" and "+ cuentaLevantamiento.getImporte().toPlainString());
                         }
                         else
                         {
                             LOG.info("Doing an automatic seizure lifting.");
 
-                            accountingService.sendAccountingLiftingBankAccount(cuentaLevantamiento, embargo, EmbargosConstants.USER_AUTOMATICO);
-
                             EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
                             estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION);
                             cuentaLevantamiento.setEstadoLevantamiento(estadoLevantamiento);
-
-                            cuentasContabilizadas.add(cuentaLevantamiento);
                         }
+
+                        liftingBankAccountRepository.save(cuentaLevantamiento);
+
+                        accountingService.sendAccountingLiftingBankAccount(cuentaLevantamiento, embargo, EmbargosConstants.USER_AUTOMATICO);
+                    }
+
+                    if (allCuentasLevantamientoContabilizados) {
+                        EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
+                        estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION);
+                        levantamiento.setEstadoLevantamiento(estadoLevantamiento);
+                        levantamiento.setIndCasoRevisado(EmbargosConstants.IND_FLAG_YES);
+                        liftingRepository.save(levantamiento);
                     }
                 }
                 else
                     throw new Exception("BeanIO - Unexpected record name: "+ beanReader.getRecordName());
             }
 
-            //Cambio de estado de CtrlFichero a: RECIBIDO
-            EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
-                    EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED,
-                    EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63);
+            // Actualizar control fichero
+
+            EstadoCtrlfichero estadoCtrlfichero = null;
+
+            if (allLevantamientosContabilizados) {
+                estadoCtrlfichero = new EstadoCtrlfichero(
+                        EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_ACCOUNTING_RESPONSE,
+                        EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63);
+            }
+            else
+            {
+                estadoCtrlfichero = new EstadoCtrlfichero(
+                        EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED,
+                        EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63);
+            }
+
             controlFicheroLevantamiento.setEstadoCtrlfichero(estadoCtrlfichero);
 
             fileControlRepository.save(controlFicheroLevantamiento);
