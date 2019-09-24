@@ -1,5 +1,7 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
+import es.commerzbank.ice.comun.lib.domain.dto.GeneralParameter;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.Cuaderno63Mapper;
@@ -8,6 +10,7 @@ import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.CabeceraEmisorFase5;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.FinFicheroFase5;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.OrdenLevantamientoRetencionFase5;
 import es.commerzbank.ice.embargos.repository.*;
+import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63LiftingService;
 import es.commerzbank.ice.utils.EmbargosConstants;
@@ -24,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,13 +64,21 @@ public class Cuaderno63LiftingServiceImpl
     CustomerService customerService;
     @Autowired
     Cuaderno63Mapper cuaderno63Mapper;
+    @Autowired
+    AccountingService accountingService;
+    @Autowired
+    GeneralParametersService generalParametersService;
     @Override
     public void tratarFicheroLevantamientos(File file)
         throws IOException
     {
         BeanReader beanReader = null;
 
+
         try {
+            BigDecimal importeMaximoAutomaticoDivisa =
+                    generalParametersService.loadBigDecimalParameter(EmbargosConstants.PARAMETRO_EMBARGOS_LEVANTAMIENTO_IMPORTE_MAXIMO_AUTOMATICO_DIVISA);
+
             // Inicializar control fichero
             ControlFichero controlFicheroLevantamiento =
                     fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63);
@@ -78,6 +91,10 @@ public class Cuaderno63LiftingServiceImpl
             beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE5, file);
 
             Object currentRecord = null;
+
+            boolean automaticLiftingsOnly = true;
+            // almacena las cuentas que se han contabilizado, para su actualización posterior de estado.
+            List<CuentaLevantamiento> cuentasContabilizadas = new ArrayList<>();
 
             while ((currentRecord = beanReader.read()) != null) {
                 if (EmbargosConstants.RECORD_NAME_CABECERAEMISOR.equals(beanReader.getRecordName())) {
@@ -127,6 +144,26 @@ public class Cuaderno63LiftingServiceImpl
                     for (CuentaLevantamiento cuentaLevantamiento : levantamiento.getCuentaLevantamientos())
                     {
                         liftingBankAccountRepository.save(cuentaLevantamiento);
+                        // IMPORTANTE: POSTERIOR A ESTO SE CAMBIA EL ESTADO. NO MODIFICAR EL ORDEN SIN VIGILAR ESTO
+                        // UNA VEZ CAMBIADO, SI HAY ÉXITO EN LA CONTABILIZACIÓN, SE VUELVEN A GRABAR TODAS LAS CUENTAS
+
+                        if (!EmbargosConstants.ISO_MONEDA_EUR.equals(cuentaLevantamiento.getCodDivisa()) &&
+                                importeMaximoAutomaticoDivisa.compareTo(cuentaLevantamiento.getImporte()) < 0) {
+                            automaticLiftingsOnly = false;
+                            LOG.info("Cannot perform an automatic seizure lifting: "+ cuentaLevantamiento.getCodDivisa() +" and "+ cuentaLevantamiento.getImporte().toPlainString());
+                        }
+                        else
+                        {
+                            LOG.info("Doing an automatic seizure lifting.");
+
+                            accountingService.sendAccountingLiftingBankAccount(cuentaLevantamiento, embargo, EmbargosConstants.USER_AUTOMATICO);
+
+                            EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
+                            estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION);
+                            cuentaLevantamiento.setEstadoLevantamiento(estadoLevantamiento);
+
+                            cuentasContabilizadas.add(cuentaLevantamiento);
+                        }
                     }
                 }
                 else

@@ -682,41 +682,8 @@ public class AccountingServiceImpl implements AccountingService{
 			String contabilizacionCallbackNameParameter = EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_FASE5_CALLBACK;
 			
 			for (LevantamientoTraba levantamiento : fileControlOpt.get().getLevantamientoTrabas()) {
-				
-				String reference1 = levantamiento.getTraba().getEmbargo().getNumeroEmbargo();
-				String reference2 = "";
-				String detailPayment = levantamiento.getTraba().getEmbargo().getDatregcomdet();
-				
 				for (CuentaLevantamiento cuenta : levantamiento.getCuentaLevantamientos()) {
-					AccountingNote accountingNote = new AccountingNote();
-					
-					double amount = cuenta.getImporte()!=null ? cuenta.getImporte().doubleValue() : 0;
-		 			
-					accountingNote.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
-					accountingNote.setCodOffice(oficinaCuentaRecaudacion);
-					//El contador lo gestiona Comunes
-					//accountingNote.setContador(contador);
-					accountingNote.setAmount(amount);
-					accountingNote.setCodCurrency(cuenta.getCodDivisa());
-					accountingNote.setDebitAccount(cuentaRecaudacion);
-					accountingNote.setCreditAccount(cuenta.getCuenta());
-					accountingNote.setActualDate(new Date());
-					//accountingNote.setExecutionDate(new Date());
-					accountingNote.setReference1(reference1);
-					accountingNote.setReference2(reference2);
-					accountingNote.setDetailPayment(detailPayment);
-					accountingNote.setChange(cuenta.getCambio());
-					accountingNote.setGeneralParameter(contabilizacionCallbackNameParameter);
-					accountingNote.setStatus(EmbargosConstants.COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO);
-					
-					int resultado = accountingNoteService.contabilizar(accountingNote);
-					
-					if (resultado == 0) {
-						response = false;
-					}
-					
-					//Se actualiza el estado de la Cuenta Levantamiento a "Enviada a contabilidad":
-					liftingService.updateLiftingBankAccountingStatus(cuenta, EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION, userName);
+					sendAccountingLiftingBankAccountInternal(cuenta, levantamiento.getTraba().getEmbargo(), userName, oficinaCuentaRecaudacion, cuentaRecaudacion, contabilizacionCallbackNameParameter);
 				}
 			}
 		}
@@ -724,5 +691,61 @@ public class AccountingServiceImpl implements AccountingService{
 		logger.info("AccountingServiceImpl - sendAccountingLifting - end");
 		return response;
 	}
-	
+
+	@Override
+	public boolean sendAccountingLiftingBankAccount(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, String userName)
+			throws ICEException
+	{
+		boolean response = true;
+
+		String cuentaRecaudacion = determineCuentaRecaudacion();
+		Long oficinaCuentaRecaudacion = determineOficinaCuentaRecaudacion();
+		String contabilizacionCallbackNameParameter = EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_FASE5_CALLBACK;
+
+		sendAccountingLiftingBankAccountInternal(cuentaLevantamiento, embargo, userName, oficinaCuentaRecaudacion, cuentaRecaudacion, contabilizacionCallbackNameParameter);
+
+		return response;
+	}
+
+	private boolean sendAccountingLiftingBankAccountInternal(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, String userName, Long oficinaCuentaRecaudacion, String cuentaRecaudacion, String contabilizacionCallbackNameParameter)
+			throws ICEException {
+		boolean response = true;
+
+		String reference1 = embargo.getNumeroEmbargo();
+		String reference2 = "";
+		String detailPayment = embargo.getDatregcomdet();
+
+		AccountingNote accountingNote = new AccountingNote();
+
+		double amount = cuentaLevantamiento.getImporte()!=null ? cuentaLevantamiento.getImporte().doubleValue() : 0;
+
+		accountingNote.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
+		accountingNote.setCodOffice(oficinaCuentaRecaudacion);
+		//El contador lo gestiona Comunes
+		//accountingNote.setContador(contador);
+		accountingNote.setAmount(amount);
+		accountingNote.setCodCurrency(cuentaLevantamiento.getCodDivisa());
+		accountingNote.setDebitAccount(cuentaRecaudacion);
+		accountingNote.setCreditAccount(cuentaLevantamiento.getCuenta());
+		accountingNote.setActualDate(new Date());
+		//accountingNote.setExecutionDate(new Date());
+		accountingNote.setReference1(reference1);
+		accountingNote.setReference2(reference2);
+		accountingNote.setDetailPayment(detailPayment);
+		accountingNote.setChange(cuentaLevantamiento.getCambio());
+		accountingNote.setGeneralParameter(contabilizacionCallbackNameParameter);
+		accountingNote.setStatus(EmbargosConstants.COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO);
+
+		int resultado = accountingNoteService.contabilizar(accountingNote);
+
+		if (resultado == 0) {
+			response = false;
+		}
+
+		//Se actualiza el estado de la Cuenta Levantamiento a "Enviada a contabilidad":
+		liftingService.updateLiftingBankAccountingStatus(cuentaLevantamiento, EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION, userName);
+
+		return response;
+	}
+
 }

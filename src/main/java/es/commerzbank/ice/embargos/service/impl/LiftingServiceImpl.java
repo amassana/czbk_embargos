@@ -80,8 +80,8 @@ public class LiftingServiceImpl implements LiftingService {
 	
 	@Autowired
 	private LiftingStatusMapper liftingStatusMapper;
-	
-	
+
+
 	@Override
 	public List<LiftingDTO> getAllByControlFichero(ControlFichero controlFichero) {
 		List<LevantamientoTraba> liftingList = liftingRepository.findAllByControlFichero(controlFichero);
