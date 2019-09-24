@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.commerzbank.ice.comun.lib.formats.contabilidad.RespuestaContabilidad;
+import es.commerzbank.ice.comun.lib.domain.dto.AccountingNote;
 import es.commerzbank.ice.embargos.domain.dto.BankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizedBankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureActionDTO;
@@ -51,7 +51,7 @@ public class SeizureController {
     @ApiOperation(value="Devuelve la lista de embargos para una petición de embargo.")
     public ResponseEntity<List<SeizureDTO>> getSeizureListByCodeFileControl(Authentication authentication,
                                                                                  @PathVariable("codeFileControl") Long codeFileControl){
-    	logger.info("SeizureController - getSeizureListByCodeFileControl - start");
+		logger.info("SeizureController - getSeizureListByCodeFileControl - start");
     	ResponseEntity<List<SeizureDTO>> response = null;
     	List<SeizureDTO> result = new ArrayList<SeizureDTO>();
     	
@@ -123,9 +123,10 @@ public class SeizureController {
         return response;
     }
 
-    @GetMapping(value = "/actions")
-    @ApiOperation(value="Devuelve el listado de acciones posibles de las trabas.")
-    public ResponseEntity<List<SeizureActionDTO>> getSeizureActions(Authentication authentication)
+    @GetMapping(value = "/{codeFileControl}/actions")
+    @ApiOperation(value="Devuelve el listado de acciones posibles dependiendo del tipo de entidad del fichero.")
+    public ResponseEntity<List<SeizureActionDTO>> getSeizureActions(Authentication authentication,
+    																@PathVariable("codeFileControl") Long codeFileControl)
     {
     	logger.info("SeizureController - getSeizureActions - start");
         ResponseEntity<List<SeizureActionDTO>> response = null;
@@ -133,7 +134,7 @@ public class SeizureController {
     	
     	try {
     		
-			result = seizureService.getSeizureActions();
+			result = seizureService.getSeizureActions(codeFileControl);
 			response = new ResponseEntity<>(result, HttpStatus.OK);
     	
 	    } catch (Exception e) {
@@ -152,30 +153,7 @@ public class SeizureController {
     @ApiOperation(value="Devuelve el listado de estados posibles de las trabas.")
     public ResponseEntity<List<SeizureStatusDTO>> getSeizureStatusList(Authentication authentication)
     {
-    	/*
-    	ResponseEntity<List<SeizureStatusDTO>> response = null;
-        List<SeizureStatusDTO> result = new ArrayList<SeizureStatusDTO>();
 
-        SeizureStatusDTO sstatus = new SeizureStatusDTO();
-        sstatus.setCode("1");
-        sstatus.setCode("Pendiente");
-
-        SeizureStatusDTO sstatus2 = new SeizureStatusDTO();
-        sstatus2.setCode("2");
-        sstatus2.setCode("Pendiente de contabilizacion");
-
-        SeizureStatusDTO sstatus3 = new SeizureStatusDTO();
-        sstatus3.setCode("3");
-        sstatus3.setCode("Contabilizado");
-
-        result.add(sstatus);
-        result.add(sstatus2);
-        result.add(sstatus3);
-
-        response = new ResponseEntity<>(result, HttpStatus.OK);
-
-        return response;
-        */
     	logger.info("SeizureController - getSeizureStatusList - start");
         ResponseEntity<List<SeizureStatusDTO>> response = null;
 
@@ -248,7 +226,7 @@ public class SeizureController {
 
 			String userModif = authentication.getName();
 
-			result = seizureService.updateSeizureStatus(codeFileControl, idSeizure, seizureStatus, userModif);
+			result = seizureService.updateSeizureStatus(idSeizure, seizureStatus, userModif);
 
 			if (result) {
 				response = new ResponseEntity<>(HttpStatus.OK);
@@ -433,7 +411,7 @@ public class SeizureController {
     @PostMapping(value = "/accountingNote")
     @ApiOperation(value="Tratamiento de la respuesta de Contabilidad (nota contable).")
     public ResponseEntity<String> manageAccountingNoteCallback(Authentication authentication,
-    										  @RequestBody RespuestaContabilidad respuestaContabilidad){
+    										  @RequestBody AccountingNote accountingNote){
     	logger.info("SeizureController - manageAccountingNoteCallback - start");
     	ResponseEntity<String> response = null;
 		boolean result = false;
@@ -442,7 +420,7 @@ public class SeizureController {
 
 			String userName = authentication.getName();
 		
-			result = accountingService.manageAccountingNoteCallback(respuestaContabilidad, userName);
+			result = accountingService.manageAccountingNoteCallback(accountingNote, userName);
 			
 			
 			if (result) {
@@ -484,10 +462,6 @@ public class SeizureController {
 		} catch (Exception e) {
 			logger.error("Error in justificanteReport", e);
 
-			if (e.getMessage() == null) {
-				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
-			}
-
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -513,10 +487,6 @@ public class SeizureController {
 			logger.error("Error in levantamientoReport", e);
 			System.out.println(e);
 
-			if (e.getMessage() == null) {
-				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
-			}
-
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -539,10 +509,6 @@ public class SeizureController {
 
 		} catch (Exception e) {
 			logger.error("Error in resumenTrabas", e);
-
-			if (e.getMessage() == null) {
-				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
-			}
 
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -568,10 +534,6 @@ public class SeizureController {
 		} catch (Exception e) {
 			logger.error("Error in resumenTrabas", e);
 
-			if (e.getMessage() == null) {
-				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
-			}
-
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
@@ -583,20 +545,12 @@ public class SeizureController {
 			@PathVariable("cod_traba") BigDecimal cod_traba, @PathVariable("num_anexo") Integer num_anexo)
 			throws Exception {
 		logger.info("SeizureController - generarAnexo - start");
-		switch (num_anexo) {
-		case 1:
-			return downloadAnexo(cod_usuario, cod_traba, num_anexo);
-		case 2:
-			return downloadAnexo(cod_usuario, cod_traba, num_anexo);
-		case 3:
-			return downloadAnexo(cod_usuario, cod_traba, num_anexo);
-		default:
-			logger.info("Error in anexoReport", "error descargando anexos");
 
-		}
+		ResponseEntity<InputStreamResource> response = downloadAnexo(cod_usuario, cod_traba, num_anexo);
 
 		logger.info("SeizureController - generarAnexo - end");
-		return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+		return response;
 	}
 
 	private ResponseEntity<InputStreamResource> downloadAnexo(BigDecimal cod_usuario, BigDecimal cod_traba,
@@ -616,9 +570,71 @@ public class SeizureController {
 		} catch (Exception e) {
 			logger.error("Error in anexoReport", e);
 
-			if (e.getMessage() == null) {
-				return new ResponseEntity<InputStreamResource>(HttpStatus.NOT_FOUND);
-			}
+			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping("/finalanswer/seizure/{fileControl}")
+	@ApiOperation(value = "Devuelve el fichero de respuesta final de embargos")
+	public ResponseEntity<InputStreamResource> generarRespuestaFinalEmbargo(
+			@PathVariable("fileControl") Integer codFileControl) {
+
+		DownloadReportFile.setTempFileName("respuestaFinalEmbargo");
+
+		DownloadReportFile.setFileTempPath(pdfSavedPath);
+
+		try {
+
+			DownloadReportFile.writeFile(seizureService.generarRespuestaFinalEmbargo(codFileControl));
+
+			return DownloadReportFile.returnToDownloadFile();
+
+		} catch (Exception e) {
+			logger.error("Error in anexoReport", e);
+
+			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping("/summary/fileControl/{fileControl}/liftingReport")
+	@ApiOperation(value = "Devuelve el fichero de resumen de levantamientos")
+	public ResponseEntity<InputStreamResource> generarResumenLevantamiento(
+			@PathVariable("fileControl") Integer codFileControl) {
+
+		DownloadReportFile.setTempFileName("resumenLevantamiento");
+
+		DownloadReportFile.setFileTempPath(pdfSavedPath);
+
+		try {
+
+			DownloadReportFile.writeFile(seizureService.generarResumenLevantamiento(codFileControl));
+
+			return DownloadReportFile.returnToDownloadFile();
+
+		} catch (Exception e) {
+			logger.error("Error in anexoReport", e);
+
+			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping("/execution/{cod_solicitud_ejecucion}/order")
+	@ApiOperation(value = "Devuelve el fichero de solicitud de ejecucion")
+	public ResponseEntity<InputStreamResource> generarOrdenTransferencia(
+			@PathVariable("cod_solicitud_ejecucion") String cod_solicitud_ejecucion) {
+
+		DownloadReportFile.setTempFileName("solicitudEjecucion");
+
+		DownloadReportFile.setFileTempPath(pdfSavedPath);
+
+		try {
+
+			DownloadReportFile.writeFile(seizureService.generarOrdenTransferencia(cod_solicitud_ejecucion));
+
+			return DownloadReportFile.returnToDownloadFile();
+
+		} catch (Exception e) {
+			logger.error("Error in anexoReport", e);
 
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}

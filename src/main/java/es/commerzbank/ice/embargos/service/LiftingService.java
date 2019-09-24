@@ -9,6 +9,7 @@ import es.commerzbank.ice.embargos.domain.dto.LiftingAuditDTO;
 import es.commerzbank.ice.embargos.domain.dto.LiftingDTO;
 import es.commerzbank.ice.embargos.domain.dto.LiftingStatusDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
+import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
 
 public interface LiftingService {
 
@@ -21,5 +22,9 @@ public interface LiftingService {
 	List<LiftingAuditDTO> getAuditByCodeLiftingCase(Long codeLiftingCase);
 
 	List<LiftingStatusDTO> getListStatus();
+
+	boolean changeStatus(Long codeLifting, Long status, String userName) throws Exception;
+
+	void updateLiftingBankAccountingStatus(CuentaLevantamiento cuenta, long codEstado, String userName);
 
 }

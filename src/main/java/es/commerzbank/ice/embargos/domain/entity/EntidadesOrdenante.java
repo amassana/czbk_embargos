@@ -17,11 +17,8 @@ public class EntidadesOrdenante implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(generator="secuencia_entidadOrdenante")
-	@org.hibernate.annotations.GenericGenerator(
-			name = "secuencia_entidadOrdenante",
-			strategy = "increment"
-	)
+	@SequenceGenerator(name = "entidades_ordenantes_seq_gen", sequenceName = "SEC_ENTIDADES_ORDENANTES", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "entidades_ordenantes_seq_gen")
 	@Column(name="COD_ENTIDAD_ORDENANTE", unique=true, nullable=false)
 	private long codEntidadOrdenante;
 

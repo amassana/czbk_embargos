@@ -16,6 +16,8 @@ public class FicheroFinal implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@SequenceGenerator(name = "fichero_final_seq_gen", sequenceName = "SEC_FICHERO_FINAL", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fichero_final_seq_gen")
 	@Column(name="COD_FICHERO_FINAL", unique=true, nullable=false)
 	private long codFicheroFinal;
 

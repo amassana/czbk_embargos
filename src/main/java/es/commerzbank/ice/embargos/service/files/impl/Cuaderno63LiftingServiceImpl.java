@@ -11,6 +11,7 @@ import es.commerzbank.ice.embargos.repository.*;
 import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63LiftingService;
 import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.utils.EmbargosUtils;
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
 import org.slf4j.Logger;
@@ -101,7 +102,7 @@ public class Cuaderno63LiftingServiceImpl
                         continue;
                     }
 
-                    Embargo embargo = selectEmbargo(embargos);
+                    Embargo embargo = EmbargosUtils.selectEmbargo(embargos);
 
                     Traba traba = seizedRepository.getByEmbargo(embargo);
 
@@ -131,6 +132,14 @@ public class Cuaderno63LiftingServiceImpl
                 else
                     throw new Exception("BeanIO - Unexpected record name: "+ beanReader.getRecordName());
             }
+
+            //Cambio de estado de CtrlFichero a: RECIBIDO
+            EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
+                    EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED,
+                    EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63);
+            controlFicheroLevantamiento.setEstadoCtrlfichero(estadoCtrlfichero);
+
+            fileControlRepository.save(controlFicheroLevantamiento);
         }
         catch (Exception e)
         {
@@ -142,23 +151,5 @@ public class Cuaderno63LiftingServiceImpl
             if (beanReader != null)
                 beanReader.close();
         }
-    }
-
-    /* criterio: el embargo más reciente */
-    private Embargo selectEmbargo(List<Embargo> embargos)
-    {
-        Embargo embargo = null;
-
-        for (Embargo currentEmbargo : embargos)
-        {
-            if (embargo == null) {
-                embargo = currentEmbargo;
-                continue;
-            }
-            if (embargo.getFUltimaModificacion().compareTo(currentEmbargo.getFUltimaModificacion()) == -1)
-                embargo = currentEmbargo;
-        }
-
-        return embargo;
     }
 }

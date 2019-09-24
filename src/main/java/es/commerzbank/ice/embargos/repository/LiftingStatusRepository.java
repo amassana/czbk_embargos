@@ -5,8 +5,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 
 import es.commerzbank.ice.embargos.domain.entity.EstadoIntLevantamiento;
+import es.commerzbank.ice.embargos.domain.entity.EstadoLevantamiento;
 
 @Service
-public interface LiftingStatusRepository extends JpaRepository<EstadoIntLevantamiento, Long>, JpaSpecificationExecutor<EstadoIntLevantamiento> {
+public interface LiftingStatusRepository extends JpaRepository<EstadoLevantamiento, Long>, JpaSpecificationExecutor<EstadoLevantamiento> {
 	
 }

@@ -42,13 +42,16 @@ import es.commerzbank.ice.embargos.domain.specification.FileControlSpecification
 import es.commerzbank.ice.embargos.repository.FileControlAuditRepository;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.repository.FileControlStatusRepository;
-import es.commerzbank.ice.embargos.service.AEATService;
-import es.commerzbank.ice.embargos.service.Cuaderno63Service;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.InformationPetitionService;
+import es.commerzbank.ice.embargos.service.files.AEATSeizedService;
+import es.commerzbank.ice.embargos.service.files.Cuaderno63InformationService;
+import es.commerzbank.ice.embargos.service.files.Cuaderno63SeizedService;
+import es.commerzbank.ice.utils.EmbargosConstants;
 import es.commerzbank.ice.utils.ICEDateUtils;
 import es.commerzbank.ice.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRPrintPage;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -60,15 +63,18 @@ import net.sf.jasperreports.engine.util.JRLoader;
 public class FileControlServiceImpl implements FileControlService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(FileControlServiceImpl.class);
-
-	@Autowired
-	InformationPetitionService informationPetitionService;
 	
 	@Autowired
-	Cuaderno63Service cuaderno63Service;
+	private InformationPetitionService informationPetitionService;
 	
 	@Autowired
-	AEATService aeatService;
+	private Cuaderno63InformationService cuaderno63InformationService;
+	
+	@Autowired
+	private Cuaderno63SeizedService cuaderno63SeizedService;
+	
+	@Autowired
+	private AEATSeizedService aeatSeizedService;
 	
 	@Autowired
 	private FileControlMapper fileControlMapper;
@@ -167,7 +173,7 @@ public class FileControlServiceImpl implements FileControlService{
 		
 		if (countPendingPetitionCases == 0 && (countReviewedPetitionCases.compareTo(countPetitionCases)==0)) {
 			
-			cuaderno63Service.tramitarFicheroInformacion(codeFileControl, usuarioTramitador);
+			cuaderno63InformationService.tramitarFicheroInformacion(codeFileControl, usuarioTramitador);
 		
 		} else {
 			
@@ -194,7 +200,7 @@ public class FileControlServiceImpl implements FileControlService{
 	public boolean tramitarTrabasCuaderno63(Long codeFileControl, String usuarioTramitador) throws IOException, ICEParserException {
 		logger.info("FileControlServiceImpl - tramitarTrabasCuaderno63 - start");
 		
-		cuaderno63Service.tramitarTrabas(codeFileControl, usuarioTramitador);
+		cuaderno63SeizedService.tramitarTrabas(codeFileControl, usuarioTramitador);
 		
 		logger.info("FileControlServiceImpl - tramitarTrabasCuaderno63 - end");
 		return true;
@@ -204,7 +210,7 @@ public class FileControlServiceImpl implements FileControlService{
 	public boolean tramitarTrabasAEAT(Long codeFileControl, String usuarioTramitador) throws IOException, ICEParserException {
 		logger.info("FileControlServiceImpl - tramitarTrabasAEAT - start");
 		
-		aeatService.tramitarTrabas(codeFileControl, usuarioTramitador);
+		aeatSeizedService.tramitarTrabas(codeFileControl, usuarioTramitador);
 		
 		logger.info("FileControlServiceImpl - tramitarTrabasAEAT - end");
 		return true;
@@ -271,7 +277,13 @@ public class FileControlServiceImpl implements FileControlService{
 				return false;
 			}
 			
-			controlFichero.setEstadoCtrlfichero(estadoCtrlficheroOpt.get());
+			EstadoCtrlfichero estadoCtrlFichero = estadoCtrlficheroOpt.get();
+			
+			controlFichero.setEstadoCtrlfichero(estadoCtrlFichero);
+			
+			//Indicador procesado: al cambiar de estado, determinar si el flag indProcesado tiene que cambiar:
+			String indProcesado = determineIndProcesadoFromEstadoControlFichero(estadoCtrlFichero);
+			controlFichero.setIndProcesado(indProcesado);
 			
 			//Usuario y fecha ultima modificacion:
 			controlFichero.setUsuarioUltModificacion(userModif);
@@ -286,6 +298,32 @@ public class FileControlServiceImpl implements FileControlService{
 		logger.info("FileControlServiceImpl - updateFileControlStatus - end");
 		return true;
 		
+	}
+	
+	private String determineIndProcesadoFromEstadoControlFichero(EstadoCtrlfichero estadoControlFichero) {
+	
+		long codEstadoCtrlFichero = estadoControlFichero.getId().getCodEstado();
+		long codTipoFichero = estadoControlFichero.getId().getCodTipoFichero();
+		
+		//Indicador Procesado a 'SI' cuando se cumplen los siguientes tipos de fichero y estado:
+		if ((codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_PROCESSED
+			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63)
+		 || (codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_GENERATED
+			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63)
+		 || (codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_GENERATED
+			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT)
+		 || (codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_PROCESSING
+			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63)
+		 || (codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_TO_SEND
+			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63)
+		 || (codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_TO_SEND
+			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT)
+		 ){
+			
+			return EmbargosConstants.IND_FLAG_SI;
+		}
+		
+		return EmbargosConstants.IND_FLAG_NO;
 	}
 	
 	@Override
@@ -374,16 +412,10 @@ public class FileControlServiceImpl implements FileControlService{
 	}
 
 	@Override
-	public byte[] generarReporteListado(Integer[] codTipoFichero,
-			Integer codEstado, boolean isPending, Date fechaInicio, Date fechaFin) throws Exception {
-		logger.info("FileControlServiceImpl - generarReporteListado - start");
-		
-		System.out.println("codTipoFichero: " + codTipoFichero +  " codEstado: " + codEstado + " isPending: " + isPending + " fechaInicio: "
-				+ fechaInicio + " fechaFin: " + fechaFin);
+	public byte[] generarReporteListado(Integer[] codTipoFichero, Integer codEstado, boolean isPending,
+			Date fechaInicio, Date fechaFin) throws Exception {
 
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
-
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmSS");
 
 		String query = "WHERE";
 
@@ -398,41 +430,38 @@ public class FileControlServiceImpl implements FileControlService{
 		}
 
 		if (fechaInicio != null) {
-			query = query + " c.FECHA_INCORPORACION>=" + ICEDateUtils.dateToBigDecimal(fechaInicio, ICEDateUtils.FORMAT_yyyyMMddHHmmss) + " AND";
+			query = query + " c.FECHA_INCORPORACION>="
+					+ ICEDateUtils.dateToBigDecimal(fechaInicio, ICEDateUtils.FORMAT_yyyyMMddHHmmss) + " AND";
 		}
 
 		if (fechaFin != null) {
-			query = query + " c.FECHA_GENERACION_RESPUESTA<=" + ICEDateUtils.dateToBigDecimal(fechaFin, ICEDateUtils.FORMAT_yyyyMMddHHmmss) + " AND";
+			query = query + " c.FECHA_GENERACION_RESPUESTA<="
+					+ ICEDateUtils.dateToBigDecimal(fechaFin, ICEDateUtils.FORMAT_yyyyMMddHHmmss) + " AND";
 		}
 
 		if (codTipoFichero == null && codEstado == null && fechaInicio == null && fechaFin == null) {
 			query = "";
-		} 
-		
-		
+		}
+
+		System.out.println("before empty: " + query);
+
 		if (query.isEmpty()) {
 			query = "WHERE";
 		}
-		
-		if (isPending) {
-			query = query + " c.IND_PROCESADO<>'S'";
-		} else {
-			query = query + " c.IND_PROCESADO='S'";
+
+		if (codEstado == null) {
+
+			if (isPending) {
+				query = query + " c.IND_PROCESADO <> 'S'";
+			} else {
+				query = query + " c.IND_PROCESADO = 'S'";
+			}
 		}
-		
-		
-		
-		
-		System.out.println(query);
+
 
 		parameters.put("query_param", query);
-		// parameters.put("cod_user", 3);
 
 		try (Connection connEmbargos = oracleDataSourceEmbargosConfig.getEmbargosConnection();) {
-//				Connection connComunes = oracleDataSourceEmbargosConfig.getComunesConnection()
-			
-
-//			parameters.put("conn_param", connComunes);
 
 			Resource imageReport = ResourcesUtil.getImageLogoCommerceResource();
 			File image = imageReport.getFile();
@@ -449,9 +478,12 @@ public class FileControlServiceImpl implements FileControlService{
 
 			JasperPrint reporteLleno = JasperFillManager.fillReport(resourceInputStream, parameters, connEmbargos);
 			
-			logger.info("FileControlServiceImpl - generarReporteListado - end");
+			List<JRPrintPage> pages = reporteLleno.getPages();
+
+			 if (pages.size() == 0)  return null;
+
 			return JasperExportManager.exportReportToPdf(reporteLleno);
-		} catch (JRException | SQLException ex) {
+		} catch (Exception ex) {
 			throw new Exception("Error in generarReporteListado()", ex);
 		}
 	}

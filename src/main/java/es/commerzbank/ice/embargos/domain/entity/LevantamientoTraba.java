@@ -30,6 +30,9 @@ public class LevantamientoTraba implements Serializable {
 
 	@Column(name="ESTADO_EJECUTADO")
 	private BigDecimal estadoEjecutado;
+	
+	@Column(name="IMPORTE_LEVANTADO")
+	private BigDecimal importeLevantado;
 
 	@Column(name="F_ULTIMA_MODIFICACION", precision=14)
 	private BigDecimal fUltimaModificacion;
@@ -50,6 +53,10 @@ public class LevantamientoTraba implements Serializable {
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="COD_TRABA", nullable=false)
 	private Traba traba;
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="ESTADO_LEVANTAMIENTO", nullable=false)
+	private EstadoLevantamiento estadoLevantamiento;
 	
 	@Column(name="IND_CASO_REVISADO", length=1)
 	private String indCasoRevisado;
@@ -149,6 +156,22 @@ public class LevantamientoTraba implements Serializable {
 
 	public void setIndCasoRevisado(String indCasoRevisado) {
 		this.indCasoRevisado = indCasoRevisado;
+	}
+
+	public BigDecimal getImporteLevantado() {
+		return importeLevantado;
+	}
+
+	public void setImporteLevantado(BigDecimal importeLevantado) {
+		this.importeLevantado = importeLevantado;
+	}
+
+	public EstadoLevantamiento getEstadoLevantamiento() {
+		return estadoLevantamiento;
+	}
+
+	public void setEstadoLevantamiento(EstadoLevantamiento estadoLevantamiento) {
+		this.estadoLevantamiento = estadoLevantamiento;
 	}
 
 }

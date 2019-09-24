@@ -1,3 +1,4 @@
+
 package es.commerzbank.ice.embargos.domain.entity;
 
 import java.io.Serializable;
@@ -17,7 +18,7 @@ public class Embargo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name = "embargo_seq_gen", sequenceName = "EMBARGO_SEQ", allocationSize = 1)
+	@SequenceGenerator(name = "embargo_seq_gen", sequenceName = "SEC_EMBARGO", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "embargo_seq_gen")
 	@Column(name="COD_EMBARGO", unique=true, nullable=false)
 	private long codEmbargo;

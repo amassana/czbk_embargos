@@ -36,7 +36,7 @@ public class EmbargosConstants {
 	
 	/** Formatos de fichero **/
 	public static final String FILE_FORMAT_AEAT = "AEAT";
-	public static final String FILE_FORMAT_CUADERNO63 = "CUADERNO63";
+	public static final String FILE_FORMAT_NORMA63 = "NORMA63";
 	public static final String FILE_FORMAT_CGPJ = "CGPJ";
 	
 	/** Prefijos de fichero **/
@@ -57,7 +57,7 @@ public class EmbargosConstants {
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_ERROR = 0;
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_LOADING = 1;
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_RECEIVED = 2;
-	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_ACCOUNTING = 3;
+	//public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_ACCOUNTING = 3;
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_ACCOUNTING_RESPONSE = 4;
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_TO_SEND = 5;
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_GENERATED = 6;
@@ -66,7 +66,7 @@ public class EmbargosConstants {
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_ERROR = 0;
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_LOADING = 1;
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_RECEIVED = 2;
-	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_ACCOUNTING = 3;
+	//public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_ACCOUNTING = 3;
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_ACCOUNTING_RESPONSE = 4;
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_TO_SEND = 5;
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_GENERATED = 6;
@@ -74,7 +74,7 @@ public class EmbargosConstants {
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_CONFIRMED = 8;
 	
 	public static final long COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_RECEIVED = 2;
-	public static final long COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_ACCOUNTING = 3;
+	//public static final long COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_ACCOUNTING = 3;
 	public static final long COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_ACCOUNTING_RESPONSE = 4;
 	public static final long COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_TO_SEND = 5;
 	public static final long COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_GENERATED = 6;
@@ -89,6 +89,12 @@ public class EmbargosConstants {
 	public static final long COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_AEAT_GENERATING = 1;
 	public static final long COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_AEAT_GENERATED = 2;
 	public static final long COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_AEAT_SENT = 3;
+
+	public static final long COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_AEAT_ERROR = 0;
+	public static final long COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_LOADING = 1;
+	public static final long COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED = 2;
+	public static final long COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_ACCOUNTING_RESPONSE = 3;
+	public static final long COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_ACCOUNTED = 4;
 	
 	public static final long COD_ESTADO_CTRLFICHERO_INITIAL_STATUS_DEFAULT = 1;
 
@@ -101,7 +107,12 @@ public class EmbargosConstants {
 	public static final long COD_ESTADO_TRABA_MODIFICADA_POR_LEVANTAMIENTO_CON_EXTORNO = 6;
 	public static final long COD_ESTADO_TRABA_FINALIZADA = 7;
 	public static final long COD_ESTADO_TRABA_ESTADO_ERRONEO = 8;
-	public static final long COD_ESTADO_TRABA_ENVIADA_A_CONTABILIDAD = 8;
+	public static final long COD_ESTADO_TRABA_ENVIADA_A_CONTABILIDAD = 9;
+	
+	/** Estados del Levantamiento **/
+	public static final long COD_ESTADO_LEVANTAMIENTO_PENDIENTE = 1;
+	public static final long COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION = 2;
+	public static final long COD_ESTADO_LEVANTAMIENTO_CONTABILIZADO = 3;
 	
 	/** Stream names del cuaderno 63 **/
 	public static final String STREAM_NAME_CUADERNO63_FASE1 = "fase1";
@@ -175,18 +186,26 @@ public class EmbargosConstants {
 	public static final int COD_FASE_5 = 5;
 	public static final int COD_FASE_6 = 6;
 	
+	public static final String F1 = "F1";
+	public static final String F2 = "F2";
+	public static final String F3 = "F3";
+	public static final String F4 = "F4";
+	public static final String F5 = "F5";
+	public static final String F6 = "F6";
+	
 	/** Codigos de registro de los ficheros **/
 	public static final int CODIGO_REGISTRO_CUADERNO63_COMUNICACION_RESULTADO_RETENCION_FASE4 = 6;	
 	public static final String CODIGO_REGISTRO_AEAT_TRABA_FASE4 = "2";
 	
 	/** Codigos actuacion de CuentaTrabaActuacion **/
-	public static final String CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA_AEAT = "5";
-	public static final String CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA_NORMA63 = "5n";
+	public static final String CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA_AEAT = "35";
+	public static final String CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA_NORMA63 = "65";
 	
 	/** Entradas de la tabla PARAMETROS de Comunes **/
 	public static final String PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA = "embargos.cuentaRecaudacion.cuenta";
 	public static final String PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA = "embargos.cuentaRecaudacion.oficina";
-	public static final String PARAMETRO_EMBARGOS_CONTABILIZACION_CALLBACK = "embargos.contabilizacion.callback";
+	public static final String PARAMETRO_EMBARGOS_CONTABILIZACION_FASE3_CALLBACK = "embargos.contabilizacion.fase3.callback";
+	public static final String PARAMETRO_EMBARGOS_CONTABILIZACION_FASE5_CALLBACK = "embargos.contabilizacion.fase5.callback";
 	
 	//Tabla Apoderados
 	public static final String NAME_APODERADO = "name";
@@ -195,5 +214,10 @@ public class EmbargosConstants {
 	//Levantamiento
 	public static final String LIFTING = "lifting";
 	public static final Object BANK_ACCOUNT_LIFTING_LIST = "bankAccountLiftingList";
-	
+
+	//Contabilidad
+	public static final String COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO = "P";
+	public static final String LITERAL_EMBARG_IBS_REFERENCE2 = "Embarg";
+	public static final String LITERAL_LEVANT_IBS_REFERENCE2 = "Levant";
+
 }

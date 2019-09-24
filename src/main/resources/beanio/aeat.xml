@@ -109,7 +109,7 @@
 		<record name="entidadTransmisora"
 			class="es.commerzbank.ice.embargos.formats.aeat.trabas.EntidadTransmisoraFase4">
 			<field name="indicadorRegistro" rid="true" literal="0" />
-			<field name="delegacionAgenciaReceptora" type="int" length="2" justify="right" padding="0" />
+			<field name="delegacionAgenciaReceptora" length="2" justify="right" padding="0" />
 			<field name="codigoEntidadTransmisora" length="4" />
 			<field name="fechaInicioCiclo" type="date" length="8" format="yyyyMMdd" />
 			<field name="fechaCreacionFicheroTrabas" type="date" length="8"
@@ -196,7 +196,7 @@
 		<record name="entidadTransmisora"
 			class="es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.EntidadTransmisoraValidacionFase4">
 			<field name="indicadorRegistro" rid="true" literal="0" />
-			<field name="delegacionAgenciaTransmisora" type="int" length="2" />
+			<field name="delegacionAgenciaTransmisora" length="2" />
 			<field name="codigoEntidadTransmisora" length="4" />
 			<field name="fechaInicioCiclo" type="date" length="8" format="yyyyMMdd" />
 			<field name="fechaCreacionFicheroTrabas" type="date" length="8"

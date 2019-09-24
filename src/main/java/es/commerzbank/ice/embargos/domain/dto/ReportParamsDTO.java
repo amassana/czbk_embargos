@@ -23,4 +23,11 @@ public class ReportParamsDTO {
 		this.fechaFin = fechaFin;
 	}
 
+	@Override
+	public String toString() {
+		return "ReportParamsDTO [fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin + "]";
+	}
+	
+	
+
 }

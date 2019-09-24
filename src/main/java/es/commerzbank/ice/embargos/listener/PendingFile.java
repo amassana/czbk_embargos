@@ -7,6 +7,15 @@ public class PendingFile
     private File file;
     private long snapshotTime;
     private long lastsize;
+    private String pendingMove;
+
+    public String getPendingMove() {
+        return pendingMove;
+    }
+
+    public void setPendingMove(String pendingMove) {
+        this.pendingMove = pendingMove;
+    }
 
     public long getSnapshotTime() {
         return snapshotTime;

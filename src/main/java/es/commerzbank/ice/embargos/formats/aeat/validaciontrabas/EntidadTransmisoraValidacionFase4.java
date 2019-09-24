@@ -5,7 +5,7 @@ import java.util.Date;
 public class EntidadTransmisoraValidacionFase4 {
 
 	private String indicadorRegistro;
-	private Integer delegacionAgenciaTransmisora;
+	private String delegacionAgenciaTransmisora;
 	private String codigoEntidadTransmisora;
 	private Date fechaInicioCiclo;
 	private Date fechaCreacionFicheroTrabas;                
@@ -57,10 +57,10 @@ public class EntidadTransmisoraValidacionFase4 {
 	public void setIndicadorRegistro(String indicadorRegistro) {
 		this.indicadorRegistro = indicadorRegistro;
 	}
-	public Integer getDelegacionAgenciaTransmisora() {
+	public String getDelegacionAgenciaTransmisora() {
 		return delegacionAgenciaTransmisora;
 	}
-	public void setDelegacionAgenciaTransmisora(Integer delegacionAgenciaTransmisora) {
+	public void setDelegacionAgenciaTransmisora(String delegacionAgenciaTransmisora) {
 		this.delegacionAgenciaTransmisora = delegacionAgenciaTransmisora;
 	}
 	public String getCodigoEntidadTransmisora() {
