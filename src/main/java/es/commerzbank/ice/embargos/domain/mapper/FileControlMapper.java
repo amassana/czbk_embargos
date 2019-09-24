@@ -117,6 +117,10 @@ public abstract class FileControlMapper {
 
 			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_LOADING;
 		}
+		else if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63) {
+
+			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_FINAL_GENERANDO;
+		}
 		else {
 			//Estado inicial por defecto:
 			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_INITIAL_STATUS_DEFAULT;
