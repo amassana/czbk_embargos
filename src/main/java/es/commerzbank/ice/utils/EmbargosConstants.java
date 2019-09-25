@@ -95,7 +95,12 @@ public class EmbargosConstants {
 	public static final long COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED = 2;
 	public static final long COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_ACCOUNTING_RESPONSE = 3;
 	public static final long COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_ACCOUNTED = 4;
-	
+
+	public static final long COD_ESTADO_CTRLFICHERO_FINAL_ERROR = 0;
+	public static final long COD_ESTADO_CTRLFICHERO_FINAL_GENERANDO = 1;
+	public static final long COD_ESTADO_CTRLFICHERO_FINAL_GENERADO = 2;
+	public static final long COD_ESTADO_CTRLFICHERO_FINAL_ENVIADO = 3;
+
 	public static final long COD_ESTADO_CTRLFICHERO_INITIAL_STATUS_DEFAULT = 1;
 
 	/** Estados de la Traba **/
@@ -221,4 +226,9 @@ public class EmbargosConstants {
 	public static final String LITERAL_EMBARG_IBS_REFERENCE2 = "Embarg";
 	public static final String LITERAL_LEVANT_IBS_REFERENCE2 = "Levant";
 
+	public static final long ESTADO_FINAL_SIN_ORDEN_LEVANTAMIENTO = 0;
+	public static final long ESTADO_FINAL_LEVANTAMIENTO_TOTAL = 1;
+	public static final long ESTADO_FINAL_LEVANTAMIENTO_PARCIAL = 2;
+	public static final long ESTADO_FINAL_LEVANTAMIENTO_RECHAZADO = 3;
+	public static final long ESTADO_FINAL_OTROS = 4;
 }

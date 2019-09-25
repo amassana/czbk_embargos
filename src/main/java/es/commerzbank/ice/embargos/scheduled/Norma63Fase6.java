@@ -2,10 +2,12 @@ package es.commerzbank.ice.embargos.scheduled;
 
 import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.embargos.domain.entity.*;
+import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase3.OrdenEjecucionEmbargoFase3;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase6.ResultadoFinalEmbargoFase6;
 import es.commerzbank.ice.embargos.repository.*;
 import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.utils.ICEDateUtils;
 import org.beanio.BeanReader;
 import org.beanio.BeanWriter;
 import org.beanio.StreamFactory;
@@ -50,9 +52,16 @@ public class Norma63Fase6
 
     @Autowired
     SeizureSummaryBankAccountRepository seizureSummaryBankAccountRepository;
+    @Autowired
+    FileControlMapper fileControlMapper;
+    @Autowired
+    FinalFileRepository finalFileRepository;
 
     @Value("${commerzbank.embargos.files.path.processed}")
     private String pathProcessed;
+
+    @Value("${commerzbank.embargos.files.path.generated}")
+    private String pathGenerated;
 
     /* to cronify
     @Scheduled("")
@@ -77,6 +86,15 @@ public class Norma63Fase6
         BeanReader beanReader = null;
 
         try {
+            // Guardar fase 6
+            File fase6File = new File(pathGenerated, ficheroFase3.getEntidadesComunicadora().getPrefijoFicheros() +"_"+ ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMdd) +"."+ EmbargosConstants.TIPO_FICHERO_FINAL);
+
+            ControlFichero ficheroFase6 =
+                    fileControlMapper.generateControlFichero(fase6File, EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63);
+            ficheroFase6.setEntidadesComunicadora(ficheroFase3.getEntidadesComunicadora());
+
+            fileControlRepository.save(ficheroFase6);
+
             // Inicialiar beanIO parser
             StreamFactory factory = StreamFactory.newInstance();
             factory.loadResource(pathFileConfigCuaderno63);
@@ -84,6 +102,8 @@ public class Norma63Fase6
             beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE3, (new File(pathProcessed + ficheroFase3.getNombreFichero()).getCanonicalFile()));
 
             Object currentF3Record = null;
+
+            BigDecimal importeTotalNeto = BigDecimal.ZERO;
 
             while ((currentF3Record = beanReader.read()) != null)
             {
@@ -106,25 +126,23 @@ public class Norma63Fase6
                     Traba traba = seizedRepository.getByEmbargo(embargo);
                     List<LevantamientoTraba> levantamientos = liftingRepository.findAllByTraba(traba);
 
-                    BigDecimal importeTotalLevantado = BigDecimal.ZERO;
+                    BigDecimal importeTotalLevantadoEmbargo = BigDecimal.ZERO;
 
                     ResultadoEmbargo resultadoEmbargo = new ResultadoEmbargo();
                     resultadoEmbargo.setTraba(traba);
                     resultadoEmbargo.setEmbargo(embargo);
-                    //resultadoEmbargo.setEstadoResultadoEmbargo();
-                    //resultadoEmbargo.set
+
+                    resultadoEmbargo.setControlFichero(ficheroFase6);
 
                     List<CuentaResultadoEmbargo> cuentasResultadoEmbargo = new ArrayList<>(6);
                     resultadoEmbargo.setCuentaResultadoEmbargos(cuentasResultadoEmbargo);
 
-                    for (CuentaEmbargo cuentaEmbargo : embargo.getCuentaEmbargos())
-                    {
+                    for (CuentaEmbargo cuentaEmbargo : embargo.getCuentaEmbargos()) {
                         CuentaResultadoEmbargo cuentaResultadoEmbargo = new CuentaResultadoEmbargo();
 
                         cuentaResultadoEmbargo.setCuentaEmbargo(cuentaEmbargo);
 
-                        for (CuentaTraba cuentaTraba : traba.getCuentaTrabas())
-                        {
+                        for (CuentaTraba cuentaTraba : traba.getCuentaTrabas()) {
                             if (cuentaTraba.getCuenta().equals(cuentaEmbargo.getCuenta())) {
                                 cuentaResultadoEmbargo.setCuentaTraba(cuentaTraba);
                                 break;
@@ -145,26 +163,53 @@ public class Norma63Fase6
                                 }
                             }
 
-                            LOG.info("Importe cuenta traba "+ cuentaResultadoEmbargo.getCuentaTraba().getCodCuentaTraba() +" "+ (cuentaResultadoEmbargo.getCuentaTraba().getImporte() == null) +" "+ importeLevantadoCuenta);
+                            LOG.info("Importe cuenta traba " + cuentaResultadoEmbargo.getCuentaTraba().getCodCuentaTraba() + " " + (cuentaResultadoEmbargo.getCuentaTraba().getImporte() == null) + " " + importeLevantadoCuenta);
 
-                            if (BigDecimal.ZERO.compareTo(importeLevantadoCuenta) != 0) {
+                            if (BigDecimal.ZERO.compareTo(importeLevantadoCuenta) == 0)
+                                cuentaResultadoEmbargo.setImporteNeto(BigDecimal.ZERO);
+                            else
+                            {
                                 // TODO what if get importe == 0? null? error
                                 if (cuentaResultadoEmbargo.getCuentaTraba().getImporte() != null)
                                     cuentaResultadoEmbargo.setImporteNeto(cuentaResultadoEmbargo.getCuentaTraba().getImporte().subtract(importeLevantadoCuenta));
 
-                                importeTotalLevantado = importeTotalLevantado.add(importeLevantadoCuenta);
+                                importeTotalLevantadoEmbargo = importeTotalLevantadoEmbargo.add(importeLevantadoCuenta);
                             }
-                            // TODO cuentaResultadoEmbargo.setEstadoResultadoEmbargo();
+
+                            EstadoResultadoEmbargo estadoResultadoEmbargo = new EstadoResultadoEmbargo();
+                            if (BigDecimal.ZERO.compareTo(cuentaResultadoEmbargo.getImporteNeto()) == 0)
+                                estadoResultadoEmbargo.setCodEstadoResultadoEmbargo(EmbargosConstants.ESTADO_FINAL_LEVANTAMIENTO_TOTAL);
+                            else if (BigDecimal.ZERO.compareTo(importeLevantadoCuenta) == 0)
+                                estadoResultadoEmbargo.setCodEstadoResultadoEmbargo(EmbargosConstants.ESTADO_FINAL_SIN_ORDEN_LEVANTAMIENTO);
+                            else if (BigDecimal.ZERO.compareTo(cuentaResultadoEmbargo.getImporteNeto()) == -1)
+                                estadoResultadoEmbargo.setCodEstadoResultadoEmbargo(EmbargosConstants.ESTADO_FINAL_LEVANTAMIENTO_PARCIAL);
+                            else
+                                estadoResultadoEmbargo.setCodEstadoResultadoEmbargo(EmbargosConstants.ESTADO_FINAL_OTROS);
+                            cuentaResultadoEmbargo.setEstadoResultadoEmbargo(estadoResultadoEmbargo);
                         }
 
                         cuentasResultadoEmbargo.add(cuentaResultadoEmbargo);
                     }
 
-                    resultadoEmbargo.setTotalLevantado(importeTotalLevantado);
-                    if (traba.getImporteTrabado() != null)
-                        resultadoEmbargo.setTotalNeto(traba.getImporteTrabado().subtract(importeTotalLevantado));
+                    resultadoEmbargo.setTotalLevantado(importeTotalLevantadoEmbargo);
 
-                    // TODO resultadoEmbargo.setEstadoResultadoEmbargo();
+                    if (traba.getImporteTrabado() == null) {
+                        resultadoEmbargo.setTotalNeto(BigDecimal.ZERO);
+                    }
+                    else {
+                        resultadoEmbargo.setTotalNeto(traba.getImporteTrabado().subtract(importeTotalLevantadoEmbargo));
+                        importeTotalNeto = importeTotalNeto.add(resultadoEmbargo.getTotalNeto());
+                    }
+                    EstadoResultadoEmbargo estadoResultadoEmbargo = new EstadoResultadoEmbargo();
+                    if (BigDecimal.ZERO.compareTo(resultadoEmbargo.getTotalNeto()) == 0)
+                        estadoResultadoEmbargo.setCodEstadoResultadoEmbargo(EmbargosConstants.ESTADO_FINAL_LEVANTAMIENTO_TOTAL);
+                    else if (BigDecimal.ZERO.compareTo(importeTotalLevantadoEmbargo) == 0)
+                        estadoResultadoEmbargo.setCodEstadoResultadoEmbargo(EmbargosConstants.ESTADO_FINAL_SIN_ORDEN_LEVANTAMIENTO);
+                    else if (BigDecimal.ZERO.compareTo(resultadoEmbargo.getTotalNeto()) == -1)
+                        estadoResultadoEmbargo.setCodEstadoResultadoEmbargo(EmbargosConstants.ESTADO_FINAL_LEVANTAMIENTO_PARCIAL);
+                    else
+                        estadoResultadoEmbargo.setCodEstadoResultadoEmbargo(EmbargosConstants.ESTADO_FINAL_OTROS);
+                    resultadoEmbargo.setEstadoResultadoEmbargo(estadoResultadoEmbargo);
 
                     seizureSummaryRepository.save(resultadoEmbargo);
 
@@ -172,14 +217,34 @@ public class Norma63Fase6
                         cuentaResultadoEmbargo.setResultadoEmbargo(resultadoEmbargo);
                         seizureSummaryBankAccountRepository.save(cuentaResultadoEmbargo);
                     }
-
-                    /* TODO probar qué hacer con los levantamientos levantados más de una vez. Agregar? por ahora sí*/
                 }
             }
+
+            // TODO: ESTADO LEVANTAMIENTO RECHAZADO?
+
+            // TODO: move to mapper ......
+            // TODO: rounding @ big decimal? scale?
+            FicheroFinal ficheroFinal = new FicheroFinal();
+            ficheroFinal.setCodFicheroDiligencias(BigDecimal.valueOf(ficheroFase3.getCodControlFichero()));
+            ficheroFinal.setControlFichero(ficheroFase6);
+            ficheroFinal.setImporte(importeTotalNeto);
+            ficheroFinal.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+            ficheroFinal.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+            // TODO: calc?
+            ficheroFinal.setFValor(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMdd));
+
+            finalFileRepository.save(ficheroFinal);
+
+            EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
+                    EmbargosConstants.COD_ESTADO_CTRLFICHERO_FINAL_GENERADO,
+                    EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63);
+            ficheroFase6.setEstadoCtrlfichero(estadoCtrlfichero);
+
+            fileControlRepository.save(ficheroFase6);
         }
         catch (Exception e)
         {
-            LOG.error("Error while creating Norma63 - fase 6 file.", e);
+            LOG.error("Error while creating Norma63 - fase 6 contents.", e);
             throw e;
         }
         finally {
