@@ -43,7 +43,9 @@ public abstract class OrderingEntityMapper {
 	@AfterMapping
 	protected void setEntidadOrdenanteAfterMapping(@MappingTarget EntidadesOrdenante entidadesOrdenante, OrderingEntity orderingEntity) {
 		EntidadesComunicadora entidad = new EntidadesComunicadora();
-		entidad.setCodEntidadPresentadora((long) orderingEntity.getCommunicatingEntity().getCode());
+		
+		long code = (int) orderingEntity.getCommunicatingEntity().getCode();
+		entidad.setCodEntidadPresentadora(code);
 		entidadesOrdenante.setEntidadesComunicadora(entidad);
 		entidadesOrdenante.setIndActivo(orderingEntity.isActive() ? EmbargosConstants.IND_FLAG_SI : EmbargosConstants.IND_FLAG_NO);
 		entidadesOrdenante.setIndFormatoAeat(orderingEntity.getIndAeat() ? EmbargosConstants.IND_FLAG_SI : EmbargosConstants.IND_FLAG_NO);

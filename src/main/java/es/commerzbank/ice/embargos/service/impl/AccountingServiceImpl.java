@@ -149,7 +149,7 @@ public class AccountingServiceImpl implements AccountingService{
 		}
 		
 		logger.info("AccountingServiceImpl - sendAccounting - end");
-		return true;
+		return isAccountingSent;
 	}
 
 	
