@@ -397,11 +397,14 @@ public abstract class AEATMapper {
 		levantamiento.setUsuarioUltModificacion(usuarioModif);
 		levantamiento.setFUltimaModificacion(fechaUltmaModif);
 		levantamiento.setTraba(traba);
-		// així?
+
+		EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
+		estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE);
+		levantamiento.setEstadoLevantamiento(estadoLevantamiento);
+		//  TODO TO BE DEFINED
 		levantamiento.setEstadoEjecutado(BigDecimal.ZERO);
 		levantamiento.setEstadoContable(BigDecimal.ZERO);
 		levantamiento.setIndCasoRevisado(EmbargosConstants.IND_FLAG_NO);
-
 		// sempre a null levantamiento.setCodDeudaDeudor();
 
 		List<CuentaLevantamiento> cuentas = new ArrayList<>(6);
@@ -409,27 +412,43 @@ public abstract class AEATMapper {
 
 		if (levantamientoAEAT.getCodigoCuentaCliente1() != null && !levantamientoAEAT.getCodigoCuentaCliente1().isEmpty() && !zeroCC.equals(levantamientoAEAT.getCodigoCuentaCliente1())) {
 			CuentaLevantamiento cuentaLevantamiento1 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento, BankAccountUtils.convertToIBAN(levantamientoAEAT.getCodigoCuentaCliente1()), levantamientoAEAT.getImporteALevantarCC1(), DWHCustomer, traba, usuarioModif, fechaUltmaModif);
+			cuentaLevantamiento1.setNumeroOrdenCuenta(new BigDecimal(1));
 			cuentas.add(cuentaLevantamiento1);
 		}
 		if (levantamientoAEAT.getCodigoCuentaCliente2() != null && !levantamientoAEAT.getCodigoCuentaCliente2().isEmpty() && !zeroCC.equals(levantamientoAEAT.getCodigoCuentaCliente2())) {
 			CuentaLevantamiento cuentaLevantamiento2 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento, BankAccountUtils.convertToIBAN(levantamientoAEAT.getCodigoCuentaCliente2()), levantamientoAEAT.getImporteALevantarCC2(), DWHCustomer, traba, usuarioModif, fechaUltmaModif);
+			cuentaLevantamiento2.setNumeroOrdenCuenta(new BigDecimal(2));
 			cuentas.add(cuentaLevantamiento2);
 		}
 		if (levantamientoAEAT.getCodigoCuentaCliente3() != null && !levantamientoAEAT.getCodigoCuentaCliente3().isEmpty() && !zeroCC.equals(levantamientoAEAT.getCodigoCuentaCliente3())) {
 			CuentaLevantamiento cuentaLevantamiento3 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento, BankAccountUtils.convertToIBAN(levantamientoAEAT.getCodigoCuentaCliente3()), levantamientoAEAT.getImporteALevantarCC3(), DWHCustomer, traba, usuarioModif, fechaUltmaModif);
+			cuentaLevantamiento3.setNumeroOrdenCuenta(new BigDecimal(3));
 			cuentas.add(cuentaLevantamiento3);
 		}
 		if (levantamientoAEAT.getCodigoCuentaCliente4() != null && !levantamientoAEAT.getCodigoCuentaCliente4().isEmpty() && !zeroCC.equals(levantamientoAEAT.getCodigoCuentaCliente4())) {
 			CuentaLevantamiento cuentaLevantamiento4 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento, BankAccountUtils.convertToIBAN(levantamientoAEAT.getCodigoCuentaCliente4()), levantamientoAEAT.getImporteALevantarCC4(), DWHCustomer, traba, usuarioModif, fechaUltmaModif);
+			cuentaLevantamiento4.setNumeroOrdenCuenta(new BigDecimal(4));
 			cuentas.add(cuentaLevantamiento4);
 		}
 		if (levantamientoAEAT.getCodigoCuentaCliente5() != null && !levantamientoAEAT.getCodigoCuentaCliente5().isEmpty() && !zeroCC.equals(levantamientoAEAT.getCodigoCuentaCliente5())) {
 			CuentaLevantamiento cuentaLevantamiento5 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento, BankAccountUtils.convertToIBAN(levantamientoAEAT.getCodigoCuentaCliente5()), levantamientoAEAT.getImporteALevantarCC5(), DWHCustomer, traba, usuarioModif, fechaUltmaModif);
+			cuentaLevantamiento5.setNumeroOrdenCuenta(new BigDecimal(5));
 			cuentas.add(cuentaLevantamiento5);
 		}
 		if (levantamientoAEAT.getCodigoCuentaCliente6() != null && !levantamientoAEAT.getCodigoCuentaCliente6().isEmpty() && !zeroCC.equals(levantamientoAEAT.getCodigoCuentaCliente6())) {
 			CuentaLevantamiento cuentaLevantamiento6 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento, BankAccountUtils.convertToIBAN(levantamientoAEAT.getCodigoCuentaCliente6()), levantamientoAEAT.getImporteALevantarCC6(), DWHCustomer, traba, usuarioModif, fechaUltmaModif);
+			cuentaLevantamiento6.setNumeroOrdenCuenta(new BigDecimal(6));
 			cuentas.add(cuentaLevantamiento6);
 		}
+
+		BigDecimal importeLevantado = BigDecimal.ZERO;
+
+		for (CuentaLevantamiento cuentaLevantamiento : cuentas)
+		{
+			if (cuentaLevantamiento.getImporte() != null)
+				importeLevantado = importeLevantado.add(cuentaLevantamiento.getImporte());
+		}
+
+		levantamiento.setImporteLevantado(importeLevantado);
 	}
 }
