@@ -442,21 +442,22 @@ public class SeizureController {
     }
     
     
-	@GetMapping("/notification/{idSeizure}/seizureReport")
+	@GetMapping("/notification/{idSeizure}/report")
 	@ApiOperation(value = "Devuelve un justificante de embargo")
-	public ResponseEntity<InputStreamResource> generarJustificanteEmbargo(
+	public ResponseEntity<InputStreamResource> generateSeizureLetter(
 			@PathVariable("idSeizure") Integer idSeizure) {
-    	logger.info("SeizureController - generarJustificanteEmbargo - start");
-		DownloadReportFile.setTempFileName("justificanteReport");
+    	logger.info("SeizureController - generateSeizureLetter - start");
+		
+    	DownloadReportFile.setTempFileName("seizure-letter");
 
 		DownloadReportFile.setFileTempPath(pdfSavedPath);
 
 		try {
 
 			// seizure service falta
-			DownloadReportFile.writeFile(seizureService.generateJustificanteEmbargo(idSeizure));
+			DownloadReportFile.writeFile(seizureService.generateSeizureLetter(idSeizure));
 			
-			logger.info("SeizureController - generarJustificanteEmbargo - end");
+			logger.info("SeizureController - generateSeizureLetter - end");
 			return DownloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
@@ -466,45 +467,21 @@ public class SeizureController {
 		}
 	}
 	
-	@GetMapping("/notification/{idLifting}/liftingReport")
-	@ApiOperation(value = "Devuelve un justificante de embargo")
-	public ResponseEntity<InputStreamResource> generarJustificanteEmbargo3(
-			@PathVariable("idLifting") Integer idLifting) {
-		logger.info("SeizureController - generarJustificanteEmbargo3 - start");
-		DownloadReportFile.setTempFileName("levantamientoReport");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
-
-		try {
-
-			// seizure service falta
-			DownloadReportFile.writeFile(seizureService.generateLevantamientoReport(idLifting));
-			
-			logger.info("SeizureController - generarJustificanteEmbargo3 - end");
-			return DownloadReportFile.returnToDownloadFile();
-
-		} catch (Exception e) {
-			logger.error("Error in levantamientoReport", e);
-			System.out.println(e);
-
-			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@GetMapping("/summary/fileControl/{fileControl}/requestReport")
+	@GetMapping("/{codeFileControl}/report")
 	@ApiOperation(value = "Devuelve un fichero de resumen trabas fase 3")
-	public ResponseEntity<InputStreamResource> generarResumentTrabaF3(@PathVariable("fileControl") Integer codControlFichero) {
-		logger.info("SeizureController - generarResumentTrabaF3 - start");
-		DownloadReportFile.setTempFileName("resumenTrabasReportF3");
+	public ResponseEntity<InputStreamResource> generateSeizureRequestF3(@PathVariable("codeFileControl") Integer codControlFichero) {
+		logger.info("SeizureController - generateSeizureRequestF3 - start");
+		
+		DownloadReportFile.setTempFileName("seizure-request");
 
 		DownloadReportFile.setFileTempPath(pdfSavedPath);
 
 		try {
 
 			// seizure service falta
-			DownloadReportFile.writeFile(seizureService.generarResumenTrabasF3(codControlFichero));
+			DownloadReportFile.writeFile(seizureService.generateSeizureRequestF3(codControlFichero));
 
-			logger.info("SeizureController - generarResumentTrabaF3 - end");
+			logger.info("SeizureController - generateSeizureRequestF3 - end");
 			return DownloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
@@ -514,21 +491,22 @@ public class SeizureController {
 		}
 	}
 
-	@GetMapping("/summary/fileControl/{fileControl}/seizuresReport")
+	@GetMapping("/response/{fileControl}/report")
 	@ApiOperation(value = "Devuelve un fichero de resumen trabas fase 4")
-	public ResponseEntity<InputStreamResource> generarResumentTrabasF4(
+	public ResponseEntity<InputStreamResource> generateSeizureResponseF4(
 			@PathVariable("fileControl") Integer codControlFichero) {
-		logger.info("SeizureController - generarResumentTrabasF4 - start");
-		DownloadReportFile.setTempFileName("resumenTrabasReportF4");
+		logger.info("SeizureController - generateSeizureResponseF4 - start");
+		
+		DownloadReportFile.setTempFileName("seizure-response");
 
 		DownloadReportFile.setFileTempPath(pdfSavedPath);
 
 		try {
 
 			// seizure service falta
-			DownloadReportFile.writeFile(seizureService.generarResumenTrabasF4(codControlFichero));
+			DownloadReportFile.writeFile(seizureService.generateSeizureResponseF4(codControlFichero));
 
-			logger.info("SeizureController - generarResumentTrabasF4 - end");
+			logger.info("SeizureController - generateSeizureResponseF4 - end");
 			return DownloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
@@ -537,107 +515,6 @@ public class SeizureController {
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-	}
-
-	// mover a otro controller
-	@GetMapping("/anexo/{cod_usuario}/{cod_traba}/{num_anexo}")
-	public ResponseEntity<InputStreamResource> generarAnexo(@PathVariable("cod_usuario") BigDecimal cod_usuario,
-			@PathVariable("cod_traba") BigDecimal cod_traba, @PathVariable("num_anexo") Integer num_anexo)
-			throws Exception {
-		logger.info("SeizureController - generarAnexo - start");
-
-		ResponseEntity<InputStreamResource> response = downloadAnexo(cod_usuario, cod_traba, num_anexo);
-
-		logger.info("SeizureController - generarAnexo - end");
-
-		return response;
-	}
-
-	private ResponseEntity<InputStreamResource> downloadAnexo(BigDecimal cod_usuario, BigDecimal cod_traba,
-			Integer num_anexo) {
-		logger.info("SeizureController - downloadAnexo - start");
-		DownloadReportFile.setTempFileName("anexoReport" + num_anexo);
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
-
-		try {
-
-			DownloadReportFile.writeFile(seizureService.generarAnexo(cod_usuario, cod_traba, num_anexo));
-
-			logger.info("SeizureController - downloadAnexo - end");
-			return DownloadReportFile.returnToDownloadFile();
-
-		} catch (Exception e) {
-			logger.error("Error in anexoReport", e);
-
-			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@GetMapping("/finalanswer/seizure/{fileControl}")
-	@ApiOperation(value = "Devuelve el fichero de respuesta final de embargos")
-	public ResponseEntity<InputStreamResource> generarRespuestaFinalEmbargo(
-			@PathVariable("fileControl") Integer codFileControl) {
-
-		DownloadReportFile.setTempFileName("respuestaFinalEmbargo");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
-
-		try {
-
-			DownloadReportFile.writeFile(seizureService.generarRespuestaFinalEmbargo(codFileControl));
-
-			return DownloadReportFile.returnToDownloadFile();
-
-		} catch (Exception e) {
-			logger.error("Error in anexoReport", e);
-
-			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@GetMapping("/summary/fileControl/{fileControl}/liftingReport")
-	@ApiOperation(value = "Devuelve el fichero de resumen de levantamientos")
-	public ResponseEntity<InputStreamResource> generarResumenLevantamiento(
-			@PathVariable("fileControl") Integer codFileControl) {
-
-		DownloadReportFile.setTempFileName("resumenLevantamiento");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
-
-		try {
-
-			DownloadReportFile.writeFile(seizureService.generarResumenLevantamiento(codFileControl));
-
-			return DownloadReportFile.returnToDownloadFile();
-
-		} catch (Exception e) {
-			logger.error("Error in anexoReport", e);
-
-			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@GetMapping("/execution/{cod_solicitud_ejecucion}/order")
-	@ApiOperation(value = "Devuelve el fichero de solicitud de ejecucion")
-	public ResponseEntity<InputStreamResource> generarOrdenTransferencia(
-			@PathVariable("cod_solicitud_ejecucion") String cod_solicitud_ejecucion) {
-
-		DownloadReportFile.setTempFileName("solicitudEjecucion");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
-
-		try {
-
-			DownloadReportFile.writeFile(seizureService.generarOrdenTransferencia(cod_solicitud_ejecucion));
-
-			return DownloadReportFile.returnToDownloadFile();
-
-		} catch (Exception e) {
-			logger.error("Error in anexoReport", e);
-
-			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
 	}
 
 }

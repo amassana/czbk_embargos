@@ -415,13 +415,13 @@ public class SeizureServiceImpl implements SeizureService {
 	}
 
 	@Override
-	public byte[] generateJustificanteEmbargo(Integer idSeizure) throws Exception {
+	public byte[] generateSeizureLetter(Integer idSeizure) throws Exception {
 		logger.info("SeizureServiceImpl - generateJustificanteEmbargo - start");
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
 		try (Connection conn = oracleDataSourceEmbargos.getEmbargosConnection()) {
 
-			Resource embargosJrxml = ResourcesUtil.getFromJasperFolder("justificante_embargos.jasper");
+			Resource embargosJrxml = ResourcesUtil.getFromJasperFolder("seizureLetter.jasper");
 			Resource logoImage = ResourcesUtil.getImageLogoCommerceResource();
 			// Resource templateStyle = ResourcesUtil.getTemplateStyleResource();
 
@@ -454,46 +454,13 @@ public class SeizureServiceImpl implements SeizureService {
 	}
 
 	@Override
-	public byte[] generateLevantamientoReport(Integer idLifting) throws Exception {
-		logger.info("SeizureServiceImpl - generateLevantamientoReport - start");
-		HashMap<String, Object> parameters = new HashMap<String, Object>();
-
-		try (Connection conn = oracleDataSourceEmbargos.getEmbargosConnection()) {
-
-			Resource embargosJrxml = ResourcesUtil.getFromJasperFolder("levantamiento_embargo.jasper");
-			Resource logoImage = ResourcesUtil.getImageLogoCommerceResource();
-
-			File image = logoImage.getFile();
-
-			parameters.put("COD_LEVANTAMIENTO", idLifting);
-			parameters.put("IMAGE_PARAM", image.toString());
-
-			InputStream justificanteInputStream = embargosJrxml.getInputStream();
-
-			JasperPrint fillReport = JasperFillManager.fillReport(justificanteInputStream, parameters, conn);
-
-			List<JRPrintPage> pages = fillReport.getPages();
-
-			if (pages.size() == 0)
-				return null;
-
-			logger.info("SeizureServiceImpl - generateLevantamientoReport - end");
-
-			return JasperExportManager.exportReportToPdf(fillReport);
-
-		} catch (Exception e) {
-			throw new Exception("DB exception while generating the report", e);
-		}
-	}
-
-	@Override
-	public byte[] generarResumenTrabasF4(Integer codControlFichero) throws Exception {
+	public byte[] generateSeizureResponseF4(Integer codControlFichero) throws Exception {
 		logger.info("SeizureServiceImpl - generarResumenTrabasF4 - start");
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
 		try (Connection conn = oracleDataSourceEmbargos.getEmbargosConnection()) {
 
-			Resource resumenTrabasJrxml = ResourcesUtil.getFromJasperFolder("resumen_trabas_seizures.jasper");
+			Resource resumenTrabasJrxml = ResourcesUtil.getFromJasperFolder("f4_seizureResponse.jasper");
 
 			Resource logoImage = ResourcesUtil.getImageLogoCommerceResource();
 
@@ -521,13 +488,13 @@ public class SeizureServiceImpl implements SeizureService {
 	}
 
 	@Override
-	public byte[] generarResumenTrabasF3(Integer codControlFichero) throws Exception {
+	public byte[] generateSeizureRequestF3(Integer codControlFichero) throws Exception {
 		logger.info("SeizureServiceImpl - generarResumenTrabasF3 - start");
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
 		try (Connection conn = oracleDataSourceEmbargos.getEmbargosConnection()) {
 
-			Resource resumenTrabasJrxml = ResourcesUtil.getFromJasperFolder("resumen_trabas_request.jasper");
+			Resource resumenTrabasJrxml = ResourcesUtil.getFromJasperFolder("f3_seizureRequest.jasper");
 
 			Resource headerSubreport = ResourcesUtil.getReportHeaderResource();
 
@@ -562,143 +529,5 @@ public class SeizureServiceImpl implements SeizureService {
 
 	}
 
-	@Override
-	public byte[] generarAnexo(BigDecimal cod_usuario, BigDecimal cod_traba, Integer num_anexo) throws Exception {
-		logger.info("SeizureServiceImpl - generarAnexo - start");
-		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
-		try (Connection conn_comunes = oracleDataSourceEmbargos.getComunesConnection();
-				Connection conn_embargos = oracleDataSourceEmbargos.getEmbargosConnection();) {
-
-			Resource anexoJasperFile = ResourcesUtil.getFromJasperFolder("anexo" + num_anexo + ".jasper");
-
-			Resource importeAbonadoSubReport = ResourcesUtil.getFromJasperFolder("importe_abonado.jasper");
-
-			Resource logoImage = ResourcesUtil.getImageLogoCommerceResource();
-
-			File image = logoImage.getFile();
-
-			InputStream importeAbonadoInputStream = importeAbonadoSubReport.getInputStream();
-			JasperReport importeAbonadoReport = (JasperReport) JRLoader.loadObject(importeAbonadoInputStream);
-
-			parameters.put("IMAGE_PARAM", image.toString());
-			parameters.put("REPORT_IMPORTE_ABONADO", importeAbonadoReport);
-			parameters.put("COD_USUARIO", cod_usuario);
-			parameters.put("COD_TRABA", cod_traba);
-			parameters.put("REPORT_CONNECTION_EMB", conn_embargos);
-
-			InputStream anexo1Input = anexoJasperFile.getInputStream();
-			JasperPrint fillReport = JasperFillManager.fillReport(anexo1Input, parameters, conn_comunes);
-
-			List<JRPrintPage> pages = fillReport.getPages();
-
-			if (pages.size() == 0)
-				return null;
-
-			logger.info("SeizureServiceImpl - generarAnexo - end");
-			
-			return JasperExportManager.exportReportToPdf(fillReport);
-
-		} catch (SQLException e) {
-			throw new Exception("DB exception while generating the report", e);
-		}
-	}
-
-	@Override
-	public byte[] generarRespuestaFinalEmbargo(Integer cod_file_control) throws Exception {
-		HashMap<String, Object> parameters = new HashMap<String, Object>();
-
-		try (Connection conn_embargos = oracleDataSourceEmbargos.getEmbargosConnection()) {
-
-			Resource respFinalEmbargoResource = ResourcesUtil.getFromJasperFolder("respuestaFinalEmbargos.jasper");
-			Resource headerResource = ResourcesUtil.getReportHeaderResource();
-			Resource imageResource = ResourcesUtil.getImageLogoCommerceResource();
-
-			File image = imageResource.getFile();
-
-			InputStream subReportHeaderInputStream = headerResource.getInputStream();
-
-			JasperReport subReportHeader = (JasperReport) JRLoader.loadObject(subReportHeaderInputStream);
-
-			parameters.put("sub_img_param", image.toString());
-			parameters.put("SUBREPORT_HEADER", subReportHeader);
-			parameters.put("COD_FILE_CONTROL", cod_file_control);
-
-			InputStream finalEmbargosIS = respFinalEmbargoResource.getInputStream();
-			JasperPrint fillReport = JasperFillManager.fillReport(finalEmbargosIS, parameters, conn_embargos);
-
-			List<JRPrintPage> pages = fillReport.getPages();
-
-			if (pages.size() == 0)
-				return null;
-
-			return JasperExportManager.exportReportToPdf(fillReport);
-		} catch (Exception e) {
-			throw new Exception("DB exception while generating the report", e);
-		}
-	}
-
-	@Override
-	public byte[] generarResumenLevantamiento(Integer cod_file_control) throws Exception {
-		HashMap<String, Object> parameters = new HashMap<String, Object>();
-		try (Connection conn_embargos = oracleDataSourceEmbargos.getEmbargosConnection()) {
-
-			Resource resumenLevantamiento = ResourcesUtil.getFromJasperFolder("resumen_levantamientos.jasper");
-			Resource headerResource = ResourcesUtil.getReportHeaderResource();
-			Resource imageResource = ResourcesUtil.getImageLogoCommerceResource();
-
-			File image = imageResource.getFile();
-
-			InputStream subReportHeaderInputStream = headerResource.getInputStream();
-
-			JasperReport subReportHeader = (JasperReport) JRLoader.loadObject(subReportHeaderInputStream);
-
-			parameters.put("sub_img_param", image.toString());
-			parameters.put("SUBREPORT_HEADER", subReportHeader);
-			parameters.put("COD_FILE_CONTROL", cod_file_control);
-
-			InputStream finalEmbargosIS = resumenLevantamiento.getInputStream();
-			JasperPrint fillReport = JasperFillManager.fillReport(finalEmbargosIS, parameters, conn_embargos);
-
-			List<JRPrintPage> pages = fillReport.getPages();
-
-			if (pages.size() == 0)
-				return null;
-
-			return JasperExportManager.exportReportToPdf(fillReport);
-		} catch (Exception e) {
-			throw new Exception("DB exception while generating the report", e);
-		}
-	}
-
-	@Override
-	public byte[] generarOrdenTransferencia(String cod_solicitud_ejecucion) throws Exception {
-		// TODO Auto-generated method stub
-		HashMap<String, Object> parameters = new HashMap<String, Object>();
-
-		try (Connection conn_embargos = oracleDataSourceEmbargos.getEmbargosConnection()) {
-
-			Resource transOrder = ResourcesUtil.getFromJasperFolder("solicitud_ejecucion.jasper");
-			Resource imageLogo = ResourcesUtil.getImageLogoCommerceResource();
-
-			File logoFile = imageLogo.getFile();
-
-			parameters.put("IMAGE_PARAM", logoFile.toString());
-			parameters.put("COD_SOLICITUD_EJECUCION", cod_solicitud_ejecucion);
-
-			InputStream isOrdenTransferencia = transOrder.getInputStream();
-			JasperPrint transOrderJP = JasperFillManager.fillReport(isOrdenTransferencia, parameters, conn_embargos);
-
-			List<JRPrintPage> pages = transOrderJP.getPages();
-
-			if (pages.size() == 0)
-				return null;
-
-			return JasperExportManager.exportReportToPdf(transOrderJP);
-
-		} catch (Exception e) {
-			throw new Exception("DB exception while generating the report", e);
-		}
-
-	}
 }

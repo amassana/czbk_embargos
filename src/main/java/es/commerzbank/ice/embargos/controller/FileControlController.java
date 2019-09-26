@@ -305,23 +305,23 @@ public class FileControlController {
 	}
 
 	@PostMapping("/reports/files")
-	public ResponseEntity<InputStreamResource> generarReportLista(
+	public ResponseEntity<InputStreamResource> generateFileControlReport(
 			@RequestParam(name = "codTipoFichero", required = false) Integer[] codTipoFichero,
 			@RequestParam(name = "codEstado", required = false) Integer codEstado,
 			@RequestParam(name = "isPending", required = false) boolean isPending,
 			@RequestBody ReportParamsDTO reportParams) throws Exception {
 
-		logger.info("FileControlController - generarReportLista - start");
-		DownloadReportFile.setTempFileName("reportList");
+		logger.info("FileControlController - generateFileControlReport - start");
+		DownloadReportFile.setTempFileName("file-control");
 
 		DownloadReportFile.setFileTempPath(pdfSavedPath);
 
 		try {
 
-			DownloadReportFile.writeFile(fileControlService.generarReporteListado(codTipoFichero, codEstado, isPending,
+			DownloadReportFile.writeFile(fileControlService.generateFileControl(codTipoFichero, codEstado, isPending,
 					reportParams.getFechaInicio(), reportParams.getFechaFin()));
 
-			logger.info("FileControlController - generarReportLista - end");
+			logger.info("FileControlController - generateFileControlReport - end");
 			return DownloadReportFile.returnToDownloadFile();
 		} catch (Exception e) {
 			logger.error("Error in generarReportLista", e);

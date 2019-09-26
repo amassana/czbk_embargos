@@ -412,7 +412,7 @@ public class FileControlServiceImpl implements FileControlService{
 	}
 
 	@Override
-	public byte[] generarReporteListado(Integer[] codTipoFichero, Integer codEstado, boolean isPending,
+	public byte[] generateFileControl(Integer[] codTipoFichero, Integer codEstado, boolean isPending,
 			Date fechaInicio, Date fechaFin) throws Exception {
 
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
@@ -473,7 +473,7 @@ public class FileControlServiceImpl implements FileControlService{
 			JasperReport subReport = (JasperReport) JRLoader.loadObject(subResourceInputStream);
 			parameters.put("file_param", subReport);
 
-			Resource resource = ResourcesUtil.getFromJasperFolder("control_ficheros.jasper");
+			Resource resource = ResourcesUtil.getFromJasperFolder("file_control.jasper");
 			InputStream resourceInputStream = resource.getInputStream();
 
 			JasperPrint reporteLleno = JasperFillManager.fillReport(resourceInputStream, parameters, connEmbargos);

@@ -68,26 +68,4 @@ public class SeizureSummaryController {
 		return response;
 	}
 
-	@GetMapping("/transfer/{account_number}/order")
-	@ApiOperation(value = "Devuelve un fichero de orden de tansferencia")
-	private ResponseEntity<InputStreamResource> generateSeizureSummary(
-			@PathVariable(name = "account_number") String accountNumber) {
-
-		DownloadReportFile.setTempFileName("transferenceOrder");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
-
-		try {
-
-			DownloadReportFile.writeFile(seizureSummaryService.generateSeizureSummaryReport(accountNumber));
-
-			return DownloadReportFile.returnToDownloadFile();
-  
-		} catch (Exception e) {
-			logger.error("Error in generateSeizureSummary", e);
-			System.out.println(e);
-
-			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
 }

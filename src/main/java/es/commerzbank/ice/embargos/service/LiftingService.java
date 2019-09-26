@@ -27,4 +27,7 @@ public interface LiftingService {
 
 	void updateLiftingBankAccountingStatus(CuentaLevantamiento cuenta, long codEstado, String userName);
 
+	public byte[] generarResumenLevantamientoF5(Integer cod_file_control) throws Exception;
+
+	public byte[] generateLiftingLetter(Integer idLifting) throws Exception;
 }
