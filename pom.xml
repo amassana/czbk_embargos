@@ -133,14 +133,6 @@
 			<artifactId>comun-lib</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		
-		<!-- -->
-		<!-- Libreria comun-conf de Commerzbank -->
-		<dependency>
-			<groupId>es.commerzbank.ice</groupId>
-			<artifactId>comun-conf</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
 		<!-- -->
 		<!-- Libreria datawarehouse-dtos de Commerzbank -->
 		<dependency>
