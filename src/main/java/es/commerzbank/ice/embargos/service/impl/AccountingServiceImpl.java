@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.comun.lib.domain.dto.AccountingNote;
 import es.commerzbank.ice.comun.lib.domain.dto.GeneralParameter;
+import es.commerzbank.ice.comun.lib.file.generate.ContaGenExecutor;
 import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
@@ -67,9 +68,12 @@ public class AccountingServiceImpl implements AccountingService{
 	@Autowired
 	LiftingService liftingService;
 	
+	@Autowired
+	ContaGenExecutor contaGenExecutor;
+	
 	
 	@Override
-	public boolean sendAccounting(Long codeFileControl, String userName) throws ICEException {
+	public boolean sendAccounting(Long codeFileControl, String userName) throws ICEException, Exception {
 		logger.info("AccountingServiceImpl - sendAccounting - start");	
 		//Se obtiene el fichero de control:
 		Optional<ControlFichero> fileControlOpt = fileControlRepository.findById(codeFileControl);
@@ -165,7 +169,7 @@ public class AccountingServiceImpl implements AccountingService{
 		return stb.toString();
 	}
 
-	private boolean sendAccountingAEATCuaderno63(ControlFichero controlFichero, String userName) throws ICEException {
+	private boolean sendAccountingAEATCuaderno63(ControlFichero controlFichero, String userName) throws Exception {
 		
 		logger.info("AccountingServiceImpl - sendAccountingAEATCuaderno63 - start");
 
@@ -174,6 +178,9 @@ public class AccountingServiceImpl implements AccountingService{
 		Long oficinaCuentaRecaudacion = determineOficinaCuentaRecaudacion();
 
 		boolean existsTrabaNotAccounted = false;
+		
+		String codGroupNote = EmbargosConstants.F3 + "_"
+				+ controlFichero.getCodControlFichero();
 		
 		
 		//Se obtienen la trabas asociadas al fichero:
@@ -187,10 +194,6 @@ public class AccountingServiceImpl implements AccountingService{
 				String reference1 = embargo.getNumeroEmbargo();
 				String reference2 = "";
 				String detailPayment = embargo.getDatregcomdet();
-			
-				String codGroupNote = EmbargosConstants.F3 + "_"
-						+ embargo.getControlFichero().getCodControlFichero() +"_"
-						+ ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
 				
 				boolean existsCuentaTrabaNotAccounted = false;
 				
@@ -251,12 +254,14 @@ public class AccountingServiceImpl implements AccountingService{
 		}
 		logger.info("AccountingServiceImpl - sendAccountingAEATCuaderno63 - end");
 		
+		contaGenExecutor.generacionFicheroContabilidad(codGroupNote);
+		
 		//Se devuelve true si no existe traba que no haya sido enviada a contabilidad:
 		return !existsTrabaNotAccounted;
 	}
 
 
-	private boolean sendAccountingCGPJ(ControlFichero controlFichero, String userName) throws ICEException {
+	private boolean sendAccountingCGPJ(ControlFichero controlFichero, String userName) throws ICEException, Exception {
 
 		logger.info("AccountingServiceImpl - sendAccountingCGPJ - start");
 
@@ -264,6 +269,9 @@ public class AccountingServiceImpl implements AccountingService{
 		Long oficinaCuentaRecaudacion = determineOficinaCuentaRecaudacion();
 
 		boolean existsTrabaNotAccounted = false;
+		
+		String codGroupNote = EmbargosConstants.F3 + "_"
+				+ controlFichero.getCodControlFichero();
 		
 		//Se obtienen las peticiones asociadas al fichero:
 		for (Peticion peticion : controlFichero.getPeticiones()) {
@@ -314,10 +322,6 @@ public class AccountingServiceImpl implements AccountingService{
 								.append(EmbargosConstants.SEPARADOR_ESPACIO).append(organismoEmisor).toString();
 
 						String detailPayment = "";//embargo.getDatregcomdet();
-
-						String codGroupNote = EmbargosConstants.F3 + "_"
-								+ embargo.getControlFichero().getCodControlFichero() +"_"
-								+ ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
 
 						boolean existsCuentaTrabaNotAccounted = false;
 
@@ -380,6 +384,8 @@ public class AccountingServiceImpl implements AccountingService{
 		}
 
 		logger.info("AccountingServiceImpl - sendAccountingCGPJ - end");
+		
+		contaGenExecutor.generacionFicheroContabilidad(codGroupNote);
 
 		//Se devuelve true si no existe traba que no haya sido enviada a contabilidad:
 		return !existsTrabaNotAccounted;
@@ -591,8 +597,7 @@ public class AccountingServiceImpl implements AccountingService{
 		String reference2 = "";
 		String detailPayment = embargo.getDatregcomdet();
 		String codGroupNote = EmbargosConstants.F4 + "_"
-				+ embargo.getControlFichero().getCodControlFichero() +"_"
-				+ ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
+				+ embargo.getControlFichero().getCodControlFichero();
 
 		//Llamada a contabilizar para deshacer la contabilizacion, poniendo como debitAccount la cuenta
 		//de recaudacion y la creditAccount la cuenta del cliente:
