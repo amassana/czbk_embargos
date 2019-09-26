@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
 import org.slf4j.Logger;
@@ -39,6 +40,7 @@ import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.repository.InformationPetitionBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.InformationPetitionRepository;
 import es.commerzbank.ice.embargos.service.CustomerService;
+import es.commerzbank.ice.embargos.service.EmailService;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63PetitionService;
 import es.commerzbank.ice.utils.EmbargosConstants;
@@ -94,6 +96,9 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	@Autowired
 	private CommunicatingEntityRepository communicatingEntityRepository;
 	
+	@Autowired
+	private EmailService emailService;
+	
 	@Override
 	//Se comenta '@transactional' ya que se utilizara a nivel de clase:
 	//@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
@@ -103,7 +108,11 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 
 		ControlFichero controlFicheroPeticion = null;
 
+		String petitionFileName = null;
+		
 		try {
+			
+	        petitionFileName = FilenameUtils.getName(file.getCanonicalPath());
 
 			// create a StreamFactory
 	        StreamFactory factory = StreamFactory.newInstance();
@@ -116,7 +125,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	        
 	        //fileControlRepository.save(controlFicheroPeticion);
 	        fileControlService.saveFileControlTransaction(controlFicheroPeticion);
-	                        
+	        
 	        // use a StreamFactory to create a BeanReader
 	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE1, file);
 	        	        
@@ -238,7 +247,11 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	        
 	        // - Se guarda el codigo de tarea del calendario:
 	        controlFicheroPeticion.setCodTarea(BigDecimal.valueOf(codTarea));
-	        	        
+	        	  
+	        // - Se envia correo de la recepcion del fichero de peticiones:
+	        //DESACTIVADO, se comenta:
+	        //emailService.sendEmailPetitionReceived(petitionFileName);
+	        
 			fileControlRepository.save(controlFicheroPeticion);
 
 		} catch (Exception e) {
@@ -250,6 +263,9 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 					EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_ERROR);			
 			*/
 
+			// - Se envia correo del error del parseo del fichero de peticiones:
+			emailService.sendEmailFileParserError(petitionFileName, e.getMessage());
+			
 			throw e;
 
 		} finally {

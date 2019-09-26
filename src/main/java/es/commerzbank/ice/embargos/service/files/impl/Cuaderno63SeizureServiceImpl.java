@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FilenameUtils;
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
 import org.slf4j.Logger;
@@ -47,6 +48,7 @@ import es.commerzbank.ice.embargos.repository.SeizedRepository;
 import es.commerzbank.ice.embargos.repository.SeizureBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
 import es.commerzbank.ice.embargos.service.CustomerService;
+import es.commerzbank.ice.embargos.service.EmailService;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63SeizureService;
 import es.commerzbank.ice.utils.EmbargosConstants;
@@ -107,6 +109,9 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 
 	@Autowired
 	private OrderingEntityRepository orderingEntityRepository;
+	
+	@Autowired
+	private EmailService emailService;
 
 	@Override
 	public void cargarFicheroEmbargos(File file) throws IOException{
@@ -115,7 +120,11 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 		
 		ControlFichero controlFicheroEmbargo = null;
 		
+		String seizureFileName = null;
+		
 		try {
+			
+			seizureFileName = FilenameUtils.getName(file.getCanonicalPath());
 
 			// create a StreamFactory
 	        StreamFactory factory = StreamFactory.newInstance();
@@ -332,6 +341,9 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 					EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_ERROR);
 			*/
 
+			// - Se envia correo del error del parseo del fichero de embargo:
+			emailService.sendEmailFileParserError(seizureFileName, e.getMessage()); 
+			
 			throw e;
 
 		} finally {

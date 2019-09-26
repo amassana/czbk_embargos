@@ -213,5 +213,8 @@ public class EmbargosConstants {
 	public static final String COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO = "P";
 	public static final String LITERAL_EMBARG_IBS_REFERENCE2 = "Embarg";
 	public static final String LITERAL_LEVANT_IBS_REFERENCE2 = "Levant";
+	
+	//Emails:
+	public static final String EMAIL_DEFAULT_FOOTER_TEXT = "Aplicación de Embargos";
 
 }
