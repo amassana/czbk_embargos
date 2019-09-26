@@ -1,6 +1,7 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
 import es.commerzbank.ice.comun.lib.domain.dto.GeneralParameter;
+import es.commerzbank.ice.comun.lib.file.generate.ContaGenExecutor;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.embargos.domain.entity.*;
@@ -68,6 +69,9 @@ public class Cuaderno63LiftingServiceImpl
     AccountingService accountingService;
     @Autowired
     GeneralParametersService generalParametersService;
+    @Autowired
+    ContaGenExecutor contaGenExecutor;
+
     @Override
     public void tratarFicheroLevantamientos(File file)
         throws IOException
@@ -175,6 +179,11 @@ public class Cuaderno63LiftingServiceImpl
                 }
                 else
                     throw new Exception("BeanIO - Unexpected record name: "+ beanReader.getRecordName());
+            }
+
+            // cerrar y enviar la contabilización
+            if (allLevantamientosContabilizados) {
+                contaGenExecutor.generacionFicheroContabilidad("F5_" + controlFicheroLevantamiento.getCodControlFichero());
             }
 
             // Actualizar control fichero

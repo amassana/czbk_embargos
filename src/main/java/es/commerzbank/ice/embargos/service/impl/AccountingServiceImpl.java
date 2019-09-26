@@ -63,7 +63,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 	@Autowired
 	LiftingBankAccountRepository liftingBankAccountRepository;
-	
+
 	@Override
 	public boolean sendAccounting(Long codeFileControl, String userName) throws ICEException {
 		logger.info("AccountingServiceImpl - sendAccounting - start");	
@@ -802,6 +802,7 @@ public class AccountingServiceImpl implements AccountingService{
 		accountingNote.setChange(cuentaLevantamiento.getCambio());
 		accountingNote.setGeneralParameter(contabilizacionCallbackNameParameter);
 		accountingNote.setStatus(EmbargosConstants.COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO);
+		accountingNote.setCodGroupNote("F5_"+ cuentaLevantamiento.getLevantamientoTraba().getControlFichero().getCodControlFichero());
 
 		int resultado = accountingNoteService.contabilizar(accountingNote);
 
