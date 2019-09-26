@@ -164,6 +164,12 @@
 			<version>1.0</version> <scope>system</scope> <systemPath>${basedir}/src/main/resources/fonts/jar/pt-serif.jar</systemPath> 
 			</dependency> -->
 
+		<!-- Emails -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
