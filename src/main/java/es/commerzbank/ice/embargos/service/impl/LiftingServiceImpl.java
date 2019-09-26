@@ -1,8 +1,12 @@
 package es.commerzbank.ice.embargos.service.impl;
 
+import java.io.File;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -10,6 +14,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -44,9 +49,16 @@ import es.commerzbank.ice.embargos.repository.LiftingStatusRepository;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.LiftingService;
 import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.utils.ResourcesUtil;
+import net.sf.jasperreports.engine.JRPrintPage;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
 
 @Service
-@Transactional(transactionManager="transactionManager")
+@Transactional(transactionManager = "transactionManager")
 public class LiftingServiceImpl implements LiftingService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LiftingServiceImpl.class);
@@ -56,13 +68,13 @@ public class LiftingServiceImpl implements LiftingService {
 	
 	@Autowired
 	private FileControlService fileControlService;
-	
+
 	@Autowired
 	private LiftingMapper liftingMapper;
-	
+
 	@Autowired
 	private LiftingRepository liftingRepository;
-	
+
 	@Autowired
 	private LiftingBankAccountRepository liftingBankAccountRepository;
 	
@@ -81,6 +93,8 @@ public class LiftingServiceImpl implements LiftingService {
 	@Autowired
 	private LiftingStatusMapper liftingStatusMapper;
 
+	@Autowired
+	private OracleDataSourceEmbargosConfig oracleDataSourceEmbargos;
 
 	@Override
 	public List<LiftingDTO> getAllByControlFichero(ControlFichero controlFichero) {
@@ -223,6 +237,73 @@ public class LiftingServiceImpl implements LiftingService {
 		
 		liftingBankAccountRepository.save(cuenta);
 	}
+
+	@Override
+	public byte[] generarResumenLevantamientoF5(Integer cod_file_control) throws Exception {
+		HashMap<String, Object> parameters = new HashMap<String, Object>();
+		try (Connection conn_embargos = oracleDataSourceEmbargos.getEmbargosConnection()) {
+
+			Resource resumenLevantamiento = ResourcesUtil.getFromJasperFolder("f5_seizureLifting.jasper");
+			Resource headerResource = ResourcesUtil.getReportHeaderResource();
+			Resource imageResource = ResourcesUtil.getImageLogoCommerceResource();
+
+			File image = imageResource.getFile();
+
+			InputStream subReportHeaderInputStream = headerResource.getInputStream();
+
+			JasperReport subReportHeader = (JasperReport) JRLoader.loadObject(subReportHeaderInputStream);
+
+			parameters.put("sub_img_param", image.toString());
+			parameters.put("SUBREPORT_HEADER", subReportHeader);
+			parameters.put("COD_FILE_CONTROL", cod_file_control);
+
+			InputStream finalEmbargosIS = resumenLevantamiento.getInputStream();
+			JasperPrint fillReport = JasperFillManager.fillReport(finalEmbargosIS, parameters, conn_embargos);
+
+			List<JRPrintPage> pages = fillReport.getPages();
+
+			if (pages.size() == 0)
+				return null;
+
+			return JasperExportManager.exportReportToPdf(fillReport);
+		} catch (Exception e) {
+			throw new Exception("DB exception while generating the report", e);
+		}
+	}
+
+	@Override
+	public byte[] generateLiftingLetter(Integer idLifting) throws Exception {
+		LOG.info("SeizureServiceImpl - generateLevantamientoReport - start");
+		HashMap<String, Object> parameters = new HashMap<String, Object>();
+
+		try (Connection conn = oracleDataSourceEmbargos.getEmbargosConnection()) {
+
+			Resource embargosJrxml = ResourcesUtil.getFromJasperFolder("liftingLetter.jasper");
+			Resource logoImage = ResourcesUtil.getImageLogoCommerceResource();
+
+			File image = logoImage.getFile();
+
+			parameters.put("COD_LEVANTAMIENTO", idLifting);
+			parameters.put("IMAGE_PARAM", image.toString());
+
+			InputStream justificanteInputStream = embargosJrxml.getInputStream();
+
+			JasperPrint fillReport = JasperFillManager.fillReport(justificanteInputStream, parameters, conn);
+
+			List<JRPrintPage> pages = fillReport.getPages();
+
+			if (pages.size() == 0)
+				return null;
+
+			LOG.info("SeizureServiceImpl - generateLevantamientoReport - end");
+
+			return JasperExportManager.exportReportToPdf(fillReport);
+
+		} catch (Exception e) {
+			throw new Exception("DB exception while generating the report", e);
+		}
+	}
+
 
 	@Override
 	public void updateLiftingtatus(LevantamientoTraba levantamientoTraba, long codEstado, String userName) {

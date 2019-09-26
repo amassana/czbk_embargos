@@ -80,14 +80,14 @@ public class PetitionServiceImpl implements PetitionService{
 	}
 
 	@Override
-	public byte[] generateJasperPDF(Integer codeFileControl) throws Exception {
+	public byte[] generateF2PettitionResponse(Integer codeFileControl) throws Exception {
 
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
 		try (
 				Connection connEmbargos = oracleDataSourceEmbargosConfig.getEmbargosConnection()) {
 
-			Resource jrxmlResource = ResourcesUtil.getFromJasperFolder("peticiones_informacion.jasper");
+			Resource jrxmlResource = ResourcesUtil.getFromJasperFolder("f2_pettitionResponse.jasper");
 			Resource subReportResource = ResourcesUtil.getReportHeaderResource();
 			Resource imageReport = ResourcesUtil.getImageLogoCommerceResource();
 
@@ -114,4 +114,40 @@ public class PetitionServiceImpl implements PetitionService{
 			throw new Exception("Error in generarReporteListado()", ex);
 		}
 	}
+
+	@Override
+	public byte[] generateF1PettitionRequest() throws Exception {
+		HashMap<String, Object> parameters = new HashMap<String, Object>();
+
+		try (Connection connEmbargos = oracleDataSourceEmbargosConfig.getEmbargosConnection()) {
+
+			Resource jrxmlResource = ResourcesUtil.getFromJasperFolder("f1_pettitionRequest.jasper");
+			Resource subReportResource = ResourcesUtil.getReportHeaderResource();
+			Resource imageReport = ResourcesUtil.getImageLogoCommerceResource();
+
+			File image = imageReport.getFile();
+			InputStream subResourceInputStream = subReportResource.getInputStream();
+
+			JasperReport subReport = (JasperReport) JRLoader.loadObject(subResourceInputStream);
+
+//			parameters.put("img_param", image.toString());
+//			parameters.put("cod_control_fichero", codeFileControl);
+//			parameters.put("file_param", subReport);
+
+
+			InputStream resourceInputStream = jrxmlResource.getInputStream();
+
+			JasperPrint reporteLleno = JasperFillManager.fillReport(resourceInputStream, parameters, connEmbargos);
+			
+			List<JRPrintPage> pages = reporteLleno.getPages();
+			 
+			 if (pages.size() == 0)  return null;
+
+			return JasperExportManager.exportReportToPdf(reporteLleno);
+		} catch (Exception ex) {
+			throw new Exception("Error in generarReporteListado()", ex);
+		}
+	}
+	
+	
 }

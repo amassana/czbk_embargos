@@ -24,37 +24,9 @@ import net.sf.jasperreports.engine.JasperPrint;
 @Transactional(transactionManager = "transactionManager")
 public class SeizureSummaryImpl implements SeizureSummaryService {
 	
+	
 	@Autowired
 	OracleDataSourceEmbargosConfig oracleDataSourceComunes;
 
-	@Override
-	public byte[] generateSeizureSummaryReport(String accountNumber) throws Exception {
-
-		HashMap<String, Object> parameters = new HashMap<String, Object>();
-
-		try (Connection conn_embargos = oracleDataSourceComunes.getEmbargosConnection()) {
-
-			Resource transOrder = ResourcesUtil.getFromJasperFolder("orden_transferencias.jasper");
-			Resource imageLogo = ResourcesUtil.getImageLogoCommerceResource();
-
-			File logoFile = imageLogo.getFile();
-
-			parameters.put("IMAGE_PARAM", logoFile.toString());
-			parameters.put("COD_TRANSFERENCE_ORDER", accountNumber);
-
-			InputStream isOrdenTransferencia = transOrder.getInputStream();
-			JasperPrint transOrderJP = JasperFillManager.fillReport(isOrdenTransferencia, parameters, conn_embargos);
-			
-			List<JRPrintPage> pages = transOrderJP.getPages();
-			 
-			 if (pages.size() == 0)  return null;
-
-			return JasperExportManager.exportReportToPdf(transOrderJP);
-
-		} catch (SQLException e) {
-			throw new Exception("DB exception while generating the report", e);
-		}
-
-	}
 
 }

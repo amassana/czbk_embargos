@@ -7,6 +7,8 @@ import es.commerzbank.ice.comun.lib.domain.dto.AccountingNote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -27,6 +29,7 @@ import es.commerzbank.ice.embargos.domain.dto.PetitionCaseDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.LiftingService;
+import es.commerzbank.ice.utils.DownloadReportFile;
 import io.swagger.annotations.ApiOperation;
 
 
@@ -43,7 +46,9 @@ public class LiftingController {
 	@Autowired
 	private AccountingService accountingService;
 
-	
+	@Value("${commerzbank.jasper.temp}")
+	private String pdfSavedPath;
+
 	@GetMapping(value = "/{codeFileControl}")
 	@ApiOperation(value = "Devuelve la lista de casos de levamtamientos")
 	public ResponseEntity<List<LiftingDTO>> getLiftingListByCodeFileControl(Authentication authentication,
@@ -247,7 +252,57 @@ public class LiftingController {
 
 		logger.info("SeizureController - sendAccounting - end");
 		return response;
-    	
+
+	}
+
+	@GetMapping("/{fileControl}/report")
+	@ApiOperation(value = "Devuelve el fichero de resumen de levantamiento FASE 5")
+	public ResponseEntity<InputStreamResource> generarResumenLevantamientoF5(
+			@PathVariable("fileControl") Integer codFileControl) {
+
+		DownloadReportFile.setTempFileName("f5-seizure-lifting");
+
+		DownloadReportFile.setFileTempPath(pdfSavedPath);
+
+		try {
+
+			DownloadReportFile.writeFile(liftingService.generarResumenLevantamientoF5(codFileControl));
+
+			return DownloadReportFile.returnToDownloadFile();
+
+		} catch (Exception e) {
+			logger.error("Error in anexoReport", e);
+
+			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping("/notification/{idLifting}/report")
+	@ApiOperation(value = "Devuelve un levantamiento de embargo")
+	public ResponseEntity<InputStreamResource> generateLiftingLetter(
+			@PathVariable("idLifting") Integer idLifting) {
+		logger.info("SeizureController - generateLiftingLetter - start");
+
+		DownloadReportFile.setTempFileName("lifting-letter");
+
+		DownloadReportFile.setFileTempPath(pdfSavedPath);
+
+		try {
+
+			// seizure service falta
+			DownloadReportFile.writeFile(liftingService.generateLiftingLetter(idLifting));
+
+			logger.info("SeizureController - generateLiftingLetter - end");
+			return DownloadReportFile.returnToDownloadFile();
+
+		} catch (Exception e) {
+			logger.error("Error in levantamientoReport", e);
+			System.out.println(e);
+
+			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
     }
 
 	@PostMapping(value = "/accountingNote")

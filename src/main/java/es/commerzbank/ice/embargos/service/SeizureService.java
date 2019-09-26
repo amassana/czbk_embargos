@@ -26,12 +26,7 @@ public interface SeizureService {
 	public List<SeizureDTO> getAuditSeizure(Long codFileControl, Long idSeizure);
 	public List<SeizedBankAccountDTO> getAuditSeizedBankAccounts(Long codFileControl, Long idSeizure, Long codAudit);
 	
-	public byte[] generateJustificanteEmbargo(Integer idSeizure) throws Exception;
-	public byte[] generateLevantamientoReport(Integer idLifting) throws Exception;
-	public byte[] generarResumenTrabasF3(Integer codControlFichero) throws Exception;
-	public byte[] generarResumenTrabasF4(Integer codControlFichero) throws Exception;
-	public byte[] generarAnexo(BigDecimal cod_usuario, BigDecimal cod_traba, Integer num_anexo) throws Exception;
-	public byte[] generarRespuestaFinalEmbargo(Integer cod_file_control) throws Exception;
-	public byte[] generarResumenLevantamiento(Integer cod_file_control) throws Exception;
-	public byte[] generarOrdenTransferencia(String cod_solicitud_ejecucion) throws Exception;
+	public byte[] generateSeizureLetter(Integer idSeizure) throws Exception;
+	public byte[] generateSeizureRequestF3(Integer codControlFichero) throws Exception;
+	public byte[] generateSeizureResponseF4(Integer codControlFichero) throws Exception;
 }

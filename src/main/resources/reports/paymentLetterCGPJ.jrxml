@@ -4,11 +4,11 @@
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceBankDAdapterEmbargos.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<parameter name="IMAGE_PARAM" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="COD_SOLICITUD_EJECUCION" class="java.lang.String"/>
+	<parameter name="COD_TRABA" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT se.ORDENANTE, se.BIC, se.IBAN, se.BENEFICIARIO, se.CONCEPTO, se.PROPOSITOTR, se.TIPOTR, se.IMPORTE_RESPUESTA
 FROM SOLICITUDES_EJECUCION se
-WHERE COD_SOLICITUD_EJECUCION = $P{COD_SOLICITUD_EJECUCION}]]>
+WHERE se.COD_TRABA = $P{COD_TRABA}]]>
 	</queryString>
 	<field name="ORDENANTE" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="ORDENANTE"/>
@@ -58,7 +58,7 @@ WHERE COD_SOLICITUD_EJECUCION = $P{COD_SOLICITUD_EJECUCION}]]>
 				</textElement>
 				<text><![CDATA[GS-BO CERI, Payments Madrid]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="317" y="111" width="199" height="30" uuid="02f58a86-dcbf-4cb0-a243-cc97bee360f1"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" isBold="true"/>
@@ -163,28 +163,28 @@ WHERE COD_SOLICITUD_EJECUCION = $P{COD_SOLICITUD_EJECUCION}]]>
 				</textElement>
 				<text><![CDATA[Tipo de transferencia:]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="112" y="20" width="414" height="20" uuid="1fb493af-868c-4be9-b091-c79c9be8e15e"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ORDENANTE}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="182" y="90" width="190" height="20" uuid="eceeb5cb-ac1c-45f1-a23d-9e3ddecea965"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{BIC}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="146" y="110" width="330" height="20" uuid="9515e08d-f91f-43be-bfac-49b0e42bcab2"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{IBAN}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="161" y="130" width="374" height="38" uuid="d6ad5c76-a9da-422a-94b7-334528556e5d"/>
 				<box topPadding="3"/>
 				<textElement verticalAlignment="Top">
@@ -192,28 +192,28 @@ WHERE COD_SOLICITUD_EJECUCION = $P{COD_SOLICITUD_EJECUCION}]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{BENEFICIARIO}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="97" y="169" width="410" height="20" uuid="a4ddd71a-4e6c-4334-82ec-751c40a04d5a"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{CONCEPTO}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="101" y="190" width="150" height="20" uuid="a2ccd20f-b4c0-4eb9-9e12-76c2ef484a2a"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{PROPOSITOTR}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="166" y="210" width="180" height="20" uuid="3e817eae-ba4a-4025-bb4c-70307b8c5ef4"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{TIPOTR}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="86" y="0" width="220" height="20" uuid="7f5bf497-f6de-4704-9ffc-88e014010aaa"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12"/>

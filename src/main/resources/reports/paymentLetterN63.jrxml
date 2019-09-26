@@ -4,10 +4,10 @@
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceBankDAdapterEmbargos.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<parameter name="IMAGE_PARAM" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="COD_TRANSFERENCE_ORDER" class="java.lang.String"/>
+	<parameter name="COD_CONTROL_FICHERO" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT ff.IMPORTE, ec.BIC, ec.IBAN, ec.DES_ENTIDAD, ec.CUENTA FROM FICHERO_FINAL ff INNER JOIN CONTROL_FICHERO cf ON ff.COD_CONTROL_FICHERO = cf.COD_CONTROL_FICHERO INNER JOIN ENTIDADES_COMUNICADORAS ec ON cf.COD_ENTIDAD_PRESENTADORA = ec.COD_ENTIDAD_PRESENTADORA
-WHERE ec.CUENTA = $P{COD_TRANSFERENCE_ORDER}]]>
+WHERE ff.COD_CONTROL_FICHERO = $P{COD_CONTROL_FICHERO}]]>
 	</queryString>
 	<field name="IMPORTE" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="IMPORTE"/>
@@ -48,7 +48,7 @@ WHERE ec.CUENTA = $P{COD_TRANSFERENCE_ORDER}]]>
 				</textElement>
 				<text><![CDATA[GS-BO CERI, Payments Madrid]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="317" y="111" width="199" height="30" uuid="02f58a86-dcbf-4cb0-a243-cc97bee360f1"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" isBold="true"/>
@@ -153,21 +153,21 @@ WHERE ec.CUENTA = $P{COD_TRANSFERENCE_ORDER}]]>
 				</textElement>
 				<text><![CDATA[Tipo de transferencia:]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="185" y="90" width="190" height="20" uuid="eceeb5cb-ac1c-45f1-a23d-9e3ddecea965"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{BIC}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="148" y="110" width="330" height="20" uuid="9515e08d-f91f-43be-bfac-49b0e42bcab2"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{IBAN}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="162" y="130" width="374" height="38" uuid="d6ad5c76-a9da-422a-94b7-334528556e5d"/>
 				<box topPadding="3"/>
 				<textElement verticalAlignment="Top">
@@ -175,7 +175,7 @@ WHERE ec.CUENTA = $P{COD_TRANSFERENCE_ORDER}]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DES_ENTIDAD}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="88" y="0" width="220" height="20" uuid="7f5bf497-f6de-4704-9ffc-88e014010aaa"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12"/>
@@ -189,7 +189,7 @@ WHERE ec.CUENTA = $P{COD_TRANSFERENCE_ORDER}]]>
 				</textElement>
 				<text><![CDATA[Commerzbank AG.]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="111" y="40" width="272" height="20" uuid="801f9074-3b5d-418d-9678-f5dcb6457348"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12"/>

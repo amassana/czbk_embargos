@@ -187,19 +187,47 @@ public class PetitionController {
 //		return response;
 //	}
 
-	@GetMapping("/{codeFileControl}/report")
-	public ResponseEntity<InputStreamResource> petitionReport(
+	@GetMapping("/{codeFileControl}/report") // f1
+	@ApiOperation(value = "Devuelve report PettitionRequest Fase1")
+	public ResponseEntity<InputStreamResource> f1PettitionRequest(
 			@PathVariable("codeFileControl") Integer codeFileControl) {
-		logger.info("PetitionController - petitionReport - start");
-		DownloadReportFile.setTempFileName("petitionReport");
+//		logger.info("PetitionController - f1PettitionRequest - start");
+//		DownloadReportFile.setTempFileName("petitionReport");
+//
+//		DownloadReportFile.setFileTempPath(pdfSavedPath);
+//
+//		try {
+//
+//			DownloadReportFile.writeFile(petitionService.generateJasperPDF(codeFileControl));
+//
+//			logger.info("PetitionController - f1PettitionRequest - end");
+//			return DownloadReportFile.returnToDownloadFile();
+//
+//		} catch (Exception e) {
+//			logger.error("Error in petitionReport", e);
+//
+//			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
+
+		return null;
+
+	}
+
+	@GetMapping("/response/{codeFileControl}/report") // f2
+	@ApiOperation(value = "Devuelve report PettitionResponse Fase2")
+	public ResponseEntity<InputStreamResource> f2PettitionResponse(
+			@PathVariable("codeFileControl") Integer codeFileControl) {
+		logger.info("PetitionController - f2PettitionResponse - start");
+		
+		DownloadReportFile.setTempFileName("pettition-response");
 
 		DownloadReportFile.setFileTempPath(pdfSavedPath);
 
 		try {
 
-			DownloadReportFile.writeFile(petitionService.generateJasperPDF(codeFileControl));
+			DownloadReportFile.writeFile(petitionService.generateF2PettitionResponse(codeFileControl));
 
-			logger.info("PetitionController - petitionReport - end");
+			logger.info("PetitionController - f2PettitionResponse - end");
 			return DownloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
@@ -209,5 +237,4 @@ public class PetitionController {
 		}
 
 	}
-
 }
