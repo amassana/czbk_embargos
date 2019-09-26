@@ -1,17 +1,21 @@
 package es.commerzbank.ice.embargos.config;
 
-import java.io.BufferedReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jndi.JndiTemplate;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -21,6 +25,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import es.commerzbank.ice.comun.lib.config.OracleDataSourceConfig;
 import oracle.jdbc.pool.OracleDataSource;
 
 @Configuration
@@ -32,49 +37,53 @@ import oracle.jdbc.pool.OracleDataSource;
 @EnableTransactionManagement
 @EnableCaching
 public class OracleDataSourceEmbargosConfig {
+	private static final Logger logger = LoggerFactory.getLogger(OracleDataSourceEmbargosConfig.class);
 
-	/*
-	 * @Value("${spring.datasource.jndi-name}") private String oracleJNDIName;
-	 */
-
-	@Value("${spring.datasource.url}")
+	/*@Value("${spring.datasource.url}")
 	private String url;
 
 	@Value("${spring.datasource.username}")
 	private String userName;
 
 	@Value("${spring.datasource.password}")
-	private String password;
+	private String password;*/
 
 	@Value("${spring.datasource.driverClassName}")
 	private String driverClassName;
 
-	@Value("${spring.ds-comun.url}")
+	/*@Value("${spring.ds-comun.url}")
 	private String c_url;
 
 	@Value("${spring.ds-comun.username}")
 	private String c_userName;
 
 	@Value("${spring.ds-comun.password}")
-	private String c_password;
+	private String c_password;*/
 
 	@Value("${spring.ds-comun.driver-class-name}")
 	private String c_driverClassName;
+	
+	@Autowired
+	private OracleDataSourceConfig oracleDataSourceComunes;
 
 	@Bean(name = "dsEmbargos")
 	public DataSource oracleDataSource() throws SQLException {
-		/*
-		 * JndiDataSourceLookup dataSourceLookup = new JndiDataSourceLookup(); return
-		 * dataSourceLookup.getDataSource(oracleJNDIName);
-		 */
-		OracleDataSource dataSource = new OracleDataSource();
+		/*OracleDataSource dataSource = new OracleDataSource();
 		dataSource.setUser(userName);
 		dataSource.setURL(url);
 		dataSource.setPassword(password);
 		dataSource.setImplicitCachingEnabled(true);
-		dataSource.setFastConnectionFailoverEnabled(true);
-		return dataSource;
-
+		dataSource.setFastConnectionFailoverEnabled(true);*/
+		
+		DataSource ds = null;
+        JndiTemplate jndi = new JndiTemplate();
+        try {
+            ds = jndi.lookup("java:comp/env/jdbc/embargosDB", DataSource.class);
+        } catch (NamingException e) {
+            logger.error("NamingException for java:comp/env/jdbc/embargosDB", e);
+        }
+        
+		return ds;
 	}
 
 	private JpaVendorAdapter jpaVendorAdapter() {
@@ -108,13 +117,13 @@ public class OracleDataSourceEmbargosConfig {
 
 	public Connection getEmbargosConnection() throws ClassNotFoundException, SQLException {
 		Class.forName(driverClassName);
-		Connection conn = DriverManager.getConnection(url, userName, password);
+		Connection conn = oracleDataSource().getConnection();
 		return conn;
 	}
 
 	public Connection getComunesConnection() throws ClassNotFoundException, SQLException {
 		Class.forName(c_driverClassName);
-		Connection conn = DriverManager.getConnection(c_url, c_userName, c_password);
+		Connection conn = oracleDataSourceComunes.oracleDataSource().getConnection();
 		return conn;
 	}
 }
