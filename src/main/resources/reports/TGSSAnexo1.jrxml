@@ -1,20 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="anexo1" pageWidth="595" pageHeight="842" columnWidth="495" leftMargin="50" rightMargin="50" topMargin="20" bottomMargin="20" uuid="8023237a-e493-4f98-b614-121eb503aa39">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerzBankAdapterComunes.xml"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceBankDAdapterEmbargos.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<parameter name="COD_TRABA" class="java.math.BigDecimal"/>
 	<parameter name="COD_USUARIO" class="java.math.BigDecimal"/>
-	<parameter name="REPORT_CONNECTION_EMB" class="java.sql.Connection"/>
 	<parameter name="REPORT_IMPORTE_ABONADO" class="java.lang.Object"/>
 	<parameter name="IMAGE_PARAM" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT l.LOCALIDAD AS Municipio, u.PERFIL AS Cargo, u.NOMBRE FROM USUARIO u INNER JOIN SUCURSAL s ON u.COD_SUCURSAL = s.COD_SUCURSAL INNER JOIN LOCALIDAD l ON s.COD_LOCALIDAD = l.COD_LOCALIDAD
-WHERE u.COD_USUARIO = $P{COD_USUARIO}]]>
+		<![CDATA[SELECT a.CARGO, a.NOMBRE FROM APODERADOS a WHERE a.ID = $P{COD_USUARIO}]]>
 	</queryString>
-	<field name="MUNICIPIO" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="MUNICIPIO"/>
-	</field>
 	<field name="CARGO" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="CARGO"/>
 	</field>
@@ -30,7 +25,7 @@ WHERE u.COD_USUARIO = $P{COD_USUARIO}]]>
 	<title>
 		<band height="74" splitType="Stretch">
 			<image>
-				<reportElement x="290" y="16" width="241" height="43" uuid="4e2f76b0-4fe3-4987-afdb-7468e28102af"/>
+				<reportElement x="254" y="16" width="241" height="43" uuid="4e2f76b0-4fe3-4987-afdb-7468e28102af"/>
 				<imageExpression><![CDATA[$P{IMAGE_PARAM}]]></imageExpression>
 			</image>
 		</band>
@@ -82,7 +77,7 @@ WHERE u.COD_USUARIO = $P{COD_USUARIO}]]>
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="115" splitType="Stretch">
+		<band height="214" splitType="Stretch">
 			<staticText>
 				<reportElement x="49" y="29" width="74" height="19" uuid="f5c0705b-5398-4deb-b4f8-387980bbf373"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -118,28 +113,21 @@ WHERE u.COD_USUARIO = $P{COD_USUARIO}]]>
 				</textElement>
 				<text><![CDATA[0159]]></text>
 			</staticText>
-		</band>
-	</columnHeader>
-	<detail>
-		<band height="136" splitType="Stretch">
 			<subreport>
-				<reportElement x="8" y="-30" width="473" height="120" uuid="3c0a4998-bee9-4e5a-a2ab-01282f68afd8"/>
+				<reportElement x="9" y="85" width="444" height="125" uuid="7a01ddef-f726-43ed-bc4d-f15caae8f86f"/>
 				<subreportParameter name="COD_TRABA">
 					<subreportParameterExpression><![CDATA[$P{COD_TRABA}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="COD_USUARIO">
-					<subreportParameterExpression><![CDATA[$P{COD_USUARIO}]]></subreportParameterExpression>
+				<subreportParameter name="IMAGE_PARAM">
+					<subreportParameterExpression><![CDATA[$P{IMAGE_PARAM}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="REPORT_CONNECTION_EMB">
-					<subreportParameterExpression><![CDATA[$P{REPORT_CONNECTION_EMB}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="REPORT_IMPORTE_ABONADO">
-					<subreportParameterExpression><![CDATA[$P{REPORT_IMPORTE_ABONADO}]]></subreportParameterExpression>
-				</subreportParameter>
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION_EMB}]]></connectionExpression>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{REPORT_IMPORTE_ABONADO}]]></subreportExpression>
 			</subreport>
 		</band>
+	</columnHeader>
+	<detail>
+		<band height="23"/>
 	</detail>
 	<columnFooter>
 		<band height="45" splitType="Stretch"/>
@@ -156,7 +144,7 @@ WHERE u.COD_USUARIO = $P{COD_USUARIO}]]>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="164" splitType="Stretch">
+		<band height="97" splitType="Stretch">
 			<staticText>
 				<reportElement x="23" y="27" width="145" height="19" uuid="ef40d175-4478-4113-a2ca-8a999edfafeb"/>
 				<textElement>
@@ -223,38 +211,28 @@ WHERE u.COD_USUARIO = $P{COD_USUARIO}]]>
 				</reportElement>
 			</line>
 			<textField>
-				<reportElement x="345" y="17" width="26" height="13" uuid="5c249b8e-379a-49a6-8d2a-a0e7e3302f08"/>
+				<reportElement x="345" y="10" width="26" height="20" uuid="5c249b8e-379a-49a6-8d2a-a0e7e3302f08"/>
 				<box leftPadding="2"/>
-				<textElement>
+				<textElement verticalAlignment="Bottom">
 					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{TodayDate}.split("/")[0]]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="385" y="17" width="26" height="13" uuid="8e6a39e9-285c-4367-9fb1-f7225981dc85"/>
+				<reportElement x="385" y="10" width="26" height="20" uuid="8e6a39e9-285c-4367-9fb1-f7225981dc85"/>
 				<box leftPadding="2"/>
-				<textElement>
+				<textElement verticalAlignment="Bottom">
 					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{TodayDate}.split("/")[1]]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="426" y="17" width="50" height="13" uuid="b643d94c-ab26-4070-8057-74766c151403"/>
+				<reportElement x="426" y="10" width="54" height="20" uuid="b643d94c-ab26-4070-8057-74766c151403"/>
 				<box leftPadding="2"/>
-				<textElement>
+				<textElement verticalAlignment="Bottom">
 					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{TodayDate}.split("/")[2]]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="264" y="12" width="71" height="18" uuid="81b8121c-0ad8-4da3-ad5a-f022ccc1a3f9">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="899e72d8-0f8a-45f4-a208-16d3abd6f70e"/>
-				</reportElement>
-				<box topPadding="5" leftPadding="2"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Serif"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{MUNICIPIO}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="190" y="50" width="165" height="19" uuid="a75e7068-c290-4bfd-9b8d-97b424ffacc8">
@@ -275,6 +253,11 @@ WHERE u.COD_USUARIO = $P{COD_USUARIO}]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{CARGO}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="263" y="10" width="71" height="21" uuid="a77bcb62-fda1-4145-9e87-b69150659169"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom"/>
+				<text><![CDATA[Madrid]]></text>
+			</staticText>
 		</band>
 	</summary>
 </jasperReport>

@@ -7,6 +7,6 @@ import es.commerzbank.ice.embargos.domain.dto.PetitionDTO;
 public interface PetitionService {
 
 	public PetitionDTO getByCodeFileControl(Long codeFileControl);
-	public byte[] generateF1PettitionRequest() throws Exception;
+	public byte[] generateF1PettitionRequest(Integer codeFileControl) throws Exception;
 	public byte[] generateF2PettitionResponse(Integer codeFileControl) throws Exception;
 }

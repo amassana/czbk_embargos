@@ -1,20 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="anexo1" pageWidth="595" pageHeight="842" columnWidth="495" leftMargin="50" rightMargin="50" topMargin="20" bottomMargin="20" uuid="8023237a-e493-4f98-b614-121eb503aa39">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerzBankAdapterComunes.xml"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="anexo2" pageWidth="595" pageHeight="842" columnWidth="495" leftMargin="50" rightMargin="50" topMargin="20" bottomMargin="20" uuid="8023237a-e493-4f98-b614-121eb503aa39">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceBankDAdapterEmbargos.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<parameter name="COD_TRABA" class="java.math.BigDecimal"/>
 	<parameter name="COD_USUARIO" class="java.math.BigDecimal"/>
-	<parameter name="REPORT_CONNECTION_EMB" class="java.sql.Connection"/>
 	<parameter name="REPORT_IMPORTE_ABONADO" class="java.lang.Object"/>
 	<parameter name="IMAGE_PARAM" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT l.LOCALIDAD AS Municipio, u.PERFIL AS Cargo, u.NOMBRE FROM USUARIO u INNER JOIN SUCURSAL s ON u.COD_SUCURSAL = s.COD_SUCURSAL INNER JOIN LOCALIDAD l ON s.COD_LOCALIDAD = l.COD_LOCALIDAD
-WHERE u.COD_USUARIO = $P{COD_USUARIO}]]>
+		<![CDATA[SELECT a.CARGO, a.NOMBRE FROM APODERADOS a WHERE a.ID = $P{COD_USUARIO}]]>
 	</queryString>
-	<field name="MUNICIPIO" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="MUNICIPIO"/>
-	</field>
 	<field name="CARGO" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="CARGO"/>
 	</field>
@@ -123,20 +118,14 @@ WHERE u.COD_USUARIO = $P{COD_USUARIO}]]>
 	<detail>
 		<band height="136" splitType="Stretch">
 			<subreport>
-				<reportElement x="8" y="-30" width="473" height="120" uuid="3c0a4998-bee9-4e5a-a2ab-01282f68afd8"/>
+				<reportElement x="9" y="-30" width="444" height="125" uuid="401d6dd5-ba00-49a0-a605-24288f083990"/>
 				<subreportParameter name="COD_TRABA">
 					<subreportParameterExpression><![CDATA[$P{COD_TRABA}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="COD_USUARIO">
-					<subreportParameterExpression><![CDATA[$P{COD_USUARIO}]]></subreportParameterExpression>
+				<subreportParameter name="IMAGE_PARAM">
+					<subreportParameterExpression><![CDATA[$P{IMAGE_PARAM}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="REPORT_CONNECTION_EMB">
-					<subreportParameterExpression><![CDATA[$P{REPORT_CONNECTION_EMB}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="REPORT_IMPORTE_ABONADO">
-					<subreportParameterExpression><![CDATA[$P{REPORT_IMPORTE_ABONADO}]]></subreportParameterExpression>
-				</subreportParameter>
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION_EMB}]]></connectionExpression>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{REPORT_IMPORTE_ABONADO}]]></subreportExpression>
 			</subreport>
 		</band>
@@ -223,40 +212,6 @@ WHERE u.COD_USUARIO = $P{COD_USUARIO}]]>
 				</reportElement>
 			</line>
 			<textField>
-				<reportElement x="345" y="17" width="26" height="13" uuid="5c249b8e-379a-49a6-8d2a-a0e7e3302f08"/>
-				<box leftPadding="2"/>
-				<textElement>
-					<font fontName="Serif"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$V{TodayDate}.split("/")[0]]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="385" y="17" width="26" height="13" uuid="8e6a39e9-285c-4367-9fb1-f7225981dc85"/>
-				<box leftPadding="2"/>
-				<textElement>
-					<font fontName="Serif"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$V{TodayDate}.split("/")[1]]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="426" y="17" width="50" height="13" uuid="b643d94c-ab26-4070-8057-74766c151403"/>
-				<box leftPadding="2"/>
-				<textElement>
-					<font fontName="Serif"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$V{TodayDate}.split("/")[2]]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="264" y="12" width="71" height="18" uuid="81b8121c-0ad8-4da3-ad5a-f022ccc1a3f9">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="899e72d8-0f8a-45f4-a208-16d3abd6f70e"/>
-				</reportElement>
-				<box topPadding="5" leftPadding="2"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Serif"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{MUNICIPIO}]]></textFieldExpression>
-			</textField>
-			<textField>
 				<reportElement x="190" y="50" width="165" height="19" uuid="a75e7068-c290-4bfd-9b8d-97b424ffacc8">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7c3a0609-31d6-4bdd-a706-fd58298043af"/>
 				</reportElement>
@@ -274,6 +229,35 @@ WHERE u.COD_USUARIO = $P{COD_USUARIO}]]>
 					<font fontName="Serif" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{CARGO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="263" y="10" width="71" height="21" uuid="3c07ae94-bcff-45e6-9550-00431fafd42b"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom"/>
+				<text><![CDATA[Madrid]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="426" y="10" width="55" height="20" uuid="0c25734a-2ef2-40d6-9524-cfa30b76836a"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Serif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{TodayDate}.split("/")[2]]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="385" y="10" width="26" height="20" uuid="a5f685ff-904c-493a-ada7-9ac1ef7dae63"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Serif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{TodayDate}.split("/")[1]]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="345" y="10" width="26" height="20" uuid="e3632be2-5878-448e-bbf2-ce70dad104f1"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Serif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{TodayDate}.split("/")[0]]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

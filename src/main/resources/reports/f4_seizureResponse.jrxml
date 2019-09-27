@@ -90,7 +90,7 @@ t.cod_traba]]>
 		<groupHeader>
 			<band height="53">
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement isPrintRepeatedValues="false" x="460" y="20" width="88" height="30" uuid="142f8eb9-9187-4cee-bedc-2dfc084dcc30">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8b7afc92-88e8-4215-92c0-ecde04ff4aac"/>
 					</reportElement>
@@ -99,7 +99,7 @@ t.cod_traba]]>
 					</textElement>
 					<textFieldExpression><![CDATA["Pendiente " + $F{IMPORTEPENDIENTE}]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="350" y="20" width="110" height="30" uuid="50bb0aa2-ca46-4271-b058-70251c42bc73"/>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Serif" isBold="true"/>
@@ -125,16 +125,16 @@ t.cod_traba]]>
 				<reportElement x="290" y="28" width="79" height="30" uuid="2ff9813b-f750-4e4c-a016-0a677c25c19f"/>
 				<box leftPadding="4"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Serif" size="14"/>
+					<font fontName="Serif" size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Organismo]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="369" y="28" width="151" height="30" uuid="25527b05-627b-43d4-8e25-672a61a1733d">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="70be1e8b-a8d5-423d-865c-bf6dfa56a188"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Serif" size="14"/>
+					<font fontName="Serif" size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DES_ENTIDAD}]]></textFieldExpression>
 			</textField>
@@ -155,7 +155,7 @@ t.cod_traba]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement isPrintRepeatedValues="false" x="170" y="-33" width="80" height="30" uuid="82a73c1d-7f1f-459c-ace9-cce76c640290">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="af1705da-d847-410c-91f9-4b46909ef501"/>
 				</reportElement>
@@ -164,7 +164,7 @@ t.cod_traba]]>
 				</textElement>
 				<textFieldExpression><![CDATA["NIF " + $F{NIF}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement isPrintRepeatedValues="false" x="251" y="-33" width="98" height="30" uuid="8acdaf28-d38d-4ef1-a29a-8372c9924f47">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="da80972e-2364-4fe4-a20d-b640a07dee37"/>
 				</reportElement>
@@ -182,7 +182,7 @@ t.cod_traba]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{IMPORTETRABADOCUENTA}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="13" y="0" width="182" height="23" uuid="cba83966-1e5d-4471-9526-62d4644e4369">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="097735a6-770c-43a7-b1fc-0f2867ddef0c"/>
 					<printWhenExpression><![CDATA[$V{CuentasGroup_COUNT} == 1]]></printWhenExpression>
@@ -203,7 +203,7 @@ t.cod_traba]]>
 	</pageFooter>
 	<summary>
 		<band height="98" splitType="Stretch">
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="390" y="34" width="140" height="30" uuid="289aea83-2059-456d-aad6-a21b13a94e45"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" isBold="true"/>
