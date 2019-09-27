@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.embargos.service.FileManagementService;
 
 @Component
@@ -20,9 +21,6 @@ public class FileMonitorProcess {
 
     private static final Logger LOG = LoggerFactory.getLogger(FileMonitorProcess.class);
 
-	@Value("${commerzbank.embargos.files.path.monitoring}")
-	private String pathMonitoring;
-        
     @Value("${commerzbank.embargos.files.monitoring-interval-in-seconds}")
     private long intervalInSeconds;
     
@@ -53,7 +51,10 @@ public class FileMonitorProcess {
 
     @Value("${commerzbank.embargos.files.stable-size-time-in-millis}")
     private long stableTime;
-    
+
+	@Autowired
+	private GeneralParametersService generalParametersService;
+	
     // Automatically inject business services
     @Autowired
     private FileManagementService fileManagementService;
@@ -70,7 +71,11 @@ public class FileMonitorProcess {
     {
         try
         {
-            File dir = new File(pathMonitoring);
+        	
+        	//TODO: workarround usando un solo poller, deberian haber 2 pollers: uno para AEAT y otro para NORMA63
+        	String pathIncoming = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_INCOMING);
+        	
+        	File dir = new File(pathIncoming);
 
             if (!helloWorld)
             {
