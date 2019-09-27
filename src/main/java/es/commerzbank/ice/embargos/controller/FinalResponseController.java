@@ -3,6 +3,9 @@ package es.commerzbank.ice.embargos.controller;
 import java.math.BigDecimal;
 import java.util.List;
 
+import es.commerzbank.ice.comun.lib.security.Permissions;
+import es.commerzbank.ice.embargos.domain.dto.OrderingEntity;
+import es.commerzbank.ice.embargos.scheduled.Norma63Fase6;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +39,9 @@ public class FinalResponseController {
 
 	@Value("${commerzbank.jasper.temp}")
 	private String pdfSavedPath;
+
+	@Autowired
+	private Norma63Fase6 norma63Fase6;
 
 	@GetMapping(value = "/{codeFileControl}")
 	@ApiOperation(value = "Devuelve la lista de casos de levamtamientos")
@@ -194,4 +200,33 @@ public class FinalResponseController {
 		}
 	}
 
+	@GetMapping(value = "/{codeFileControl}", produces = { "application/json" })
+	public ResponseEntity<Void> createNorma63(Authentication authentication,
+											  @PathVariable("codeFileControl") Long codeFileControl) {
+		logger.info("SeizureSummaryController - createNorma63 - start");
+		ResponseEntity<Void> response = null;
+		OrderingEntity result = null;
+
+		if (!Permissions.hasPermission(authentication, "ui.impuestos")) {
+			logger.info("SeizureSummaryController - createNorma63 - forbidden");
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
+
+		if (codeFileControl != null) {
+			try {
+				norma63Fase6.generarFase6(codeFileControl);
+				response = new ResponseEntity<>(HttpStatus.OK);
+			} catch (Exception e) {
+				logger.error("eizureSummaryController - createNorma63 - Error while generating norma 63 summary file",
+						e);
+				response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		} else {
+			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
+		logger.info("SeizureSummaryController - createNorma63 - end");
+
+		return response;
+	}
 }

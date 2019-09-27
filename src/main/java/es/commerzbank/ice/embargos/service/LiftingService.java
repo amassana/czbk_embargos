@@ -10,6 +10,7 @@ import es.commerzbank.ice.embargos.domain.dto.LiftingDTO;
 import es.commerzbank.ice.embargos.domain.dto.LiftingStatusDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
+import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
 
 public interface LiftingService {
 
@@ -26,6 +27,8 @@ public interface LiftingService {
 	boolean changeStatus(Long codeLifting, Long status, String userName) throws Exception;
 
 	void updateLiftingBankAccountingStatus(CuentaLevantamiento cuenta, long codEstado, String userName);
+
+	public void updateLiftingtatus(LevantamientoTraba levantamientoTraba, long codEstado, String userName);
 
 	public byte[] generarResumenLevantamientoF5(Integer cod_file_control) throws Exception;
 
