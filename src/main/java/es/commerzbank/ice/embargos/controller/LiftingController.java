@@ -3,6 +3,7 @@ package es.commerzbank.ice.embargos.controller;
 import java.util.List;
 import java.util.Map;
 
+import es.commerzbank.ice.comun.lib.domain.dto.AccountingNote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -248,4 +249,37 @@ public class LiftingController {
 		return response;
     	
     }
+
+	@PostMapping(value = "/accountingNote")
+	@ApiOperation(value="Tratamiento de la respuesta de Contabilidad (nota contable).")
+	public ResponseEntity<String> manageAccountingNoteLiftingCallback(Authentication authentication,
+																	  @RequestBody AccountingNote accountingNote){
+		logger.info("SeizureController - manageAccountingNoteLiftingCallback - start");
+		ResponseEntity<String> response = null;
+		boolean result = false;
+
+		try {
+
+			String userName = authentication.getName();
+
+			result = accountingService.manageAccountingNoteLiftingCallback(accountingNote, userName);
+
+
+			if (result) {
+				response = new ResponseEntity<>(HttpStatus.OK);
+			} else {
+				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+
+		} catch (Exception e) {
+
+			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+			logger.error("ERROR in doAccounting: ", e);
+		}
+
+		logger.info("SeizureController - manageAccountingNoteLiftingCallback - end");
+		return response;
+
+	}
 }

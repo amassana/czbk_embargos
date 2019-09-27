@@ -1,5 +1,8 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
+import es.commerzbank.ice.comun.lib.file.generate.ContaGenExecutor;
+import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.embargos.domain.entity.*;
@@ -7,6 +10,7 @@ import es.commerzbank.ice.embargos.domain.mapper.AEATMapper;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
 import es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.Levantamiento;
 import es.commerzbank.ice.embargos.repository.*;
+import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.embargos.service.files.AEATLiftingService;
 import es.commerzbank.ice.utils.EmbargosConstants;
@@ -22,6 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -34,6 +40,9 @@ public class AEATLiftingServiceImpl
     @Value("${commerzbank.embargos.beanio.config-path.aeat}")
     String pathFileConfigAEAT;
 
+    //@Value("${commerzbank.embargos.beanio.config-path.aeat}")
+    // TODO
+    BigDecimal limiteAutomatico = new BigDecimal(50000);
     @Autowired
     FileControlMapper fileControlMapper;
 
@@ -51,11 +60,21 @@ public class AEATLiftingServiceImpl
     CustomerService customerService;
     @Autowired
     AEATMapper aeatMapper;
+    @Autowired
+    AccountingService accountingService;
+    @Autowired
+    GeneralParametersService generalParametersService;
+    @Autowired
+    ContaGenExecutor contaGenExecutor;
+
     @Override
     public void tratarFicheroLevantamientos(File file) throws IOException, ICEParserException {
         BeanReader beanReader = null;
 
         try {
+            BigDecimal importeMaximoAutomaticoDivisa =
+                    generalParametersService.loadBigDecimalParameter(EmbargosConstants.PARAMETRO_EMBARGOS_LEVANTAMIENTO_IMPORTE_MAXIMO_AUTOMATICO_DIVISA);
+
             // Inicializar control fichero
             ControlFichero controlFicheroLevantamiento =
                     fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT);
@@ -68,6 +87,10 @@ public class AEATLiftingServiceImpl
             beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_LEVANTAMIENTOTRABAS, file);
 
             Object currentRecord = null;
+
+            boolean allLevantamientosContabilizados = true;
+            // almacena las cuentas que se han contabilizado, para su actualización posterior de estado.
+            //List<CuentaLevantamiento> cuentasContabilizadas = new ArrayList<>();
 
             while ((currentRecord = beanReader.read()) != null) {
                 if (EmbargosConstants.RECORD_NAME_AEAT_ENTIDADTRANSMISORA.equals(beanReader.getRecordName()))
@@ -113,9 +136,36 @@ public class AEATLiftingServiceImpl
 
                     liftingRepository.save(levantamiento);
 
+                    boolean allCuentasLevantamientoContabilizados = true;
+
                     for (CuentaLevantamiento cuentaLevantamiento : levantamiento.getCuentaLevantamientos())
                     {
+                        if (!EmbargosConstants.ISO_MONEDA_EUR.equals(cuentaLevantamiento.getCodDivisa()) &&
+                                importeMaximoAutomaticoDivisa.compareTo(cuentaLevantamiento.getImporte()) < 0) {
+                            allLevantamientosContabilizados = false;
+                            allCuentasLevantamientoContabilizados = false;
+                            LOG.info("Cannot perform an automatic seizure lifting: "+ cuentaLevantamiento.getCodDivisa() +" and "+ cuentaLevantamiento.getImporte().toPlainString());
+                        }
+                        else
+                        {
+                            LOG.info("Doing an automatic seizure lifting.");
+
+                            EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
+                            estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION);
+                            cuentaLevantamiento.setEstadoLevantamiento(estadoLevantamiento);
+                        }
+
                         liftingBankAccountRepository.save(cuentaLevantamiento);
+
+                        accountingService.sendAccountingLiftingBankAccount(cuentaLevantamiento, embargo, EmbargosConstants.USER_AUTOMATICO);
+                    }
+
+                    if (allCuentasLevantamientoContabilizados) {
+                        EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
+                        estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION);
+                        levantamiento.setEstadoLevantamiento(estadoLevantamiento);
+                        levantamiento.setIndCasoRevisado(EmbargosConstants.IND_FLAG_YES);
+                        liftingRepository.save(levantamiento);
                     }
                 }
                 else if (EmbargosConstants.RECORD_NAME_AEAT_FINENTIDADCREDITO.equals(beanReader.getRecordName()))
@@ -134,13 +184,28 @@ public class AEATLiftingServiceImpl
                    LOG.info(beanReader.getRecordName());// throw new Exception("BeanIO - Unexpected record name: "+ beanReader.getRecordName());
             }
 
-            //Cambio de estado de CtrlFichero a: RECIBIDO
-            EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
-                    EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED,
-                    EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63);
-            controlFicheroLevantamiento.setEstadoCtrlfichero(estadoCtrlfichero);
+            // cerrar y enviar la contabilización
+            if (allLevantamientosContabilizados) {
+                contaGenExecutor.generacionFicheroContabilidad("F5_" + controlFicheroLevantamiento.getCodControlFichero());
+            }
 
-            fileControlRepository.save(controlFicheroLevantamiento);
+            // Actualizar control fichero
+
+            EstadoCtrlfichero estadoCtrlfichero = null;
+
+            if (allLevantamientosContabilizados) {
+                estadoCtrlfichero = new EstadoCtrlfichero(
+                        EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_ACCOUNTING_RESPONSE,
+                        EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63);
+            }
+            else
+            {
+                estadoCtrlfichero = new EstadoCtrlfichero(
+                        EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED,
+                        EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63);
+            }
+
+            controlFicheroLevantamiento.setEstadoCtrlfichero(estadoCtrlfichero);
         }
         catch (Exception e)
         {

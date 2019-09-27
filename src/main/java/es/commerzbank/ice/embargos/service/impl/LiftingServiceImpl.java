@@ -80,8 +80,8 @@ public class LiftingServiceImpl implements LiftingService {
 	
 	@Autowired
 	private LiftingStatusMapper liftingStatusMapper;
-	
-	
+
+
 	@Override
 	public List<LiftingDTO> getAllByControlFichero(ControlFichero controlFichero) {
 		List<LevantamientoTraba> liftingList = liftingRepository.findAllByControlFichero(controlFichero);
@@ -222,5 +222,17 @@ public class LiftingServiceImpl implements LiftingService {
 		cuenta.setUsuarioUltModificacion(userName);
 		
 		liftingBankAccountRepository.save(cuenta);
+	}
+
+	@Override
+	public void updateLiftingtatus(LevantamientoTraba levantamientoTraba, long codEstado, String userName) {
+		EstadoLevantamiento estado = new EstadoLevantamiento();
+		estado.setCodEstado(codEstado);
+		levantamientoTraba.setEstadoLevantamiento(estado);
+
+		levantamientoTraba.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+		levantamientoTraba.setUsuarioUltModificacion(userName);
+
+		liftingRepository.save(levantamientoTraba);
 	}
 }

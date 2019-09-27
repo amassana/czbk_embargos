@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import es.commerzbank.ice.embargos.domain.entity.*;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,18 +15,6 @@ import org.mapstruct.Mappings;
 
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
-import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
-import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
-import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
-import es.commerzbank.ice.embargos.domain.entity.CuentaTrabaActuacion;
-import es.commerzbank.ice.embargos.domain.entity.CuentasInmovilizacion;
-import es.commerzbank.ice.embargos.domain.entity.CuentasRecaudacion;
-import es.commerzbank.ice.embargos.domain.entity.Embargo;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
-import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
-import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
-import es.commerzbank.ice.embargos.domain.entity.PeticionInformacion;
-import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase1.CabeceraEmisorFase1;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase1.FinFicheroFase1;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase1.SolicitudInformacionFase1;
@@ -627,11 +616,14 @@ public abstract class Cuaderno63Mapper {
 		levantamiento.setUsuarioUltModificacion(usuarioModif);
 		levantamiento.setFUltimaModificacion(fechaUltmaModif);
 		levantamiento.setTraba(traba);
-		// així?
+
+		EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
+		estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE);
+		levantamiento.setEstadoLevantamiento(estadoLevantamiento);
+		// TODO TO BE DEFINED
 		levantamiento.setEstadoEjecutado(BigDecimal.ZERO);
 		levantamiento.setEstadoContable(BigDecimal.ZERO);
 		levantamiento.setIndCasoRevisado(EmbargosConstants.IND_FLAG_NO);
-
 		// sempre a null levantamiento.setCodDeudaDeudor();
 
 		List<CuentaLevantamiento> cuentas = new ArrayList<>(6);
@@ -643,6 +635,7 @@ public abstract class Cuaderno63Mapper {
 					ordenLevantamientoRetencionFase5.getIbanCuenta1(),
 					ordenLevantamientoRetencionFase5.getImporteALevantarIban1(), DWHCustomer, traba, usuarioModif,
 					fechaUltmaModif);
+			cuentaLevantamiento1.setNumeroOrdenCuenta(new BigDecimal(1));
 			cuentas.add(cuentaLevantamiento1);
 		}
 		if (ordenLevantamientoRetencionFase5.getIbanCuenta2() != null
@@ -651,6 +644,7 @@ public abstract class Cuaderno63Mapper {
 					ordenLevantamientoRetencionFase5.getIbanCuenta2(),
 					ordenLevantamientoRetencionFase5.getImporteALevantarIban2(), DWHCustomer, traba, usuarioModif,
 					fechaUltmaModif);
+			cuentaLevantamiento2.setNumeroOrdenCuenta(new BigDecimal(2));
 			cuentas.add(cuentaLevantamiento2);
 		}
 		if (ordenLevantamientoRetencionFase5.getIbanCuenta3() != null
@@ -659,6 +653,7 @@ public abstract class Cuaderno63Mapper {
 					ordenLevantamientoRetencionFase5.getIbanCuenta3(),
 					ordenLevantamientoRetencionFase5.getImporteALevantarIban3(), DWHCustomer, traba, usuarioModif,
 					fechaUltmaModif);
+			cuentaLevantamiento3.setNumeroOrdenCuenta(new BigDecimal(3));
 			cuentas.add(cuentaLevantamiento3);
 		}
 		if (ordenLevantamientoRetencionFase5.getIbanCuenta4() != null
@@ -667,6 +662,7 @@ public abstract class Cuaderno63Mapper {
 					ordenLevantamientoRetencionFase5.getIbanCuenta4(),
 					ordenLevantamientoRetencionFase5.getImporteALevantarIban4(), DWHCustomer, traba, usuarioModif,
 					fechaUltmaModif);
+			cuentaLevantamiento4.setNumeroOrdenCuenta(new BigDecimal(4));
 			cuentas.add(cuentaLevantamiento4);
 		}
 		if (ordenLevantamientoRetencionFase5.getIbanCuenta5() != null
@@ -675,6 +671,7 @@ public abstract class Cuaderno63Mapper {
 					ordenLevantamientoRetencionFase5.getIbanCuenta5(),
 					ordenLevantamientoRetencionFase5.getImporteALevantarIban5(), DWHCustomer, traba, usuarioModif,
 					fechaUltmaModif);
+			cuentaLevantamiento5.setNumeroOrdenCuenta(new BigDecimal(5));
 			cuentas.add(cuentaLevantamiento5);
 		}
 		if (ordenLevantamientoRetencionFase5.getIbanCuenta6() != null
@@ -683,8 +680,19 @@ public abstract class Cuaderno63Mapper {
 					ordenLevantamientoRetencionFase5.getIbanCuenta6(),
 					ordenLevantamientoRetencionFase5.getImporteALevantarIban6(), DWHCustomer, traba, usuarioModif,
 					fechaUltmaModif);
+			cuentaLevantamiento6.setNumeroOrdenCuenta(new BigDecimal(6));
 			cuentas.add(cuentaLevantamiento6);
 		}
+
+		BigDecimal importeLevantado = BigDecimal.ZERO;
+
+		for (CuentaLevantamiento cuentaLevantamiento : cuentas)
+		{
+			if (cuentaLevantamiento.getImporte() != null)
+				importeLevantado = importeLevantado.add(cuentaLevantamiento.getImporte());
+		}
+
+		levantamiento.setImporteLevantado(importeLevantado);
 	}
 
 	

@@ -410,7 +410,7 @@ public class SeizureController {
 
     @PostMapping(value = "/accountingNote")
     @ApiOperation(value="Tratamiento de la respuesta de Contabilidad (nota contable).")
-    public ResponseEntity<String> manageAccountingNoteCallback(Authentication authentication,
+    public ResponseEntity<String> manageAccountingNoteSeizureCallback(Authentication authentication,
     										  @RequestBody AccountingNote accountingNote){
     	logger.info("SeizureController - manageAccountingNoteCallback - start");
     	ResponseEntity<String> response = null;
@@ -420,7 +420,7 @@ public class SeizureController {
 
 			String userName = authentication.getName();
 		
-			result = accountingService.manageAccountingNoteCallback(accountingNote, userName);
+			result = accountingService.manageAccountingNoteSeizureCallback(accountingNote, userName);
 			
 			
 			if (result) {
