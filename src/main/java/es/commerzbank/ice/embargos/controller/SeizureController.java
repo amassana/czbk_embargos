@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.commerzbank.ice.comun.lib.domain.dto.AccountingNote;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.embargos.domain.dto.BankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizedBankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureActionDTO;
@@ -29,6 +31,7 @@ import es.commerzbank.ice.embargos.domain.dto.SeizureStatusDTO;
 import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.utils.DownloadReportFile;
+import es.commerzbank.ice.utils.EmbargosConstants;
 import io.swagger.annotations.ApiOperation;
 
 @CrossOrigin("*")
@@ -38,14 +41,14 @@ public class SeizureController {
 
 	private static final Logger logger = LoggerFactory.getLogger(SeizureController.class);
 
-	@Value("${commerzbank.jasper.temp}")
-	private String pdfSavedPath;
-
 	@Autowired
 	private SeizureService seizureService;
 	
 	@Autowired
 	private AccountingService accountingService;
+	
+	@Autowired 
+	private GeneralParametersService generalParametersService;
 	
     @GetMapping(value = "/{codeFileControl}")
     @ApiOperation(value="Devuelve la lista de embargos para una petición de embargo.")
@@ -447,11 +450,12 @@ public class SeizureController {
 	public ResponseEntity<InputStreamResource> generarJustificanteEmbargo(
 			@PathVariable("idSeizure") Integer idSeizure) {
     	logger.info("SeizureController - generarJustificanteEmbargo - start");
-		DownloadReportFile.setTempFileName("justificanteReport");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
 
 		try {
+    	
+	    	DownloadReportFile.setTempFileName("justificanteReport");
+	
+			DownloadReportFile.setFileTempPath(getPDFSavedPath());
 
 			// seizure service falta
 			DownloadReportFile.writeFile(seizureService.generateJustificanteEmbargo(idSeizure));
@@ -471,11 +475,12 @@ public class SeizureController {
 	public ResponseEntity<InputStreamResource> generarJustificanteEmbargo3(
 			@PathVariable("idLifting") Integer idLifting) {
 		logger.info("SeizureController - generarJustificanteEmbargo3 - start");
-		DownloadReportFile.setTempFileName("levantamientoReport");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
 
 		try {
+		
+			DownloadReportFile.setTempFileName("levantamientoReport");
+	
+			DownloadReportFile.setFileTempPath(getPDFSavedPath());
 
 			// seizure service falta
 			DownloadReportFile.writeFile(seizureService.generateLevantamientoReport(idLifting));
@@ -495,12 +500,13 @@ public class SeizureController {
 	@ApiOperation(value = "Devuelve un fichero de resumen trabas fase 3")
 	public ResponseEntity<InputStreamResource> generarResumentTrabaF3(@PathVariable("fileControl") Integer codControlFichero) {
 		logger.info("SeizureController - generarResumentTrabaF3 - start");
-		DownloadReportFile.setTempFileName("resumenTrabasReportF3");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
 
 		try {
-
+		
+			DownloadReportFile.setTempFileName("resumenTrabasReportF3");
+	
+			DownloadReportFile.setFileTempPath(getPDFSavedPath());
+			
 			// seizure service falta
 			DownloadReportFile.writeFile(seizureService.generarResumenTrabasF3(codControlFichero));
 
@@ -519,11 +525,12 @@ public class SeizureController {
 	public ResponseEntity<InputStreamResource> generarResumentTrabasF4(
 			@PathVariable("fileControl") Integer codControlFichero) {
 		logger.info("SeizureController - generarResumentTrabasF4 - start");
-		DownloadReportFile.setTempFileName("resumenTrabasReportF4");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
 
 		try {
+		
+			DownloadReportFile.setTempFileName("resumenTrabasReportF4");
+	
+			DownloadReportFile.setFileTempPath(getPDFSavedPath());
 
 			// seizure service falta
 			DownloadReportFile.writeFile(seizureService.generarResumenTrabasF4(codControlFichero));
@@ -556,11 +563,12 @@ public class SeizureController {
 	private ResponseEntity<InputStreamResource> downloadAnexo(BigDecimal cod_usuario, BigDecimal cod_traba,
 			Integer num_anexo) {
 		logger.info("SeizureController - downloadAnexo - start");
-		DownloadReportFile.setTempFileName("anexoReport" + num_anexo);
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
 
 		try {
+			
+			DownloadReportFile.setTempFileName("anexoReport" + num_anexo);
+	
+			DownloadReportFile.setFileTempPath(getPDFSavedPath());
 
 			DownloadReportFile.writeFile(seizureService.generarAnexo(cod_usuario, cod_traba, num_anexo));
 
@@ -579,11 +587,12 @@ public class SeizureController {
 	public ResponseEntity<InputStreamResource> generarRespuestaFinalEmbargo(
 			@PathVariable("fileControl") Integer codFileControl) {
 
-		DownloadReportFile.setTempFileName("respuestaFinalEmbargo");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
-
 		try {
+
+			DownloadReportFile.setTempFileName("respuestaFinalEmbargo");
+
+			DownloadReportFile.setFileTempPath(getPDFSavedPath());
+
 
 			DownloadReportFile.writeFile(seizureService.generarRespuestaFinalEmbargo(codFileControl));
 
@@ -601,11 +610,11 @@ public class SeizureController {
 	public ResponseEntity<InputStreamResource> generarResumenLevantamiento(
 			@PathVariable("fileControl") Integer codFileControl) {
 
-		DownloadReportFile.setTempFileName("resumenLevantamiento");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
-
 		try {
+		
+			DownloadReportFile.setTempFileName("resumenLevantamiento");
+	
+			DownloadReportFile.setFileTempPath(getPDFSavedPath());
 
 			DownloadReportFile.writeFile(seizureService.generarResumenLevantamiento(codFileControl));
 
@@ -623,12 +632,12 @@ public class SeizureController {
 	public ResponseEntity<InputStreamResource> generarOrdenTransferencia(
 			@PathVariable("cod_solicitud_ejecucion") String cod_solicitud_ejecucion) {
 
-		DownloadReportFile.setTempFileName("solicitudEjecucion");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
-
 		try {
 
+			DownloadReportFile.setTempFileName("solicitudEjecucion");
+
+			DownloadReportFile.setFileTempPath(getPDFSavedPath());
+			
 			DownloadReportFile.writeFile(seizureService.generarOrdenTransferencia(cod_solicitud_ejecucion));
 
 			return DownloadReportFile.returnToDownloadFile();
@@ -638,6 +647,12 @@ public class SeizureController {
 
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+	
+	private String getPDFSavedPath() throws ICEException { 
+	
+		return generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP);
+		
 	}
 
 }

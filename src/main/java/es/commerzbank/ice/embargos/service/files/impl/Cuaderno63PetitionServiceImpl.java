@@ -1,6 +1,10 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
@@ -19,8 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.comun.lib.domain.dto.Element;
 import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
@@ -54,15 +60,6 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	
 	@Value("${commerzbank.embargos.beanio.config-path.cuaderno63}")
 	String pathFileConfigCuaderno63;
-
-	@Value("${commerzbank.embargos.files.path.monitoring}")
-	private String pathMonitoring;
-
-	@Value("${commerzbank.embargos.files.path.processed}")
-	private String pathProcessed;
-
-	@Value("${commerzbank.embargos.files.path.generated}")
-	private String pathGenerated;
 
 	@Autowired
 	private Cuaderno63Mapper cuaderno63Mapper;
@@ -98,10 +95,13 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	@Autowired
 	private EmailService emailService;
 	
+	@Autowired
+	private GeneralParametersService generalParametersService;
+	
 	@Override
 	//Se comenta '@transactional' ya que se utilizara a nivel de clase:
 	//@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
-	public void cargarFicheroPeticion(File file) throws IOException, ICEParserException {
+	public void cargarFicheroPeticion(File file) throws IOException, ICEException {
 
 		BeanReader beanReader = null;
 		Reader reader = null;
@@ -128,7 +128,9 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	        
 	        // use a StreamFactory to create a BeanReader
 
-			reader = new InputStreamReader(new FileInputStream(file), "UTF-8");
+	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_NORMA63);
+	        
+			reader = new InputStreamReader(new FileInputStream(file), encoding);
 	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE1, reader);
 
 	        CabeceraEmisorFase1 cabeceraEmisor = null;

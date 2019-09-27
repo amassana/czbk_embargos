@@ -1,7 +1,13 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -20,7 +26,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
@@ -51,15 +59,6 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	@Value("${commerzbank.embargos.beanio.config-path.cuaderno63}")
 	String pathFileConfigCuaderno63;
 
-	@Value("${commerzbank.embargos.files.path.monitoring}")
-	private String pathMonitoring;
-
-	@Value("${commerzbank.embargos.files.path.processed}")
-	private String pathProcessed;
-
-	@Value("${commerzbank.embargos.files.path.generated}")
-	private String pathGenerated;
-
 	@Autowired
 	private Cuaderno63Mapper cuaderno63Mapper;
 
@@ -82,13 +81,19 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	@Autowired
 	private CommunicatingEntityRepository communicatingEntityRepository;
 	
+	@Autowired
+	private GeneralParametersService generalParametersService;
+	
 
 	@Override
-	public void tramitarFicheroInformacion(Long codControlFicheroPeticion, String usuarioTramitador) throws IOException, ICEParserException {
+	public void tramitarFicheroInformacion(Long codControlFicheroPeticion, String usuarioTramitador) throws IOException, ICEException {
 			
 		
 		BeanReader beanReader = null;
 		BeanWriter beanWriter = null;
+		
+		Reader reader = null;
+		Writer writer = null;
 		
 		ControlFichero controlFicheroPeticion = null;
 		ControlFichero controlFicheroInformacion = null;
@@ -105,6 +110,8 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        
 	        //Fichero de entrada (Peticion):
 	        String fileNamePeticion = controlFicheroPeticion.getNombreFichero();
+	        String pathProcessed = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_PROCESSED);
+	        
 	        File ficheroEntrada = new File(pathProcessed + "\\" + fileNamePeticion);
 	        
 	        //Comprobar que el fichero de peticiones exista:
@@ -144,6 +151,9 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        String fechaNombreFichero = localDate.format(formatter);
 	        String fileNameInformacion = prefijoFichero + EmbargosConstants.SEPARADOR_GUION_BAJO + fechaNombreFichero 
 	            	+ EmbargosConstants.SEPARADOR_PUNTO + EmbargosConstants.TIPO_FICHERO_INFORMACION.toLowerCase();
+	        
+	        String pathGenerated = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_GENERATED);
+	        
 	        File ficheroSalida = new File(pathGenerated + "\\" + fileNameInformacion);
 	        
 	        //Se guarda el registro de ControlFichero del fichero de salida:
@@ -157,8 +167,13 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        fileControlService.saveFileControlTransaction(controlFicheroInformacion);
 	                
 	        // use a StreamFactory to create a BeanReader
-	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE1, ficheroEntrada);
-	        beanWriter = factory.createWriter(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE2, ficheroSalida);
+	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_NORMA63);
+			
+	        reader = new InputStreamReader(new FileInputStream(ficheroEntrada), encoding);
+	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE1, reader);
+	        
+	        writer = new OutputStreamWriter(new FileOutputStream(ficheroSalida), encoding);
+	        beanWriter = factory.createWriter(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE2, writer);
 	        
 	        EntidadesComunicadora entidadComunicadora = null;
 	        
@@ -295,8 +310,14 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 			throw e;
 
 		} finally {
+			if(reader!=null) {
+				reader.close();
+			}
 			if (beanReader != null) {
 				beanReader.close();
+			}
+			if(writer!=null) {
+				writer.close();
 			}
 			if (beanWriter != null) {
 				beanWriter.close();

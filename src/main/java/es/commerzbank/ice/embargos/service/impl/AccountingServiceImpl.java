@@ -2,6 +2,8 @@ package es.commerzbank.ice.embargos.service.impl;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.jfree.util.Log;
@@ -36,7 +38,6 @@ import es.commerzbank.ice.embargos.service.LiftingService;
 import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.utils.EmbargosConstants;
 import es.commerzbank.ice.utils.EmbargosUtils;
-import es.commerzbank.ice.utils.ICEDateUtils;
 
 @Service
 @Transactional(transactionManager="transactionManager")
@@ -292,34 +293,11 @@ public class AccountingServiceImpl implements AccountingService{
 					//Para contabilizar la traba tiene que estar en estado anterior a "Enviada a Contabilidad":
 					if (traba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE) {
 
-						//- Seteo de las references:
-						//En el caso del CGPJ el número de embargo tiene 19 caracteres entonces: 1:16 va al primer campo (IBS_REFERENCE_1) y
-						//del 17-19 pasa al inicio del siguiente campo (IBS_REFERENCE_2) seguido de los literales: Levant./Embarg y las cuatro
-						//letras que identifican el organismo emisor AEAT/CGPJ etc
-
-						StringBuilder sb1 = new StringBuilder();
-						StringBuilder sb2 = new StringBuilder();
-
-						if (embargo.getNumeroEmbargo()!=null) {
-
-
-							for (int i = 0; i < embargo.getNumeroEmbargo().length(); i++){
-								char c = embargo.getNumeroEmbargo().charAt(i);
-
-								if (i < 16) {
-									sb1.append(c);
-								} else {
-									sb2.append(c);
-								}
-							}
-						}
-
-						//TODO: organismoEmisor revisar
-						String organismoEmisor = EmbargosConstants.FILE_FORMAT_CGPJ;
-
-						String reference1 = sb1.toString() ;
-						String reference2 = sb2.append(EmbargosConstants.SEPARADOR_ESPACIO).append(EmbargosConstants.LITERAL_EMBARG_IBS_REFERENCE2)
-								.append(EmbargosConstants.SEPARADOR_ESPACIO).append(organismoEmisor).toString();
+						//- Generacion de las references para CGPJ:
+						Map<String,String> referencesMap = generateReferencesForCGPJ(embargo.getNumeroEmbargo());
+						
+						String reference1 = referencesMap.get(EmbargosConstants.IBS_REFERENCE_1);
+						String reference2 = referencesMap.get(EmbargosConstants.IBS_REFERENCE_2);
 
 						String detailPayment = "";//embargo.getDatregcomdet();
 
@@ -452,6 +430,42 @@ public class AccountingServiceImpl implements AccountingService{
 		return cuentaRecaudacion;
 	}
 	
+	private Map<String,String> generateReferencesForCGPJ(String numeroEmbargo){
+		
+		//- Seteo de las references:
+		//En el caso del CGPJ el número de embargo tiene 19 caracteres entonces: 1:16 va al primer campo (IBS_REFERENCE_1) y
+		//del 17-19 pasa al inicio del siguiente campo (IBS_REFERENCE_2) seguido de los literales: Levant./Embarg y las cuatro
+		//letras que identifican el organismo emisor AEAT/CGPJ etc
+		
+		Map<String,String> referencesMap = new HashMap<>();
+		
+		StringBuilder sb1 = new StringBuilder();
+		StringBuilder sb2 = new StringBuilder();
+
+		if (numeroEmbargo!=null) {
+			for (int i = 0; i < numeroEmbargo.length(); i++){
+				char c = numeroEmbargo.charAt(i);
+
+				if (i < 16) {
+					sb1.append(c);
+				} else {
+					sb2.append(c);
+				}
+			}
+		}
+
+		//TODO: organismoEmisor revisar
+		String organismoEmisor = EmbargosConstants.FILE_FORMAT_CGPJ;
+
+		String reference1 = sb1.toString() ;
+		String reference2 = sb2.append(EmbargosConstants.SEPARADOR_ESPACIO).append(EmbargosConstants.LITERAL_EMBARG_IBS_REFERENCE2)
+				.append(EmbargosConstants.SEPARADOR_ESPACIO).append(organismoEmisor).toString();
+		
+		referencesMap.put(EmbargosConstants.IBS_REFERENCE_1, reference1);
+		referencesMap.put(EmbargosConstants.IBS_REFERENCE_2, reference2);
+		
+		return referencesMap;
+	}
 
 	@Override
 	public boolean manageAccountingNoteCallback(AccountingNote accountingNote, String userName) {
@@ -475,17 +489,52 @@ public class AccountingServiceImpl implements AccountingService{
 			return false;
 		}
 		
-		//- Comprobar que el Numero de Embargo informado en la Reference1 de la accountingNote, sea el mismo que el del Embargo asociado a la cuentaTraba:
+		//Comprobar que:
+		//- Si el tipo de fichero es AEAT o NORMA63: el Numero de Embargo informado en la Reference1 de la accountingNote, 
+		//  sea el mismo que el Numero de Embargo del Embargo asociado a la cuentaTraba.
+		//- Si el tipo de fichero es CGPJ: comprobar que la reference1 y reference2 de la accountingNote, sean las mismas
+		//  que la generada a partir del Numbero de Embargo.
 		Traba traba = cuentaTraba.getTraba();
-		String numeroEmbargo = traba.getEmbargo().getNumeroEmbargo();
+		Embargo embargo = traba.getEmbargo();
+		String numeroEmbargo = embargo.getNumeroEmbargo();
 		
-		if (!numeroEmbargo.equals(accountingNote.getReference1())) {
+		ControlFichero controlFichero = embargo.getControlFichero();
+		
+		String formatoFichero = EmbargosUtils.determineFileFormatByTipoFichero(controlFichero.getCodControlFichero());
+		
+		if (EmbargosConstants.FILE_FORMAT_AEAT.equals(formatoFichero) 
+				|| EmbargosConstants.FILE_FORMAT_NORMA63.equals(formatoFichero)) {
+		
+			//Si el formato de fichero es AEAT o NORMA63 -> comprobar reference1:
+			
+			if (!numeroEmbargo.equals(accountingNote.getReference1())) {
+	
+				logger.error("El numero de embargo '" + numeroEmbargo + "' asociado a la cuentaTraba con id " + cuentaTraba.getCodCuentaTraba()
+				+ " no coincide con el numero de embargo informado en la reference1 de la accountingNote -> '" + accountingNote.getReference1() + "'");
+	
+				return false;
+			}
+			
+		} else {
+			
+			//Si es de CGPJ -> comprobar reference1 y reference2:
+			Map<String,String> referencesMap = generateReferencesForCGPJ(numeroEmbargo);
+			
+			String reference1 = referencesMap.get(EmbargosConstants.IBS_REFERENCE_1);
+			String reference2 = referencesMap.get(EmbargosConstants.IBS_REFERENCE_2);
+			
+			if (!reference1.equals(accountingNote.getReference1())
+					|| !reference2.equals(accountingNote.getReference2())) {
 
-			logger.error("El numero de embargo '" + numeroEmbargo + "' asociado a la cuentaTraba con id " + cuentaTraba.getCodCuentaTraba()
-			+ " no coincide con el numero de embargo informado en la reference1 de la accountingNote -> '" + accountingNote.getReference1() + "'");
-
-			return false;
+				logger.error("El numero de embargo '" + numeroEmbargo + "' (CGPJ) asociado a la cuentaTraba con id " + cuentaTraba.getCodCuentaTraba()
+				+ " no coincide con el numero de embargo informado para la reference1 y reference2 de la accountingNote -> [reference1:" + accountingNote.getReference1() 
+				+ "; reference2:" +  accountingNote.getReference2() + "]");
+	
+				return false;	
+			}
 		}
+		
+		
 
 		//2. Se cambia el estado de la Cuenta Traba a Contabilizada:
 
@@ -513,10 +562,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 
 		//4. Si todas las Trabas estan contabilizadas, entonces:
-		// - Cambiar el estado de Control Fichero de Embargos (control fichero de la Traba no) a estado "Pendiente de envio". 
-		
-		Embargo embargo = traba.getEmbargo();
-		ControlFichero controlFichero = embargo.getControlFichero();
+		// - Cambiar el estado de Control Fichero de Embargos (control fichero de la Traba no) a estado "Pendiente de envio".
 
 		int numTrabasContabilizadas = 0;
 		for (Embargo emb : controlFichero.getEmbargos()) {

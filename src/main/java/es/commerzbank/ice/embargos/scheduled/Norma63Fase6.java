@@ -1,5 +1,6 @@
 package es.commerzbank.ice.embargos.scheduled;
 
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
@@ -56,12 +57,9 @@ public class Norma63Fase6
     FileControlMapper fileControlMapper;
     @Autowired
     FinalFileRepository finalFileRepository;
-
-    @Value("${commerzbank.embargos.files.path.processed}")
-    private String pathProcessed;
-
-    @Value("${commerzbank.embargos.files.path.generated}")
-    private String pathGenerated;
+ 
+	@Autowired
+	private GeneralParametersService generalParametersService;
 
     /* to cronify
     @Scheduled("")
@@ -87,6 +85,8 @@ public class Norma63Fase6
 
         try {
             // Guardar fase 6
+        	String pathGenerated = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_GENERATED);
+        	
             File fase6File = new File(pathGenerated, ficheroFase3.getEntidadesComunicadora().getPrefijoFicheros() +"_"+ ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMdd) +"."+ EmbargosConstants.TIPO_FICHERO_FINAL);
 
             ControlFichero ficheroFase6 =
@@ -99,6 +99,9 @@ public class Norma63Fase6
             StreamFactory factory = StreamFactory.newInstance();
             factory.loadResource(pathFileConfigCuaderno63);
             // TODO: NUEVO CAMPO en control fichero: RUTA INTERNA
+	        
+            String pathProcessed = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_PROCESSED);
+	        
             beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE3, (new File(pathProcessed + ficheroFase3.getNombreFichero()).getCanonicalFile()));
 
             Object currentF3Record = null;

@@ -1,31 +1,43 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
-import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
-import es.commerzbank.ice.embargos.domain.entity.*;
-import es.commerzbank.ice.embargos.domain.mapper.Cuaderno63Mapper;
-import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
-import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.CabeceraEmisorFase5;
-import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.FinFicheroFase5;
-import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.OrdenLevantamientoRetencionFase5;
-import es.commerzbank.ice.embargos.repository.*;
-import es.commerzbank.ice.embargos.service.CustomerService;
-import es.commerzbank.ice.embargos.service.files.Cuaderno63LiftingService;
-import es.commerzbank.ice.utils.EmbargosConstants;
-import es.commerzbank.ice.utils.EmbargosUtils;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.List;
+
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
+import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
+import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
+import es.commerzbank.ice.embargos.domain.entity.Embargo;
+import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
+import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
+import es.commerzbank.ice.embargos.domain.entity.Traba;
+import es.commerzbank.ice.embargos.domain.mapper.Cuaderno63Mapper;
+import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
+import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.CabeceraEmisorFase5;
+import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.FinFicheroFase5;
+import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.OrdenLevantamientoRetencionFase5;
+import es.commerzbank.ice.embargos.repository.FileControlRepository;
+import es.commerzbank.ice.embargos.repository.LiftingBankAccountRepository;
+import es.commerzbank.ice.embargos.repository.LiftingRepository;
+import es.commerzbank.ice.embargos.repository.SeizedRepository;
+import es.commerzbank.ice.embargos.repository.SeizureRepository;
+import es.commerzbank.ice.embargos.service.CustomerService;
+import es.commerzbank.ice.embargos.service.files.Cuaderno63LiftingService;
+import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.utils.EmbargosUtils;
 
 /*
 TODO:
@@ -59,11 +71,16 @@ public class Cuaderno63LiftingServiceImpl
     CustomerService customerService;
     @Autowired
     Cuaderno63Mapper cuaderno63Mapper;
+    
+	@Autowired
+	private GeneralParametersService generalParametersService;
+	
     @Override
     public void tratarFicheroLevantamientos(File file)
         throws IOException
     {
         BeanReader beanReader = null;
+        Reader reader = null;
 
         try {
             // Inicializar control fichero
@@ -75,7 +92,11 @@ public class Cuaderno63LiftingServiceImpl
             // Inicialiar beanIO parser
             StreamFactory factory = StreamFactory.newInstance();
             factory.loadResource(pathFileConfigCuaderno63);
-            beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE5, file);
+            
+	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_NORMA63);
+			
+	        reader = new InputStreamReader(new FileInputStream(file), encoding);
+            beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE5, reader);
 
             Object currentRecord = null;
 
@@ -148,7 +169,11 @@ public class Cuaderno63LiftingServiceImpl
         }
         finally
         {
-            if (beanReader != null)
+            if(reader!=null) {
+            	reader.close();
+            }
+        	
+        	if (beanReader != null)
                 beanReader.close();
         }
     }

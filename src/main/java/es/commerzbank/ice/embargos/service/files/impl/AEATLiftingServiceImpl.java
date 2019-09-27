@@ -1,5 +1,6 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.embargos.domain.entity.*;
@@ -21,7 +22,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.List;
 
 @Service
@@ -51,10 +55,16 @@ public class AEATLiftingServiceImpl
     CustomerService customerService;
     @Autowired
     AEATMapper aeatMapper;
+    
+	@Autowired
+	private GeneralParametersService generalParametersService;
+	
     @Override
     public void tratarFicheroLevantamientos(File file) throws IOException, ICEParserException {
-        BeanReader beanReader = null;
-
+        
+    	BeanReader beanReader = null;
+        Reader reader = null;
+        
         try {
             // Inicializar control fichero
             ControlFichero controlFicheroLevantamiento =
@@ -65,7 +75,11 @@ public class AEATLiftingServiceImpl
             // Inicialiar beanIO parser
             StreamFactory factory = StreamFactory.newInstance();
             factory.loadResource(pathFileConfigAEAT);
-            beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_LEVANTAMIENTOTRABAS, file);
+            
+	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT);
+			
+	        reader = new InputStreamReader(new FileInputStream(file), encoding);
+            beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_LEVANTAMIENTOTRABAS, reader);
 
             Object currentRecord = null;
 
@@ -149,7 +163,11 @@ public class AEATLiftingServiceImpl
         }
         finally
         {
-            if (beanReader != null)
+            if(reader!=null) {
+            	reader.close();
+            }
+            
+        	if (beanReader != null)
                 beanReader.close();
         }
     }
