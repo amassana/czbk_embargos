@@ -5,11 +5,11 @@
 
 	<!-- 
 	    If no active profile (default): logs to console.
-    	If active profile (LOCAL): logs to a rolling file.
+    	If active profile (LOCAL): logs to a rolling file and to console.
     	To define the active profile: 'spring.profiles.active=<profile>' in application.yml . 
 	-->
 
-	<springProfile name="default">
+	<springProfile name="default,LOCAL">
 		<include resource="org/springframework/boot/logging/logback/console-appender.xml" />
 
 		<appender name="CONSOLE"
