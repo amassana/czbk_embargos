@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import es.commerzbank.ice.comun.lib.domain.dto.AccountingNote;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.utils.EmbargosConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +47,9 @@ public class LiftingController {
 	
 	@Autowired
 	private AccountingService accountingService;
+
+	@Autowired
+	private GeneralParametersService generalParametersService;
 
 	@GetMapping(value = "/{codeFileControl}")
 	@ApiOperation(value = "Devuelve la lista de casos de levamtamientos")
@@ -256,12 +261,10 @@ public class LiftingController {
 	@ApiOperation(value = "Devuelve el fichero de resumen de levantamiento FASE 5")
 	public ResponseEntity<InputStreamResource> generarResumenLevantamientoF5(
 			@PathVariable("fileControl") Integer codFileControl) {
-
-		DownloadReportFile.setTempFileName("f5-seizure-lifting");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
-
 		try {
+			DownloadReportFile.setTempFileName("f5-seizure-lifting");
+
+			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			DownloadReportFile.writeFile(liftingService.generarResumenLevantamientoF5(codFileControl));
 
@@ -280,11 +283,10 @@ public class LiftingController {
 			@PathVariable("idLifting") Integer idLifting) {
 		logger.info("SeizureController - generateLiftingLetter - start");
 
-		DownloadReportFile.setTempFileName("lifting-letter");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
-
 		try {
+			DownloadReportFile.setTempFileName("lifting-letter");
+
+			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			// seizure service falta
 			DownloadReportFile.writeFile(liftingService.generateLiftingLetter(idLifting));
@@ -299,8 +301,6 @@ public class LiftingController {
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
-    }
 
 	@PostMapping(value = "/accountingNote")
 	@ApiOperation(value="Tratamiento de la respuesta de Contabilidad (nota contable).")

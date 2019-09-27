@@ -311,11 +311,10 @@ public class FileControlController {
 			@RequestBody ReportParamsDTO reportParams) throws Exception {
 
 		logger.info("FileControlController - generateFileControlReport - start");
-		DownloadReportFile.setTempFileName("file-control");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
-
 		try {
+			DownloadReportFile.setTempFileName("file-control");
+
+			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			DownloadReportFile.writeFile(fileControlService.generateFileControl(codTipoFichero, codEstado, isPending,
 					reportParams.getFechaInicio(), reportParams.getFechaFin()));

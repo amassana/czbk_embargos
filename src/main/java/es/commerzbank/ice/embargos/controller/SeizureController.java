@@ -451,11 +451,10 @@ public class SeizureController {
 			@PathVariable("idSeizure") Integer idSeizure) {
     	logger.info("SeizureController - generateSeizureLetter - start");
 
-    	DownloadReportFile.setTempFileName("seizure-letter");
+    	try {
+			DownloadReportFile.setTempFileName("seizure-letter");
 
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
-
-		try {
+			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			// seizure service falta
 			DownloadReportFile.writeFile(seizureService.generateSeizureLetter(idSeizure));
@@ -475,11 +474,10 @@ public class SeizureController {
 	public ResponseEntity<InputStreamResource> generateSeizureRequestF3(@PathVariable("codeFileControl") Integer codControlFichero) {
 		logger.info("SeizureController - generateSeizureRequestF3 - start");
 
-		DownloadReportFile.setTempFileName("seizure-request");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
-
 		try {
+			DownloadReportFile.setTempFileName("seizure-request");
+
+			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			// seizure service falta
 			DownloadReportFile.writeFile(seizureService.generateSeizureRequestF3(codControlFichero));
@@ -500,11 +498,10 @@ public class SeizureController {
 			@PathVariable("fileControl") Integer codControlFichero) {
 		logger.info("SeizureController - generateSeizureResponseF4 - start");
 
-		DownloadReportFile.setTempFileName("seizure-response");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
-
 		try {
+			DownloadReportFile.setTempFileName("seizure-response");
+
+			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			// seizure service falta
 			DownloadReportFile.writeFile(seizureService.generateSeizureResponseF4(codControlFichero));

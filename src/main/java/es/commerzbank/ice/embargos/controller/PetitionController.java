@@ -163,30 +163,6 @@ public class PetitionController {
 
 	}
 
-	////////////// REVISAR:
-
-//	@GetMapping(value = "/filecontrol/{codeFileControl}")
-//	public ResponseEntity<PetitionDTO> getByCodeFileControl(@RequestHeader(value="token",required=true) String token,
-//			  												   @PathVariable("codeFileControl") Long codeFileControl){
-//		ResponseEntity<PetitionDTO> response = null;
-//		PetitionDTO result = null;
-//
-//		try {
-//		
-//			result = petitionService.getByCodeFileControl(codeFileControl);
-//
-//			response = new ResponseEntity<>(result, HttpStatus.OK);
-//			
-//		} catch (Exception e) {
-//			
-//			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-//			
-//			LOG.error("ERROR in getByCodeFileControl: ", e);
-//		}
-//		
-//		return response;
-//	}
-
 	@GetMapping("/{codeFileControl}/report") // f1
 	@ApiOperation(value = "Devuelve report PettitionRequest Fase1")
 	public ResponseEntity<InputStreamResource> f1PettitionRequest(
@@ -219,11 +195,10 @@ public class PetitionController {
 			@PathVariable("codeFileControl") Integer codeFileControl) {
 		logger.info("PetitionController - f2PettitionResponse - start");
 
-		DownloadReportFile.setTempFileName("pettition-response");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
-
 		try {
+			DownloadReportFile.setTempFileName("pettition-response");
+
+			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			DownloadReportFile.writeFile(petitionService.generateF2PettitionResponse(codeFileControl));
 
