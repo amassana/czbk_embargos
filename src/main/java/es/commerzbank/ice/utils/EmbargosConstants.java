@@ -225,6 +225,8 @@ public class EmbargosConstants {
 	public static final String COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO = "P";
 	public static final String LITERAL_EMBARG_IBS_REFERENCE2 = "Embarg";
 	public static final String LITERAL_LEVANT_IBS_REFERENCE2 = "Levant";
+	public static final String IBS_REFERENCE_1 = "IBS_REFERENCE_1";
+	public static final String IBS_REFERENCE_2 = "IBS_REFERENCE_2";
 	
 	//Emails:
 	public static final String EMAIL_DEFAULT_FOOTER_TEXT = "Aplicación de Embargos";
@@ -236,6 +238,26 @@ public class EmbargosConstants {
 	public static final long ESTADO_FINAL_OTROS = 4;
 
 	public static final String PROFILE_DES = "DES";
-
 	public static final String PROFILE_LOCAL = "LOCAL";
+	
+	//Definicion de Nombres de la tabla PARAMETROS:
+	public static final String PARAMETRO_TSP_DOMINIO = "tsp.dominio";
+	public static final String PARAMETRO_DWH_ENDPOINT_CLIENTACCOUNT = "datawarehouse.endpoint.client-account";
+	public static final String PARAMETRO_TSP_JASPER_TEMP = "tsp.jasper.temp";
+	public static final String PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_INCOMING = "embargos.files.path.norma63.incoming";
+	public static final String PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_PROCESSED = "embargos.files.path.norma63.processed";
+	public static final String PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_GENERATED = "embargos.files.path.norma63.generated";
+	public static final String PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_ERROR = "embargos.files.path.norma63.error";
+	public static final String PARAMETRO_EMBARGOS_FILES_PATH_AEAT_INCOMING = "embargos.files.path.aeat.incoming";
+	public static final String PARAMETRO_EMBARGOS_FILES_PATH_AEAT_PROCESSED = "embargos.files.path.aeat.processed";
+	public static final String PARAMETRO_EMBARGOS_FILES_PATH_AEAT_GENERATED = "embargos.files.path.aeat.generated";
+	public static final String PARAMETRO_EMBARGOS_FILES_PATH_AEAT_ERROR = "embargos.files.path.aeat.error";
+	public static final String PARAMETRO_EMBARGOS_FILES_ENCODING_NORMA63 = "embargos.files.encoding.norma63";
+	public static final String PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT = "embargos.files.encoding.aeat";
+	public static final String PARAMETRO_EMBARGOS_EMAIL_TO = "embargos.email.to";
+	public static final String PARAMETRO_EMBARGOS_EMAIL_FROM = "embargos.email.from";
+	
+	//Definicion del valor por defecto de los PARAMETROS:
+	public static final String PARAMETRO_DWH_ENDPOINT_CLIENTACCOUNT_DEFAULT_VALUE = "/datawarehouse/client-account";
+		
 }

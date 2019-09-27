@@ -1,20 +1,13 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
-import es.commerzbank.ice.comun.lib.file.generate.ContaGenExecutor;
-import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
-import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
-import es.commerzbank.ice.comun.lib.util.ICEParserException;
-import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
-import es.commerzbank.ice.embargos.domain.entity.*;
-import es.commerzbank.ice.embargos.domain.mapper.AEATMapper;
-import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
-import es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.Levantamiento;
-import es.commerzbank.ice.embargos.repository.*;
-import es.commerzbank.ice.embargos.service.AccountingService;
-import es.commerzbank.ice.embargos.service.CustomerService;
-import es.commerzbank.ice.embargos.service.files.AEATLiftingService;
-import es.commerzbank.ice.utils.EmbargosConstants;
-import es.commerzbank.ice.utils.EmbargosUtils;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.math.BigDecimal;
+import java.util.List;
+
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
 import org.slf4j.Logger;
@@ -24,11 +17,30 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import es.commerzbank.ice.comun.lib.file.generate.ContaGenExecutor;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.util.ICEParserException;
+import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
+import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
+import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
+import es.commerzbank.ice.embargos.domain.entity.Embargo;
+import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
+import es.commerzbank.ice.embargos.domain.entity.EstadoLevantamiento;
+import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
+import es.commerzbank.ice.embargos.domain.entity.Traba;
+import es.commerzbank.ice.embargos.domain.mapper.AEATMapper;
+import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
+import es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.Levantamiento;
+import es.commerzbank.ice.embargos.repository.FileControlRepository;
+import es.commerzbank.ice.embargos.repository.LiftingBankAccountRepository;
+import es.commerzbank.ice.embargos.repository.LiftingRepository;
+import es.commerzbank.ice.embargos.repository.SeizedRepository;
+import es.commerzbank.ice.embargos.repository.SeizureRepository;
+import es.commerzbank.ice.embargos.service.AccountingService;
+import es.commerzbank.ice.embargos.service.CustomerService;
+import es.commerzbank.ice.embargos.service.files.AEATLiftingService;
+import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.utils.EmbargosUtils;
 
 @Service
 @Transactional(transactionManager="transactionManager")
@@ -69,8 +81,10 @@ public class AEATLiftingServiceImpl
 
     @Override
     public void tratarFicheroLevantamientos(File file) throws IOException, ICEParserException {
-        BeanReader beanReader = null;
-
+        
+    	BeanReader beanReader = null;
+        Reader reader = null;
+        
         try {
             BigDecimal importeMaximoAutomaticoDivisa =
                     generalParametersService.loadBigDecimalParameter(EmbargosConstants.PARAMETRO_EMBARGOS_LEVANTAMIENTO_IMPORTE_MAXIMO_AUTOMATICO_DIVISA);
@@ -84,7 +98,11 @@ public class AEATLiftingServiceImpl
             // Inicialiar beanIO parser
             StreamFactory factory = StreamFactory.newInstance();
             factory.loadResource(pathFileConfigAEAT);
-            beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_LEVANTAMIENTOTRABAS, file);
+            
+	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT);
+			
+	        reader = new InputStreamReader(new FileInputStream(file), encoding);
+            beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_LEVANTAMIENTOTRABAS, reader);
 
             Object currentRecord = null;
 
@@ -214,7 +232,11 @@ public class AEATLiftingServiceImpl
         }
         finally
         {
-            if (beanReader != null)
+            if(reader!=null) {
+            	reader.close();
+            }
+            
+        	if (beanReader != null)
                 beanReader.close();
         }
     }

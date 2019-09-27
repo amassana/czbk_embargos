@@ -35,11 +35,6 @@ server:
 commerzbank:
   embargos:
     files:
-      path:
-        monitoring: /Seizure_Files/incoming/
-        processed: /Seizure_Files/processed/
-        generated: /Seizure_Files/generated/
-        error: /Seizure_Files/error/
       monitoring-interval-in-seconds: 5
       stable-size-time-in-millis: 5000
       suffix-file-filter-pet: pet
@@ -59,6 +54,4 @@ commerzbank:
       config-path:
         contabilidad: beanio/contabilidad_salida.xml  
         mt942: beanio/mt942.xml
-  jasper:
-    temp: C:/temp/
 
