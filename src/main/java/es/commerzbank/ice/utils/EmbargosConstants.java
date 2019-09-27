@@ -234,4 +234,8 @@ public class EmbargosConstants {
 	public static final long ESTADO_FINAL_LEVANTAMIENTO_PARCIAL = 2;
 	public static final long ESTADO_FINAL_LEVANTAMIENTO_RECHAZADO = 3;
 	public static final long ESTADO_FINAL_OTROS = 4;
+
+	public static final String PROFILE_DES = "DES";
+
+	public static final String PROFILE_LOCAL = "LOCAL";
 }

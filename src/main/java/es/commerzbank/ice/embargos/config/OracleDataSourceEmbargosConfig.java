@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jndi.JndiObjectFactoryBean;
 import org.springframework.jndi.JndiTemplate;
@@ -27,6 +28,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import es.commerzbank.ice.comun.lib.config.OracleDataSourceConfig;
+import es.commerzbank.ice.utils.EmbargosConstants;
 import oracle.jdbc.pool.OracleDataSource;
 
 @Configuration
@@ -40,53 +42,63 @@ import oracle.jdbc.pool.OracleDataSource;
 public class OracleDataSourceEmbargosConfig {
 	private static final Logger logger = LoggerFactory.getLogger(OracleDataSourceEmbargosConfig.class);
 
-	/*@Value("${spring.datasource.url}")
+	@Value("${spring.datasource.url}")
 	private String url;
 
 	@Value("${spring.datasource.username}")
 	private String userName;
 
 	@Value("${spring.datasource.password}")
-	private String password;*/
+	private String password;
 
 	@Value("${spring.datasource.driverClassName}")
 	private String driverClassName;
-
-	/*@Value("${spring.ds-comun.url}")
-	private String c_url;
-
-	@Value("${spring.ds-comun.username}")
-	private String c_userName;
-
-	@Value("${spring.ds-comun.password}")
-	private String c_password;*/
 
 	@Value("${spring.ds-comun.driver-class-name}")
 	private String c_driverClassName;
 	
 	@Autowired
 	private OracleDataSourceConfig oracleDataSourceComunes;
+	
+	@Autowired
+	private Environment env;
 
 	@Bean(name = "dsEmbargos")
 	public DataSource oracleDataSource() throws SQLException, IllegalArgumentException, NamingException {
-		/*OracleDataSource dataSource = new OracleDataSource();
-		dataSource.setUser(userName);
-		dataSource.setURL(url);
-		dataSource.setPassword(password);
-		dataSource.setImplicitCachingEnabled(true);
-		dataSource.setFastConnectionFailoverEnabled(true);*/
+		String profile = null;
+		String[] list = env.getActiveProfiles();
+		for (int i=0; i<list.length && profile == null; i++) {
+			if (list[i].equals(EmbargosConstants.PROFILE_LOCAL)) {
+				profile = EmbargosConstants.PROFILE_LOCAL;
+			} 
+		}
 		
-		DataSource ds = null;
-        JndiObjectFactoryBean bean = new JndiObjectFactoryBean();
+		
+		
+		if (profile.equals(EmbargosConstants.PROFILE_LOCAL)) {
+			OracleDataSource ds = new OracleDataSource();
+			ds.setUser(userName);
+			ds.setURL(url);
+			ds.setPassword(password);
+			ds.setImplicitCachingEnabled(true);
+			ds.setFastConnectionFailoverEnabled(true);
+			return ds;
+		} else {
+			DataSource ds = null;
+			JndiObjectFactoryBean bean = new JndiObjectFactoryBean();
 
-        bean.setJndiName("java:comp/env/jdbc/embargosDB");
-        bean.setProxyInterface(DataSource.class);
-        bean.setLookupOnStartup(false);
-        bean.afterPropertiesSet();
-        
-		ds = (DataSource) bean.getObject();
+	        bean.setJndiName("java:comp/env/jdbc/embargosDB");
+	        bean.setProxyInterface(DataSource.class);
+	        bean.setLookupOnStartup(false);
+	        bean.afterPropertiesSet();
+	        
+			ds = (DataSource) bean.getObject();
+			return ds;
+		}
 		
-		return ds;
+        
+		
+		
 	}
 
 	private JpaVendorAdapter jpaVendorAdapter() {
