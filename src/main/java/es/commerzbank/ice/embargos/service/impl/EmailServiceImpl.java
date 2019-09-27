@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import es.commerzbank.ice.comun.lib.domain.dto.ICEEmail;
 import es.commerzbank.ice.comun.lib.service.ClientEmailService;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.embargos.service.EmailService;
 import es.commerzbank.ice.utils.EmbargosConstants;
 
@@ -21,16 +23,23 @@ public class EmailServiceImpl implements EmailService {
 	@Autowired
 	private ClientEmailService clientEmailService;
 	
+	@Autowired
+	private GeneralParametersService generalParametersService;
+	
 	@Override
-	public void sendEmailFileParserError(String fileName, String descException) {
+	public void sendEmailFileParserError(String fileName, String descException) throws ICEException {
 		
 		ICEEmail iceEmail = new ICEEmail();
 		
 		List<String> recipientsTo = new ArrayList<>(); 
 		
-		recipientsTo.add("commerzbank.alten@google.com");
-		
+		String emailAddressesTo = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_EMAIL_TO);		
+		recipientsTo.add(emailAddressesTo);
 		iceEmail.setRecipientsTo(recipientsTo);
+		
+		String emailAddressFrom = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_EMAIL_FROM);
+		iceEmail.setEmailAddressFrom(emailAddressFrom);
+		
 		iceEmail.setSubject("Error processing the file " + fileName);
 		
 		List<String> paragraphTextList = new ArrayList<>();

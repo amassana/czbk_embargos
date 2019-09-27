@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.commerzbank.ice.comun.lib.domain.dto.AccountingNote;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.embargos.domain.dto.BankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizedBankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureActionDTO;
@@ -29,6 +31,7 @@ import es.commerzbank.ice.embargos.domain.dto.SeizureStatusDTO;
 import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.utils.DownloadReportFile;
+import es.commerzbank.ice.utils.EmbargosConstants;
 import io.swagger.annotations.ApiOperation;
 
 @CrossOrigin("*")
@@ -38,15 +41,15 @@ public class SeizureController {
 
 	private static final Logger logger = LoggerFactory.getLogger(SeizureController.class);
 
-	@Value("${commerzbank.jasper.temp}")
-	private String pdfSavedPath;
-
 	@Autowired
 	private SeizureService seizureService;
 	
 	@Autowired
 	private AccountingService accountingService;
 	
+	@Autowired
+	private GeneralParametersService generalParametersService;
+
     @GetMapping(value = "/{codeFileControl}")
     @ApiOperation(value="Devuelve la lista de embargos para una petición de embargo.")
     public ResponseEntity<List<SeizureDTO>> getSeizureListByCodeFileControl(Authentication authentication,
@@ -447,7 +450,7 @@ public class SeizureController {
 	public ResponseEntity<InputStreamResource> generateSeizureLetter(
 			@PathVariable("idSeizure") Integer idSeizure) {
     	logger.info("SeizureController - generateSeizureLetter - start");
-		
+
     	DownloadReportFile.setTempFileName("seizure-letter");
 
 		DownloadReportFile.setFileTempPath(pdfSavedPath);
@@ -471,7 +474,7 @@ public class SeizureController {
 	@ApiOperation(value = "Devuelve un fichero de resumen trabas fase 3")
 	public ResponseEntity<InputStreamResource> generateSeizureRequestF3(@PathVariable("codeFileControl") Integer codControlFichero) {
 		logger.info("SeizureController - generateSeizureRequestF3 - start");
-		
+
 		DownloadReportFile.setTempFileName("seizure-request");
 
 		DownloadReportFile.setFileTempPath(pdfSavedPath);
@@ -496,7 +499,7 @@ public class SeizureController {
 	public ResponseEntity<InputStreamResource> generateSeizureResponseF4(
 			@PathVariable("fileControl") Integer codControlFichero) {
 		logger.info("SeizureController - generateSeizureResponseF4 - start");
-		
+
 		DownloadReportFile.setTempFileName("seizure-response");
 
 		DownloadReportFile.setFileTempPath(pdfSavedPath);
@@ -514,6 +517,12 @@ public class SeizureController {
 
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+
+	}
+
+	private String getPDFSavedPath() throws ICEException {
+
+		return generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP);
 
 	}
 

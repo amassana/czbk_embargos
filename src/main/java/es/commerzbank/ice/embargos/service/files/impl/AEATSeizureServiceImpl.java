@@ -1,7 +1,10 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -23,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.comun.lib.domain.dto.Element;
 import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
 import es.commerzbank.ice.comun.lib.util.ICEException;
@@ -65,13 +69,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	
 	@Value("${commerzbank.embargos.beanio.config-path.aeat}")
 	String pathFileConfigAEAT;
-	
-	@Value("${commerzbank.embargos.files.path.processed}")
-	private String pathProcessed;
-	
-	@Value("${commerzbank.embargos.files.path.generated}")
-	private String pathGenerated;
-	
+			
 	@Autowired
 	private AEATMapper aeatMapper;
 	
@@ -110,11 +108,17 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	
 	@Autowired
 	private EmailService emailService;
+
+	@Autowired
+	private GeneralParametersService generalParametersService;
 	
 	@Override
 	public void tratarFicheroDiligenciasEmbargo(File file) throws IOException, ICEException {
+		
 		logger.info("AEATSeizureServiceImpl - tratarFicheroDiligenciasEmbargo - start");
+		
 		BeanReader beanReader = null;
+		Reader reader = null;
 		
 		ControlFichero controlFicheroEmbargo = null;
 		
@@ -137,7 +141,11 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	
 	        
 	        // use a StreamFactory to create a BeanReader
-	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_DILIGENCIAS, file);
+	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT);
+			
+	        reader = new InputStreamReader(new FileInputStream(file), encoding);
+	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_DILIGENCIAS, reader);
+	        
 	        Object record = null;
 	        boolean isEntidadTransmisoraCommerzbank = false;
 	        
@@ -333,6 +341,9 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 			
 		} finally {
 			
+			if(reader!=null) {
+				reader.close();
+			}
 			if (beanReader!=null) {
 				beanReader.close();
 			}

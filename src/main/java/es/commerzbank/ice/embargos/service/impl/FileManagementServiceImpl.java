@@ -3,18 +3,16 @@ package es.commerzbank.ice.embargos.service.impl;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
-import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.embargos.service.FileManagementService;
 import es.commerzbank.ice.embargos.service.files.AEATLiftingService;
 import es.commerzbank.ice.embargos.service.files.AEATSeizedResultService;
@@ -30,18 +28,6 @@ public class FileManagementServiceImpl implements FileManagementService {
 
 	
 	private static final Logger LOG = LoggerFactory.getLogger(FileManagementServiceImpl.class);
-	
-	@Value("${commerzbank.embargos.files.path.monitoring}")
-	private String pathMonitoring;
-
-	@Value("${commerzbank.embargos.files.path.processed}")
-	private String pathProcessed;
-	
-	@Value("${commerzbank.embargos.files.path.generated}")
-	private String pathGenerated;
-	
-	@Value("${commerzbank.embargos.files.path.error}")
-	private String pathError;
 
 	@Autowired
 	Cuaderno63LiftingService cuaderno63LiftingService;
@@ -60,23 +46,38 @@ public class FileManagementServiceImpl implements FileManagementService {
 	
 	@Autowired
 	private AEATSeizedResultService aeatSeizedResultService;
+	
+	@Autowired
+	private GeneralParametersService generalParametersService;
 
 	private static final String PENDING_TO_SUCCESS = "PENDING_TO_SUCCESS";
 	private static final String PENDING_TO_ERROR = "PENDING_TO_ERROR";
 
-	public String procesarFichero(File file)
+	public String procesarFichero(File file) throws ICEException
 	{
+		
+		String pathProcessed = null;
+		String pathError = null;
+		
 		try {
 			//Si fichero es de la AEAT (tiene prefijo "AEAT_")
 			if (FilenameUtils.getBaseName(file.getCanonicalPath()).toLowerCase().contains(EmbargosConstants.AEAT.toLowerCase())) {
 
 				parsearFicheroAEAT(file);
 
+				pathProcessed = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_AEAT_PROCESSED);
+				pathError = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_AEAT_ERROR);
+				
 			} else {
 
 				parsearFicheroCuaderno63(file);
+				
+				pathProcessed = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_PROCESSED);
+				pathError = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_ERROR);
 			}
 
+
+			
 			boolean moveResult = moverFichero(file, pathProcessed);
 
 			if (moveResult)
@@ -127,7 +128,7 @@ public class FileManagementServiceImpl implements FileManagementService {
 	}
 
 	
-	private void parsearFicheroCuaderno63(File file) throws IOException, ICEParserException {
+	private void parsearFicheroCuaderno63(File file) throws IOException, ICEException {
 		
 		String tipoFichero = FilenameUtils.getExtension(file.getCanonicalPath()).toUpperCase();
 
@@ -148,8 +149,26 @@ public class FileManagementServiceImpl implements FileManagementService {
 		}
 	}
 
-	public boolean pendingMove(File srcFile, String pendingAction)
+	public boolean pendingMove(File srcFile, String pendingAction) throws ICEException, IOException
 	{
+		
+		String pathProcessed = null;
+		String pathError = null;
+		
+		//Determinacion de la rutas pathProcessed y pathError, segun el tipo de fichero:
+		if (FilenameUtils.getBaseName(srcFile.getCanonicalPath()).toLowerCase().contains(EmbargosConstants.AEAT.toLowerCase())) {
+			
+			//Fichero AEAT:
+			pathProcessed = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_AEAT_PROCESSED);
+			pathError = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_AEAT_ERROR);
+			
+		} else {
+			//Fichero Norma63:
+			pathProcessed = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_PROCESSED);
+			pathError = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_ERROR);
+		}
+		
+		
 		if (PENDING_TO_SUCCESS.equals(pendingAction))
 		{
 			return moverFichero(srcFile, pathProcessed);

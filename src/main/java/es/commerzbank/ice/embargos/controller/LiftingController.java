@@ -46,9 +46,6 @@ public class LiftingController {
 	@Autowired
 	private AccountingService accountingService;
 
-	@Value("${commerzbank.jasper.temp}")
-	private String pdfSavedPath;
-
 	@GetMapping(value = "/{codeFileControl}")
 	@ApiOperation(value = "Devuelve la lista de casos de levamtamientos")
 	public ResponseEntity<List<LiftingDTO>> getLiftingListByCodeFileControl(Authentication authentication,

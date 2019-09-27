@@ -1,7 +1,13 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -19,7 +25,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
@@ -53,15 +61,6 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	@Value("${commerzbank.embargos.beanio.config-path.cuaderno63}")
 	String pathFileConfigCuaderno63;
 
-	@Value("${commerzbank.embargos.files.path.monitoring}")
-	private String pathMonitoring;
-
-	@Value("${commerzbank.embargos.files.path.processed}")
-	private String pathProcessed;
-
-	@Value("${commerzbank.embargos.files.path.generated}")
-	private String pathGenerated;
-
 	@Autowired
 	private Cuaderno63Mapper cuaderno63Mapper;
 
@@ -89,12 +88,18 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	
 	@Autowired
 	private CommunicatingEntityRepository communicatingEntityRepository;
+	
+	@Autowired
+	private GeneralParametersService generalParametersService;
 
 	@Override
-	public void tramitarTrabas(Long codControlFicheroEmbargo, String usuarioTramitador) throws IOException, ICEParserException {
+	public void tramitarTrabas(Long codControlFicheroEmbargo, String usuarioTramitador) throws IOException, ICEException {
 
 		BeanReader beanReader = null;
 		BeanWriter beanWriter = null;
+		
+		Reader reader = null;
+		Writer writer = null;
 		
 		ControlFichero controlFicheroEmbargo = null;
 		ControlFichero controlFicheroTrabas = null;
@@ -111,6 +116,9 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	        
 	        //Fichero de embargos:
 	        String fileNameEmbargo = controlFicheroEmbargo.getNombreFichero();
+	        
+	        String pathProcessed = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_PROCESSED);
+	        
 	        File ficheroEmbargo = new File(pathProcessed + "\\" + fileNameEmbargo);
 	        
 	        //Comprobar que el fichero de embargos exista:
@@ -154,6 +162,10 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	        String fechaNombreFichero = localDate.format(formatter);
 	        String fileNameTrabas = prefijoFichero + EmbargosConstants.SEPARADOR_GUION_BAJO + fechaNombreFichero 
 	            	+ EmbargosConstants.SEPARADOR_PUNTO + EmbargosConstants.TIPO_FICHERO_TRABAS.toLowerCase();
+	        
+	        
+	        String pathGenerated = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_GENERATED);
+	        
 	        File ficheroSalida = new File(pathGenerated + "\\" + fileNameTrabas);
 	        
 	        //Se guarda el registro de ControlFichero del fichero de salida:
@@ -166,8 +178,11 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	        //fileControlRepository.save(controlFicheroTrabas);
 	        fileControlService.saveFileControlTransaction(controlFicheroTrabas);
 	                
-	        // use a StreamFactory to create a BeanReader
-	        beanWriter = factory.createWriter(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE4, ficheroSalida);
+	        //Creacion del BeanWriter para generar el fichero de salida:
+	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_NORMA63);
+			
+	        writer = new OutputStreamWriter(new FileOutputStream(ficheroSalida), encoding);
+	        beanWriter = factory.createWriter(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE4, writer);
 	        	        
 	        //GENERACION DEL FICHERO DE TRABAS:    
 	        // 1.- Leer la cabecera y el registro final del fichero de Embargos de fase 3:
@@ -175,7 +190,8 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	        CabeceraEmisorFase3 cabeceraEmisorFase3 = null;
 	        FinFicheroFase3 finFicheroFase3 = null;
 	        
-	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE3, ficheroEmbargo);	
+	        reader = new InputStreamReader(new FileInputStream(ficheroEmbargo), encoding);
+	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE3, reader);	
 	        
 	        Object record = null; 
 	        while ((record = beanReader.read()) != null) {
@@ -316,7 +332,16 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 			
 		} finally {
 
-			if (beanWriter!=null) {
+			if(reader!=null) {
+				reader.close();
+			}
+			if (beanReader != null) {
+				beanReader.close();
+			}
+			if(writer!=null) {
+				writer.close();
+			}
+			if (beanWriter != null) {
 				beanWriter.close();
 			}
 		}

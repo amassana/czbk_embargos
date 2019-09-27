@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -50,7 +48,6 @@ import es.commerzbank.ice.embargos.service.files.Cuaderno63SeizedService;
 import es.commerzbank.ice.utils.EmbargosConstants;
 import es.commerzbank.ice.utils.ICEDateUtils;
 import es.commerzbank.ice.utils.ResourcesUtil;
-import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRPrintPage;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -197,7 +194,7 @@ public class FileControlServiceImpl implements FileControlService{
 	}
 
 	@Override
-	public boolean tramitarTrabasCuaderno63(Long codeFileControl, String usuarioTramitador) throws IOException, ICEParserException {
+	public boolean tramitarTrabasCuaderno63(Long codeFileControl, String usuarioTramitador) throws IOException, ICEException {
 		logger.info("FileControlServiceImpl - tramitarTrabasCuaderno63 - start");
 		
 		cuaderno63SeizedService.tramitarTrabas(codeFileControl, usuarioTramitador);
@@ -207,7 +204,7 @@ public class FileControlServiceImpl implements FileControlService{
 	}
 
 	@Override
-	public boolean tramitarTrabasAEAT(Long codeFileControl, String usuarioTramitador) throws IOException, ICEParserException {
+	public boolean tramitarTrabasAEAT(Long codeFileControl, String usuarioTramitador) throws IOException, ICEException {
 		logger.info("FileControlServiceImpl - tramitarTrabasAEAT - start");
 		
 		aeatSeizedService.tramitarTrabas(codeFileControl, usuarioTramitador);
