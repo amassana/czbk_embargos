@@ -75,7 +75,7 @@ public class OracleDataSourceEmbargosConfig {
 		
 		
 		
-		if (profile.equals(EmbargosConstants.PROFILE_LOCAL)) {
+		if (profile != null && profile.equals(EmbargosConstants.PROFILE_LOCAL)) {
 			OracleDataSource ds = new OracleDataSource();
 			ds.setUser(userName);
 			ds.setURL(url);
