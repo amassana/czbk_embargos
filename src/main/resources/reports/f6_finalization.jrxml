@@ -124,7 +124,7 @@ ORDER BY ct.cod_traba, ct.iban]]>
 				<text><![CDATA[Fecha Vto:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement isPrintRepeatedValues="false" x="253" y="83" width="140" height="20" uuid="fba90554-2346-4bb5-a0e5-a386fcd9d379">
+				<reportElement isPrintRepeatedValues="false" x="251" y="83" width="140" height="20" uuid="fba90554-2346-4bb5-a0e5-a386fcd9d379">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a439b967-a736-41eb-949d-01afc719f1c8"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -153,7 +153,7 @@ ORDER BY ct.cod_traba, ct.iban]]>
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHACREACION}.toString()))]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement x="210" y="0" width="570" height="70" uuid="6e784268-f80b-475f-a507-2a48b0d44f15"/>
+				<reportElement x="191" y="0" width="590" height="70" uuid="6e784268-f80b-475f-a507-2a48b0d44f15"/>
 				<subreportParameter name="sub_img_param">
 					<subreportParameterExpression><![CDATA[$P{sub_img_param}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -299,7 +299,7 @@ ORDER BY ct.cod_traba, ct.iban]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{NIF}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField isBlankWhenNull="true">
 				<reportElement x="130" y="0" width="180" height="20" printWhenGroupChanges="EMBARGO" uuid="efc82a88-f5e3-4987-9ee4-90124298a5ed">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="14cd551a-0484-4f9b-8d1b-b6fa09dfd68e"/>
 					<printWhenExpression><![CDATA[$V{EMBARGO_COUNT}==1]]></printWhenExpression>
@@ -417,7 +417,7 @@ ORDER BY ct.cod_traba, ct.iban]]>
 				<text><![CDATA[Códigos: 00 Sin actuación  01 Retención total o parcial   02 Nif o Cif no titual cta.comunicada  03 Inexistencia saldo]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="709" y="80" width="50" height="20" uuid="cbfebc5e-d5a7-4746-a5bd-060637daeb54"/>
+				<reportElement x="700" y="80" width="59" height="20" uuid="cbfebc5e-d5a7-4746-a5bd-060637daeb54"/>
 				<textElement textAlignment="Right">
 					<font fontName="Serif"/>
 				</textElement>
@@ -433,7 +433,7 @@ ORDER BY ct.cod_traba, ct.iban]]>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="91">
+		<band height="32">
 			<staticText>
 				<reportElement x="620" y="0" width="100" height="20" uuid="71d046f2-9038-4129-91fa-d9acb4d28c08"/>
 				<box leftPadding="10"/>
@@ -444,16 +444,16 @@ ORDER BY ct.cod_traba, ct.iban]]>
 			</staticText>
 			<textField pattern="#,##0.00#">
 				<reportElement mode="Opaque" x="720" y="0" width="80" height="20" backcolor="#E0E0E0" uuid="8a4d296d-e27d-4583-af65-cfbb5ff47e1f"/>
-				<box leftPadding="0" rightPadding="3">
+				<box leftPadding="2" rightPadding="0">
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Serif" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{total}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{total} + " EUR"]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

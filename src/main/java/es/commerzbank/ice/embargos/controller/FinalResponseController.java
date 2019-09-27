@@ -127,7 +127,7 @@ public class FinalResponseController {
 		}
 	}
 	
-	@GetMapping("/seizure-summary/{fileControl}/report")
+	@GetMapping("/{fileControl}/report")
 	@ApiOperation(value = "Devuelve el fichero de respuesta final de embargos")
 	public ResponseEntity<InputStreamResource> generarRespuestaFinalEmbargo(
 			@PathVariable("fileControl") Integer codFileControl) {
@@ -171,7 +171,7 @@ public class FinalResponseController {
 		}
 	}
 	
-	@GetMapping("/transfer/{cod_control_fichero}/order")
+	@GetMapping("/transferOrder/{cod_control_fichero}/report")
 	@ApiOperation(value = "Devuelve un fichero de orden de tansferencia")
 	private ResponseEntity<InputStreamResource> generatePaymentLetterN63(
 			@PathVariable(name = "cod_control_fichero") String cod_control_fichero) {

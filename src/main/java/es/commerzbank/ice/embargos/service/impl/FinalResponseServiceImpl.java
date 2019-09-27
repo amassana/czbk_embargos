@@ -101,8 +101,7 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 		logger.info("SeizureServiceImpl - generarAnexo - start");
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
-		try (Connection conn_comunes = oracleDataSourceEmbargos.getComunesConnection();
-				Connection conn_embargos = oracleDataSourceEmbargos.getEmbargosConnection();) {
+		try (Connection conn_embargos = oracleDataSourceEmbargos.getEmbargosConnection()) {
 
 			Resource anexoJasperFile = ResourcesUtil.getFromJasperFolder("TGSSAnexo" + num_anexo + ".jasper");
 
@@ -119,10 +118,10 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 			parameters.put("REPORT_IMPORTE_ABONADO", importeAbonadoReport);
 			parameters.put("COD_USUARIO", cod_usuario);
 			parameters.put("COD_TRABA", cod_traba);
-			parameters.put("REPORT_CONNECTION_EMB", conn_embargos);
+	
 
 			InputStream anexo1Input = anexoJasperFile.getInputStream();
-			JasperPrint fillReport = JasperFillManager.fillReport(anexo1Input, parameters, conn_comunes);
+			JasperPrint fillReport = JasperFillManager.fillReport(anexo1Input, parameters, conn_embargos);
 
 			List<JRPrintPage> pages = fillReport.getPages();
 

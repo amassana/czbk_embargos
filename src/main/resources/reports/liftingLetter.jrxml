@@ -206,7 +206,7 @@ WHERE
 						<pen lineWidth="1.0" lineStyle="Dotted"/>
 					</graphicElement>
 				</line>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="2" y="58" width="449" height="40" uuid="ee463db0-3b38-495d-b975-61089cd7f684">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ca4f254c-baf0-4c2b-bb66-140681874935"/>
 					</reportElement>
@@ -231,7 +231,7 @@ WHERE
 	<title>
 		<band height="84" splitType="Stretch">
 			<image>
-				<reportElement x="262" y="3" width="240" height="58" uuid="ef91b95e-5105-4785-914a-1d6cfb375044"/>
+				<reportElement x="250" y="3" width="240" height="58" uuid="ef91b95e-5105-4785-914a-1d6cfb375044"/>
 				<imageExpression><![CDATA[$P{IMAGE_PARAM}]]></imageExpression>
 			</image>
 		</band>
@@ -286,7 +286,7 @@ WHERE
 	</pageHeader>
 	<columnHeader>
 		<band height="35" splitType="Stretch">
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="41" y="-4" width="111" height="28" uuid="35325439-8dc6-4df3-b5a4-7d62e99638e8"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font fontName="Serif" size="12" isBold="false"/>
@@ -333,7 +333,7 @@ WHERE
 				</textElement>
 				<text><![CDATA[Importe:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField pattern="#,###.00###;(#,###.00###-)" isBlankWhenNull="true">
 				<reportElement x="365" y="5" width="94" height="20" uuid="fa2ef9a5-62c3-4267-b9b0-035013747863">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="891fdffe-38ba-48fd-b302-fe4baa8a541c"/>
 				</reportElement>
@@ -375,7 +375,7 @@ WHERE
 					<pen lineWidth="1.0" lineStyle="Dotted"/>
 				</graphicElement>
 			</line>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="90" y="5" width="162" height="20" uuid="4f6fecc8-f0ea-42b7-9071-1d5bb855d891">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4ff6a531-5848-405b-b5f3-1a1945b9bf2a"/>
 				</reportElement>

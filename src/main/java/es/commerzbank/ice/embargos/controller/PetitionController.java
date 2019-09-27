@@ -191,25 +191,24 @@ public class PetitionController {
 	@ApiOperation(value = "Devuelve report PettitionRequest Fase1")
 	public ResponseEntity<InputStreamResource> f1PettitionRequest(
 			@PathVariable("codeFileControl") Integer codeFileControl) {
-//		logger.info("PetitionController - f1PettitionRequest - start");
-//		DownloadReportFile.setTempFileName("petitionReport");
-//
-//		DownloadReportFile.setFileTempPath(pdfSavedPath);
-//
-//		try {
-//
-//			DownloadReportFile.writeFile(petitionService.generateJasperPDF(codeFileControl));
-//
-//			logger.info("PetitionController - f1PettitionRequest - end");
-//			return DownloadReportFile.returnToDownloadFile();
-//
-//		} catch (Exception e) {
-//			logger.error("Error in petitionReport", e);
-//
-//			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
+		logger.info("PetitionController - f1PettitionRequest - start");
+		
+		DownloadReportFile.setTempFileName("petitionReportRequest");
 
-		return null;
+		DownloadReportFile.setFileTempPath(pdfSavedPath);
+
+		try {
+
+			DownloadReportFile.writeFile(petitionService.generateF1PettitionRequest(codeFileControl));
+
+			logger.info("PetitionController - f1PettitionRequest - end");
+			return DownloadReportFile.returnToDownloadFile();
+
+		} catch (Exception e) {
+			logger.error("Error in f1PettitionRequest", e);
+	
+			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 
 	}
 
