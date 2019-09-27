@@ -19,6 +19,8 @@ spring:
         ddl-auto: none
   jta:
     enable: false
+  profiles:
+    active: LOCAL
   ds-comun:
     url: jdbc:oracle:thin:@172.21.0.123:1521:DBADQUIRA
     username: COMM_COMUNES_DES

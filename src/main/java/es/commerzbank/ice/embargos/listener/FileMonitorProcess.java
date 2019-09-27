@@ -64,7 +64,8 @@ public class FileMonitorProcess {
     HashMap<String, PendingFile> pendingFiles = new HashMap<>();
 
     private boolean helloWorld = false;
-
+    private String pathIncoming;
+    
     // TODO configurable..
     @Scheduled(fixedDelay = 5000)
     public void scheduledFileReading()
@@ -73,7 +74,8 @@ public class FileMonitorProcess {
         {
         	
         	//TODO: workarround usando un solo poller, deberian haber 2 pollers: uno para AEAT y otro para NORMA63
-        	String pathIncoming = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_INCOMING);
+        	if (pathIncoming == null)
+        		pathIncoming = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_INCOMING);
         	
         	File dir = new File(pathIncoming);
 
