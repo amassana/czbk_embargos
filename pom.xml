@@ -310,6 +310,20 @@
 			</build>
 		</profile>
 
+		<profile>
+			<id>CZBK</id>
+			<build>
+				<resources>
+					<resource>
+						<directory>profiles/CZBK</directory>
+						<includes>
+							<include>**/*</include>
+						</includes>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+
 	</profiles>
 
 </project>

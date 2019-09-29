@@ -2,36 +2,24 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/defaults.xml" />
     <property name="LOG_PATH" value="D:/logs/TSP/embargos/"/>
+    <!--
+        If no active profile (default): logs to console.
+        If active profile (DES): logs to a rolling file.
+        To define the active profile: 'spring.profiles.active=<profile>' in application.yml .
+    -->
 
-	<!-- 
-	    If no active profile (default): logs to console.
-    	If active profile (DES): logs to a rolling file.
-    	To define the active profile: 'spring.profiles.active=<profile>' in application.yml . 
-	-->
-
-    <springProfile name="default">
-        <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
-
-        <logger name="org.springframework" level="ERROR"/>
-        <logger name="es.commerzbank" level="DEBUG"/>
-        <root level="INFO">
-            <appender-ref ref="CONSOLE"/>
-        </root>
-    </springProfile>
-
-    <springProfile name="DES">
-
+    <springProfile name="CZBK">
         <appender name="FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <file>/logs/embargos.log</file>
+            <file>${LOG_PATH}embargos.log</file>
 
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-                <fileNamePattern>/logs/embargos.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <fileNamePattern>${LOG_PATH}embargos.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
                 <!-- each archived file, size max 10MB -->
                 <maxFileSize>10MB</maxFileSize>
                 <!-- total size of all archive files, if total size > 2GB, it will delete old archived file -->
                 <totalSizeCap>2GB</totalSizeCap>
                 <!-- 60 days to keep -->
-                <maxHistory>60</maxHistory>
+                <maxHistory>1850</maxHistory>
             </rollingPolicy>
 
             <encoder>
@@ -40,10 +28,13 @@
         </appender>
 
         <logger name="org.springframework" level="ERROR"/>
-        <logger name="es.commerzbank" level="DEBUG"/>
+        <logger name="es.commerzbank" level="INFO">
+            <appender-ref ref="FILE-ROLLING"/>
+        </logger>
         <root level="INFO">
             <appender-ref ref="FILE-ROLLING"/>
         </root>
     </springProfile>
+
 
 </configuration>

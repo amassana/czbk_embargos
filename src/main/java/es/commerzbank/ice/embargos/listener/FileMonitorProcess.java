@@ -1,6 +1,8 @@
 package es.commerzbank.ice.embargos.listener;
 
 import java.io.File;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 
@@ -65,17 +67,20 @@ public class FileMonitorProcess {
 
     private boolean helloWorld = false;
     private String pathIncoming;
-    
+    private Instant lastVariableUpdate;
+
     // TODO configurable..
     @Scheduled(fixedDelay = 5000)
     public void scheduledFileReading()
     {
         try
         {
-        	
+        	// TODO check seconds
         	//TODO: workarround usando un solo poller, deberian haber 2 pollers: uno para AEAT y otro para NORMA63
-        	if (pathIncoming == null)
-        		pathIncoming = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_INCOMING);
+        	if (pathIncoming == null || Duration.between(lastVariableUpdate, Instant.now()).getSeconds() >= 60) {
+                pathIncoming = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_INCOMING);
+                lastVariableUpdate = Instant.now();
+            }
         	
         	File dir = new File(pathIncoming);
 

@@ -169,11 +169,10 @@ public class PetitionController {
 			@PathVariable("codeFileControl") Integer codeFileControl) {
 		logger.info("PetitionController - f1PettitionRequest - start");
 		
-		DownloadReportFile.setTempFileName("petitionReportRequest");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
-
 		try {
+			DownloadReportFile.setTempFileName("petitionReportRequest");
+
+			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			DownloadReportFile.writeFile(petitionService.generateF1PettitionRequest(codeFileControl));
 
