@@ -68,14 +68,14 @@ public class OracleDataSourceEmbargosConfig {
 		String profile = null;
 		String[] list = env.getActiveProfiles();
 		for (int i=0; i<list.length && profile == null; i++) {
-			if (list[i].equals(EmbargosConstants.PROFILE_LOCAL)) {
-				profile = EmbargosConstants.PROFILE_LOCAL;
+			if (list[i].equals(EmbargosConstants.PROFILE_YAMLDB)) {
+				profile = EmbargosConstants.PROFILE_YAMLDB;
 			} 
 		}
 		
 		
 		
-		if (profile != null && profile.equals(EmbargosConstants.PROFILE_LOCAL)) {
+		if (profile != null && profile.equals(EmbargosConstants.PROFILE_YAMLDB)) {
 			OracleDataSource ds = new OracleDataSource();
 			ds.setUser(userName);
 			ds.setURL(url);

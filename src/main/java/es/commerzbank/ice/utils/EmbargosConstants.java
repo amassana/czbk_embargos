@@ -237,9 +237,9 @@ public class EmbargosConstants {
 	public static final long ESTADO_FINAL_LEVANTAMIENTO_RECHAZADO = 3;
 	public static final long ESTADO_FINAL_OTROS = 4;
 
-	public static final String PROFILE_DES = "DES";
 	public static final String PROFILE_LOCAL = "LOCAL";
-	
+	public static final String PROFILE_YAMLDB = "PROFILE_YAMLDB";
+
 	//Definicion de Nombres de la tabla PARAMETROS:
 	public static final String PARAMETRO_TSP_DOMINIO = "tsp.dominio";
 	public static final String PARAMETRO_DWH_ENDPOINT_CLIENTACCOUNT = "datawarehouse.endpoint.client-account";
