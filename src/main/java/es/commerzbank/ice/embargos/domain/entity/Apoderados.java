@@ -1,13 +1,16 @@
 package es.commerzbank.ice.embargos.domain.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -17,11 +20,8 @@ public class Apoderados implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(generator="secuencia_id")
-	@org.hibernate.annotations.GenericGenerator(
-			name = "secuencia_id",
-			strategy = "increment"
-	)
+	@SequenceGenerator(name = "apoderados_seq_gen", sequenceName = "SEC_APODERADOS", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "apoderados_seq_gen")
 	@Column(name="ID", unique=true, nullable=false, updatable = false)
 	private long id;
 	
@@ -34,8 +34,8 @@ public class Apoderados implements Serializable {
 	@Column(name="IND_ACTIVO", length=1)
 	private String indActivo;
 	
-	@Column(name="F_ULTIMA_MODIFICACION")
-	private Timestamp fUltimaModificacion;
+	@Column(name="F_ULTIMA_MODIFICACION", precision=14)
+	private BigDecimal fUltimaModificacion;
 	
 	@Column(name="USU_ULTIMA_MODIFICACION", length=20)
 	private String usuUltimaModificacion;
@@ -72,11 +72,11 @@ public class Apoderados implements Serializable {
 		this.indActivo = indActivo;
 	}
 
-	public Timestamp getfUltimaModificacion() {
+	public BigDecimal getfUltimaModificacion() {
 		return fUltimaModificacion;
 	}
 
-	public void setfUltimaModificacion(Timestamp fUltimaModificacion) {
+	public void setfUltimaModificacion(BigDecimal fUltimaModificacion) {
 		this.fUltimaModificacion = fUltimaModificacion;
 	}
 

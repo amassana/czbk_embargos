@@ -210,6 +210,9 @@ public class Cuaderno63LiftingServiceImpl
                 estadoCtrlfichero = new EstadoCtrlfichero(
                         EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_ACCOUNTING_RESPONSE,
                         EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63);
+                
+                //Cambio del indProcesado a 'S' al cambiar al estado 'Pendiente de respuesta contable':
+                controlFicheroLevantamiento.setIndProcesado(EmbargosConstants.IND_FLAG_SI);
             }
             else
             {
