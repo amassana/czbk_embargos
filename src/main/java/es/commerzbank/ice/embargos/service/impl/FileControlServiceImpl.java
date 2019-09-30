@@ -309,11 +309,14 @@ public class FileControlServiceImpl implements FileControlService{
 		// - Para fase 3:
 		//		* NORMA63: Generado, Enviado.
 		//		* AEAT: Generado, Enviado y Confirmado.
+		// - Para fase 5:
+		//		* NORMA63: 'Pendiente de respuesta contable' y 'Procesado'.
+		//		* AEAT: 'Pendiente de respuesta contable' y 'Procesado'.
 		if (
 			(codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_PROCESSING
-			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63)			
-		 ||	(codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_PROCESSED
 			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63)		
+		 ||	(codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_PROCESSED
+			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63)	
 		 || (codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_GENERATED
 			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63)
 		 || (codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_SENT
@@ -324,6 +327,14 @@ public class FileControlServiceImpl implements FileControlService{
 			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT)
 		 || (codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_CONFIRMED
 			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT)
+		 ||	(codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_ACCOUNTING_RESPONSE
+			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63)
+		 ||	(codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_ACCOUNTED
+			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63)
+		 ||	(codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_ACCOUNTING_RESPONSE
+			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT)
+		 ||	(codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_ACCOUNTED
+			&& codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT)		 
 		 ){
 			
 			return EmbargosConstants.IND_FLAG_SI;
