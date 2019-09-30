@@ -136,10 +136,7 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	        		EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_TO_SEND,
 	        		EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63);
 	        controlFicheroEmbargo.setEstadoCtrlfichero(estadoCtrlfichero);
-	        
-	        //Actualizacion del flag IND_PROCESADO al iniciar la tramitacion:
-	        controlFicheroEmbargo.setIndProcesado(EmbargosConstants.IND_FLAG_SI);
-	        
+	        	        
 	        fileControlService.saveFileControlTransaction(controlFicheroEmbargo);
 	        
 	        //Para determinar el nombre del fichero de salida (Informacion):

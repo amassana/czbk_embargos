@@ -24,11 +24,13 @@ import es.commerzbank.ice.comun.lib.domain.dto.AccountingNote;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.embargos.domain.dto.BankAccountDTO;
+import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizedBankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureActionDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureStatusDTO;
 import es.commerzbank.ice.embargos.service.AccountingService;
+import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.utils.DownloadReportFile;
 import es.commerzbank.ice.utils.EmbargosConstants;
@@ -49,6 +51,9 @@ public class SeizureController {
 	
 	@Autowired
 	private GeneralParametersService generalParametersService;
+	
+	@Autowired
+	private FileControlService fileControlService;
 
     @GetMapping(value = "/{codeFileControl}")
     @ApiOperation(value="Devuelve la lista de embargos para una petición de embargo.")
@@ -343,28 +348,34 @@ public class SeizureController {
   
     @PostMapping(value = "/{codeFileControl}/accounting")
     @ApiOperation(value="Envio de datos a contabilidad.")
-    public ResponseEntity<String> sendAccounting(Authentication authentication,
+    public ResponseEntity<FileControlDTO> sendAccounting(Authentication authentication,
     										  @PathVariable("codeFileControl") Long codeFileControl){
+    	
     	logger.info("SeizureController - sendAccounting - start");
-    	ResponseEntity<String> response = null;
+    	
+    	ResponseEntity<FileControlDTO> response = null;
 		boolean result = false;
 
+		FileControlDTO resultFileControlDTO = null;
+		
 		try {
 
 			String userName = authentication.getName();
 		
 			result = accountingService.sendAccounting(codeFileControl, userName);
 			
+			//Se obtiene el fileControl que se va a retornar:
+			resultFileControlDTO = fileControlService.getByCodeFileControl(codeFileControl);
 			
 			if (result) {
-				response = new ResponseEntity<>(HttpStatus.OK);
+				response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.OK);
 			} else {
-				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+				response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.BAD_REQUEST);
 			}
 
 		} catch (Exception e) {
 
-			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.BAD_REQUEST);
 
 			logger.error("ERROR in doAccounting: ", e);
 		}
