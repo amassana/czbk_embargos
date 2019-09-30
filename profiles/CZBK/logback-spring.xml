@@ -2,6 +2,7 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/defaults.xml" />
     <property name="LOG_PATH" value="D:/logs/TSP/embargos/"/>
+
     <!--
         If no active profile (default): logs to console.
         If active profile (DES): logs to a rolling file.
@@ -28,9 +29,7 @@
         </appender>
 
         <logger name="org.springframework" level="ERROR"/>
-        <logger name="es.commerzbank" level="INFO">
-            <appender-ref ref="FILE-ROLLING"/>
-        </logger>
+        <logger name="es.commerzbank" level="INFO"/>
         <root level="INFO">
             <appender-ref ref="FILE-ROLLING"/>
         </root>
