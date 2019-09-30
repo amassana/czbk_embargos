@@ -7,8 +7,10 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -18,11 +20,8 @@ public class Apoderados implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(generator="secuencia_id")
-	@org.hibernate.annotations.GenericGenerator(
-			name = "secuencia_id",
-			strategy = "increment"
-	)
+	@SequenceGenerator(name = "apoderados_seq_gen", sequenceName = "SEC_APODERADOS", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "apoderados_seq_gen")
 	@Column(name="ID", unique=true, nullable=false, updatable = false)
 	private long id;
 	
