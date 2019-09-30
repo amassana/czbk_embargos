@@ -141,10 +141,7 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	        		EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_TO_SEND,
 	        		EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT);
 	        controlFicheroEmbargo.setEstadoCtrlfichero(estadoCtrlfichero);
-	        
-	        //Actualizacion del flag IND_PROCESADO al iniciar la tramitacion:
-	        controlFicheroEmbargo.setIndProcesado(EmbargosConstants.IND_FLAG_SI);
-	        
+	        	        
 	        fileControlService.saveFileControlTransaction(controlFicheroEmbargo);
 	        
 	        
