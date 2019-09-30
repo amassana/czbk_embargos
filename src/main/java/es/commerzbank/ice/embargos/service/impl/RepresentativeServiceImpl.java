@@ -132,9 +132,11 @@ public class RepresentativeServiceImpl implements RepresentativeService {
 		}, dataPage);
 		
 		logger.info("RepresentativeServiceImpl - filter - Resultado de la consulta - list = " + list.getContent().toString());
-		if (list != null && list.getContent().size() > 0) {
-			for (Apoderados a : list.getContent()) {
-				response.add(representativeMapper.toRepresentative(a));
+		if (list != null) {
+			if (list.getContent().size() > 0) {
+				for (Apoderados a : list.getContent()) {
+					response.add(representativeMapper.toRepresentative(a));
+				}
 			}
 			
 			page = new PageImpl<>(response, list.getPageable(), list.getTotalElements());
