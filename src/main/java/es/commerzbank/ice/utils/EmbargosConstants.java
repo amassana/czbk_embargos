@@ -238,7 +238,7 @@ public class EmbargosConstants {
 	public static final long ESTADO_FINAL_OTROS = 4;
 
 	public static final String PROFILE_LOCAL = "LOCAL";
-	public static final String PROFILE_YAMLDB = "PROFILE_YAMLDB";
+	public static final String PROFILE_YAMLDB = "YAMLDB";
 
 	//Definicion de Nombres de la tabla PARAMETROS:
 	public static final String PARAMETRO_TSP_DOMINIO = "tsp.dominio";
