@@ -208,7 +208,7 @@ public class Cuaderno63LiftingServiceImpl
 
             // cerrar y enviar la contabilización
             if (allLevantamientosContabilizados) {
-                contaGenExecutor.generacionFicheroContabilidad("F5_" + controlFicheroLevantamiento.getCodControlFichero());
+                contaGenExecutor.generacionFicheroContabilidad(controlFicheroLevantamiento.getCodControlFichero());
             }
 
             // Actualizar control fichero

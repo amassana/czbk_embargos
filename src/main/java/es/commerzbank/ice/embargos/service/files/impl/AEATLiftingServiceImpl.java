@@ -214,7 +214,7 @@ public class AEATLiftingServiceImpl
 
             // cerrar y enviar la contabilización
             if (allLevantamientosContabilizados) {
-                contaGenExecutor.generacionFicheroContabilidad("F5_" + controlFicheroLevantamiento.getCodControlFichero());
+                contaGenExecutor.generacionFicheroContabilidad(controlFicheroLevantamiento.getCodControlFichero());
             }
 
             // Actualizar control fichero

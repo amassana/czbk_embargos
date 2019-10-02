@@ -1,6 +1,7 @@
 package es.commerzbank.ice.embargos.service.impl;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,10 +19,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.comun.lib.domain.dto.AccountingNote;
 import es.commerzbank.ice.comun.lib.domain.dto.GeneralParameter;
+import es.commerzbank.ice.comun.lib.domain.entity.Contador;
+import es.commerzbank.ice.comun.lib.domain.entity.ContadorPK;
 import es.commerzbank.ice.comun.lib.file.generate.ContaGenExecutor;
+import es.commerzbank.ice.comun.lib.repository.ContadorRepo;
 import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
 import es.commerzbank.ice.comun.lib.util.ICEException;
+import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import es.commerzbank.ice.embargos.domain.dto.SeizureStatusDTO;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.repository.SeizedBankAccountRepository;
@@ -65,9 +71,17 @@ public class AccountingServiceImpl implements AccountingService{
 
 	@Autowired
 	ContaGenExecutor contaGenExecutor;
+	
+	@Autowired
+	es.commerzbank.ice.comun.lib.service.FileControlService fileControlServiceComunes;
+	
+	@Autowired
+	ContadorRepo contadorRepository;
 
 	@Autowired
 	LiftingBankAccountRepository liftingBankAccountRepository;
+	
+	
 
 	@Override
 	public boolean sendAccounting(Long codeFileControl, String userName) throws ICEException, Exception {
@@ -176,9 +190,9 @@ public class AccountingServiceImpl implements AccountingService{
 
 		boolean existsTrabaNotAccounted = false;
 		
-		String codGroupNote = EmbargosConstants.F3 + "_"
-				+ controlFichero.getCodControlFichero();
+		crearControlFicheroComunes(controlFichero, userName);
 		
+		Long codFileControl = controlFichero.getCodControlFichero();
 		
 		//Se obtienen la trabas asociadas al fichero:
 		for (Embargo embargo : controlFichero.getEmbargos()) {
@@ -200,7 +214,7 @@ public class AccountingServiceImpl implements AccountingService{
 					if (cuentaTraba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE) {
 					
 						int resultContabilizar = contabilizarCuentaTraba(cuentaTraba, cuentaTraba.getCuenta(), cuentaRecaudacion,
-								oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codGroupNote);
+								oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codFileControl, embargo.getRazonSocialInterna(), embargo.getNif());
 						
 						//Dependiendo del resultado de contabilizar:
 						if(resultContabilizar == 1) {
@@ -251,10 +265,53 @@ public class AccountingServiceImpl implements AccountingService{
 		}
 		logger.info("AccountingServiceImpl - sendAccountingAEATCuaderno63 - end");
 		
-		contaGenExecutor.generacionFicheroContabilidad(codGroupNote);
+		contaGenExecutor.generacionFicheroContabilidad(codFileControl);
 		
 		//Se devuelve true si no existe traba que no haya sido enviada a contabilidad:
 		return !existsTrabaNotAccounted;
+	}
+
+
+	private void crearControlFicheroComunes(ControlFichero controlFichero, String userName) throws Exception {
+		
+		if (fileControlServiceComunes.getFileControl(controlFichero.getCodControlFichero()) == null) {
+			es.commerzbank.ice.comun.lib.domain.entity.ControlFichero entity = new es.commerzbank.ice.comun.lib.domain.entity.ControlFichero(), result = null;
+			Date date = new Date();
+			Contador contador = contadorRepository.existsContador(new Timestamp(date.getTime()), EmbargosConstants.ID_APLICACION_EMBARGOS, ValueConstants.APUNTE_CONTABLE_CONTADOR_TIPO);
+			
+			if (contador != null && contador.getContador() != null && contador.getContador().intValue() > 0) {
+				int aumentar = contador.getContador().intValue() + 1;
+				contador.setContador(new BigDecimal(aumentar));
+			} else {
+				contador = new Contador();
+				contador.setContador(new BigDecimal(1));
+				
+				ContadorPK contadorPK = new ContadorPK();
+				contadorPK.setAplicacion(EmbargosConstants.ID_APLICACION_EMBARGOS);
+				contadorPK.setTipo(ValueConstants.APUNTE_CONTABLE_CONTADOR_TIPO);
+				contadorPK.setFecha(new Timestamp(date.getTime()));
+				contador.setId(contadorPK);
+				
+			}
+			
+			entity.setCodControlFichero(controlFichero.getCodControlFichero());
+			
+			int cuenta = contador.getContador().intValue() + 1;
+			entity.setContador(new BigDecimal(cuenta));
+			entity.setDescripcion(controlFichero.getDescripcion());
+			
+			Date fechaCreacion = ICEDateUtils.bigDecimalToDate(controlFichero.getFechaCreacion(), ICEDateUtils.FORMAT_yyyyMMdd);
+			entity.setFechaCreacion(new Timestamp(fechaCreacion.getTime()));
+			entity.setfUltimaModificacion(new Timestamp(date.getTime()));
+			entity.setUsuUltModificacion(userName);
+			
+			result = fileControlServiceComunes.createFileControl(entity);
+			
+			if (result == null) {
+				throw new Exception();
+			}
+		} 
+		
 	}
 
 
@@ -267,8 +324,9 @@ public class AccountingServiceImpl implements AccountingService{
 
 		boolean existsTrabaNotAccounted = false;
 		
-		String codGroupNote = EmbargosConstants.F3 + "_"
-				+ controlFichero.getCodControlFichero();
+		crearControlFicheroComunes(controlFichero, userName);
+		
+		Long codFileControl = controlFichero.getCodControlFichero();
 		
 		//Se obtienen las peticiones asociadas al fichero:
 		for (Peticion peticion : controlFichero.getPeticiones()) {
@@ -303,9 +361,8 @@ public class AccountingServiceImpl implements AccountingService{
 
 							//Para contabilizar la cuentaTraba tiene que estar en estado anterior a "Enviada a Contabilidad":
 							if (cuentaTraba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE) {
-
 								int resultContabilizar = contabilizarCuentaTraba(cuentaTraba, cuentaTraba.getCuenta(), cuentaRecaudacion,
-										oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codGroupNote);
+										oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codFileControl, embargo.getRazonSocialInterna(), embargo.getNif());
 
 								//Dependiendo del resultado de contabilizar:
 								if(resultContabilizar == 1) {
@@ -359,7 +416,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 		logger.info("AccountingServiceImpl - sendAccountingCGPJ - end");
 		
-		contaGenExecutor.generacionFicheroContabilidad(codGroupNote);
+		contaGenExecutor.generacionFicheroContabilidad(codFileControl);
 
 		//Se devuelve true si no existe traba que no haya sido enviada a contabilidad:
 		return !existsTrabaNotAccounted;
@@ -368,7 +425,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 	private int contabilizarCuentaTraba(CuentaTraba cuentaTraba, String debitAccount, String creditAccount,
 			Long oficinaCuentaRecaudacion, String reference1, String reference2, String detailPayment,
-			String codGroupNote) {
+			Long codFileControl, String nombre, String nif) {
 
 		AccountingNote accountingNote = new AccountingNote();
 
@@ -388,9 +445,11 @@ public class AccountingServiceImpl implements AccountingService{
 		accountingNote.setReference2(reference2);
 		accountingNote.setDetailPayment(detailPayment);
 		accountingNote.setChange(cuentaTraba.getCambio());
-		accountingNote.setGeneralParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_FASE3_CALLBACK);
-		accountingNote.setCodGroupNote(codGroupNote);
+		accountingNote.setCallback(EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_FASE3_CALLBACK);
+		accountingNote.setCodFileControl(codFileControl);
 		accountingNote.setStatus(EmbargosConstants.COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO);
+		accountingNote.setName(nombre);
+		accountingNote.setNif(nif);
 		
 		return accountingNoteService.contabilizar(accountingNote);
 	}
@@ -709,13 +768,11 @@ public class AccountingServiceImpl implements AccountingService{
 		String reference1 = embargo.getNumeroEmbargo();
 		String reference2 = "";
 		String detailPayment = embargo.getDatregcomdet();
-		String codGroupNote = EmbargosConstants.F4 + "_"
-				+ embargo.getControlFichero().getCodControlFichero();
 
 		//Llamada a contabilizar para deshacer la contabilizacion, poniendo como debitAccount la cuenta
 		//de recaudacion y la creditAccount la cuenta del cliente:
 		int resultContabilizar = contabilizarCuentaTraba(cuentaTraba, cuentaRecaudacion, cuentaTraba.getCuenta(),
-				oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codGroupNote);
+				oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codeFileControl, embargo.getRazonSocialInterna(), embargo.getNif());
 
 		//Dependiendo del resultado de contabilizar:
 		if(resultContabilizar == 1) {
@@ -784,7 +841,7 @@ public class AccountingServiceImpl implements AccountingService{
 	
 		
 	@Override
-	public boolean sendAccountingLifting(Long codeFileControl, String userName)  throws ICEException {
+	public boolean sendAccountingLifting(Long codeFileControl, String userName)  throws Exception {
 
 		logger.info("AccountingServiceImpl - sendAccountingLifting - start");
 
@@ -801,7 +858,7 @@ public class AccountingServiceImpl implements AccountingService{
 			
 			for (LevantamientoTraba levantamiento : fileControlOpt.get().getLevantamientoTrabas()) {
 				for (CuentaLevantamiento cuenta : levantamiento.getCuentaLevantamientos()) {
-					sendAccountingLiftingBankAccountInternal(cuenta, levantamiento.getTraba().getEmbargo(), userName, oficinaCuentaRecaudacion, cuentaRecaudacion, contabilizacionCallbackNameParameter);
+					sendAccountingLiftingBankAccountInternal(cuenta, levantamiento.getTraba().getEmbargo(), fileControlOpt.get(), userName, oficinaCuentaRecaudacion, cuentaRecaudacion, contabilizacionCallbackNameParameter);
 				}
 			}
 		}
@@ -812,7 +869,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 	@Override
 	public boolean sendAccountingLiftingBankAccount(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, String userName)
-			throws ICEException
+			throws Exception
 	{
 		boolean response = true;
 
@@ -820,13 +877,13 @@ public class AccountingServiceImpl implements AccountingService{
 		Long oficinaCuentaRecaudacion = determineOficinaCuentaRecaudacion();
 		String contabilizacionCallbackNameParameter = EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_FASE5_CALLBACK;
 
-		sendAccountingLiftingBankAccountInternal(cuentaLevantamiento, embargo, userName, oficinaCuentaRecaudacion, cuentaRecaudacion, contabilizacionCallbackNameParameter);
+		sendAccountingLiftingBankAccountInternal(cuentaLevantamiento, embargo, embargo.getControlFichero(), userName, oficinaCuentaRecaudacion, cuentaRecaudacion, contabilizacionCallbackNameParameter);
 
 		return response;
 	}
 
-	private boolean sendAccountingLiftingBankAccountInternal(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, String userName, Long oficinaCuentaRecaudacion, String cuentaRecaudacion, String contabilizacionCallbackNameParameter)
-			throws ICEException {
+	private boolean sendAccountingLiftingBankAccountInternal(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, ControlFichero controlFichero, String userName, Long oficinaCuentaRecaudacion, String cuentaRecaudacion, String contabilizacionCallbackNameParameter)
+			throws Exception {
 		boolean response = true;
 
 		String reference1 = embargo.getNumeroEmbargo();
@@ -834,7 +891,11 @@ public class AccountingServiceImpl implements AccountingService{
 		String detailPayment = embargo.getDatregcomdet();
 
 		AccountingNote accountingNote = new AccountingNote();
+		
+		crearControlFicheroComunes(controlFichero, userName);
 
+		Long codFileControl = controlFichero.getCodControlFichero();
+		
 		double amount = cuentaLevantamiento.getImporte()!=null ? cuentaLevantamiento.getImporte().doubleValue() : 0;
 
 		accountingNote.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
@@ -851,9 +912,11 @@ public class AccountingServiceImpl implements AccountingService{
 		accountingNote.setReference2(reference2);
 		accountingNote.setDetailPayment(detailPayment);
 		accountingNote.setChange(cuentaLevantamiento.getCambio());
-		accountingNote.setGeneralParameter(contabilizacionCallbackNameParameter);
+		accountingNote.setCallback(contabilizacionCallbackNameParameter);
 		accountingNote.setStatus(EmbargosConstants.COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO);
-		accountingNote.setCodGroupNote("F5_"+ cuentaLevantamiento.getLevantamientoTraba().getControlFichero().getCodControlFichero());
+		accountingNote.setCodFileControl(codFileControl);
+		accountingNote.setName(embargo.getRazonSocialInterna());
+		accountingNote.setNif(embargo.getNif());
 
 		int resultado = accountingNoteService.contabilizar(accountingNote);
 
