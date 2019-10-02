@@ -190,7 +190,9 @@ public class AccountingServiceImpl implements AccountingService{
 
 		boolean existsTrabaNotAccounted = false;
 		
-		Long codFileControl = crearControlFicheroComunes(controlFichero, userName);
+		crearControlFicheroComunes(controlFichero, userName);
+		
+		Long codFileControl = controlFichero.getCodControlFichero();
 		
 		//Se obtienen la trabas asociadas al fichero:
 		for (Embargo embargo : controlFichero.getEmbargos()) {
@@ -270,11 +272,10 @@ public class AccountingServiceImpl implements AccountingService{
 	}
 
 
-	private Long crearControlFicheroComunes(ControlFichero controlFichero, String userName) {
-		Long response = null;
+	private void crearControlFicheroComunes(ControlFichero controlFichero, String userName) throws Exception {
 		
-		if (fileControlServiceComunes.getFileControl(controlFichero.getCodControlFichero()) != null) {
-			es.commerzbank.ice.comun.lib.domain.entity.ControlFichero entity = null, result = null;
+		if (fileControlServiceComunes.getFileControl(controlFichero.getCodControlFichero()) == null) {
+			es.commerzbank.ice.comun.lib.domain.entity.ControlFichero entity = new es.commerzbank.ice.comun.lib.domain.entity.ControlFichero(), result = null;
 			Date date = new Date();
 			Contador contador = contadorRepository.existsContador(new Timestamp(date.getTime()), EmbargosConstants.ID_APLICACION_EMBARGOS, ValueConstants.APUNTE_CONTABLE_CONTADOR_TIPO);
 			
@@ -306,14 +307,11 @@ public class AccountingServiceImpl implements AccountingService{
 			
 			result = fileControlServiceComunes.createFileControl(entity);
 			
-			if (result != null) {
-				response = result.getCodControlFichero();
+			if (result == null) {
+				throw new Exception();
 			}
-		} else {
-			response = controlFichero.getCodControlFichero();
-		}
+		} 
 		
-		return response;
 	}
 
 
@@ -326,7 +324,9 @@ public class AccountingServiceImpl implements AccountingService{
 
 		boolean existsTrabaNotAccounted = false;
 		
-		Long codFileControl = crearControlFicheroComunes(controlFichero, userName);
+		crearControlFicheroComunes(controlFichero, userName);
+		
+		Long codFileControl = controlFichero.getCodControlFichero();
 		
 		//Se obtienen las peticiones asociadas al fichero:
 		for (Peticion peticion : controlFichero.getPeticiones()) {
@@ -841,7 +841,7 @@ public class AccountingServiceImpl implements AccountingService{
 	
 		
 	@Override
-	public boolean sendAccountingLifting(Long codeFileControl, String userName)  throws ICEException {
+	public boolean sendAccountingLifting(Long codeFileControl, String userName)  throws Exception {
 
 		logger.info("AccountingServiceImpl - sendAccountingLifting - start");
 
@@ -869,7 +869,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 	@Override
 	public boolean sendAccountingLiftingBankAccount(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, String userName)
-			throws ICEException
+			throws Exception
 	{
 		boolean response = true;
 
@@ -883,7 +883,7 @@ public class AccountingServiceImpl implements AccountingService{
 	}
 
 	private boolean sendAccountingLiftingBankAccountInternal(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, ControlFichero controlFichero, String userName, Long oficinaCuentaRecaudacion, String cuentaRecaudacion, String contabilizacionCallbackNameParameter)
-			throws ICEException {
+			throws Exception {
 		boolean response = true;
 
 		String reference1 = embargo.getNumeroEmbargo();
@@ -892,8 +892,10 @@ public class AccountingServiceImpl implements AccountingService{
 
 		AccountingNote accountingNote = new AccountingNote();
 		
-		Long codFileControl = crearControlFicheroComunes(controlFichero, userName);
+		crearControlFicheroComunes(controlFichero, userName);
 
+		Long codFileControl = controlFichero.getCodControlFichero();
+		
 		double amount = cuentaLevantamiento.getImporte()!=null ? cuentaLevantamiento.getImporte().doubleValue() : 0;
 
 		accountingNote.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
