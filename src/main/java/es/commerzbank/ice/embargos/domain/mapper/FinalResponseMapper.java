@@ -13,7 +13,7 @@ public abstract class FinalResponseMapper {
 	@Mappings({
 		@Mapping(source = "codResultadoEmbargo", target = "codeFinalResponse"),
 		@Mapping(source = "embargo.numeroEmbargo", target = "seizureNumber"),
-		@Mapping(source = "embargo.nif", target = "nif"),
+		@Mapping(source = "embargo.datosCliente.nif", target = "nif"),
 		@Mapping(source = "embargo.nombre", target = "holder")
 	})
 	public abstract FinalResponseDTO toFinalResponse(ResultadoEmbargo resultado);

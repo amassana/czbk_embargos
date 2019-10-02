@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import es.commerzbank.ice.comun.lib.file.generate.ContaGenExecutor;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEParserException;
+import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
@@ -37,6 +38,7 @@ import es.commerzbank.ice.embargos.repository.LiftingRepository;
 import es.commerzbank.ice.embargos.repository.SeizedRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
 import es.commerzbank.ice.embargos.service.AccountingService;
+import es.commerzbank.ice.embargos.service.ClientDataService;
 import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.embargos.service.files.AEATLiftingService;
 import es.commerzbank.ice.utils.EmbargosConstants;
@@ -58,6 +60,9 @@ public class AEATLiftingServiceImpl
     @Autowired
     FileControlMapper fileControlMapper;
 
+	@Autowired
+	private ClientDataService clientDataService;
+	   
     @Autowired
     FileControlRepository fileControlRepository;
     @Autowired
@@ -150,6 +155,11 @@ public class AEATLiftingServiceImpl
                     // estado ejecutado?
                     CustomerDTO customerDTO = customerService.findCustomerByNif(levantamientoAEAT.getNifDeudor());
 
+	        		if (customerDTO!=null) {	        			
+		        		//- Se guardan los datos del cliente obtenidos de DataWarehouse (desde customerDTO):
+		        		clientDataService.createUpdateClientDataTransaction(customerDTO);
+	        		}
+                    
                     LevantamientoTraba levantamiento = aeatMapper.generateLevantamiento(controlFicheroLevantamiento.getCodControlFichero(), levantamientoAEAT, traba, customerDTO);
 
                     liftingRepository.save(levantamiento);

@@ -39,6 +39,7 @@ import es.commerzbank.ice.embargos.repository.LiftingRepository;
 import es.commerzbank.ice.embargos.repository.SeizedRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
 import es.commerzbank.ice.embargos.service.AccountingService;
+import es.commerzbank.ice.embargos.service.ClientDataService;
 import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63LiftingService;
 import es.commerzbank.ice.utils.EmbargosConstants;
@@ -59,6 +60,9 @@ public class Cuaderno63LiftingServiceImpl
 
     @Value("${commerzbank.embargos.beanio.config-path.cuaderno63}")
     String pathFileConfigCuaderno63;
+
+    @Autowired
+	private ClientDataService clientDataService;
 
     @Autowired
     FileControlMapper fileControlMapper;
@@ -157,6 +161,11 @@ public class Cuaderno63LiftingServiceImpl
                     // estado ejecutado?
                     CustomerDTO customerDTO = customerService.findCustomerByNif(ordenLevantamientoRetencionFase5.getNifDeudor());
 
+	        		if (customerDTO!=null) {	        			
+		        		//- Se guardan los datos del cliente obtenidos de DataWarehouse (desde customerDTO):
+		        		clientDataService.createUpdateClientDataTransaction(customerDTO);
+	        		}
+                    
                     LevantamientoTraba levantamiento = cuaderno63Mapper.generateLevantamiento(controlFicheroLevantamiento.getCodControlFichero(), ordenLevantamientoRetencionFase5, traba, customerDTO);
 
                     liftingRepository.save(levantamiento);

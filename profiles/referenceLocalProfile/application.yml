@@ -90,7 +90,7 @@ embargos:
     to: a@b.c
     from: a@b.c
 
-contabilizacion:
+  contabilizacion:
     mt942: c:/temp
     fase5:
       callback:
