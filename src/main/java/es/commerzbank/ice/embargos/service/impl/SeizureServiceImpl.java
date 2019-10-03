@@ -229,7 +229,7 @@ public class SeizureServiceImpl implements SeizureService {
 
 	@Override
 	public boolean updateSeizedBankAccountList(Long codeFileControl, Long idSeizure,
-			SeizureSaveDTO seizureSave, String userModif) {
+			SeizureSaveDTO seizureSave, String userModif) throws Exception {
 		logger.info("SeizureServiceImpl - updateSeizedBankAccountList - start");
 
 		Optional<Traba> trabaOpt = seizedRepository.findById(idSeizure);

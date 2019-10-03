@@ -112,6 +112,7 @@ public class Embargo implements Serializable {
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="NIF")
 	private DatosCliente datosCliente;
+
 	
 	public Embargo() {
 	}

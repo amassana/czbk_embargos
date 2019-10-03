@@ -197,6 +197,7 @@ public abstract class Cuaderno63Mapper {
 		@Mapping(source = "codControlFicheroEmbargo", target = "controlFichero.codControlFichero"),
 		@Mapping(source = "entidadOrdenante", target = "entidadesOrdenante"),
 		@Mapping(source = "fechaLimiteTraba", target = "fechaLimiteTraba"),
+		@Mapping(source = "fechaLimiteTraba", target = "fechaLimiteTraba")
 	})
 	public abstract Embargo generateEmbargo(OrdenEjecucionEmbargoFase3 ordenEjecucionEmbargo, 
 			OrdenEjecucionEmbargoComplementarioFase3 ordenEjecucionEmbargoComp, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante, BigDecimal fechaLimiteTraba,  Map<String, AccountDTO> customerAccountsMap);
