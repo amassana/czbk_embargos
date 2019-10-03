@@ -42,7 +42,9 @@ public abstract class SeizureMapper {
 			seizureStatusDTO.setDescription(traba.getEstadoTraba().getDesEstado());
 			seizureDTO.setStatus(seizureStatusDTO);
 			
-			seizureDTO.setReviewed(traba.getRevisado().equals(EmbargosConstants.IND_FLAG_SI) ? true : false);
+			if (traba.getRevisado() != null) {
+				seizureDTO.setReviewed(traba.getRevisado().equals(EmbargosConstants.IND_FLAG_SI) ? true : false);
+			}
 			
 			//Importe trabado:
 			BigDecimal importeTrabado = traba.getImporteTrabado()!=null ? traba.getImporteTrabado() : BigDecimal.valueOf(0);
