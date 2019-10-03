@@ -196,7 +196,6 @@ public abstract class Cuaderno63Mapper {
 		@Mapping(source = "ordenEjecucionEmbargo.codigoDeuda", target = "codDeudaDeudor"),
 		@Mapping(source = "codControlFicheroEmbargo", target = "controlFichero.codControlFichero"),
 		@Mapping(source = "entidadOrdenante", target = "entidadesOrdenante"),
-		@Mapping(source = "fechaLimiteTraba", target = "fechaLimiteTraba"),
 		@Mapping(source = "fechaLimiteTraba", target = "fechaLimiteTraba")
 	})
 	public abstract Embargo generateEmbargo(OrdenEjecucionEmbargoFase3 ordenEjecucionEmbargo, 
