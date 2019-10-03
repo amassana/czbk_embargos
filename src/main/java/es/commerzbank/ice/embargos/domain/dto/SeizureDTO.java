@@ -14,7 +14,7 @@ public class SeizureDTO
     private BigDecimal seizedAmount;
     private BigDecimal pendingSeizedAmount;
     private BigDecimal codAudit;
-    private BigDecimal seizureNumber;
+    private String seizureNumber;
     private boolean isReviewed;
 
     public String getIdSeizure() {
@@ -97,11 +97,11 @@ public class SeizureDTO
 		this.codAudit = codAudit;
 	}
 
-	public BigDecimal getSeizureNumber() {
+	public String getSeizureNumber() {
 		return seizureNumber;
 	}
 
-	public void setSeizureNumber(BigDecimal seizureNumber) {
+	public void setSeizureNumber(String seizureNumber) {
 		this.seizureNumber = seizureNumber;
 	}
 

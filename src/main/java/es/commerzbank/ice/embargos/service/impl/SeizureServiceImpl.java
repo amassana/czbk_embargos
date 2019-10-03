@@ -24,6 +24,7 @@ import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
 import es.commerzbank.ice.embargos.domain.dto.SeizedBankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureActionDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
+import es.commerzbank.ice.embargos.domain.dto.SeizureSaveDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureStatusDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
@@ -48,6 +49,7 @@ import es.commerzbank.ice.embargos.repository.SeizedRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
 import es.commerzbank.ice.embargos.repository.SeizureStatusRepository;
 import es.commerzbank.ice.embargos.service.SeizureService;
+import es.commerzbank.ice.utils.EmbargosConstants;
 import es.commerzbank.ice.utils.EmbargosUtils;
 import es.commerzbank.ice.utils.ICEDateUtils;
 import es.commerzbank.ice.utils.ResourcesUtil;
@@ -227,7 +229,7 @@ public class SeizureServiceImpl implements SeizureService {
 
 	@Override
 	public boolean updateSeizedBankAccountList(Long codeFileControl, Long idSeizure,
-			List<SeizedBankAccountDTO> seizedBankAccountDTOList, String userModif) {
+			SeizureSaveDTO seizureSave, String userModif) {
 		logger.info("SeizureServiceImpl - updateSeizedBankAccountList - start");
 
 		Optional<Traba> trabaOpt = seizedRepository.findById(idSeizure);
@@ -239,6 +241,7 @@ public class SeizureServiceImpl implements SeizureService {
 			BigDecimal fechaActualBigDec = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
 			traba.setUsuarioUltModificacion(userModif);
 			traba.setFUltimaModificacion(fechaActualBigDec);
+			traba.setRevisado(seizureSave.isReviewed() ? EmbargosConstants.IND_FLAG_SI : EmbargosConstants.IND_FLAG_NO);
 
 			// Actualizar usuario y fecha ultima modificacion del Embargo (para que se
 			// inserte registro en el historico de embargos):
@@ -248,7 +251,7 @@ public class SeizureServiceImpl implements SeizureService {
 
 			// Calculo del importe trabado: sumar los importes trabados de cada cuenta:
 			BigDecimal importeTrabado = new BigDecimal(0);
-			for (SeizedBankAccountDTO seizedBankAccountDTO : seizedBankAccountDTOList) {
+			for (SeizedBankAccountDTO seizedBankAccountDTO : seizureSave.getSeizedBankAccountList()) {
 				BigDecimal importeTrabadoBankAccount = seizedBankAccountDTO.getAmount() != null
 						? seizedBankAccountDTO.getAmount()
 						: BigDecimal.valueOf(0);
@@ -259,7 +262,7 @@ public class SeizureServiceImpl implements SeizureService {
 			seizedRepository.save(traba);
 		}
 
-		for (SeizedBankAccountDTO seizedBankAccountDTO : seizedBankAccountDTOList) {
+		for (SeizedBankAccountDTO seizedBankAccountDTO : seizureSave.getSeizedBankAccountList()) {
 
 			Optional<CuentaTraba> cuentaTrabaOpt = seizedBankAccountRepository
 					.findById(seizedBankAccountDTO.getIdSeizedBankAccount());

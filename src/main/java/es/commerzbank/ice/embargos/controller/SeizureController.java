@@ -28,6 +28,7 @@ import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizedBankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureActionDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
+import es.commerzbank.ice.embargos.domain.dto.SeizureSaveDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureStatusDTO;
 import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.FileControlService;
@@ -190,7 +191,7 @@ public class SeizureController {
     public ResponseEntity<String> updateSeizedBankAccountList(Authentication authentication,
     														  @PathVariable("codeFileControl") Long codeFileControl,
     														  @PathVariable("idSeizure") Long idSeizure,
-    														  @RequestBody List<SeizedBankAccountDTO> seizedBankAccountList){
+    														  @RequestBody SeizureSaveDTO seizureSave){
     	logger.info("SeizureController - updateSeizedBankAccountList - start");
 		ResponseEntity<String> response = null;
 		boolean result = false;
@@ -199,7 +200,7 @@ public class SeizureController {
 
 			String userModif = authentication.getName();
 
-			result = seizureService.updateSeizedBankAccountList(codeFileControl, idSeizure, seizedBankAccountList,userModif);
+			result = seizureService.updateSeizedBankAccountList(codeFileControl, idSeizure, seizureSave,userModif);
 
 			if (result) {
 				response = new ResponseEntity<>(HttpStatus.OK);
