@@ -20,11 +20,12 @@
 		<![CDATA[select
 	ct.cuenta
 ,	ct.importe AS importeTraba
-,	t.fecha_traba, e.COD_EMBARGO, e.nombre, e.domicilio, e.codigo_postal, e.municipio, e.numero_embargo, e.nif
+,	t.fecha_traba, e.COD_EMBARGO, dc.nombre, dc.domicilio, dc.codigo_postal, dc.municipio, e.numero_embargo, e.nif
 ,	e.importe AS importeEmbargo
 ,	e.datregcomdet
 from TRABAS t inner join CUENTA_TRABA ct on t.cod_traba = ct.cod_traba
 inner join EMBARGO e on e.cod_embargo = t.cod_embargo
+inner join DATOS_CLIENTE dc on dc.nif = e.nif
 where t.cod_traba = $P{COD_TRABA}]]>
 	</queryString>
 	<field name="CUENTA" class="java.lang.String">
