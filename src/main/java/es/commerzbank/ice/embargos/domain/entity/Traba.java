@@ -39,6 +39,9 @@ public class Traba implements Serializable {
 
 	@Column(name="IND_MODIFICADO", length=1)
 	private String indModificado;
+	
+	@Column(name="REVISADO", length=1)
+	private String revisado;
 
 	@Column(name="USUARIO_ULT_MODIFICACION", length=10)
 	private String usuarioUltModificacion;
@@ -311,6 +314,14 @@ public class Traba implements Serializable {
 
 	public void setEstadoTraba(EstadoTraba estadoTraba) {
 		this.estadoTraba = estadoTraba;
+	}
+
+	public String getRevisado() {
+		return revisado;
+	}
+
+	public void setRevisado(String revisado) {
+		this.revisado = revisado;
 	}
 
 }

@@ -12,6 +12,7 @@ import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureStatusDTO;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
 import es.commerzbank.ice.embargos.domain.entity.Traba;
+import es.commerzbank.ice.utils.EmbargosConstants;
 
 @Mapper(componentModel="spring")
 public abstract class SeizureMapper {
@@ -21,7 +22,8 @@ public abstract class SeizureMapper {
 		@Mapping (source = "nif", target = "NIF"),
 		@Mapping (source = "nombre", target = "name"),
 		@Mapping (source = "razonSocialInterna", target = "nameInternal"),
-		@Mapping (source = "importe", target = "requestedAmount")
+		@Mapping (source = "importe", target = "requestedAmount"),
+		@Mapping (source = "numeroEmbargo", target = "seizureNumber")
 	})
 	public abstract SeizureDTO toSeizureDTO(Embargo embargo);
 	
@@ -39,6 +41,8 @@ public abstract class SeizureMapper {
 			seizureStatusDTO.setCode(String.valueOf(traba.getEstadoTraba().getCodEstado()));
 			seizureStatusDTO.setDescription(traba.getEstadoTraba().getDesEstado());
 			seizureDTO.setStatus(seizureStatusDTO);
+			
+			seizureDTO.setReviewed(traba.getRevisado().equals(EmbargosConstants.IND_FLAG_SI) ? true : false);
 			
 			//Importe trabado:
 			BigDecimal importeTrabado = traba.getImporteTrabado()!=null ? traba.getImporteTrabado() : BigDecimal.valueOf(0);
