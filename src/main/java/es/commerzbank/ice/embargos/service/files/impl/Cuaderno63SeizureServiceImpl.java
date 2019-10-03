@@ -201,8 +201,6 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 		        			customerAccountsMap.put(accountDTO.getIban(), accountDTO);
 		        		}
 		        		
-		        		//- Se guardan los datos del cliente obtenidos de DataWarehouse (desde customerDTO):
-		        		clientDataService.createUpdateClientDataTransaction(customerDTO);
 	        		}
 	        		
 	        		//Determinacion de la fecha limite de la traba:
@@ -216,7 +214,9 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 	        			fechaLimiteTraba = ICEDateUtils.dateToBigDecimal(fechaLimiteTrabaDate, ICEDateUtils.FORMAT_yyyyMMdd);
 	        		}
 	        		
-	        		
+                    //Se guardan los datos del cliente:
+	        		clientDataService.createUpdateClientDataTransaction(customerDTO, ordenEjecucionEmbargo.getNifDeudor());
+	        		        		
 	        		//Generacion de las instancias de Embargo y de Traba:
 	        		if (ordenEjecucionEmbargoComp!=null 
 	        				&& ordenEjecucionEmbargo.getNifDeudor().equals(ordenEjecucionEmbargoComp.getNifDeudor())) {

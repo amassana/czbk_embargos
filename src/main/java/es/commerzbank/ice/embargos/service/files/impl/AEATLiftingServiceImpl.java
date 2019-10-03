@@ -155,10 +155,8 @@ public class AEATLiftingServiceImpl
                     // estado ejecutado?
                     CustomerDTO customerDTO = customerService.findCustomerByNif(levantamientoAEAT.getNifDeudor());
 
-	        		if (customerDTO!=null) {	        			
-		        		//- Se guardan los datos del cliente obtenidos de DataWarehouse (desde customerDTO):
-		        		clientDataService.createUpdateClientDataTransaction(customerDTO);
-	        		}
+                    //Se guardan los datos del cliente:
+	        		clientDataService.createUpdateClientDataTransaction(customerDTO, levantamientoAEAT.getNifDeudor());
                     
                     LevantamientoTraba levantamiento = aeatMapper.generateLevantamiento(controlFicheroLevantamiento.getCodControlFichero(), levantamientoAEAT, traba, customerDTO);
 

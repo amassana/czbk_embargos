@@ -161,10 +161,8 @@ public class Cuaderno63LiftingServiceImpl
                     // estado ejecutado?
                     CustomerDTO customerDTO = customerService.findCustomerByNif(ordenLevantamientoRetencionFase5.getNifDeudor());
 
-	        		if (customerDTO!=null) {	        			
-		        		//- Se guardan los datos del cliente obtenidos de DataWarehouse (desde customerDTO):
-		        		clientDataService.createUpdateClientDataTransaction(customerDTO);
-	        		}
+                    //Se guardan los datos del cliente:
+	        		clientDataService.createUpdateClientDataTransaction(customerDTO, ordenLevantamientoRetencionFase5.getNifDeudor());
                     
                     LevantamientoTraba levantamiento = cuaderno63Mapper.generateLevantamiento(controlFicheroLevantamiento.getCodControlFichero(), ordenLevantamientoRetencionFase5, traba, customerDTO);
 

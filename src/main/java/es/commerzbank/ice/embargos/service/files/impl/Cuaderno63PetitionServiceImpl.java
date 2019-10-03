@@ -162,8 +162,8 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 		        		//Tratar solamente los clientes en los que se han encontrado cuentas:
 		        		if(accountList != null && !accountList.isEmpty()) {
 		        		    
-			        		//Se guardan los datos del cliente obtenidos de DataWarehouse (desde customerDTO):
-			        		clientDataService.createUpdateClientDataTransaction(customerDTO);
+		                    //Se guardan los datos del cliente:
+			        		clientDataService.createUpdateClientDataTransaction(customerDTO, solicitudInformacion.getNifDeudor());
 		        			
 			        		//Se guarda la PeticionInformacion en bbdd:
 			        		PeticionInformacion peticionInformacion = cuaderno63Mapper.generatePeticionInformacion(solicitudInformacion, 

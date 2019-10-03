@@ -4,5 +4,5 @@ import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 
 public interface ClientDataService {
 
-	public void createUpdateClientDataTransaction(CustomerDTO customerDTO);
+	public void createUpdateClientDataTransaction(CustomerDTO customerDTO, String nif);
 }

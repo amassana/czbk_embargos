@@ -34,6 +34,9 @@ public class DatosCliente implements Serializable {
 
 	private String nombre;
 	
+	@Column(name="IND_PENDIENTE_DWH", length=1)
+	private String indPendienteDwh;
+	
 	@Column(name="F_ULTIMA_MODIFICACION", precision=14)
 	private BigDecimal fUltimaModificacion;
 	
@@ -95,6 +98,14 @@ public class DatosCliente implements Serializable {
 		this.nombre = nombre;
 	}
 	
+	public String getIndPendienteDwh() {
+		return indPendienteDwh;
+	}
+
+	public void setIndPendienteDwh(String indPendienteDwh) {
+		this.indPendienteDwh = indPendienteDwh;
+	}
+
 	public BigDecimal getFUltimaModificacion() {
 		return fUltimaModificacion;
 	}

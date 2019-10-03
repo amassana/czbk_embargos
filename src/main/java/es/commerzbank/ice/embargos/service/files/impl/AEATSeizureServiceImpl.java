@@ -212,10 +212,10 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 		        			for (AccountDTO accountDTO : customerDTO.getBankAccounts()) {    		
 			        			customerAccountsMap.put(accountDTO.getIban(), accountDTO);
 			        		}
-		        			
-			        		//- Se guardan los datos del cliente obtenidos de DataWarehouse (desde customerDTO):
-			        		clientDataService.createUpdateClientDataTransaction(customerDTO);
 		        		}
+		        		
+		        		//- Se guardan los datos del cliente:
+		        		clientDataService.createUpdateClientDataTransaction(customerDTO, diligenciaFase3.getNifDeudor());
 		        				        				        		
 		        		//Generacion de las instancias de Embargo y de Traba:	        			
 		        		embargo = aeatMapper.generateEmbargo(diligenciaFase3, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, entidadCreditoFase3, customerAccountsMap);

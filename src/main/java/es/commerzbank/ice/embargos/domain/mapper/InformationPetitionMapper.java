@@ -17,6 +17,7 @@ public abstract class InformationPetitionMapper {
 	@Mappings({
 		@Mapping(source = "peticionInformacion.codPeticion", target = "codePetitionCase"),
 		@Mapping(source = "peticionInformacion.razonSocial", target = "name"),
+		@Mapping(source = "peticionInformacion.datosCliente.nombre", target = "nameInternal"),
 		@Mapping(source = "peticionInformacion.cuenta1", target = "bankAccount1.codeBankAccount"),
 		@Mapping(source = "peticionInformacion.cuenta2", target = "bankAccount2.codeBankAccount"),
 		@Mapping(source = "peticionInformacion.cuenta3", target = "bankAccount3.codeBankAccount"),
