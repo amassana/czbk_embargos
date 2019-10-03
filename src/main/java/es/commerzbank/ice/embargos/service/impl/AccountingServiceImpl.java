@@ -443,13 +443,18 @@ public class AccountingServiceImpl implements AccountingService{
 		//accountingNote.setExecutionDate(new Date());
 		accountingNote.setReference1(reference1);
 		accountingNote.setReference2(reference2);
-		accountingNote.setDetailPayment(detailPayment);
 		accountingNote.setChange(cuentaTraba.getCambio());
 		accountingNote.setCallback(EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_FASE3_CALLBACK);
 		accountingNote.setCodFileControl(codFileControl);
 		accountingNote.setStatus(EmbargosConstants.COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO);
 		accountingNote.setName(nombre);
 		accountingNote.setNif(nif);
+		
+		if (detailPayment.length() > 120) {
+			accountingNote.setDetailPayment(detailPayment.substring(0, 119));
+		} else {
+			accountingNote.setDetailPayment(detailPayment);
+		}
 		
 		return accountingNoteService.contabilizar(accountingNote);
 	}
@@ -910,13 +915,18 @@ public class AccountingServiceImpl implements AccountingService{
 		//accountingNote.setExecutionDate(new Date());
 		accountingNote.setReference1(reference1);
 		accountingNote.setReference2(reference2);
-		accountingNote.setDetailPayment(detailPayment);
 		accountingNote.setChange(cuentaLevantamiento.getCambio());
 		accountingNote.setCallback(contabilizacionCallbackNameParameter);
 		accountingNote.setStatus(EmbargosConstants.COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO);
 		accountingNote.setCodFileControl(codFileControl);
 		accountingNote.setName(embargo.getRazonSocialInterna());
 		accountingNote.setNif(embargo.getNif());
+		
+		if (detailPayment.length() > 120) {
+			accountingNote.setDetailPayment(detailPayment.substring(0, 119));
+		} else {
+			accountingNote.setDetailPayment(detailPayment);
+		}
 
 		int resultado = accountingNoteService.contabilizar(accountingNote);
 
