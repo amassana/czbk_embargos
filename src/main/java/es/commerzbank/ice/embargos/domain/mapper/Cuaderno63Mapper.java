@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import es.commerzbank.ice.embargos.domain.entity.*;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,6 +14,19 @@ import org.mapstruct.Mappings;
 
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
+import es.commerzbank.ice.embargos.domain.dto.ClientDataDTO;
+import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
+import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
+import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
+import es.commerzbank.ice.embargos.domain.entity.CuentaTrabaActuacion;
+import es.commerzbank.ice.embargos.domain.entity.CuentasInmovilizacion;
+import es.commerzbank.ice.embargos.domain.entity.Embargo;
+import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
+import es.commerzbank.ice.embargos.domain.entity.EstadoLevantamiento;
+import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
+import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
+import es.commerzbank.ice.embargos.domain.entity.PeticionInformacion;
+import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase1.CabeceraEmisorFase1;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase1.FinFicheroFase1;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase1.SolicitudInformacionFase1;
@@ -68,16 +80,15 @@ public abstract class Cuaderno63Mapper {
 //	}
 
 	@Mappings({
-		@Mapping(source = "solicitudInfo.nifDeudor", target = "nif"),
+		@Mapping(source = "solicitudInfo.nifDeudor", target = "datosCliente.nif"),
 		@Mapping(source = "solicitudInfo.nombreDeudor", target = "razonSocial"),
-		@Mapping(source = "razonSocialInterna", target = "razonSocialInterna"),
 		@Mapping(source = "solicitudInfo.domicilioDeudor", target = "domicilio"),
 		@Mapping(source = "solicitudInfo.identificadorDeuda", target = "numeroEmbargo"),
 		@Mapping(source = "solicitudInfo.codigoDeuda", target = "codDeudaDeudor"),
 		@Mapping(source = "codControlFicheroPeticion", target = "controlFichero.codControlFichero")
 	})
 	public abstract PeticionInformacion generatePeticionInformacion(SolicitudInformacionFase1 solicitudInfo, 
-			Long codControlFicheroPeticion, List<AccountDTO> listBankAccount, String razonSocialInterna);
+			Long codControlFicheroPeticion, List<AccountDTO> listBankAccount);
 	
 	@AfterMapping
 	protected void setPeticionInformacionAfterMapping(@MappingTarget PeticionInformacion peticionInformacion, List<AccountDTO> listBankAccount) {
@@ -95,7 +106,7 @@ public abstract class Cuaderno63Mapper {
 		
         //Usuario y fecha ultima modificacion:
 		peticionInformacion.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
-        peticionInformacion.setFUltimaModificacion(BigDecimal.valueOf(System.currentTimeMillis()));
+        peticionInformacion.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 		
 	}
 	
@@ -175,7 +186,7 @@ public abstract class Cuaderno63Mapper {
 	public abstract FinFicheroFase2 generateFinFicheroFase2(FinFicheroFase1 finFicheroFase1); 
 	
 	@Mappings({
-		@Mapping(source = "ordenEjecucionEmbargo.nifDeudor", target = "nif"),
+		@Mapping(source = "ordenEjecucionEmbargo.nifDeudor", target = "datosCliente.nif"),
 		@Mapping(source = "ordenEjecucionEmbargo.nombreDeudor", target = "nombre"),
 		@Mapping(source = "ordenEjecucionEmbargo.domicilioDeudor", target = "domicilio"),
 		@Mapping(source = "ordenEjecucionEmbargo.municipio", target = "municipio"),
@@ -185,11 +196,10 @@ public abstract class Cuaderno63Mapper {
 		@Mapping(source = "ordenEjecucionEmbargo.codigoDeuda", target = "codDeudaDeudor"),
 		@Mapping(source = "codControlFicheroEmbargo", target = "controlFichero.codControlFichero"),
 		@Mapping(source = "entidadOrdenante", target = "entidadesOrdenante"),
-		@Mapping(source = "razonSocialInterna", target = "razonSocialInterna"),
-		@Mapping(source = "fechaLimiteTraba", target = "fechaLimiteTraba")
+		@Mapping(source = "fechaLimiteTraba", target = "fechaLimiteTraba"),
 	})
 	public abstract Embargo generateEmbargo(OrdenEjecucionEmbargoFase3 ordenEjecucionEmbargo, 
-			OrdenEjecucionEmbargoComplementarioFase3 ordenEjecucionEmbargoComp, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante, String razonSocialInterna, BigDecimal fechaLimiteTraba,  Map<String, AccountDTO> customerAccountsMap);
+			OrdenEjecucionEmbargoComplementarioFase3 ordenEjecucionEmbargoComp, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante, BigDecimal fechaLimiteTraba,  Map<String, AccountDTO> customerAccountsMap);
 	
 	@AfterMapping
 	public void generateEmbargoAfterMapping(@MappingTarget Embargo embargo, OrdenEjecucionEmbargoFase3 ordenEjecucionEmbargo, 
@@ -509,7 +519,7 @@ public abstract class Cuaderno63Mapper {
 	}
 	
 	@Mappings({
-		@Mapping(source = "embargo.nif", target = "nifDeudor"),
+		@Mapping(source = "embargo.datosCliente.nif", target = "nifDeudor"),
 		@Mapping(source = "embargo.nombre", target = "nombreDeudor"),
 		@Mapping(source = "embargo.domicilio", target = "domicilioDeudor"),
 		@Mapping(source = "embargo.municipio", target = "municipio"),
@@ -603,7 +613,9 @@ public abstract class Cuaderno63Mapper {
 	}
 
 	
-	@Mappings({ @Mapping(source = "codControlFichero", target = "controlFichero.codControlFichero") })
+	@Mappings({ @Mapping(source = "codControlFichero", target = "controlFichero.codControlFichero"),
+				@Mapping(source = "ordenLevantamientoRetencionFase5.nifDeudor", target = "datosCliente.nif"),	
+	})
 	public abstract LevantamientoTraba generateLevantamiento(Long codControlFichero,
 			OrdenLevantamientoRetencionFase5 ordenLevantamientoRetencionFase5, Traba traba, CustomerDTO DWHCustomer);
 

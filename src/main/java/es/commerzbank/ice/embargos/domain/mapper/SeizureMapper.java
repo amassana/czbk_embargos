@@ -19,9 +19,9 @@ public abstract class SeizureMapper {
 
 	@Mappings({
 		@Mapping (source = "codEmbargo", target = "idSeizureRequest"),
-		@Mapping (source = "nif", target = "NIF"),
+		@Mapping (source = "datosCliente.nif", target = "NIF"),
 		@Mapping (source = "nombre", target = "name"),
-		@Mapping (source = "razonSocialInterna", target = "nameInternal"),
+		@Mapping (source = "datosCliente.nombre", target = "nameInternal"),
 		@Mapping (source = "importe", target = "requestedAmount"),
 		@Mapping (source = "numeroEmbargo", target = "seizureNumber")
 	})

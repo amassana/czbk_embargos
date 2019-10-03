@@ -61,6 +61,11 @@ public class LevantamientoTraba implements Serializable {
 	@Column(name="IND_CASO_REVISADO", length=1)
 	private String indCasoRevisado;
 
+	//bi-directional many-to-one association to DatosCliente
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="NIF")
+	private DatosCliente datosCliente;
+	
 	public LevantamientoTraba() {
 	}
 
@@ -174,4 +179,12 @@ public class LevantamientoTraba implements Serializable {
 		this.estadoLevantamiento = estadoLevantamiento;
 	}
 
+	public DatosCliente getDatosCliente() {
+		return this.datosCliente;
+	}
+
+	public void setDatosCliente(DatosCliente datosCliente) {
+		this.datosCliente = datosCliente;
+	}
+	
 }

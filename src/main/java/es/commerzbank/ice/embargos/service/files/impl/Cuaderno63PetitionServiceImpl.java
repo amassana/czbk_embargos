@@ -44,6 +44,7 @@ import es.commerzbank.ice.embargos.repository.CommunicatingEntityRepository;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.repository.InformationPetitionBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.InformationPetitionRepository;
+import es.commerzbank.ice.embargos.service.ClientDataService;
 import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.embargos.service.EmailService;
 import es.commerzbank.ice.embargos.service.FileControlService;
@@ -78,6 +79,9 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 
 	@Autowired
 	private TaskService taskService;
+	
+	@Autowired
+	private ClientDataService clientDataService;
 
 	//Agregar repositories de DWH ...
 	@Autowired
@@ -157,12 +161,13 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 		        		
 		        		//Tratar solamente los clientes en los que se han encontrado cuentas:
 		        		if(accountList != null && !accountList.isEmpty()) {
-		        		    	        			
-		        			String razonSocialInterna = EmbargosUtils.determineRazonSocialInternaFromCustomer(customerDTO);
+		        		    
+		                    //Se guardan los datos del cliente:
+			        		clientDataService.createUpdateClientDataTransaction(customerDTO, solicitudInformacion.getNifDeudor());
 		        			
 			        		//Se guarda la PeticionInformacion en bbdd:
 			        		PeticionInformacion peticionInformacion = cuaderno63Mapper.generatePeticionInformacion(solicitudInformacion, 
-			        				controlFicheroPeticion.getCodControlFichero(), accountList, razonSocialInterna);
+			        				controlFicheroPeticion.getCodControlFichero(), accountList);
 
 			        		informationPetitionRepository.save(peticionInformacion);
 			        			        		
@@ -175,7 +180,6 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 			        			
 			        			informationPetitionBankAccountRepository.save(peticionInformacionCuenta);
 			        		}
-		  		
 		        		}
 	        		}
 	        		        	

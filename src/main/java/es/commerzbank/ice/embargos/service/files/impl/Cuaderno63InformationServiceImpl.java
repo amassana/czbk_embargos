@@ -31,6 +31,7 @@ import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
+import es.commerzbank.ice.embargos.domain.entity.DatosCliente;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
 import es.commerzbank.ice.embargos.domain.entity.PeticionInformacion;
@@ -186,9 +187,11 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        		LOG.debug(solicitudInformacion.getNifDeudor());
 	 		               		
 	        		//Se obtiene la peticionInformacion a partir del correspondiente ControlFichero y NIF:
+	        		DatosCliente datosCliente = new DatosCliente();
+	        		datosCliente.setNif(solicitudInformacion.getNifDeudor());
 	        		PeticionInformacion peticionInformacion = 
-	        				informationPetitionRepository.findByControlFicheroAndNif(controlFicheroPeticion,
-	        						solicitudInformacion.getNifDeudor());		
+	        				informationPetitionRepository.findByControlFicheroAndDatosCliente(controlFicheroPeticion,
+	        						datosCliente);		
 	        		
 	        		if(peticionInformacion!=null) {
 	        			//Se guardan:

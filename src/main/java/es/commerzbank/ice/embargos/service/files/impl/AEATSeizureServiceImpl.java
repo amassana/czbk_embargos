@@ -36,12 +36,14 @@ import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
+import es.commerzbank.ice.embargos.domain.entity.DatosCliente;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
 import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.embargos.domain.mapper.AEATMapper;
+import es.commerzbank.ice.embargos.domain.mapper.ClientDataMapper;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
 import es.commerzbank.ice.embargos.domain.mapper.SeizedBankAccountMapper;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.DiligenciaFase3;
@@ -53,12 +55,12 @@ import es.commerzbank.ice.embargos.repository.SeizedBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.SeizedRepository;
 import es.commerzbank.ice.embargos.repository.SeizureBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
+import es.commerzbank.ice.embargos.service.ClientDataService;
 import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.embargos.service.EmailService;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.files.AEATSeizureService;
 import es.commerzbank.ice.utils.EmbargosConstants;
-import es.commerzbank.ice.utils.EmbargosUtils;
 import es.commerzbank.ice.utils.ICEDateUtils;
 
 @Service
@@ -87,6 +89,9 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 
 	@Autowired
 	private FileControlService fileControlService;
+	
+	@Autowired
+	private ClientDataService clientDataService;
 	
 	@Autowired
 	private FileControlRepository fileControlRepository;
@@ -203,16 +208,17 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 		        		//- Se almacenan las cuentas obtenidas de Datawarehouse en una Hash donde la key es el IBAN:
 		        		Map<String, AccountDTO> customerAccountsMap = new HashMap<>(); 
 		        		if (customerDTO!=null) {
-			        		for (AccountDTO accountDTO : customerDTO.getBankAccounts()) {    		
+			        		
+		        			for (AccountDTO accountDTO : customerDTO.getBankAccounts()) {    		
 			        			customerAccountsMap.put(accountDTO.getIban(), accountDTO);
 			        		}
 		        		}
-		        				        		
-		        		//Razon social interna (obtenida del customerDTO de datawarehouse):
-		        		String razonSocialInterna = EmbargosUtils.determineRazonSocialInternaFromCustomer(customerDTO);
 		        		
+		        		//- Se guardan los datos del cliente:
+		        		clientDataService.createUpdateClientDataTransaction(customerDTO, diligenciaFase3.getNifDeudor());
+		        				        				        		
 		        		//Generacion de las instancias de Embargo y de Traba:	        			
-		        		embargo = aeatMapper.generateEmbargo(diligenciaFase3, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, razonSocialInterna, entidadCreditoFase3, customerAccountsMap);
+		        		embargo = aeatMapper.generateEmbargo(diligenciaFase3, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, entidadCreditoFase3, customerAccountsMap);
 		        			
 		        		traba =  aeatMapper.generateTraba(diligenciaFase3, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, customerAccountsMap);        			
 		        		traba.setEmbargo(embargo);

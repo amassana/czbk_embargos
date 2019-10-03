@@ -6,11 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import es.commerzbank.ice.comun.lib.util.ICEException;
-import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
-import es.commerzbank.ice.embargos.domain.entity.*;
-import es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.Levantamiento;
-import es.commerzbank.ice.comun.lib.util.BankAccountUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -18,21 +13,28 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 
 import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
+import es.commerzbank.ice.comun.lib.util.BankAccountUtils;
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
+import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
+import es.commerzbank.ice.embargos.domain.dto.ClientDataDTO;
 import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
+import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTrabaActuacion;
 import es.commerzbank.ice.embargos.domain.entity.CuentasInmovilizacion;
-import es.commerzbank.ice.embargos.domain.entity.CuentasRecaudacion;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
+import es.commerzbank.ice.embargos.domain.entity.EstadoLevantamiento;
 import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
+import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
 import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.DiligenciaFase3;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.EntidadCreditoFase3;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.EntidadTransmisoraFase3;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.FinEntidadCreditoFase3;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.FinEntidadTransmisoraFase3;
+import es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.Levantamiento;
 import es.commerzbank.ice.embargos.formats.aeat.trabas.EntidadCreditoFase4;
 import es.commerzbank.ice.embargos.formats.aeat.trabas.EntidadTransmisoraFase4;
 import es.commerzbank.ice.embargos.formats.aeat.trabas.FinEntidadCreditoFase4;
@@ -46,7 +48,7 @@ public abstract class AEATMapper {
 	LevantamientoHelperMapper levantamientoHelperMapper = new LevantamientoHelperMapper();
 	
 	@Mappings({
-		@Mapping(source = "diligenciaFase3.nifDeudor", target = "nif"),
+		@Mapping(source = "diligenciaFase3.nifDeudor", target = "datosCliente.nif"),
 		@Mapping(source = "diligenciaFase3.nombreDeudor", target = "nombre"),
 		@Mapping(source = "diligenciaFase3.siglasViaPublica", target = "siglasVp"),
 		@Mapping(source = "diligenciaFase3.nombreViaPublica", target = "nombreVp"),
@@ -61,10 +63,9 @@ public abstract class AEATMapper {
 		@Mapping(source = "diligenciaFase3.importeTotalAEmbargar", target = "importe"),
 		@Mapping(source = "codControlFicheroEmbargo", target = "controlFichero.codControlFichero"),
 		@Mapping(source = "entidadOrdenante", target = "entidadesOrdenante"),
-		@Mapping(source = "razonSocialInterna", target = "razonSocialInterna"),
 	})
 	public abstract Embargo generateEmbargo(DiligenciaFase3 diligenciaFase3, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante, 
-			String razonSocialInterna, EntidadCreditoFase3 entidadCreditoFase3, Map<String, AccountDTO> customerAccountsMap) throws ICEException;
+			EntidadCreditoFase3 entidadCreditoFase3, Map<String, AccountDTO> customerAccountsMap) throws ICEException;
 	
 	@AfterMapping
 	public void generateEmbargoAfterMapping(@MappingTarget Embargo embargo, DiligenciaFase3 diligenciaFase3, EntidadesOrdenante entidadOrdenante, 
@@ -336,7 +337,7 @@ public abstract class AEATMapper {
 	
 	@Mappings({
 		@Mapping(constant = EmbargosConstants.CODIGO_REGISTRO_AEAT_TRABA_FASE4, target = "indicadorRegistro"),
-		@Mapping(source = "embargo.nif", target = "nifDeudor"),
+		@Mapping(source = "embargo.datosCliente.nif", target = "nifDeudor"),
 		@Mapping(source = "embargo.nombre", target = "nombreDeudor"),
 		@Mapping(source = "embargo.siglasVp", target = "siglasViaPublica"),
 		@Mapping(source = "embargo.nombreVp", target = "nombreViaPublica"),
@@ -381,7 +382,8 @@ public abstract class AEATMapper {
 	public abstract FinEntidadTransmisoraFase4 generateFinEntidadTransmisoraFase4(FinEntidadTransmisoraFase3 finEntidadTransmisoraFase3);
 
 	@Mappings({
-			@Mapping(source = "codControlFichero", target = "controlFichero.codControlFichero")
+			@Mapping(source = "codControlFichero", target = "controlFichero.codControlFichero"),
+			@Mapping(source = "levantamientoAEAT.nifDeudor", target = "datosCliente.nif"),
 	})
 	public abstract LevantamientoTraba generateLevantamiento(Long codControlFichero, Levantamiento levantamientoAEAT, Traba traba, CustomerDTO DWHCustomer)
 			throws ICEException;
