@@ -102,6 +102,8 @@ public class EmbargosConstants {
 	public static final long COD_ESTADO_CTRLFICHERO_FINAL_ENVIADO = 3;
 
 	public static final long COD_ESTADO_CTRLFICHERO_INITIAL_STATUS_DEFAULT = 1;
+	
+	public static final long COD_ESTADO_CONTROL_FICHERO_GENERADO_SCHEDULED = 2;
 
 	/** Estados de la Traba **/
 	public static final long COD_ESTADO_TRABA_PENDIENTE = 1;
@@ -259,5 +261,7 @@ public class EmbargosConstants {
 	
 	//Definicion del valor por defecto de los PARAMETROS:
 	public static final String PARAMETRO_DWH_ENDPOINT_CLIENTACCOUNT_DEFAULT_VALUE = "/datawarehouse/client-account";
+
+	
 		
 }

@@ -60,8 +60,7 @@ public abstract class AEATMapper {
 		@Mapping(source = "diligenciaFase3.numeroDiligenciaEmbargo", target = "numeroEmbargo"),
 		@Mapping(source = "diligenciaFase3.importeTotalAEmbargar", target = "importe"),
 		@Mapping(source = "codControlFicheroEmbargo", target = "controlFichero.codControlFichero"),
-		@Mapping(source = "entidadOrdenante", target = "entidadesOrdenante"),
-		@Mapping(source = "razonSocialInterna", target = "razonSocialInterna"),
+		@Mapping(source = "entidadOrdenante", target = "entidadesOrdenante")
 	})
 	public abstract Embargo generateEmbargo(DiligenciaFase3 diligenciaFase3, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante, 
 			String razonSocialInterna, EntidadCreditoFase3 entidadCreditoFase3, Map<String, AccountDTO> customerAccountsMap) throws ICEException;

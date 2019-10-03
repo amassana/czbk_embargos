@@ -214,7 +214,7 @@ public class AccountingServiceImpl implements AccountingService{
 					if (cuentaTraba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE) {
 					
 						int resultContabilizar = contabilizarCuentaTraba(cuentaTraba, cuentaTraba.getCuenta(), cuentaRecaudacion,
-								oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codFileControl, embargo.getRazonSocialInterna(), embargo.getNif());
+								oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codFileControl, embargo.getNombre(), embargo.getNif());
 						
 						//Dependiendo del resultado de contabilizar:
 						if(resultContabilizar == 1) {
@@ -362,7 +362,7 @@ public class AccountingServiceImpl implements AccountingService{
 							//Para contabilizar la cuentaTraba tiene que estar en estado anterior a "Enviada a Contabilidad":
 							if (cuentaTraba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE) {
 								int resultContabilizar = contabilizarCuentaTraba(cuentaTraba, cuentaTraba.getCuenta(), cuentaRecaudacion,
-										oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codFileControl, embargo.getRazonSocialInterna(), embargo.getNif());
+										oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codFileControl, embargo.getNombre(), embargo.getNif());
 
 								//Dependiendo del resultado de contabilizar:
 								if(resultContabilizar == 1) {
@@ -777,7 +777,7 @@ public class AccountingServiceImpl implements AccountingService{
 		//Llamada a contabilizar para deshacer la contabilizacion, poniendo como debitAccount la cuenta
 		//de recaudacion y la creditAccount la cuenta del cliente:
 		int resultContabilizar = contabilizarCuentaTraba(cuentaTraba, cuentaRecaudacion, cuentaTraba.getCuenta(),
-				oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codeFileControl, embargo.getRazonSocialInterna(), embargo.getNif());
+				oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codeFileControl, embargo.getNombre(), embargo.getNif());
 
 		//Dependiendo del resultado de contabilizar:
 		if(resultContabilizar == 1) {
@@ -919,7 +919,7 @@ public class AccountingServiceImpl implements AccountingService{
 		accountingNote.setCallback(contabilizacionCallbackNameParameter);
 		accountingNote.setStatus(EmbargosConstants.COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO);
 		accountingNote.setCodFileControl(codFileControl);
-		accountingNote.setName(embargo.getRazonSocialInterna());
+		accountingNote.setName(embargo.getNombre());
 		accountingNote.setNif(embargo.getNif());
 		
 		if (detailPayment.length() > 120) {
