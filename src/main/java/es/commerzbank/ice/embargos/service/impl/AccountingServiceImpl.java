@@ -427,6 +427,8 @@ public class AccountingServiceImpl implements AccountingService{
 			Long oficinaCuentaRecaudacion, String reference1, String reference2, String detailPayment,
 			Long codFileControl, String nombre, String nif) {
 
+		logger.info("AccountingServiceImpl - contabilizarCuentaTraba - start");
+		
 		AccountingNote accountingNote = new AccountingNote();
 
 		double amount = cuentaTraba.getImporte()!=null ? cuentaTraba.getImporte().doubleValue() : 0;
@@ -450,11 +452,13 @@ public class AccountingServiceImpl implements AccountingService{
 		accountingNote.setName(nombre);
 		accountingNote.setNif(nif);
 		
-		if (detailPayment.length() > 120) {
+		if (detailPayment!=null && detailPayment.length() > 120) {
 			accountingNote.setDetailPayment(detailPayment.substring(0, 119));
 		} else {
 			accountingNote.setDetailPayment(detailPayment);
 		}
+		
+		logger.info("AccountingServiceImpl - contabilizarCuentaTraba - end");
 		
 		return accountingNoteService.contabilizar(accountingNote);
 	}
@@ -889,6 +893,9 @@ public class AccountingServiceImpl implements AccountingService{
 
 	private boolean sendAccountingLiftingBankAccountInternal(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, ControlFichero controlFichero, String userName, Long oficinaCuentaRecaudacion, String cuentaRecaudacion, String contabilizacionCallbackNameParameter)
 			throws Exception {
+		
+		logger.info("AccountingServiceImpl - sendAccountingLiftingBankAccountInternal - start");
+		
 		boolean response = true;
 
 		String reference1 = embargo.getNumeroEmbargo();
@@ -922,7 +929,7 @@ public class AccountingServiceImpl implements AccountingService{
 		accountingNote.setName(embargo.getDatosCliente().getNombre());
 		accountingNote.setNif(embargo.getDatosCliente().getNif());
 		
-		if (detailPayment.length() > 120) {
+		if (detailPayment!=null && detailPayment.length() > 120) {
 			accountingNote.setDetailPayment(detailPayment.substring(0, 119));
 		} else {
 			accountingNote.setDetailPayment(detailPayment);
@@ -937,6 +944,8 @@ public class AccountingServiceImpl implements AccountingService{
 		//Se actualiza el estado de la Cuenta Levantamiento a "Enviada a contabilidad":
 		liftingService.updateLiftingBankAccountingStatus(cuentaLevantamiento, EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION, userName);
 
+		logger.info("AccountingServiceImpl - sendAccountingLiftingBankAccountInternal - end");
+		
 		return response;
 	}
 
