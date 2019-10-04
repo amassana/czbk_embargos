@@ -102,7 +102,7 @@ public abstract class AEATMapper {
 			
 			AccountDTO accountDTO = customerAccountsMap.get(ibanFromCCC1);
 			
-			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
+			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, ibanFromCCC1, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
 						
 			cuentaEmbargosList.add(cuentaEmbargo);
 
@@ -119,7 +119,7 @@ public abstract class AEATMapper {
 			
 			AccountDTO accountDTO = customerAccountsMap.get(ibanFromCCC2);
 			
-			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
+			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, ibanFromCCC2, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
 			
 			cuentaEmbargosList.add(cuentaEmbargo);
 
@@ -135,7 +135,7 @@ public abstract class AEATMapper {
 			
 			AccountDTO accountDTO = customerAccountsMap.get(ibanFromCCC3);
 			
-			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
+			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, ibanFromCCC3, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
 			
 			cuentaEmbargosList.add(cuentaEmbargo);
 
@@ -149,7 +149,7 @@ public abstract class AEATMapper {
 		
 	}
 
-	private CuentaEmbargo setCuentaEmbargoFromAccountDTO(AccountDTO accountDTO, Embargo embargo, 
+	private CuentaEmbargo setCuentaEmbargoFromAccountDTO(AccountDTO accountDTO, String ibanCalculatedFromDiligenciaFase3, Embargo embargo, 
 			BigDecimal numeroOrden,	BigDecimal fechaUltmaModif, String usuarioModif) {
 		
 		CuentaEmbargo cuentaEmbargo = new CuentaEmbargo();
@@ -158,11 +158,14 @@ public abstract class AEATMapper {
 		String iban = null;
 		
 		if (accountDTO!=null) {
+			//Cuenta encontrada en DWH -> seteo de datos de DWH a partir del accountDTO:
 			cuenta = accountDTO.getAccountNum();
 			iban = accountDTO.getIban();
 		} else {
-			//Cuenta no encontrada en DWH:
+			//Cuenta no encontrada en DWH -> setear el iban calculado a partir 
+			//del codigo cuenta cliente que viene del fichero de diligencias de embargo:
 			cuenta = null;
+			iban = ibanCalculatedFromDiligenciaFase3;
 		}
 
 		cuentaEmbargo.setEmbargo(embargo);
@@ -224,7 +227,7 @@ public abstract class AEATMapper {
 			
 			AccountDTO accountDTO = customerAccountsMap.get(ibanFromCCC1);
 		
-			cuentaTraba = setCuentaTrabaFromAccountDTO(accountDTO, traba, numeroOrden,	fechaUltmaModif, usuarioModif);
+			cuentaTraba = setCuentaTrabaFromAccountDTO(accountDTO, ibanFromCCC1, traba, numeroOrden, fechaUltmaModif, usuarioModif);
 			
 			cuentaTrabasList.add(cuentaTraba);
 			
@@ -240,7 +243,7 @@ public abstract class AEATMapper {
 			
 			AccountDTO accountDTO = customerAccountsMap.get(ibanFromCCC2);
 		
-			cuentaTraba = setCuentaTrabaFromAccountDTO(accountDTO, traba, numeroOrden,	fechaUltmaModif, usuarioModif);
+			cuentaTraba = setCuentaTrabaFromAccountDTO(accountDTO, ibanFromCCC2, traba, numeroOrden, fechaUltmaModif, usuarioModif);
 			
 			cuentaTrabasList.add(cuentaTraba);
 			
@@ -256,7 +259,7 @@ public abstract class AEATMapper {
 			
 			AccountDTO accountDTO = customerAccountsMap.get(ibanFromCCC3);
 		
-			cuentaTraba = setCuentaTrabaFromAccountDTO(accountDTO, traba, numeroOrden,	fechaUltmaModif, usuarioModif);
+			cuentaTraba = setCuentaTrabaFromAccountDTO(accountDTO, ibanFromCCC3, traba, numeroOrden, fechaUltmaModif, usuarioModif);
 			
 			cuentaTrabasList.add(cuentaTraba);
 
@@ -269,7 +272,7 @@ public abstract class AEATMapper {
 		traba.setFUltimaModificacion(fechaUltmaModif);
 	}
 
-	private CuentaTraba setCuentaTrabaFromAccountDTO(AccountDTO accountDTO, Traba traba,
+	private CuentaTraba setCuentaTrabaFromAccountDTO(AccountDTO accountDTO, String ibanCalculatedFromDiligenciaFase3, Traba traba,
 			BigDecimal numeroOrden, BigDecimal fechaUltmaModif, String usuarioModif) {
 		
 		EstadoTraba estadoTraba;
@@ -277,15 +280,24 @@ public abstract class AEATMapper {
 		cuentaTraba = new CuentaTraba();
 		
 		if (accountDTO!=null) {
+			//Seteo de datos que vienen de DWH:
 			cuentaTraba.setCuenta(accountDTO.getAccountNum());
 			cuentaTraba.setIban(accountDTO.getIban());
 			cuentaTraba.setDivisa(accountDTO.getDivisa());
 			cuentaTraba.setEstadoCuenta(accountDTO.getStatus());
+			
+			//Por defecto informar la actuacion (motivo) de la cuentaTraba a 'Sin actuacion':
+			CuentaTrabaActuacion cuentaTrabaActuacion = new CuentaTrabaActuacion();
+			cuentaTrabaActuacion.setCodActuacion(EmbargosConstants.CODIGO_ACTUACION_SIN_ACTUACION_AEAT);
+			cuentaTraba.setCuentaTrabaActuacion(cuentaTrabaActuacion);
 		
 		} else {
 			//Cuenta no encontrada en DWH:
 			cuentaTraba.setCuenta(null);
 			cuentaTraba.setEstadoCuenta(EmbargosConstants.BANK_ACCOUNT_STATUS_NOTFOUND);
+			
+			//Iban calculado a partir del 'Codigo de Cuenta Cliente' que viene en el fichero de diligencias de embargos:
+			cuentaTraba.setIban(ibanCalculatedFromDiligenciaFase3);
 			
 			//Indicar la actuacion (motivo) de la cuentaTraba a inexistente:
 			CuentaTrabaActuacion cuentaTrabaActuacion = new CuentaTrabaActuacion();
