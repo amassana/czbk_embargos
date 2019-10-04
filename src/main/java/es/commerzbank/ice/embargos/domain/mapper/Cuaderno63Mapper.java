@@ -481,6 +481,11 @@ public abstract class Cuaderno63Mapper {
 			cuentaTraba.setCuenta(accountDTO.getAccountNum());
 			cuentaTraba.setDivisa(accountDTO.getDivisa());
 			cuentaTraba.setEstadoCuenta(accountDTO.getStatus());
+			
+			//Por defecto informar la actuacion (motivo) de la cuentaTraba a 'Sin actuacion':
+			CuentaTrabaActuacion cuentaTrabaActuacion = new CuentaTrabaActuacion();
+			cuentaTrabaActuacion.setCodActuacion(EmbargosConstants.CODIGO_ACTUACION_SIN_ACTUACION_NORMA63);
+			cuentaTraba.setCuentaTrabaActuacion(cuentaTrabaActuacion);
 		
 		} else {
 			//Sino, si la cuenta no se encuentra en DWH: indicar la actuacion (motivo) de la cuentaTraba a inexistente:

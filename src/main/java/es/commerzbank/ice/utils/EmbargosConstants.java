@@ -205,6 +205,8 @@ public class EmbargosConstants {
 	public static final String CODIGO_REGISTRO_AEAT_TRABA_FASE4 = "2";
 	
 	/** Codigos actuacion de CuentaTrabaActuacion **/
+	public static final String CODIGO_ACTUACION_SIN_ACTUACION_AEAT = "30";
+	public static final String CODIGO_ACTUACION_SIN_ACTUACION_NORMA63 = "60";
 	public static final String CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA_AEAT = "35";
 	public static final String CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA_NORMA63 = "65";
 	
