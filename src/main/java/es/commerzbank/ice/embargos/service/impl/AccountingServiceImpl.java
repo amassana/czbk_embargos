@@ -457,7 +457,9 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setName(nombre);
 			accountingNote.setNif(nif);
 			
+			logger.debug("detailPayment: '" + detailPayment + "'");
 			if (detailPayment!=null && detailPayment.length() > 120) {
+				logger.debug("detailPayment (substring): '" + detailPayment.substring(0, 119) + "' [length:" + detailPayment.length() + "]");
 				accountingNote.setDetailPayment(detailPayment.substring(0, 119));
 			} else {
 				accountingNote.setDetailPayment(detailPayment);
