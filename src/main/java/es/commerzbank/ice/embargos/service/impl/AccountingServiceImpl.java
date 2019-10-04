@@ -214,7 +214,8 @@ public class AccountingServiceImpl implements AccountingService{
 					if (cuentaTraba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE) {
 					
 						int resultContabilizar = contabilizarCuentaTraba(cuentaTraba, cuentaTraba.getCuenta(), cuentaRecaudacion,
-								oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codFileControl, embargo.getDatosCliente().getNombre(), embargo.getDatosCliente().getNif(), userName);
+								oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codFileControl, embargo.getDatosCliente().getNombre(), 
+								embargo.getDatosCliente().getNif(), userName, EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA);
 						
 						//Dependiendo del resultado de contabilizar:
 						if(resultContabilizar == 1) {
@@ -362,7 +363,8 @@ public class AccountingServiceImpl implements AccountingService{
 							//Para contabilizar la cuentaTraba tiene que estar en estado anterior a "Enviada a Contabilidad":
 							if (cuentaTraba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE) {
 								int resultContabilizar = contabilizarCuentaTraba(cuentaTraba, cuentaTraba.getCuenta(), cuentaRecaudacion,
-										oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codFileControl, embargo.getDatosCliente().getNombre(), embargo.getDatosCliente().getNif(), userName);
+										oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codFileControl, embargo.getDatosCliente().getNombre(), 
+										embargo.getDatosCliente().getNif(), userName, EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA);
 
 								//Dependiendo del resultado de contabilizar:
 								if(resultContabilizar == 1) {
@@ -425,7 +427,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 	private int contabilizarCuentaTraba(CuentaTraba cuentaTraba, String debitAccount, String creditAccount,
 			Long oficinaCuentaRecaudacion, String reference1, String reference2, String detailPayment,
-			Long codFileControl, String nombre, String nif, String userName) {
+			Long codFileControl, String nombre, String nif, String userName, Long estadoImporteCero) {
 		int result = 0;
 		
 		AccountingNote accountingNote = new AccountingNote();
@@ -460,7 +462,7 @@ public class AccountingServiceImpl implements AccountingService{
 			
 			result = accountingNoteService.contabilizar(accountingNote);
 		} else {
-			boolean changed = seizureService.updateSeizedBankStatus(cuentaTraba, EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA, userName);
+			boolean changed = seizureService.updateSeizedBankStatus(cuentaTraba, estadoImporteCero, userName);
 			
 			if (changed) {
 				result = 2;
@@ -788,7 +790,8 @@ public class AccountingServiceImpl implements AccountingService{
 		//Llamada a contabilizar para deshacer la contabilizacion, poniendo como debitAccount la cuenta
 		//de recaudacion y la creditAccount la cuenta del cliente:
 		int resultContabilizar = contabilizarCuentaTraba(cuentaTraba, cuentaRecaudacion, cuentaTraba.getCuenta(),
-				oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codeFileControl, embargo.getDatosCliente().getNombre(), embargo.getDatosCliente().getNif(), userName);
+				oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codeFileControl, embargo.getDatosCliente().getNombre(), 
+				embargo.getDatosCliente().getNif(), userName, EmbargosConstants.COD_ESTADO_TRABA_MODIFICADA);
 
 		//Dependiendo del resultado de contabilizar:
 		if(resultContabilizar == 1) {
