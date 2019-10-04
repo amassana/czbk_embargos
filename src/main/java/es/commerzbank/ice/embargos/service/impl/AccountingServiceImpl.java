@@ -214,14 +214,14 @@ public class AccountingServiceImpl implements AccountingService{
 					if (cuentaTraba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE) {
 					
 						int resultContabilizar = contabilizarCuentaTraba(cuentaTraba, cuentaTraba.getCuenta(), cuentaRecaudacion,
-								oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codFileControl, embargo.getDatosCliente().getNombre(), embargo.getDatosCliente().getNif());
+								oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codFileControl, embargo.getDatosCliente().getNombre(), embargo.getDatosCliente().getNif(), userName);
 						
 						//Dependiendo del resultado de contabilizar:
 						if(resultContabilizar == 1) {
 							//Se ha contabilizado la cuentaTraba: Se actualiza el estado de la Cuenta Traba a "Enviada a contabilidad":
 							seizureService.updateSeizedBankStatusTransaction(cuentaTraba, EmbargosConstants.COD_ESTADO_TRABA_ENVIADA_A_CONTABILIDAD, userName);
 							
-						} else {
+						} else if (resultContabilizar == 0) {
 							//No se ha contabilizado la cuentaTraba:
 							existsCuentaTrabaNotAccounted = true;
 						}				
@@ -362,14 +362,14 @@ public class AccountingServiceImpl implements AccountingService{
 							//Para contabilizar la cuentaTraba tiene que estar en estado anterior a "Enviada a Contabilidad":
 							if (cuentaTraba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE) {
 								int resultContabilizar = contabilizarCuentaTraba(cuentaTraba, cuentaTraba.getCuenta(), cuentaRecaudacion,
-										oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codFileControl, embargo.getDatosCliente().getNombre(), embargo.getDatosCliente().getNif());
+										oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codFileControl, embargo.getDatosCliente().getNombre(), embargo.getDatosCliente().getNif(), userName);
 
 								//Dependiendo del resultado de contabilizar:
 								if(resultContabilizar == 1) {
 									//Se ha contabilizado la cuentaTraba: Se actualiza el estado de la Cuenta Traba a "Enviada a contabilidad":
 									seizureService.updateSeizedBankStatusTransaction(cuentaTraba, EmbargosConstants.COD_ESTADO_TRABA_ENVIADA_A_CONTABILIDAD, userName);
 
-								} else {
+								} else if (resultContabilizar == 0) {
 									//No se ha contabilizado la cuentaTraba:
 									existsCuentaTrabaNotAccounted = true;
 								}
@@ -425,38 +425,49 @@ public class AccountingServiceImpl implements AccountingService{
 
 	private int contabilizarCuentaTraba(CuentaTraba cuentaTraba, String debitAccount, String creditAccount,
 			Long oficinaCuentaRecaudacion, String reference1, String reference2, String detailPayment,
-			Long codFileControl, String nombre, String nif) {
-
+			Long codFileControl, String nombre, String nif, String userName) {
+		int result = 0;
+		
 		AccountingNote accountingNote = new AccountingNote();
 
 		double amount = cuentaTraba.getImporte()!=null ? cuentaTraba.getImporte().doubleValue() : 0;
-
-		accountingNote.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
-		accountingNote.setCodOffice(oficinaCuentaRecaudacion);
-		//El contador lo gestiona Comunes
-		//accountingNote.setContador(contador);
-		accountingNote.setAmount(amount);
-		accountingNote.setCodCurrency(cuentaTraba.getDivisa());
-		accountingNote.setDebitAccount(debitAccount);
-		accountingNote.setCreditAccount(creditAccount);
-		accountingNote.setActualDate(new Date());
-		//accountingNote.setExecutionDate(new Date());
-		accountingNote.setReference1(reference1);
-		accountingNote.setReference2(reference2);
-		accountingNote.setChange(cuentaTraba.getCambio());
-		accountingNote.setCallback(EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_FASE3_CALLBACK);
-		accountingNote.setCodFileControl(codFileControl);
-		accountingNote.setStatus(EmbargosConstants.COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO);
-		accountingNote.setName(nombre);
-		accountingNote.setNif(nif);
 		
-		if (detailPayment.length() > 120) {
-			accountingNote.setDetailPayment(detailPayment.substring(0, 119));
+		if (amount != 0) {
+			accountingNote.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
+			accountingNote.setCodOffice(oficinaCuentaRecaudacion);
+			//El contador lo gestiona Comunes
+			//accountingNote.setContador(contador);
+			accountingNote.setAmount(amount);
+			accountingNote.setCodCurrency(cuentaTraba.getDivisa());
+			accountingNote.setDebitAccount(debitAccount);
+			accountingNote.setCreditAccount(creditAccount);
+			accountingNote.setActualDate(new Date());
+			//accountingNote.setExecutionDate(new Date());
+			accountingNote.setReference1(reference1);
+			accountingNote.setReference2(reference2);
+			accountingNote.setChange(cuentaTraba.getCambio());
+			accountingNote.setCallback(EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_FASE3_CALLBACK);
+			accountingNote.setCodFileControl(codFileControl);
+			accountingNote.setStatus(EmbargosConstants.COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO);
+			accountingNote.setName(nombre);
+			accountingNote.setNif(nif);
+			
+			if (detailPayment.length() > 120) {
+				accountingNote.setDetailPayment(detailPayment.substring(0, 119));
+			} else {
+				accountingNote.setDetailPayment(detailPayment);
+			}
+			
+			result = accountingNoteService.contabilizar(accountingNote);
 		} else {
-			accountingNote.setDetailPayment(detailPayment);
+			boolean changed = seizureService.updateSeizedBankStatus(cuentaTraba, EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA, userName);
+			
+			if (changed) {
+				result = 2;
+			}
 		}
 		
-		return accountingNoteService.contabilizar(accountingNote);
+		return result;
 	}
 	
 	private Long determineOficinaCuentaRecaudacion() throws ICEException {
@@ -777,7 +788,7 @@ public class AccountingServiceImpl implements AccountingService{
 		//Llamada a contabilizar para deshacer la contabilizacion, poniendo como debitAccount la cuenta
 		//de recaudacion y la creditAccount la cuenta del cliente:
 		int resultContabilizar = contabilizarCuentaTraba(cuentaTraba, cuentaRecaudacion, cuentaTraba.getCuenta(),
-				oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codeFileControl, embargo.getDatosCliente().getNombre(), embargo.getDatosCliente().getNif());
+				oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codeFileControl, embargo.getDatosCliente().getNombre(), embargo.getDatosCliente().getNif(), userName);
 
 		//Dependiendo del resultado de contabilizar:
 		if(resultContabilizar == 1) {
@@ -903,32 +914,37 @@ public class AccountingServiceImpl implements AccountingService{
 		
 		double amount = cuentaLevantamiento.getImporte()!=null ? cuentaLevantamiento.getImporte().doubleValue() : 0;
 
-		accountingNote.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
-		accountingNote.setCodOffice(oficinaCuentaRecaudacion);
-		//El contador lo gestiona Comunes
-		//accountingNote.setContador(contador);
-		accountingNote.setAmount(amount);
-		accountingNote.setCodCurrency(cuentaLevantamiento.getCodDivisa());
-		accountingNote.setDebitAccount(cuentaRecaudacion);
-		accountingNote.setCreditAccount(cuentaLevantamiento.getCuenta());
-		accountingNote.setActualDate(new Date());
-		//accountingNote.setExecutionDate(new Date());
-		accountingNote.setReference1(reference1);
-		accountingNote.setReference2(reference2);
-		accountingNote.setChange(cuentaLevantamiento.getCambio());
-		accountingNote.setCallback(contabilizacionCallbackNameParameter);
-		accountingNote.setStatus(EmbargosConstants.COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO);
-		accountingNote.setCodFileControl(codFileControl);
-		accountingNote.setName(embargo.getDatosCliente().getNombre());
-		accountingNote.setNif(embargo.getDatosCliente().getNif());
-		
-		if (detailPayment.length() > 120) {
-			accountingNote.setDetailPayment(detailPayment.substring(0, 119));
+		int resultado = 0;
+		if (amount != 0) {
+			accountingNote.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
+			accountingNote.setCodOffice(oficinaCuentaRecaudacion);
+			//El contador lo gestiona Comunes
+			//accountingNote.setContador(contador);
+			accountingNote.setAmount(amount);
+			accountingNote.setCodCurrency(cuentaLevantamiento.getCodDivisa());
+			accountingNote.setDebitAccount(cuentaRecaudacion);
+			accountingNote.setCreditAccount(cuentaLevantamiento.getCuenta());
+			accountingNote.setActualDate(new Date());
+			//accountingNote.setExecutionDate(new Date());
+			accountingNote.setReference1(reference1);
+			accountingNote.setReference2(reference2);
+			accountingNote.setChange(cuentaLevantamiento.getCambio());
+			accountingNote.setCallback(contabilizacionCallbackNameParameter);
+			accountingNote.setStatus(EmbargosConstants.COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO);
+			accountingNote.setCodFileControl(codFileControl);
+			accountingNote.setName(embargo.getDatosCliente().getNombre());
+			accountingNote.setNif(embargo.getDatosCliente().getNif());
+			
+			if (detailPayment.length() > 120) {
+				accountingNote.setDetailPayment(detailPayment.substring(0, 119));
+			} else {
+				accountingNote.setDetailPayment(detailPayment);
+			}
+	
+			resultado = accountingNoteService.contabilizar(accountingNote);
 		} else {
-			accountingNote.setDetailPayment(detailPayment);
+			liftingService.updateLiftingBankAccountingStatus(cuentaLevantamiento, EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_CONTABILIZADO, userName);
 		}
-
-		int resultado = accountingNoteService.contabilizar(accountingNote);
 
 		if (resultado == 0) {
 			response = false;
