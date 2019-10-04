@@ -41,8 +41,8 @@ server:
 commerzbank:
   embargos:
     files:
-      monitoring-interval-in-seconds: 5
-      stable-size-time-in-millis: 5000
+      configuration-poll-time-in-seconds: 60
+      monitoring-interval-in-millis: 10000
       suffix-file-filter-pet: pet
       suffix-file-filter-inf: inf
       suffix-file-filter-emb: emb
@@ -63,6 +63,7 @@ commerzbank:
 
 
 embargos:
+  commerzbankconfiguration.pollTimeSeconds
   files:
     path:
       norma63:
@@ -118,4 +119,5 @@ comunes:
     port:
     username:
     password:
+
 
