@@ -69,12 +69,14 @@ embargos:
     path:
       norma63:
         incoming: c:/temp
+        processing: c:/temp
         processed: c:/temp
         generated: c:/temp
         error: c:/temp
         encoding: UTF-8
       aeat:
         incoming: c:/temp
+        processing: c:/temp
         processed: c:/temp
         generated: c:/temp
         error: c:/temp
