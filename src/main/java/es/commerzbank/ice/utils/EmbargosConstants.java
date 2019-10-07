@@ -248,16 +248,21 @@ public class EmbargosConstants {
 	public static final String PARAMETRO_TSP_DOMINIO = "tsp.dominio";
 	public static final String PARAMETRO_DWH_ENDPOINT_CLIENTACCOUNT = "datawarehouse.endpoint.client-account";
 	public static final String PARAMETRO_TSP_JASPER_TEMP = "tsp.jasper.temp";
+
 	public static final String PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_INCOMING = "embargos.files.path.norma63.incoming";
 	public static final String PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_PROCESSING = "embargos.files.path.norma63.processing";
 	public static final String PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_PROCESSED = "embargos.files.path.norma63.processed";
 	public static final String PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_GENERATED = "embargos.files.path.norma63.generated";
+	public static final String PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_OUTBOX = "embargos.files.path.norma63.outbox";
 	public static final String PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_ERROR = "embargos.files.path.norma63.error";
+
 	public static final String PARAMETRO_EMBARGOS_FILES_PATH_AEAT_INCOMING = "embargos.files.path.aeat.incoming";
 	public static final String PARAMETRO_EMBARGOS_FILES_PATH_AEAT_PROCESSED = "embargos.files.path.aeat.processed";
 	public static final String PARAMETRO_EMBARGOS_FILES_PATH_AEAT_PROCESSING = "embargos.files.path.aeat.processing";
 	public static final String PARAMETRO_EMBARGOS_FILES_PATH_AEAT_GENERATED = "embargos.files.path.aeat.generated";
+	public static final String PARAMETRO_EMBARGOS_FILES_PATH_AEAT_OUTBOX = "embargos.files.path.aeat.outbox";
 	public static final String PARAMETRO_EMBARGOS_FILES_PATH_AEAT_ERROR = "embargos.files.path.aeat.error";
+
 	public static final String PARAMETRO_EMBARGOS_FILES_ENCODING_NORMA63 = "embargos.files.encoding.norma63";
 	public static final String PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT = "embargos.files.encoding.aeat";
 	public static final String PARAMETRO_EMBARGOS_EMAIL_TO = "embargos.email.to";
