@@ -97,7 +97,7 @@ public class ControlFichero implements Serializable {
 
 	//bi-directional many-to-one association to EntidadesComunicadora
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="COD_ENTIDAD_PRESENTADORA", nullable=false)
+	@JoinColumn(name="COD_ENTIDAD_PRESENTADORA")
 	private EntidadesComunicadora entidadesComunicadora;
 
 	//bi-directional many-to-one association to EstadoCtrlfichero
