@@ -456,14 +456,7 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setStatus(EmbargosConstants.COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO);
 			accountingNote.setName(nombre);
 			accountingNote.setNif(nif);
-			
-			logger.debug("detailPayment: '" + detailPayment + "'");
-			if (detailPayment!=null && detailPayment.length() > 120) {
-				logger.debug("detailPayment (substring): '" + detailPayment.substring(0, 119) + "' [length:" + detailPayment.length() + "]");
-				accountingNote.setDetailPayment(detailPayment.substring(0, 119));
-			} else {
-				accountingNote.setDetailPayment(detailPayment);
-			}
+			accountingNote.setDetailPayment(detailPayment);
 			
 			result = accountingNoteService.contabilizar(accountingNote);
 		} else {
@@ -946,13 +939,8 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setStatus(EmbargosConstants.COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO);
 			accountingNote.setCodFileControl(codFileControl);
 			accountingNote.setName(embargo.getDatosCliente().getNombre());
-			accountingNote.setNif(embargo.getDatosCliente().getNif());
-			
-			if (detailPayment!=null && detailPayment.length() > 120) {
-				accountingNote.setDetailPayment(detailPayment.substring(0, 119));
-			} else {
-				accountingNote.setDetailPayment(detailPayment);
-			}
+			accountingNote.setNif(embargo.getDatosCliente().getNif());	
+			accountingNote.setDetailPayment(detailPayment);
 	
 			resultado = accountingNoteService.contabilizar(accountingNote);
 		} else {
