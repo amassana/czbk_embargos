@@ -88,7 +88,7 @@ public class Cuaderno63LiftingServiceImpl
     ContaGenExecutor contaGenExecutor;
 
     @Override
-    public void tratarFicheroLevantamientos(File file)
+    public void tratarFicheroLevantamientos(File file, String originalName)
         throws IOException
     {
         BeanReader beanReader = null;
@@ -101,7 +101,7 @@ public class Cuaderno63LiftingServiceImpl
 
             // Inicializar control fichero
             ControlFichero controlFicheroLevantamiento =
-                    fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63);
+                    fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63, originalName);
 
             fileControlRepository.save(controlFicheroLevantamiento);
 

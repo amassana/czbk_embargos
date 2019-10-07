@@ -7,6 +7,6 @@ import es.commerzbank.ice.comun.lib.util.ICEException;
 
 public interface Cuaderno63PetitionService {
 
-	public void cargarFicheroPeticion(File file) throws IOException, ICEException ;
+	public void cargarFicheroPeticion(File file, String originalName) throws IOException, ICEException ;
 	
 }

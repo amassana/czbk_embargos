@@ -28,9 +28,6 @@ public class CustomerServiceImpl implements CustomerService {
 	
 	@Override
 	public CustomerDTO findCustomerByNif(String nif) throws ICEException{
-		
-		logger.info("CustomerServiceImpl - findCustomerByNif - start");
-		
 		String dominioTSP = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_DOMINIO);
 		String endpointClientAccountDWH = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_DWH_ENDPOINT_CLIENTACCOUNT,
 				EmbargosConstants.PARAMETRO_DWH_ENDPOINT_CLIENTACCOUNT_DEFAULT_VALUE);

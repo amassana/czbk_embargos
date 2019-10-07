@@ -116,7 +116,7 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 	private GeneralParametersService generalParametersService;
 	
 	@Override
-	public void cargarFicheroEmbargos(File file) throws IOException, ICEException{
+	public void cargarFicheroEmbargos(File file, String originalName) throws IOException, ICEException{
 		
 		BeanReader beanReader = null;
 		Reader reader = null;
@@ -136,7 +136,7 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 	        
 	        //Se guarda el registro de ControlFichero del fichero de entrada:
 	        controlFicheroEmbargo = 
-	        		fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63);
+	        		fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63, originalName);
 	        
 	        fileControlService.saveFileControlTransaction(controlFicheroEmbargo);
 	        

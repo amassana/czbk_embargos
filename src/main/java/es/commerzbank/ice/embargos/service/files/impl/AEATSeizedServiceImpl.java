@@ -14,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
+import es.commerzbank.ice.comun.lib.file.exchange.FileWriterHelper;
 import org.apache.commons.io.FileUtils;
 import org.beanio.BeanReader;
 import org.beanio.BeanWriter;
@@ -92,9 +93,12 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	
 	@Autowired
 	private CommunicatingEntityRepository communicatingEntityRepository;
-	
+
 	@Autowired
 	private GeneralParametersService generalParametersService;
+
+	@Autowired
+	private FileWriterHelper fileWriterHelper;
 	
 	@Override
 	public void tramitarTrabas(Long codControlFicheroEmbargo, String usuarioTramitador) throws IOException, ICEException {
@@ -118,13 +122,13 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	        
 	        //Se obtiene el ControlFichero de Embargos:
 	        controlFicheroEmbargo = fileControlRepository.getOne(codControlFicheroEmbargo);
-	        
+
 	        //Fichero de embargos:
 	        String fileNameEmbargo = controlFicheroEmbargo.getNombreFichero();
-	        
+
 	        String pathProcessed = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_AEAT_PROCESSED);
 	        
-	        File ficheroEmbargo = new File(pathProcessed + "\\" + fileNameEmbargo);
+	        File ficheroEmbargo = new File(controlFicheroEmbargo.getRutaFichero());
 	        
 	        //Comprobar que el fichero de embargos exista:
 	        if (!ficheroEmbargo.exists()) {
@@ -168,11 +172,11 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	        
 	        String pathGenerated = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_AEAT_GENERATED);
 	        
-	        File ficheroSalida = new File(pathGenerated + "\\" + fileNameTrabas);
+	        File ficheroSalida = fileWriterHelper.getGeneratedFile(pathGenerated, fileNameTrabas);
 	        
 	        //Se guarda el registro de ControlFichero del fichero de salida:
 	        controlFicheroTrabas = 
-	        		fileControlMapper.generateControlFichero(ficheroSalida, EmbargosConstants.COD_TIPO_FICHERO_TRABAS_AEAT);
+	        		fileControlMapper.generateControlFichero(ficheroSalida, EmbargosConstants.COD_TIPO_FICHERO_TRABAS_AEAT, fileNameTrabas);
 	        
 	        //Usuario que realiza la tramitacion:
 	        controlFicheroTrabas.setUsuarioUltModificacion(usuarioTramitador);
@@ -348,7 +352,9 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	        	//TODO: lanzar excepcion si no se ha encontrado el codigo de tarea
 	        }
 
-	        
+	        // Mover a outbox
+			String outboxGenerated = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_AEAT_OUTBOX);
+			fileWriterHelper.transferToOutbox(ficheroSalida, outboxGenerated, fileNameTrabas);
 	        
 		} catch (Exception e) {
 			

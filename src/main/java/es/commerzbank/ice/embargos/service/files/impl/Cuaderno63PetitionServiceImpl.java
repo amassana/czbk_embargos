@@ -50,7 +50,6 @@ import es.commerzbank.ice.embargos.service.EmailService;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63PetitionService;
 import es.commerzbank.ice.utils.EmbargosConstants;
-import es.commerzbank.ice.utils.EmbargosUtils;
 import es.commerzbank.ice.utils.ICEDateUtils;
 
 @Service
@@ -105,7 +104,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	@Override
 	//Se comenta '@transactional' ya que se utilizara a nivel de clase:
 	//@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
-	public void cargarFicheroPeticion(File file) throws IOException, ICEException {
+	public void cargarFicheroPeticion(File file, String originalName) throws IOException, ICEException {
 
 		BeanReader beanReader = null;
 		Reader reader = null;
@@ -125,7 +124,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	        
 	        //Se guarda el registro de ControlFichero del fichero de entrada:
 	        controlFicheroPeticion = 
-	        		fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63);
+	        		fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63, originalName);
 	        
 	        //fileControlRepository.save(controlFicheroPeticion);
 	        fileControlService.saveFileControlTransaction(controlFicheroPeticion);
@@ -149,7 +148,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	        		//Registro de detalle:
 	        		
 	        		SolicitudInformacionFase1 solicitudInformacion = (SolicitudInformacionFase1) record;
-	        		LOG.debug(solicitudInformacion.getNifDeudor());
+	        		LOG.info("Consultando NIF "+ solicitudInformacion.getNifDeudor());
 	 		        
 	        		//Llamada a Datawarehouse: Obtener las cuentas del cliente a partir del nif:        		
 	        		CustomerDTO customerDTO = customerService.findCustomerByNif(solicitudInformacion.getNifDeudor());

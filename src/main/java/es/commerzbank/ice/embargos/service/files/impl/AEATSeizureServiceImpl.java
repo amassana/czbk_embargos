@@ -36,14 +36,12 @@ import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
-import es.commerzbank.ice.embargos.domain.entity.DatosCliente;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
 import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.embargos.domain.mapper.AEATMapper;
-import es.commerzbank.ice.embargos.domain.mapper.ClientDataMapper;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
 import es.commerzbank.ice.embargos.domain.mapper.SeizedBankAccountMapper;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.DiligenciaFase3;
@@ -118,7 +116,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	private GeneralParametersService generalParametersService;
 	
 	@Override
-	public void tratarFicheroDiligenciasEmbargo(File file) throws IOException, ICEException {
+	public void tratarFicheroDiligenciasEmbargo(File file, String originalName) throws IOException, ICEException {
 		
 		logger.info("AEATSeizureServiceImpl - tratarFicheroDiligenciasEmbargo - start");
 		
@@ -140,7 +138,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	        
 	        //Se guarda el registro de ControlFichero del fichero de entrada:
 	        controlFicheroEmbargo = 
-	        		fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT);
+	        		fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT, originalName);
 	        
 	        fileControlService.saveFileControlTransaction(controlFicheroEmbargo);
 	

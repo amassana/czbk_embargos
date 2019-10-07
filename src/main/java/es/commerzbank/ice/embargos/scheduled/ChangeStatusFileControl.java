@@ -40,8 +40,8 @@ public class ChangeStatusFileControl {
 			String folderNameN63Generated = generalParameterService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_GENERATED);
 			
 			for (ControlFichero controlFichero : list) {
-				File fileAEAT = new File(folderNameAEATGenerated + "\\" + controlFichero.getNombreFichero());
-				File fileN63 = new File(folderNameN63Generated + "\\" + controlFichero.getNombreFichero());
+				File fileAEAT = new File(controlFichero.getRutaFichero());
+				File fileN63 = new File(controlFichero.getRutaFichero());
 				if (!fileAEAT.exists() || !fileN63.exists()) {
 					if (controlFichero.getTipoFichero().getCodTipoFichero() == EmbargosConstants.COD_TIPO_FICHERO_TRABAS_AEAT) {
 						fileControlRepository.updateCodEstado(controlFichero.getCodControlFichero(), EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_AEAT_SENT);

@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
+import es.commerzbank.ice.comun.lib.file.exchange.FileWriterHelper;
 import org.apache.commons.io.FileUtils;
 import org.beanio.BeanReader;
 import org.beanio.BeanWriter;
@@ -92,6 +93,9 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	@Autowired
 	private GeneralParametersService generalParametersService;
 
+	@Autowired
+	private FileWriterHelper fileWriterHelper;
+
 	@Override
 	public void tramitarTrabas(Long codControlFicheroEmbargo, String usuarioTramitador) throws IOException, ICEException {
 
@@ -119,7 +123,7 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	        
 	        String pathProcessed = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_PROCESSED);
 	        
-	        File ficheroEmbargo = new File(pathProcessed + "\\" + fileNameEmbargo);
+	        File ficheroEmbargo = new File(controlFicheroEmbargo.getRutaFichero());
 	        
 	        //Comprobar que el fichero de embargos exista:
 	        if (!ficheroEmbargo.exists()) {
@@ -162,12 +166,12 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	        
 	        
 	        String pathGenerated = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_GENERATED);
-	        
-	        File ficheroSalida = new File(pathGenerated + "\\" + fileNameTrabas);
+
+			File ficheroSalida = fileWriterHelper.getGeneratedFile(pathGenerated, fileNameTrabas);
 	        
 	        //Se guarda el registro de ControlFichero del fichero de salida:
 	        controlFicheroTrabas = 
-	        		fileControlMapper.generateControlFichero(ficheroSalida, EmbargosConstants.COD_TIPO_FICHERO_TRABAS_NORMA63);
+	        		fileControlMapper.generateControlFichero(ficheroSalida, EmbargosConstants.COD_TIPO_FICHERO_TRABAS_NORMA63, fileNameTrabas);
 	        
 	        //Usuario que realiza la tramitacion:
 	        controlFicheroTrabas.setUsuarioUltModificacion(usuarioTramitador);
@@ -307,7 +311,9 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	        	//TODO: lanzar excepcion si no se ha encontrado el codigo de tarea
 	        }
 
-	        
+			// Mover a outbox
+			String outboxGenerated = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_OUTBOX);
+			fileWriterHelper.transferToOutbox(ficheroSalida, outboxGenerated, fileNameTrabas);
 	        
 		} catch (Exception e) {
 			

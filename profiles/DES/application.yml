@@ -35,8 +35,8 @@ server:
 commerzbank:
   embargos:
     files:
-      monitoring-interval-in-seconds: 5
-      stable-size-time-in-millis: 5000
+      configuration-poll-time-in-seconds: 60
+      monitoring-interval-in-milliseconds: 10000
       suffix-file-filter-pet: pet
       suffix-file-filter-inf: inf
       suffix-file-filter-emb: emb

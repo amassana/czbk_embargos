@@ -69,7 +69,7 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 	private GeneralParametersService generalParametersService;	
 	
 	@Override
-	public void tratarFicheroErrores(File file)  throws IOException {
+	public void tratarFicheroErrores(File file, String originalName)  throws IOException {
 
 		logger.info("AEATSeizureServiceImpl - tratarFicheroErrores - start");
 		
@@ -87,7 +87,7 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 	        
 	        //Se guarda el registro de ControlFichero del fichero de entrada:
 	        controlFicheroErrores = 
-	        		fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_ERRORES_TRABAS_ENVIADAS_AEAT);
+	        		fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_ERRORES_TRABAS_ENVIADAS_AEAT, originalName);
 	        
 	        fileControlService.saveFileControlTransaction(controlFicheroErrores);
 	

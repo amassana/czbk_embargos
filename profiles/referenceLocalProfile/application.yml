@@ -63,8 +63,9 @@ commerzbank:
 
 
 embargos:
-  commerzbankconfiguration.pollTimeSeconds
   files:
+    configuration-poll-time-in-seconds: 60
+    monitoring-interval-in-milliseconds: 10000
     path:
       norma63:
         incoming: c:/temp

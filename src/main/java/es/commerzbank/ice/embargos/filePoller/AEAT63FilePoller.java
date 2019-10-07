@@ -5,9 +5,7 @@ import es.commerzbank.ice.comun.lib.file.exchange.FolderPoller;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import es.commerzbank.ice.comun.lib.util.YAMLUtil;
-import es.commerzbank.ice.embargos.service.files.Cuaderno63LiftingService;
-import es.commerzbank.ice.embargos.service.files.Cuaderno63PetitionService;
-import es.commerzbank.ice.embargos.service.files.Cuaderno63SeizureService;
+import es.commerzbank.ice.embargos.service.files.*;
 import es.commerzbank.ice.utils.EmbargosConstants;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -26,15 +24,15 @@ import java.time.Duration;
 import java.time.Instant;
 
 @Component
-public class Norma63FilePoller
+public class AEAT63FilePoller
     implements FileProcessor
 {
-    private static final Logger LOG = LoggerFactory.getLogger(Norma63FilePoller.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AEAT63FilePoller.class);
 
-    private static final String pollerName = "Norma63 Poller";
+    private static final String pollerName = "AEAT Poller";
     @Autowired
-    @Qualifier("n63FolderPoller")
-    private FolderPoller n63FolderPoller;
+    @Qualifier("aeatFolderPoller")
+    private FolderPoller aeatFolderPoller;
 
     @Value("${commerzbank.embargos.files.configuration-poll-time-in-seconds}")
     private int pollTime;
@@ -45,15 +43,15 @@ public class Norma63FilePoller
     private GeneralParametersService generalParametersService;
 
     @Autowired
-    private Cuaderno63LiftingService cuaderno63LiftingService;
+    private AEATSeizureService aeatSeizureService;
 
     @Autowired
-    private Cuaderno63PetitionService cuaderno63PetitionService;
+    private AEATSeizedResultService aeatSeizedResultService;
 
     @Autowired
-    private Cuaderno63SeizureService cuaderno63SeizureService;
+    private AEATLiftingService aeatLiftingService;
 
-    @Bean(name = "n63FolderPoller")
+    @Bean(name = "aeatFolderPoller")
     private FolderPoller folderPoller()
     {
         FolderPoller folderPoller = new FolderPoller();
@@ -63,6 +61,7 @@ public class Norma63FilePoller
             folderPoller.addAcceptedExtension(YAMLUtil.getValue(ValueConstants.APPLICATION_YAML_LOCAL_PATH, "commerzbank.embargos.files.suffix-file-filter-pet"));
             folderPoller.addAcceptedExtension(YAMLUtil.getValue(ValueConstants.APPLICATION_YAML_LOCAL_PATH, "commerzbank.embargos.files.suffix-file-filter-emb"));
             folderPoller.addAcceptedExtension(YAMLUtil.getValue(ValueConstants.APPLICATION_YAML_LOCAL_PATH, "commerzbank.embargos.files.suffix-file-filter-lev"));
+            folderPoller.addAcceptedExtension(YAMLUtil.getValue(ValueConstants.APPLICATION_YAML_LOCAL_PATH, "commerzbank.embargos.files.suffix-file-filter-err"));
         }
         catch (IOException ioe) {LOG.error(pollerName +": accepted extensions can't be fully configured");}
 
@@ -76,21 +75,21 @@ public class Norma63FilePoller
             if (lastVariableUpdate == null || Duration.between(lastVariableUpdate, Instant.now()).getSeconds() >= pollTime) {
                 lastVariableUpdate = Instant.now();
 
-                n63FolderPoller.setInboxFolder(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_INCOMING));
-                n63FolderPoller.setProcessingFolder(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_PROCESSING));
-                n63FolderPoller.setProcessedFolder(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_PROCESSED));
-                n63FolderPoller.setErrorFolder(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_ERROR));
+                aeatFolderPoller.setInboxFolder(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_AEAT_INCOMING));
+                aeatFolderPoller.setProcessingFolder(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_AEAT_PROCESSING));
+                aeatFolderPoller.setProcessedFolder(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_AEAT_PROCESSED));
+                aeatFolderPoller.setErrorFolder(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_AEAT_ERROR));
 
-                n63FolderPoller.setStableTime(generalParametersService.loadIntegerParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_STABLE_TIME));
+                aeatFolderPoller.setStableTime(generalParametersService.loadIntegerParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_STABLE_TIME));
 
-                n63FolderPoller.setMaxProcessingTime(generalParametersService.loadIntegerParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_MAX_PROCESSING_TIME));
+                aeatFolderPoller.setMaxProcessingTime(generalParametersService.loadIntegerParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_MAX_PROCESSING_TIME));
 
-                n63FolderPoller.setArchivalDate(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ARCHIVAL_FOLDER_DATE_PATTERN, "yyyy"));
+                aeatFolderPoller.setArchivalDate(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ARCHIVAL_FOLDER_DATE_PATTERN, "yyyy"));
 
-                n63FolderPoller.setFileProcessor(this);
+                aeatFolderPoller.setFileProcessor(this);
             }
 
-            n63FolderPoller.poll();
+            aeatFolderPoller.poll();
         }
         catch (Exception e)
         {
@@ -106,14 +105,14 @@ public class Norma63FilePoller
             String tipoFichero = FilenameUtils.getExtension(file.getCanonicalPath()).toUpperCase();
 
             switch (tipoFichero) {
-                case EmbargosConstants.TIPO_FICHERO_PETICIONES:
-                    cuaderno63PetitionService.cargarFicheroPeticion(file, originalName);
-                    break;
                 case EmbargosConstants.TIPO_FICHERO_EMBARGOS:
-                    cuaderno63SeizureService.cargarFicheroEmbargos(file, originalName);
+                    aeatSeizureService.tratarFicheroDiligenciasEmbargo(file, originalName);
                     break;
                 case EmbargosConstants.TIPO_FICHERO_LEVANTAMIENTOS:
-                    cuaderno63LiftingService.tratarFicheroLevantamientos(file, originalName);
+                    aeatLiftingService.tratarFicheroLevantamientos(file, originalName);
+                    break;
+                case EmbargosConstants.TIPO_FICHERO_ERRORES:
+                    aeatSeizedResultService.tratarFicheroErrores(file, originalName);
                     break;
                 default:
             }
@@ -122,7 +121,7 @@ public class Norma63FilePoller
 
             try
             {
-                n63FolderPoller.moveToProcessed(file);
+                aeatFolderPoller.moveToProcessed(file);
             }
             catch (Exception e2)
             {
@@ -134,7 +133,7 @@ public class Norma63FilePoller
             LOG.error(pollerName +": Excepción mientras se trataba "+ file.getName(), e);
             try
             {
-                n63FolderPoller.moveToError(file);
+                aeatFolderPoller.moveToError(file);
             }
             catch (Exception e2)
             {

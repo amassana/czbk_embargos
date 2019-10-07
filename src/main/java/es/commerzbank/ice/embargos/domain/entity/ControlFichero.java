@@ -58,6 +58,9 @@ public class ControlFichero implements Serializable {
 	@Column(name="NOMBRE_FICHERO", length=100)
 	private String nombreFichero;
 
+	@Column(name="RUTA_FICHERO", length=256)
+	private String rutaFichero;
+
 	@Column(name="NUM_CRC", length=30)
 	private String numCrc;
 
@@ -255,6 +258,14 @@ public class ControlFichero implements Serializable {
 
 	public void setNombreFichero(String nombreFichero) {
 		this.nombreFichero = nombreFichero;
+	}
+
+	public String getRutaFichero() {
+		return rutaFichero;
+	}
+
+	public void setRutaFichero(String rutaFichero) {
+		this.rutaFichero = rutaFichero;
 	}
 
 	public String getNumCrc() {

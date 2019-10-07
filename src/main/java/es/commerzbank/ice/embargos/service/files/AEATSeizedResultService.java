@@ -5,5 +5,5 @@ import java.io.IOException;
 
 public interface AEATSeizedResultService {
 
-	public void tratarFicheroErrores(File file)  throws IOException;
+	public void tratarFicheroErrores(File file, String originalName)  throws IOException;
 }

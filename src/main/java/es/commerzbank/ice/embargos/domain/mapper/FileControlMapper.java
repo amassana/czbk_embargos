@@ -26,11 +26,10 @@ import es.commerzbank.ice.utils.ICEDateUtils;
 @Mapper(componentModel="spring")
 public abstract class FileControlMapper {
 	
-	public ControlFichero generateControlFichero(File file, Long codTipoFichero) throws IOException{
+	public ControlFichero generateControlFichero(File file, Long codTipoFichero, String originalName) throws IOException{
 		
         ControlFichero controlFichero = new ControlFichero();
-		
-		String fileNamePeticion = FilenameUtils.getName(file.getCanonicalPath());
+
         TipoFichero tipoFichero = new TipoFichero(); 
         tipoFichero.setCodTipoFichero(codTipoFichero);
         
@@ -42,7 +41,8 @@ public abstract class FileControlMapper {
         
         //Guardar registro del control del fichero de Peticion:
         controlFichero.setTipoFichero(tipoFichero);
-        controlFichero.setNombreFichero(fileNamePeticion);
+        controlFichero.setNombreFichero(originalName);
+        controlFichero.setRutaFichero(file.getCanonicalPath());
         //Descripcion por defecto:
         controlFichero.setDescripcion(EmbargosConstants.CONTROL_FICHERO_DESCRIPCION_DEFAULT);
         

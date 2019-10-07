@@ -14,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Optional;
 
+import es.commerzbank.ice.comun.lib.file.exchange.FileWriterHelper;
 import org.apache.commons.io.FileUtils;
 import org.beanio.BeanReader;
 import org.beanio.BeanWriter;
@@ -84,7 +85,9 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	
 	@Autowired
 	private GeneralParametersService generalParametersService;
-	
+
+	@Autowired
+	private FileWriterHelper fileWriterHelper;
 
 	@Override
 	public void tramitarFicheroInformacion(Long codControlFicheroPeticion, String usuarioTramitador) throws IOException, ICEException {
@@ -110,10 +113,10 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        controlFicheroPeticion = fileControlRepository.getOne(codControlFicheroPeticion);
 	        
 	        //Fichero de entrada (Peticion):
-	        String fileNamePeticion = controlFicheroPeticion.getNombreFichero();
+	        //String fileNamePeticion = controlFicheroPeticion.getNombreFichero1();
 	        String pathProcessed = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_PROCESSED);
 	        
-	        File ficheroEntrada = new File(pathProcessed + "\\" + fileNamePeticion);
+	        File ficheroEntrada = new File(controlFicheroPeticion.getRutaFichero());
 	        
 	        //Comprobar que el fichero de peticiones exista:
 	        if (!ficheroEntrada.exists()) {
@@ -155,11 +158,11 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        
 	        String pathGenerated = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_GENERATED);
 	        
-	        File ficheroSalida = new File(pathGenerated + "\\" + fileNameInformacion);
+	        File ficheroSalida = fileWriterHelper.getGeneratedFile(pathGenerated, fileNameInformacion);
 	        
 	        //Se guarda el registro de ControlFichero del fichero de salida:
 	        controlFicheroInformacion = 
-	        		fileControlMapper.generateControlFichero(ficheroSalida, EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63);
+	        		fileControlMapper.generateControlFichero(ficheroSalida, EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63, fileNameInformacion);
 	        
 	        //Usuario que realiza la tramitacion:
 	        controlFicheroInformacion.setUsuarioUltModificacion(usuarioTramitador);
@@ -295,7 +298,9 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        	//TODO: lanzar excepcion si no se ha encontrado el codigo de tarea
 	        }
 
-	        
+			// Mover a outbox
+			String outboxGenerated = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_OUTBOX);
+			fileWriterHelper.transferToOutbox(ficheroSalida, outboxGenerated, fileNameInformacion);
 	        
 		} catch (Exception e) {
 			
