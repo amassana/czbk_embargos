@@ -12,15 +12,16 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 
+import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
-import es.commerzbank.ice.embargos.domain.dto.ClientDataDTO;
 import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
 import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTrabaActuacion;
 import es.commerzbank.ice.embargos.domain.entity.CuentasInmovilizacion;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
+import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
 import es.commerzbank.ice.embargos.domain.entity.EstadoLevantamiento;
 import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
@@ -88,18 +89,29 @@ public abstract class Cuaderno63Mapper {
 		@Mapping(source = "codControlFicheroPeticion", target = "controlFichero.codControlFichero")
 	})
 	public abstract PeticionInformacion generatePeticionInformacion(SolicitudInformacionFase1 solicitudInfo, 
-			Long codControlFicheroPeticion, List<AccountDTO> listBankAccount);
+			Long codControlFicheroPeticion, List<AccountDTO> listBankAccount, EntidadesComunicadora entidadComunicadora) throws ICEParserException;
 	
 	@AfterMapping
-	protected void setPeticionInformacionAfterMapping(@MappingTarget PeticionInformacion peticionInformacion, List<AccountDTO> listBankAccount) {
+	protected void setPeticionInformacionAfterMapping(@MappingTarget PeticionInformacion peticionInformacion, 
+			List<AccountDTO> listBankAccount, EntidadesComunicadora entidadComunicadora) throws ICEParserException {
 		
-		//Variables pendientes de cambiar:
-		BigDecimal pendienteCambiarBigDec = new BigDecimal(0);
-		EntidadesOrdenante pendienteCambiarEntidadesOrdenante  = new EntidadesOrdenante();
-		pendienteCambiarEntidadesOrdenante.setCodEntidadOrdenante(Long.valueOf(1));
-				
-		peticionInformacion.setCodSucursal(pendienteCambiarBigDec);
-		peticionInformacion.setEntidadesOrdenante(pendienteCambiarEntidadesOrdenante);
+		//Comprobar que si la entidadComunicadora es NULL -> Exception...
+		if (entidadComunicadora == null) {
+			throw new ICEParserException("", "No se puede procesar el fichero con codControlFichero '" 
+					+ peticionInformacion.getControlFichero().getCodControlFichero() +
+					"': Entidad Comunicadora con valor NULL.");
+		}
+		//Comprobar que la entidad comunicadora tenga entidad Ordenante asociada:
+		if (entidadComunicadora.getEntidadesOrdenantes() == null || entidadComunicadora.getEntidadesOrdenantes().isEmpty()) {
+			throw new ICEParserException("", "No se puede procesar el fichero con codControlFichero '" 
+					+ peticionInformacion.getControlFichero().getCodControlFichero() +
+					"': La entidad Comunicadora con nif '" + entidadComunicadora.getNifEntidad() + "' no tiene asocidada una entidad ordenante.");
+		}
+		
+		peticionInformacion.setEntidadesOrdenante(entidadComunicadora.getEntidadesOrdenantes().get(0));
+
+		//TODO: aplicar la sucursal por defecto?
+		peticionInformacion.setCodSucursal(null);
 		
 		//Se guardaran las primeras cuentas en estado NORMAL del listado de cuentas, hasta un maximo de 6 cuentas:
 		setPreloadedBankAccounts(peticionInformacion,listBankAccount);

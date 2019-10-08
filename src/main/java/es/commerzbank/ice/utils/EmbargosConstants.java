@@ -177,7 +177,7 @@ public class EmbargosConstants {
 	public static final String BANK_ACCOUNT_STATUS_ACTIVE = "ACTIVE";
 	public static final String BANK_ACCOUNT_STATUS_BLOQUED = "BLOQUED";
 	public static final String BANK_ACCOUNT_STATUS_CANCELLED = "CANCELLED";
-	public static final String BANK_ACCOUNT_STATUS_NOTFOUND = "CANCELLED";
+	public static final String BANK_ACCOUNT_STATUS_NOTFOUND = "NOTFOUND";
 	
 	public static final long COD_CUENTA_INMOVILIZACION_DEFAULT = 1;
 	
