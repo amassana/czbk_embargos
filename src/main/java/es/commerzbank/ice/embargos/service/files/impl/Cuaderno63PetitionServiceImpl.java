@@ -166,7 +166,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 		        			
 			        		//Se guarda la PeticionInformacion en bbdd:
 			        		PeticionInformacion peticionInformacion = cuaderno63Mapper.generatePeticionInformacion(solicitudInformacion, 
-			        				controlFicheroPeticion.getCodControlFichero(), accountList);
+			        				controlFicheroPeticion.getCodControlFichero(), accountList, entidadComunicadora);
 
 			        		informationPetitionRepository.save(peticionInformacion);
 			        			        		
