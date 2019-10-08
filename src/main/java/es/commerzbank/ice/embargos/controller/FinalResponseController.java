@@ -230,11 +230,11 @@ public class FinalResponseController {
 		return response;
 	}
 	
-	@GetMapping(value = "/{codeFileControl}")
-	@ApiOperation(value = "Envia a contabilidad si la entidad ordenante asociada al fichero final tiene cuenta en Commerzbank.")
-	public ResponseEntity<FileControlDTO> sendAccountingForOrderingEntityWithInternalAccount() {
-		
-		
-		return null;
-	}
+//	@GetMapping(value = "/{codeFileControl}")
+//	@ApiOperation(value = "Envia a contabilidad si la entidad ordenante asociada al fichero final tiene cuenta en Commerzbank.")
+//	public ResponseEntity<FileControlDTO> sendAccountingForOrderingEntityWithInternalAccount() {
+//		
+//		
+//		return null;
+//	}
 }
