@@ -69,7 +69,7 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 	private GeneralParametersService generalParametersService;	
 	
 	@Override
-	public void tratarFicheroErrores(File file, String originalName)  throws IOException {
+	public void tratarFicheroErrores(File processingFile, String originalName, File processedFile)  throws IOException {
 
 		logger.info("AEATSeizureServiceImpl - tratarFicheroErrores - start");
 		
@@ -87,7 +87,7 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 	        
 	        //Se guarda el registro de ControlFichero del fichero de entrada:
 	        controlFicheroErrores = 
-	        		fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_ERRORES_TRABAS_ENVIADAS_AEAT, originalName);
+	        		fileControlMapper.generateControlFichero(processingFile, EmbargosConstants.COD_TIPO_FICHERO_ERRORES_TRABAS_ENVIADAS_AEAT, originalName, processedFile);
 	        
 	        fileControlService.saveFileControlTransaction(controlFicheroErrores);
 	
@@ -95,7 +95,7 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 	        // use a StreamFactory to create a BeanReader
 	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT);
 	        
-			reader = new InputStreamReader(new FileInputStream(file), encoding);
+			reader = new InputStreamReader(new FileInputStream(processingFile), encoding);
 	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_RESULTADOVALIDACIONTRABAS, reader);
 	        
 	        Object record = null;
@@ -138,7 +138,7 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 		        		entidadOrdenante = orderingEntityRepository.findByIdentificadorEntidad(identificadorEntidad);
 		        		
 		        		if (entidadOrdenante == null) {
-		        			throw new ICEParserException("01", "No se puede procesar el fichero '" + file.getName() +
+		        			throw new ICEParserException("01", "No se puede procesar el fichero '" + processingFile.getName() +
 		        					"': Entidad Ordenante con identificadorEntidad " + identificadorEntidad + " no encontrada.");
 		        		}
 		        	}

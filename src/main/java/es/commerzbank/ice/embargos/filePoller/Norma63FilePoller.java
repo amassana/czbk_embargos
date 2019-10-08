@@ -100,20 +100,20 @@ public class Norma63FilePoller
     }
 
     @Async
-    public void processFile(String originalName, File file)
+    public void processFile(String originalName, File processingFile, File processedFile)
     {
         try {
-            String tipoFichero = FilenameUtils.getExtension(file.getCanonicalPath()).toUpperCase();
+            String tipoFichero = FilenameUtils.getExtension(processingFile.getCanonicalPath()).toUpperCase();
 
             switch (tipoFichero) {
                 case EmbargosConstants.TIPO_FICHERO_PETICIONES:
-                    cuaderno63PetitionService.cargarFicheroPeticion(file, originalName);
+                    cuaderno63PetitionService.cargarFicheroPeticion(processingFile, originalName, processedFile);
                     break;
                 case EmbargosConstants.TIPO_FICHERO_EMBARGOS:
-                    cuaderno63SeizureService.cargarFicheroEmbargos(file, originalName);
+                    cuaderno63SeizureService.cargarFicheroEmbargos(processingFile, originalName, processedFile);
                     break;
                 case EmbargosConstants.TIPO_FICHERO_LEVANTAMIENTOS:
-                    cuaderno63LiftingService.tratarFicheroLevantamientos(file, originalName);
+                    cuaderno63LiftingService.tratarFicheroLevantamientos(processingFile, originalName, processedFile);
                     break;
                 default:
             }
@@ -122,23 +122,23 @@ public class Norma63FilePoller
 
             try
             {
-                n63FolderPoller.moveToProcessed(file);
+                n63FolderPoller.moveToProcessed(processingFile, processedFile);
             }
             catch (Exception e2)
             {
-                LOG.error(pollerName +": Error mientras se movía a la carpeta de errores "+ file.getName(), e2);
+                LOG.error(pollerName +": Error mientras se movía a la carpeta de procesados "+ processingFile.getName(), e2);
             }
         }
         catch (Exception e)
         {
-            LOG.error(pollerName +": Excepción mientras se trataba "+ file.getName(), e);
+            LOG.error(pollerName +": Excepción mientras se trataba "+ processingFile.getName(), e);
             try
             {
-                n63FolderPoller.moveToError(file);
+                n63FolderPoller.moveToError(processingFile);
             }
             catch (Exception e2)
             {
-                LOG.error(pollerName +": Error mientras se movía a la carpeta de errores "+ file.getName(), e2);
+                LOG.error(pollerName +": Error mientras se movía a la carpeta de errores "+ processingFile.getName(), e2);
             }
         }
     }

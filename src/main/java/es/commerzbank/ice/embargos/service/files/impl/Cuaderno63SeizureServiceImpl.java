@@ -116,7 +116,7 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 	private GeneralParametersService generalParametersService;
 	
 	@Override
-	public void cargarFicheroEmbargos(File file, String originalName) throws IOException, ICEException{
+	public void cargarFicheroEmbargos(File processingFile, String originalName, File processedFile) throws IOException, ICEException{
 		
 		BeanReader beanReader = null;
 		Reader reader = null;
@@ -127,7 +127,7 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 		
 		try {
 			
-			seizureFileName = FilenameUtils.getName(file.getCanonicalPath());
+			seizureFileName = FilenameUtils.getName(processingFile.getCanonicalPath());
 
 			// create a StreamFactory
 	        StreamFactory factory = StreamFactory.newInstance();
@@ -136,14 +136,14 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 	        
 	        //Se guarda el registro de ControlFichero del fichero de entrada:
 	        controlFicheroEmbargo = 
-	        		fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63, originalName);
+	        		fileControlMapper.generateControlFichero(processingFile, EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63, originalName, processedFile);
 	        
 	        fileControlService.saveFileControlTransaction(controlFicheroEmbargo);
 	        
 	        // use a StreamFactory to create a BeanReader
 	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_NORMA63);
 	        
-			reader = new InputStreamReader(new FileInputStream(file), encoding);
+			reader = new InputStreamReader(new FileInputStream(processingFile), encoding);
 	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE3, reader);
 	        
 	        Object record = null;

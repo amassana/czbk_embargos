@@ -88,7 +88,7 @@ public class Cuaderno63LiftingServiceImpl
     ContaGenExecutor contaGenExecutor;
 
     @Override
-    public void tratarFicheroLevantamientos(File file, String originalName)
+    public void tratarFicheroLevantamientos(File processingFile, String originalName, File processedFile)
         throws IOException
     {
         BeanReader beanReader = null;
@@ -101,7 +101,7 @@ public class Cuaderno63LiftingServiceImpl
 
             // Inicializar control fichero
             ControlFichero controlFicheroLevantamiento =
-                    fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63, originalName);
+                    fileControlMapper.generateControlFichero(processingFile, EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63, originalName, processedFile);
 
             fileControlRepository.save(controlFicheroLevantamiento);
 
@@ -111,7 +111,7 @@ public class Cuaderno63LiftingServiceImpl
             
 	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_NORMA63);
 			
-	        reader = new InputStreamReader(new FileInputStream(file), encoding);
+	        reader = new InputStreamReader(new FileInputStream(processingFile), encoding);
             beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE5, reader);
 
             Object currentRecord = null;

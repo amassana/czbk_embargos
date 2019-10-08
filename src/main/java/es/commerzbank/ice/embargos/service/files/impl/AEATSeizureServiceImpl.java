@@ -116,7 +116,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	private GeneralParametersService generalParametersService;
 	
 	@Override
-	public void tratarFicheroDiligenciasEmbargo(File file, String originalName) throws IOException, ICEException {
+	public void tratarFicheroDiligenciasEmbargo(File processingFile, String originalName, File processedFile) throws IOException, ICEException {
 		
 		logger.info("AEATSeizureServiceImpl - tratarFicheroDiligenciasEmbargo - start");
 		
@@ -129,7 +129,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 		
 		try {
 			
-			seizureFileName = FilenameUtils.getName(file.getCanonicalPath());
+			seizureFileName = FilenameUtils.getName(processingFile.getCanonicalPath());
 		
 	        // create a StreamFactory
 	        StreamFactory factory = StreamFactory.newInstance();
@@ -138,7 +138,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	        
 	        //Se guarda el registro de ControlFichero del fichero de entrada:
 	        controlFicheroEmbargo = 
-	        		fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT, originalName);
+	        		fileControlMapper.generateControlFichero(processingFile, EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT, originalName, processedFile);
 	        
 	        fileControlService.saveFileControlTransaction(controlFicheroEmbargo);
 	
@@ -146,7 +146,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	        // use a StreamFactory to create a BeanReader
 	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT);
 			
-	        reader = new InputStreamReader(new FileInputStream(file), encoding);
+	        reader = new InputStreamReader(new FileInputStream(processingFile), encoding);
 	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_DILIGENCIAS, reader);
 	        
 	        Object record = null;
@@ -188,7 +188,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 		        		entidadOrdenante = orderingEntityRepository.findByIdentificadorEntidad(identificadorEntidad);
 		        		
 		        		if (entidadOrdenante == null) {
-		        			throw new ICEParserException("01", "No se puede procesar el fichero '" + file.getName() +
+		        			throw new ICEParserException("01", "No se puede procesar el fichero '" + processingFile.getName() +
 		        					"': Entidad Ordenante con identificadorEntidad " + identificadorEntidad + " no encontrada.");
 		        		}
 		        	}

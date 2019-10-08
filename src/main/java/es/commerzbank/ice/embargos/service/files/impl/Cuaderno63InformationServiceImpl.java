@@ -162,7 +162,7 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        
 	        //Se guarda el registro de ControlFichero del fichero de salida:
 	        controlFicheroInformacion = 
-	        		fileControlMapper.generateControlFichero(ficheroSalida, EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63, fileNameInformacion);
+	        		fileControlMapper.generateControlFichero(ficheroSalida, EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63, fileNameInformacion, ficheroSalida);
 	        
 	        //Usuario que realiza la tramitacion:
 	        controlFicheroInformacion.setUsuarioUltModificacion(usuarioTramitador);
