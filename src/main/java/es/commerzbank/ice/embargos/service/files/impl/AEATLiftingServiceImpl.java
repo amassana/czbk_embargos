@@ -84,7 +84,7 @@ public class AEATLiftingServiceImpl
     ContaGenExecutor contaGenExecutor;
 
     @Override
-    public void tratarFicheroLevantamientos(File file, String originalName) throws IOException, ICEParserException {
+    public void tratarFicheroLevantamientos(File processingFile, String originalName, File processedFile) throws IOException, ICEParserException {
         
     	BeanReader beanReader = null;
         Reader reader = null;
@@ -95,7 +95,7 @@ public class AEATLiftingServiceImpl
 
             // Inicializar control fichero
             ControlFichero controlFicheroLevantamiento =
-                    fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT, originalName);
+                    fileControlMapper.generateControlFichero(processingFile, EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT, originalName, processedFile);
 
             fileControlRepository.save(controlFicheroLevantamiento);
 
@@ -105,7 +105,7 @@ public class AEATLiftingServiceImpl
             
 	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT);
 			
-	        reader = new InputStreamReader(new FileInputStream(file), encoding);
+	        reader = new InputStreamReader(new FileInputStream(processingFile), encoding);
             beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_LEVANTAMIENTOTRABAS, reader);
 
             Object currentRecord = null;

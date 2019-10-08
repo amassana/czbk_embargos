@@ -171,7 +171,7 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	        
 	        //Se guarda el registro de ControlFichero del fichero de salida:
 	        controlFicheroTrabas = 
-	        		fileControlMapper.generateControlFichero(ficheroSalida, EmbargosConstants.COD_TIPO_FICHERO_TRABAS_NORMA63, fileNameTrabas);
+	        		fileControlMapper.generateControlFichero(ficheroSalida, EmbargosConstants.COD_TIPO_FICHERO_TRABAS_NORMA63, fileNameTrabas, ficheroSalida);
 	        
 	        //Usuario que realiza la tramitacion:
 	        controlFicheroTrabas.setUsuarioUltModificacion(usuarioTramitador);

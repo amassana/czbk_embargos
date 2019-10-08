@@ -97,7 +97,7 @@ public class Norma63Fase6
 
             //Se guarda el registro de ControlFichero del fichero de salida:
             ControlFichero ficheroFase6 =
-                    fileControlMapper.generateControlFichero(fase6File, EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63, fileNameFinal);
+                    fileControlMapper.generateControlFichero(fase6File, EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63, fileNameFinal, fase6File);
             ficheroFase6.setEntidadesComunicadora(ficheroFase3.getEntidadesComunicadora());
 
             fileControlRepository.save(ficheroFase6);
@@ -105,7 +105,6 @@ public class Norma63Fase6
             // Inicialiar beanIO parser
             StreamFactory factory = StreamFactory.newInstance();
             factory.loadResource(pathFileConfigCuaderno63);
-            // TODO: NUEVO CAMPO en control fichero: RUTA INTERNA
 	        
             beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE3, (new File(ficheroFase3.getRutaFichero()).getCanonicalFile()));
 
