@@ -4,12 +4,11 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import es.commerzbank.ice.embargos.domain.entity.*;
-import es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.Levantamiento;
-import es.commerzbank.ice.embargos.repository.LiftingBankAccountRepository;
 import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +28,18 @@ import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
 import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import es.commerzbank.ice.embargos.domain.dto.SeizureStatusDTO;
+import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
+import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
+import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
+import es.commerzbank.ice.embargos.domain.entity.Embargo;
+import es.commerzbank.ice.embargos.domain.entity.EstadoLevantamiento;
+import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
+import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
+import es.commerzbank.ice.embargos.domain.entity.Peticion;
+import es.commerzbank.ice.embargos.domain.entity.SolicitudesEjecucion;
+import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
+import es.commerzbank.ice.embargos.repository.LiftingBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.SeizedBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.SeizedRepository;
 import es.commerzbank.ice.embargos.service.AccountingService;
@@ -208,7 +218,12 @@ public class AccountingServiceImpl implements AccountingService{
 				
 				boolean existsCuentaTrabaNotAccounted = false;
 				
-				for(CuentaTraba cuentaTraba : traba.getCuentaTrabas()) {
+				//Se utiliza CopyOnWriteArrayList para evitar ConcurrentModificationException en el 
+				//update del estado de la cuentaTraba en la iteracion del listado de cuentaTrabas:
+				List<CuentaTraba> cuentaTrabasList = new CopyOnWriteArrayList<>();	
+				cuentaTrabasList.addAll(traba.getCuentaTrabas());
+				
+				for(CuentaTraba cuentaTraba : cuentaTrabasList) {
 					
 					//Para contabilizar la cuentaTraba tiene que estar en estado anterior a "Enviada a Contabilidad":
 					if (cuentaTraba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE) {
