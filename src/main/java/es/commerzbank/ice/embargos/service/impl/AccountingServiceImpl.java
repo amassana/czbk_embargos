@@ -274,40 +274,38 @@ public class AccountingServiceImpl implements AccountingService{
 	private Long crearControlFicheroComunes(ControlFichero controlFichero, String userName) throws Exception {
 		Long codControlFichero = null;
 		
-		if (fileControlServiceComunes.getFileControl(controlFichero.getCodControlFichero()) == null) {
-			es.commerzbank.ice.comun.lib.domain.entity.ControlFichero entity = new es.commerzbank.ice.comun.lib.domain.entity.ControlFichero(), result = null;
-			Date date = new Date();
-			Contador contador = contadorRepository.existsContador(new Timestamp(date.getTime()), EmbargosConstants.ID_APLICACION_EMBARGOS, ValueConstants.APUNTE_CONTABLE_CONTADOR_TIPO);
+		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero entity = new es.commerzbank.ice.comun.lib.domain.entity.ControlFichero(), result = null;
+		Date date = new Date();
+		Contador contador = contadorRepository.existsContador(new Timestamp(date.getTime()), EmbargosConstants.ID_APLICACION_EMBARGOS, ValueConstants.APUNTE_CONTABLE_CONTADOR_TIPO);
+		
+		if (contador != null && contador.getContador() != null && contador.getContador().intValue() > 0) {
+			int aumentar = contador.getContador().intValue() + 1;
+			contador.setContador(new BigDecimal(aumentar));
+		} else {
+			contador = new Contador();
+			contador.setContador(new BigDecimal(1));
 			
-			if (contador != null && contador.getContador() != null && contador.getContador().intValue() > 0) {
-				int aumentar = contador.getContador().intValue() + 1;
-				contador.setContador(new BigDecimal(aumentar));
-			} else {
-				contador = new Contador();
-				contador.setContador(new BigDecimal(1));
-				
-				ContadorPK contadorPK = new ContadorPK();
-				contadorPK.setAplicacion(EmbargosConstants.ID_APLICACION_EMBARGOS);
-				contadorPK.setTipo(ValueConstants.APUNTE_CONTABLE_CONTADOR_TIPO);
-				contadorPK.setFecha(new Timestamp(date.getTime()));
-				contador.setId(contadorPK);
-				
-			}
+			ContadorPK contadorPK = new ContadorPK();
+			contadorPK.setAplicacion(EmbargosConstants.ID_APLICACION_EMBARGOS);
+			contadorPK.setTipo(ValueConstants.APUNTE_CONTABLE_CONTADOR_TIPO);
+			contadorPK.setFecha(new Timestamp(date.getTime()));
+			contador.setId(contadorPK);
 			
-			int cuenta = contador.getContador().intValue() + 1;
-			entity.setContador(new BigDecimal(cuenta));
-			entity.setDescripcion(controlFichero.getDescripcion());
-			
-			Date fechaCreacion = ICEDateUtils.bigDecimalToDate(controlFichero.getFechaCreacion(), ICEDateUtils.FORMAT_yyyyMMdd);
-			entity.setFechaCreacion(new Timestamp(fechaCreacion.getTime()));
-			entity.setfUltimaModificacion(new Timestamp(date.getTime()));
-			entity.setUsuUltModificacion(userName);
-			
-			result = fileControlServiceComunes.createFileControl(entity);
-			
-			if (result != null) {
-				codControlFichero = result.getCodControlFichero();
-			} 
+		}
+		
+		int cuenta = contador.getContador().intValue() + 1;
+		entity.setContador(new BigDecimal(cuenta));
+		entity.setDescripcion(controlFichero.getDescripcion());
+		
+		Date fechaCreacion = ICEDateUtils.bigDecimalToDate(controlFichero.getFechaCreacion(), ICEDateUtils.FORMAT_yyyyMMdd);
+		entity.setFechaCreacion(new Timestamp(fechaCreacion.getTime()));
+		entity.setfUltimaModificacion(new Timestamp(date.getTime()));
+		entity.setUsuUltModificacion(userName);
+		
+		result = fileControlServiceComunes.createFileControl(entity);
+		
+		if (result != null) {
+			codControlFichero = result.getCodControlFichero();
 		} 
 		
 		return codControlFichero;
