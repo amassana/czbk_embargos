@@ -7,5 +7,5 @@ import java.io.IOException;
 
 public interface AEATLiftingService
 {
-	public void tratarFicheroLevantamientos(File file, String originalName) throws IOException, ICEParserException;
+	public void tratarFicheroLevantamientos(File file, String originalName, File processedFile) throws IOException, ICEParserException;
 }

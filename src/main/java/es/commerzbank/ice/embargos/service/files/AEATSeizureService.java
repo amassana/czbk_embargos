@@ -7,5 +7,5 @@ import es.commerzbank.ice.comun.lib.util.ICEException;
 
 public interface AEATSeizureService {
 
-	public void tratarFicheroDiligenciasEmbargo(File file, String originalName) throws IOException, ICEException;
+	public void tratarFicheroDiligenciasEmbargo(File file, String originalName, File processedFile) throws IOException, ICEException;
 }

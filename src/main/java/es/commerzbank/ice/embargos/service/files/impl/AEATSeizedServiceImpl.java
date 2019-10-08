@@ -176,7 +176,7 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	        
 	        //Se guarda el registro de ControlFichero del fichero de salida:
 	        controlFicheroTrabas = 
-	        		fileControlMapper.generateControlFichero(ficheroSalida, EmbargosConstants.COD_TIPO_FICHERO_TRABAS_AEAT, fileNameTrabas);
+	        		fileControlMapper.generateControlFichero(ficheroSalida, EmbargosConstants.COD_TIPO_FICHERO_TRABAS_AEAT, fileNameTrabas, ficheroSalida);
 	        
 	        //Usuario que realiza la tramitacion:
 	        controlFicheroTrabas.setUsuarioUltModificacion(usuarioTramitador);

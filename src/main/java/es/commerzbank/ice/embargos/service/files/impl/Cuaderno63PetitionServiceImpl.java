@@ -104,7 +104,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	@Override
 	//Se comenta '@transactional' ya que se utilizara a nivel de clase:
 	//@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
-	public void cargarFicheroPeticion(File file, String originalName) throws IOException, ICEException {
+	public void cargarFicheroPeticion(File processingFile, String originalName, File processedFile) throws IOException, ICEException {
 
 		BeanReader beanReader = null;
 		Reader reader = null;
@@ -115,7 +115,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 		
 		try {
 			
-	        petitionFileName = FilenameUtils.getName(file.getCanonicalPath());
+	        petitionFileName = FilenameUtils.getName(processingFile.getCanonicalPath());
 
 			// create a StreamFactory
 	        StreamFactory factory = StreamFactory.newInstance();
@@ -124,7 +124,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	        
 	        //Se guarda el registro de ControlFichero del fichero de entrada:
 	        controlFicheroPeticion = 
-	        		fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63, originalName);
+	        		fileControlMapper.generateControlFichero(processingFile, EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63, originalName, processedFile);
 	        
 	        //fileControlRepository.save(controlFicheroPeticion);
 	        fileControlService.saveFileControlTransaction(controlFicheroPeticion);
@@ -133,7 +133,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 
 	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_NORMA63);
 	        
-			reader = new InputStreamReader(new FileInputStream(file), encoding);
+			reader = new InputStreamReader(new FileInputStream(processingFile), encoding);
 	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE1, reader);
 
 	        CabeceraEmisorFase1 cabeceraEmisor = null;
@@ -197,7 +197,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	        		
 	        		//Si entidadComunicadora es NULL -> Exception...
 	        		if (entidadComunicadora == null) {
-	        			throw new ICEParserException("01", "No se puede procesar el fichero '" + file.getName() +
+	        			throw new ICEParserException("01", "No se puede procesar el fichero '" + processingFile.getName() +
 	        					"': Entidad Comunicadora con NIF " + nifOrganismoEmisor + " no encontrada.");
 	        		}
 	        		
