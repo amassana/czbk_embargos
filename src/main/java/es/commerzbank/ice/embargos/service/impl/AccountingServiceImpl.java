@@ -190,9 +190,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 		boolean existsTrabaNotAccounted = false;
 		
-		crearControlFicheroComunes(controlFichero, userName);
-		
-		Long codFileControl = controlFichero.getCodControlFichero();
+		Long codFileControl = crearControlFicheroComunes(controlFichero, userName);
 		
 		//Se obtienen la trabas asociadas al fichero:
 		for (Embargo embargo : controlFichero.getEmbargos()) {
@@ -273,7 +271,8 @@ public class AccountingServiceImpl implements AccountingService{
 	}
 
 
-	private void crearControlFicheroComunes(ControlFichero controlFichero, String userName) throws Exception {
+	private Long crearControlFicheroComunes(ControlFichero controlFichero, String userName) throws Exception {
+		Long codControlFichero = null;
 		
 		if (fileControlServiceComunes.getFileControl(controlFichero.getCodControlFichero()) == null) {
 			es.commerzbank.ice.comun.lib.domain.entity.ControlFichero entity = new es.commerzbank.ice.comun.lib.domain.entity.ControlFichero(), result = null;
@@ -295,8 +294,6 @@ public class AccountingServiceImpl implements AccountingService{
 				
 			}
 			
-			entity.setCodControlFichero(controlFichero.getCodControlFichero());
-			
 			int cuenta = contador.getContador().intValue() + 1;
 			entity.setContador(new BigDecimal(cuenta));
 			entity.setDescripcion(controlFichero.getDescripcion());
@@ -308,11 +305,12 @@ public class AccountingServiceImpl implements AccountingService{
 			
 			result = fileControlServiceComunes.createFileControl(entity);
 			
-			if (result == null) {
-				throw new Exception();
-			}
+			if (result != null) {
+				codControlFichero = result.getCodControlFichero();
+			} 
 		} 
 		
+		return codControlFichero;
 	}
 
 
@@ -325,9 +323,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 		boolean existsTrabaNotAccounted = false;
 		
-		crearControlFicheroComunes(controlFichero, userName);
-		
-		Long codFileControl = controlFichero.getCodControlFichero();
+		Long codFileControl = crearControlFicheroComunes(controlFichero, userName);
 		
 		//Se obtienen las peticiones asociadas al fichero:
 		for (Peticion peticion : controlFichero.getPeticiones()) {
@@ -914,9 +910,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 		AccountingNote accountingNote = new AccountingNote();
 		
-		crearControlFicheroComunes(controlFichero, userName);
-
-		Long codFileControl = controlFichero.getCodControlFichero();
+		Long codFileControl = crearControlFicheroComunes(controlFichero, userName);
 		
 		double amount = cuentaLevantamiento.getImporte()!=null ? cuentaLevantamiento.getImporte().doubleValue() : 0;
 
