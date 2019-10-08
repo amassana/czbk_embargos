@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,7 +14,6 @@ import org.mapstruct.Mappings;
 
 import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlficheroPK;
 import es.commerzbank.ice.embargos.domain.entity.TipoFichero;
@@ -33,11 +31,8 @@ public abstract class FileControlMapper {
         TipoFichero tipoFichero = new TipoFichero(); 
         tipoFichero.setCodTipoFichero(codTipoFichero);
         
-        //TODO debe permitir NULL:
-        //Se inicializa con valor a 1 (codigo de Entidad Comunicadora tiene que existir), no puede ser null:
-        EntidadesComunicadora entidadesComunicadora = new EntidadesComunicadora();
-        entidadesComunicadora.setCodEntidadPresentadora(1);
-        controlFichero.setEntidadesComunicadora(entidadesComunicadora);
+        //EntidadComnicadora se inicializa con valor a null (se seteara su valor a posteriori):
+        controlFichero.setEntidadesComunicadora(null);
         
         //Guardar registro del control del fichero de Peticion:
         controlFichero.setTipoFichero(tipoFichero);
