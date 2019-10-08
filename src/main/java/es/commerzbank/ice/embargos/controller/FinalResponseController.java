@@ -3,15 +3,9 @@ package es.commerzbank.ice.embargos.controller;
 import java.math.BigDecimal;
 import java.util.List;
 
-import es.commerzbank.ice.comun.lib.security.Permissions;
-import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
-import es.commerzbank.ice.embargos.domain.dto.OrderingEntity;
-import es.commerzbank.ice.embargos.scheduled.Norma63Fase6;
-import es.commerzbank.ice.utils.EmbargosConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +16,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
+import es.commerzbank.ice.comun.lib.security.Permissions;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
 import es.commerzbank.ice.embargos.domain.dto.FinalResponseDTO;
-import es.commerzbank.ice.embargos.domain.dto.LiftingDTO;
+import es.commerzbank.ice.embargos.domain.dto.OrderingEntity;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
+import es.commerzbank.ice.embargos.scheduled.Norma63Fase6;
+import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.FinalResponseService;
 import es.commerzbank.ice.utils.DownloadReportFile;
+import es.commerzbank.ice.utils.EmbargosConstants;
 import io.swagger.annotations.ApiOperation;
 
 @CrossOrigin("*")
@@ -38,6 +37,9 @@ public class FinalResponseController {
 
 	@Autowired
 	private FinalResponseService finalResponseService;
+	
+	@Autowired
+	private AccountingService accountingService;
 
 	@Autowired
 	private Norma63Fase6 norma63Fase6;
@@ -226,5 +228,13 @@ public class FinalResponseController {
 		logger.info("SeizureSummaryController - createNorma63 - end");
 
 		return response;
+	}
+	
+	@GetMapping(value = "/{codeFileControl}")
+	@ApiOperation(value = "Envia a contabilidad si la entidad ordenante asociada al fichero final tiene cuenta en Commerzbank.")
+	public ResponseEntity<FileControlDTO> sendAccountingForOrderingEntityWithInternalAccount() {
+		
+		
+		return null;
 	}
 }

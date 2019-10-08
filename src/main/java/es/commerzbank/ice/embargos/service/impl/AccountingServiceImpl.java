@@ -4,12 +4,10 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import es.commerzbank.ice.embargos.domain.entity.*;
-import es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.Levantamiento;
-import es.commerzbank.ice.embargos.repository.LiftingBankAccountRepository;
 import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +27,21 @@ import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
 import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import es.commerzbank.ice.embargos.domain.dto.SeizureStatusDTO;
+import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
+import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
+import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
+import es.commerzbank.ice.embargos.domain.entity.Embargo;
+import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
+import es.commerzbank.ice.embargos.domain.entity.EstadoLevantamiento;
+import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
+import es.commerzbank.ice.embargos.domain.entity.FicheroFinal;
+import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
+import es.commerzbank.ice.embargos.domain.entity.Peticion;
+import es.commerzbank.ice.embargos.domain.entity.SolicitudesEjecucion;
+import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
+import es.commerzbank.ice.embargos.repository.FinalFileRepository;
+import es.commerzbank.ice.embargos.repository.LiftingBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.SeizedBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.SeizedRepository;
 import es.commerzbank.ice.embargos.service.AccountingService;
@@ -81,6 +93,8 @@ public class AccountingServiceImpl implements AccountingService{
 	@Autowired
 	LiftingBankAccountRepository liftingBankAccountRepository;
 	
+	@Autowired
+	FinalFileRepository finalFileRepository;
 	
 
 	@Override
@@ -959,4 +973,84 @@ public class AccountingServiceImpl implements AccountingService{
 		return response;
 	}
 
+	
+	//@Override
+	public boolean sendAccountingForCommunicatingEntityWithInternalAccountInFase6(Long codeFileControl, String userName) throws ICEException, Exception {
+		
+		logger.info("AccountingServiceImpl - sendAccountingForOrderingEntityWithInternalAccountInFase6 - start");
+		
+		//Para las Entidades Comunicadoras que tengan cuenta en Commerzbank, la transferencia
+		//de la Fase 6 (cierre) se hara internamente llamando a contabilizar():
+		
+		
+		//- Se obtiene el fichero de control:
+		Optional<ControlFichero> fileControlOpt = fileControlRepository.findById(codeFileControl);
+		if(!fileControlOpt.isPresent()) {
+			throw new ICEException("","ControlFichero not found with codeFileControl: " + codeFileControl);
+		}
+		ControlFichero controlFichero = fileControlOpt.get();
+		
+		//- Se comprueba si la Entidad comunicadora asociada al fichero, tiene cuenta interna en Commerzbank:		
+		EntidadesComunicadora entidadComunicadora = controlFichero.getEntidadesComunicadora();
+		if (entidadComunicadora == null) {			
+			throw new ICEException("","EntidadComunicadora not found for the fileControl with codeFileControl: " + codeFileControl);
+		}
+		
+		if (entidadComunicadora.getCuenta() == null || entidadComunicadora.getCuenta().isEmpty()) {
+			logger.info("Could not be sent to accounting: account not found for the Entidad Comunicadora with NIF: " + entidadComunicadora.getNifEntidad());
+			return false;
+		}
+		
+		//Se obtiene el registro de FicheroFinal asociado al controlFichero:		
+		List<FicheroFinal> ficheroFinalList = controlFichero.getFicheroFinals();
+		
+		if (ficheroFinalList==null || ficheroFinalList.isEmpty()) {
+			logger.info("Could not be sent to accounting: Fichero Final not found for codeFileControl: " + controlFichero.getCodControlFichero());	
+			return false;
+		}
+		
+		FicheroFinal ficheroFinal = ficheroFinalList.get(0);
+
+		
+		crearControlFicheroComunes(controlFichero, userName);
+		
+		//Obtencion de datos para setear:
+		String cuentaRecaudacion = determineCuentaRecaudacion();
+		String cuentaEntidadComunicadora = entidadComunicadora.getCuenta();
+		Long oficinaCuentaRecaudacion = determineOficinaCuentaRecaudacion();
+		String divisa = EmbargosConstants.ISO_MONEDA_EUR;
+		BigDecimal cambio = null;
+		String reference1 = "";
+		String reference2 = "";
+		String contabilizacionCallbackNameParameter = "";//En Fase5 es: EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_FASE5_CALLBACK;
+
+		double amount = ficheroFinal.getImporte()!=null ? ficheroFinal.getImporte().doubleValue() : 0;
+		
+		AccountingNote accountingNote = new AccountingNote();
+		
+		accountingNote.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
+		accountingNote.setCodOffice(oficinaCuentaRecaudacion);
+		accountingNote.setAmount(amount);
+		accountingNote.setCodCurrency(divisa);
+		accountingNote.setDebitAccount(cuentaRecaudacion);
+		accountingNote.setCreditAccount(cuentaEntidadComunicadora);
+		accountingNote.setActualDate(new Date());
+		//accountingNote.setExecutionDate(new Date());
+		accountingNote.setReference1(reference1);
+		accountingNote.setReference2(reference2);
+		accountingNote.setChange(cambio);
+		accountingNote.setCallback(contabilizacionCallbackNameParameter);
+		accountingNote.setStatus(EmbargosConstants.COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO);
+		accountingNote.setCodFileControl(codeFileControl);
+//		accountingNote.setName(embargo.getDatosCliente().getNombre());
+//		accountingNote.setNif(embargo.getDatosCliente().getNif());	
+//		accountingNote.setDetailPayment(detailPayment);
+
+//		resultado = accountingNoteService.contabilizar(accountingNote);
+		
+		logger.info("AccountingServiceImpl - sendAccountingForOrderingEntityWithInternalAccountInFase6 - end");
+		
+		return true;
+	}
+	
 }
