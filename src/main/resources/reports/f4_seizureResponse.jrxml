@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="resumen_trabas_seizures" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="BlankPage" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4aa0eefd-6a67-4cf2-a136-4b741803eea0">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="resumen_trabas_seizures" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4aa0eefd-6a67-4cf2-a136-4b741803eea0">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceBankDAdapterEmbargos.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="399"/>
@@ -19,7 +19,7 @@
 	<parameter name="COD_FILE_CONTROL" class="java.lang.Integer"/>
 	<parameter name="IMAGE_PARAM" class="java.lang.String" isForPrompting="false"/>
 	<queryString language="SQL">
-		<![CDATA[ SELECT
+		<![CDATA[SELECT
 	ec.des_entidad ,
 	e.numero_embargo ,
 	e.nif ,
@@ -121,7 +121,7 @@ ct.IBAN]]>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Serif" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[ $F{IMPORTEPENDIENTE}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{IMPORTEPENDIENTE}]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.00#" isBlankWhenNull="true">
 					<reportElement x="490" y="11" width="40" height="20" uuid="50bb0aa2-ca46-4271-b058-70251c42bc73"/>

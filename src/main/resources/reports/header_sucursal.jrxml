@@ -6,7 +6,7 @@
 	<parameter name="sub_cod_user" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
 	</parameter>
-	<parameter name="sub_img_param" class="java.lang.String"/>
+	<parameter name="sub_img_param" class="java.lang.String" isForPrompting="false"/>
 	<queryString language="SQL">
 		<![CDATA[]]>
 	</queryString>

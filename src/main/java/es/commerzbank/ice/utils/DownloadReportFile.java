@@ -87,7 +87,7 @@ public class DownloadReportFile {
 			
 			areBytesNull = false;
 			
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 
 		fis = new FileInputStream(jasperReportFile);
