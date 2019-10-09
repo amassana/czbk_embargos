@@ -1,7 +1,10 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FilenameUtils;
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
 import org.slf4j.Logger;
@@ -22,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.comun.lib.domain.dto.Element;
 import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
 import es.commerzbank.ice.comun.lib.util.ICEException;
@@ -48,11 +53,12 @@ import es.commerzbank.ice.embargos.repository.SeizedBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.SeizedRepository;
 import es.commerzbank.ice.embargos.repository.SeizureBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
+import es.commerzbank.ice.embargos.service.ClientDataService;
 import es.commerzbank.ice.embargos.service.CustomerService;
+import es.commerzbank.ice.embargos.service.EmailService;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.files.AEATSeizureService;
 import es.commerzbank.ice.utils.EmbargosConstants;
-import es.commerzbank.ice.utils.EmbargosUtils;
 import es.commerzbank.ice.utils.ICEDateUtils;
 
 @Service
@@ -63,13 +69,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	
 	@Value("${commerzbank.embargos.beanio.config-path.aeat}")
 	String pathFileConfigAEAT;
-	
-	@Value("${commerzbank.embargos.files.path.processed}")
-	private String pathProcessed;
-	
-	@Value("${commerzbank.embargos.files.path.generated}")
-	private String pathGenerated;
-	
+			
 	@Autowired
 	private AEATMapper aeatMapper;
 	
@@ -89,6 +89,9 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	private FileControlService fileControlService;
 	
 	@Autowired
+	private ClientDataService clientDataService;
+	
+	@Autowired
 	private FileControlRepository fileControlRepository;
 	
 	@Autowired
@@ -106,14 +109,27 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	@Autowired
 	private SeizedBankAccountRepository seizedBankAccountRepository;
 	
+	@Autowired
+	private EmailService emailService;
+
+	@Autowired
+	private GeneralParametersService generalParametersService;
+	
 	@Override
-	public void tratarFicheroDiligenciasEmbargo(File file) throws IOException, ICEException {
+	public void tratarFicheroDiligenciasEmbargo(File processingFile, String originalName, File processedFile) throws IOException, ICEException {
+		
 		logger.info("AEATSeizureServiceImpl - tratarFicheroDiligenciasEmbargo - start");
+		
 		BeanReader beanReader = null;
+		Reader reader = null;
 		
 		ControlFichero controlFicheroEmbargo = null;
 		
+		String seizureFileName = null;
+		
 		try {
+			
+			seizureFileName = FilenameUtils.getName(processingFile.getCanonicalPath());
 		
 	        // create a StreamFactory
 	        StreamFactory factory = StreamFactory.newInstance();
@@ -122,13 +138,17 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	        
 	        //Se guarda el registro de ControlFichero del fichero de entrada:
 	        controlFicheroEmbargo = 
-	        		fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT);
+	        		fileControlMapper.generateControlFichero(processingFile, EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT, originalName, processedFile);
 	        
 	        fileControlService.saveFileControlTransaction(controlFicheroEmbargo);
 	
 	        
 	        // use a StreamFactory to create a BeanReader
-	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_DILIGENCIAS, file);
+	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT);
+			
+	        reader = new InputStreamReader(new FileInputStream(processingFile), encoding);
+	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_DILIGENCIAS, reader);
+	        
 	        Object record = null;
 	        boolean isEntidadTransmisoraCommerzbank = false;
 	        
@@ -168,7 +188,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 		        		entidadOrdenante = orderingEntityRepository.findByIdentificadorEntidad(identificadorEntidad);
 		        		
 		        		if (entidadOrdenante == null) {
-		        			throw new ICEParserException("01", "No se puede procesar el fichero '" + file.getName() +
+		        			throw new ICEParserException("01", "No se puede procesar el fichero '" + processingFile.getName() +
 		        					"': Entidad Ordenante con identificadorEntidad " + identificadorEntidad + " no encontrada.");
 		        		}
 		        	}
@@ -186,16 +206,17 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 		        		//- Se almacenan las cuentas obtenidas de Datawarehouse en una Hash donde la key es el IBAN:
 		        		Map<String, AccountDTO> customerAccountsMap = new HashMap<>(); 
 		        		if (customerDTO!=null) {
-			        		for (AccountDTO accountDTO : customerDTO.getBankAccounts()) {    		
+			        		
+		        			for (AccountDTO accountDTO : customerDTO.getBankAccounts()) {    		
 			        			customerAccountsMap.put(accountDTO.getIban(), accountDTO);
 			        		}
 		        		}
-		        				        		
-		        		//Razon social interna (obtenida del customerDTO de datawarehouse):
-		        		String razonSocialInterna = EmbargosUtils.determineRazonSocialInternaFromCustomer(customerDTO);
 		        		
+		        		//- Se guardan los datos del cliente:
+		        		clientDataService.createUpdateClientDataTransaction(customerDTO, diligenciaFase3.getNifDeudor());
+		        				        				        		
 		        		//Generacion de las instancias de Embargo y de Traba:	        			
-		        		embargo = aeatMapper.generateEmbargo(diligenciaFase3, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, razonSocialInterna, entidadCreditoFase3, customerAccountsMap);
+		        		embargo = aeatMapper.generateEmbargo(diligenciaFase3, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, entidadCreditoFase3, customerAccountsMap);
 		        			
 		        		traba =  aeatMapper.generateTraba(diligenciaFase3, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, customerAccountsMap);        			
 		        		traba.setEmbargo(embargo);
@@ -317,10 +338,16 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 					EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_ERROR);
 			*/
 			
+			// - Se envia correo del error del parseo del fichero de embargo:
+			emailService.sendEmailFileParserError(seizureFileName, e.getMessage());
+			
 			throw e;
 			
 		} finally {
 			
+			if(reader!=null) {
+				reader.close();
+			}
 			if (beanReader!=null) {
 				beanReader.close();
 			}

@@ -6,11 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import es.commerzbank.ice.comun.lib.util.ICEException;
-import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
-import es.commerzbank.ice.embargos.domain.entity.*;
-import es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.Levantamiento;
-import es.commerzbank.ice.comun.lib.util.BankAccountUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -18,21 +13,28 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 
 import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
+import es.commerzbank.ice.comun.lib.util.BankAccountUtils;
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
+import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
+import es.commerzbank.ice.embargos.domain.dto.ClientDataDTO;
 import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
+import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTrabaActuacion;
 import es.commerzbank.ice.embargos.domain.entity.CuentasInmovilizacion;
-import es.commerzbank.ice.embargos.domain.entity.CuentasRecaudacion;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
+import es.commerzbank.ice.embargos.domain.entity.EstadoLevantamiento;
 import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
+import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
 import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.DiligenciaFase3;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.EntidadCreditoFase3;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.EntidadTransmisoraFase3;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.FinEntidadCreditoFase3;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.FinEntidadTransmisoraFase3;
+import es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.Levantamiento;
 import es.commerzbank.ice.embargos.formats.aeat.trabas.EntidadCreditoFase4;
 import es.commerzbank.ice.embargos.formats.aeat.trabas.EntidadTransmisoraFase4;
 import es.commerzbank.ice.embargos.formats.aeat.trabas.FinEntidadCreditoFase4;
@@ -46,7 +48,7 @@ public abstract class AEATMapper {
 	LevantamientoHelperMapper levantamientoHelperMapper = new LevantamientoHelperMapper();
 	
 	@Mappings({
-		@Mapping(source = "diligenciaFase3.nifDeudor", target = "nif"),
+		@Mapping(source = "diligenciaFase3.nifDeudor", target = "datosCliente.nif"),
 		@Mapping(source = "diligenciaFase3.nombreDeudor", target = "nombre"),
 		@Mapping(source = "diligenciaFase3.siglasViaPublica", target = "siglasVp"),
 		@Mapping(source = "diligenciaFase3.nombreViaPublica", target = "nombreVp"),
@@ -60,11 +62,10 @@ public abstract class AEATMapper {
 		@Mapping(source = "diligenciaFase3.numeroDiligenciaEmbargo", target = "numeroEmbargo"),
 		@Mapping(source = "diligenciaFase3.importeTotalAEmbargar", target = "importe"),
 		@Mapping(source = "codControlFicheroEmbargo", target = "controlFichero.codControlFichero"),
-		@Mapping(source = "entidadOrdenante", target = "entidadesOrdenante"),
-		@Mapping(source = "razonSocialInterna", target = "razonSocialInterna"),
+		@Mapping(source = "entidadOrdenante", target = "entidadesOrdenante")
 	})
 	public abstract Embargo generateEmbargo(DiligenciaFase3 diligenciaFase3, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante, 
-			String razonSocialInterna, EntidadCreditoFase3 entidadCreditoFase3, Map<String, AccountDTO> customerAccountsMap) throws ICEException;
+			EntidadCreditoFase3 entidadCreditoFase3, Map<String, AccountDTO> customerAccountsMap) throws ICEException;
 	
 	@AfterMapping
 	public void generateEmbargoAfterMapping(@MappingTarget Embargo embargo, DiligenciaFase3 diligenciaFase3, EntidadesOrdenante entidadOrdenante, 
@@ -101,7 +102,7 @@ public abstract class AEATMapper {
 			
 			AccountDTO accountDTO = customerAccountsMap.get(ibanFromCCC1);
 			
-			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
+			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, ibanFromCCC1, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
 						
 			cuentaEmbargosList.add(cuentaEmbargo);
 
@@ -118,7 +119,7 @@ public abstract class AEATMapper {
 			
 			AccountDTO accountDTO = customerAccountsMap.get(ibanFromCCC2);
 			
-			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
+			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, ibanFromCCC2, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
 			
 			cuentaEmbargosList.add(cuentaEmbargo);
 
@@ -134,7 +135,7 @@ public abstract class AEATMapper {
 			
 			AccountDTO accountDTO = customerAccountsMap.get(ibanFromCCC3);
 			
-			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
+			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, ibanFromCCC3, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
 			
 			cuentaEmbargosList.add(cuentaEmbargo);
 
@@ -148,7 +149,7 @@ public abstract class AEATMapper {
 		
 	}
 
-	private CuentaEmbargo setCuentaEmbargoFromAccountDTO(AccountDTO accountDTO, Embargo embargo, 
+	private CuentaEmbargo setCuentaEmbargoFromAccountDTO(AccountDTO accountDTO, String ibanCalculatedFromDiligenciaFase3, Embargo embargo, 
 			BigDecimal numeroOrden,	BigDecimal fechaUltmaModif, String usuarioModif) {
 		
 		CuentaEmbargo cuentaEmbargo = new CuentaEmbargo();
@@ -157,11 +158,14 @@ public abstract class AEATMapper {
 		String iban = null;
 		
 		if (accountDTO!=null) {
+			//Cuenta encontrada en DWH -> seteo de datos de DWH a partir del accountDTO:
 			cuenta = accountDTO.getAccountNum();
 			iban = accountDTO.getIban();
 		} else {
-			//Cuenta no encontrada en DWH:
+			//Cuenta no encontrada en DWH -> setear el iban calculado a partir 
+			//del codigo cuenta cliente que viene del fichero de diligencias de embargo:
 			cuenta = null;
+			iban = ibanCalculatedFromDiligenciaFase3;
 		}
 
 		cuentaEmbargo.setEmbargo(embargo);
@@ -223,7 +227,7 @@ public abstract class AEATMapper {
 			
 			AccountDTO accountDTO = customerAccountsMap.get(ibanFromCCC1);
 		
-			cuentaTraba = setCuentaTrabaFromAccountDTO(accountDTO, traba, numeroOrden,	fechaUltmaModif, usuarioModif);
+			cuentaTraba = setCuentaTrabaFromAccountDTO(accountDTO, ibanFromCCC1, traba, numeroOrden, fechaUltmaModif, usuarioModif);
 			
 			cuentaTrabasList.add(cuentaTraba);
 			
@@ -239,7 +243,7 @@ public abstract class AEATMapper {
 			
 			AccountDTO accountDTO = customerAccountsMap.get(ibanFromCCC2);
 		
-			cuentaTraba = setCuentaTrabaFromAccountDTO(accountDTO, traba, numeroOrden,	fechaUltmaModif, usuarioModif);
+			cuentaTraba = setCuentaTrabaFromAccountDTO(accountDTO, ibanFromCCC2, traba, numeroOrden, fechaUltmaModif, usuarioModif);
 			
 			cuentaTrabasList.add(cuentaTraba);
 			
@@ -255,7 +259,7 @@ public abstract class AEATMapper {
 			
 			AccountDTO accountDTO = customerAccountsMap.get(ibanFromCCC3);
 		
-			cuentaTraba = setCuentaTrabaFromAccountDTO(accountDTO, traba, numeroOrden,	fechaUltmaModif, usuarioModif);
+			cuentaTraba = setCuentaTrabaFromAccountDTO(accountDTO, ibanFromCCC3, traba, numeroOrden, fechaUltmaModif, usuarioModif);
 			
 			cuentaTrabasList.add(cuentaTraba);
 
@@ -268,7 +272,7 @@ public abstract class AEATMapper {
 		traba.setFUltimaModificacion(fechaUltmaModif);
 	}
 
-	private CuentaTraba setCuentaTrabaFromAccountDTO(AccountDTO accountDTO, Traba traba,
+	private CuentaTraba setCuentaTrabaFromAccountDTO(AccountDTO accountDTO, String ibanCalculatedFromDiligenciaFase3, Traba traba,
 			BigDecimal numeroOrden, BigDecimal fechaUltmaModif, String usuarioModif) {
 		
 		EstadoTraba estadoTraba;
@@ -276,15 +280,24 @@ public abstract class AEATMapper {
 		cuentaTraba = new CuentaTraba();
 		
 		if (accountDTO!=null) {
+			//Seteo de datos que vienen de DWH:
 			cuentaTraba.setCuenta(accountDTO.getAccountNum());
 			cuentaTraba.setIban(accountDTO.getIban());
 			cuentaTraba.setDivisa(accountDTO.getDivisa());
 			cuentaTraba.setEstadoCuenta(accountDTO.getStatus());
+			
+			//Por defecto informar la actuacion (motivo) de la cuentaTraba a 'Sin actuacion':
+			CuentaTrabaActuacion cuentaTrabaActuacion = new CuentaTrabaActuacion();
+			cuentaTrabaActuacion.setCodActuacion(EmbargosConstants.CODIGO_ACTUACION_SIN_ACTUACION_AEAT);
+			cuentaTraba.setCuentaTrabaActuacion(cuentaTrabaActuacion);
 		
 		} else {
 			//Cuenta no encontrada en DWH:
 			cuentaTraba.setCuenta(null);
 			cuentaTraba.setEstadoCuenta(EmbargosConstants.BANK_ACCOUNT_STATUS_NOTFOUND);
+			
+			//Iban calculado a partir del 'Codigo de Cuenta Cliente' que viene en el fichero de diligencias de embargos:
+			cuentaTraba.setIban(ibanCalculatedFromDiligenciaFase3);
 			
 			//Indicar la actuacion (motivo) de la cuentaTraba a inexistente:
 			CuentaTrabaActuacion cuentaTrabaActuacion = new CuentaTrabaActuacion();
@@ -336,7 +349,7 @@ public abstract class AEATMapper {
 	
 	@Mappings({
 		@Mapping(constant = EmbargosConstants.CODIGO_REGISTRO_AEAT_TRABA_FASE4, target = "indicadorRegistro"),
-		@Mapping(source = "embargo.nif", target = "nifDeudor"),
+		@Mapping(source = "embargo.datosCliente.nif", target = "nifDeudor"),
 		@Mapping(source = "embargo.nombre", target = "nombreDeudor"),
 		@Mapping(source = "embargo.siglasVp", target = "siglasViaPublica"),
 		@Mapping(source = "embargo.nombreVp", target = "nombreViaPublica"),
@@ -381,7 +394,8 @@ public abstract class AEATMapper {
 	public abstract FinEntidadTransmisoraFase4 generateFinEntidadTransmisoraFase4(FinEntidadTransmisoraFase3 finEntidadTransmisoraFase3);
 
 	@Mappings({
-			@Mapping(source = "codControlFichero", target = "controlFichero.codControlFichero")
+			@Mapping(source = "codControlFichero", target = "controlFichero.codControlFichero"),
+			@Mapping(source = "levantamientoAEAT.nifDeudor", target = "datosCliente.nif"),
 	})
 	public abstract LevantamientoTraba generateLevantamiento(Long codControlFichero, Levantamiento levantamientoAEAT, Traba traba, CustomerDTO DWHCustomer)
 			throws ICEException;
@@ -397,11 +411,14 @@ public abstract class AEATMapper {
 		levantamiento.setUsuarioUltModificacion(usuarioModif);
 		levantamiento.setFUltimaModificacion(fechaUltmaModif);
 		levantamiento.setTraba(traba);
-		// així?
+
+		EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
+		estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE);
+		levantamiento.setEstadoLevantamiento(estadoLevantamiento);
+		//  TODO TO BE DEFINED
 		levantamiento.setEstadoEjecutado(BigDecimal.ZERO);
 		levantamiento.setEstadoContable(BigDecimal.ZERO);
 		levantamiento.setIndCasoRevisado(EmbargosConstants.IND_FLAG_NO);
-
 		// sempre a null levantamiento.setCodDeudaDeudor();
 
 		List<CuentaLevantamiento> cuentas = new ArrayList<>(6);
@@ -409,27 +426,43 @@ public abstract class AEATMapper {
 
 		if (levantamientoAEAT.getCodigoCuentaCliente1() != null && !levantamientoAEAT.getCodigoCuentaCliente1().isEmpty() && !zeroCC.equals(levantamientoAEAT.getCodigoCuentaCliente1())) {
 			CuentaLevantamiento cuentaLevantamiento1 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento, BankAccountUtils.convertToIBAN(levantamientoAEAT.getCodigoCuentaCliente1()), levantamientoAEAT.getImporteALevantarCC1(), DWHCustomer, traba, usuarioModif, fechaUltmaModif);
+			cuentaLevantamiento1.setNumeroOrdenCuenta(new BigDecimal(1));
 			cuentas.add(cuentaLevantamiento1);
 		}
 		if (levantamientoAEAT.getCodigoCuentaCliente2() != null && !levantamientoAEAT.getCodigoCuentaCliente2().isEmpty() && !zeroCC.equals(levantamientoAEAT.getCodigoCuentaCliente2())) {
 			CuentaLevantamiento cuentaLevantamiento2 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento, BankAccountUtils.convertToIBAN(levantamientoAEAT.getCodigoCuentaCliente2()), levantamientoAEAT.getImporteALevantarCC2(), DWHCustomer, traba, usuarioModif, fechaUltmaModif);
+			cuentaLevantamiento2.setNumeroOrdenCuenta(new BigDecimal(2));
 			cuentas.add(cuentaLevantamiento2);
 		}
 		if (levantamientoAEAT.getCodigoCuentaCliente3() != null && !levantamientoAEAT.getCodigoCuentaCliente3().isEmpty() && !zeroCC.equals(levantamientoAEAT.getCodigoCuentaCliente3())) {
 			CuentaLevantamiento cuentaLevantamiento3 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento, BankAccountUtils.convertToIBAN(levantamientoAEAT.getCodigoCuentaCliente3()), levantamientoAEAT.getImporteALevantarCC3(), DWHCustomer, traba, usuarioModif, fechaUltmaModif);
+			cuentaLevantamiento3.setNumeroOrdenCuenta(new BigDecimal(3));
 			cuentas.add(cuentaLevantamiento3);
 		}
 		if (levantamientoAEAT.getCodigoCuentaCliente4() != null && !levantamientoAEAT.getCodigoCuentaCliente4().isEmpty() && !zeroCC.equals(levantamientoAEAT.getCodigoCuentaCliente4())) {
 			CuentaLevantamiento cuentaLevantamiento4 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento, BankAccountUtils.convertToIBAN(levantamientoAEAT.getCodigoCuentaCliente4()), levantamientoAEAT.getImporteALevantarCC4(), DWHCustomer, traba, usuarioModif, fechaUltmaModif);
+			cuentaLevantamiento4.setNumeroOrdenCuenta(new BigDecimal(4));
 			cuentas.add(cuentaLevantamiento4);
 		}
 		if (levantamientoAEAT.getCodigoCuentaCliente5() != null && !levantamientoAEAT.getCodigoCuentaCliente5().isEmpty() && !zeroCC.equals(levantamientoAEAT.getCodigoCuentaCliente5())) {
 			CuentaLevantamiento cuentaLevantamiento5 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento, BankAccountUtils.convertToIBAN(levantamientoAEAT.getCodigoCuentaCliente5()), levantamientoAEAT.getImporteALevantarCC5(), DWHCustomer, traba, usuarioModif, fechaUltmaModif);
+			cuentaLevantamiento5.setNumeroOrdenCuenta(new BigDecimal(5));
 			cuentas.add(cuentaLevantamiento5);
 		}
 		if (levantamientoAEAT.getCodigoCuentaCliente6() != null && !levantamientoAEAT.getCodigoCuentaCliente6().isEmpty() && !zeroCC.equals(levantamientoAEAT.getCodigoCuentaCliente6())) {
 			CuentaLevantamiento cuentaLevantamiento6 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento, BankAccountUtils.convertToIBAN(levantamientoAEAT.getCodigoCuentaCliente6()), levantamientoAEAT.getImporteALevantarCC6(), DWHCustomer, traba, usuarioModif, fechaUltmaModif);
+			cuentaLevantamiento6.setNumeroOrdenCuenta(new BigDecimal(6));
 			cuentas.add(cuentaLevantamiento6);
 		}
+
+		BigDecimal importeLevantado = BigDecimal.ZERO;
+
+		for (CuentaLevantamiento cuentaLevantamiento : cuentas)
+		{
+			if (cuentaLevantamiento.getImporte() != null)
+				importeLevantado = importeLevantado.add(cuentaLevantamiento.getImporte());
+		}
+
+		levantamiento.setImporteLevantado(importeLevantado);
 	}
 }

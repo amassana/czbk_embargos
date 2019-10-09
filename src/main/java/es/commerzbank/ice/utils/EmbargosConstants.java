@@ -102,6 +102,8 @@ public class EmbargosConstants {
 	public static final long COD_ESTADO_CTRLFICHERO_FINAL_ENVIADO = 3;
 
 	public static final long COD_ESTADO_CTRLFICHERO_INITIAL_STATUS_DEFAULT = 1;
+	
+	public static final long COD_ESTADO_CONTROL_FICHERO_GENERADO_SCHEDULED = 2;
 
 	/** Estados de la Traba **/
 	public static final long COD_ESTADO_TRABA_PENDIENTE = 1;
@@ -175,7 +177,7 @@ public class EmbargosConstants {
 	public static final String BANK_ACCOUNT_STATUS_ACTIVE = "ACTIVE";
 	public static final String BANK_ACCOUNT_STATUS_BLOQUED = "BLOQUED";
 	public static final String BANK_ACCOUNT_STATUS_CANCELLED = "CANCELLED";
-	public static final String BANK_ACCOUNT_STATUS_NOTFOUND = "CANCELLED";
+	public static final String BANK_ACCOUNT_STATUS_NOTFOUND = "NOTFOUND";
 	
 	public static final long COD_CUENTA_INMOVILIZACION_DEFAULT = 1;
 	
@@ -203,6 +205,8 @@ public class EmbargosConstants {
 	public static final String CODIGO_REGISTRO_AEAT_TRABA_FASE4 = "2";
 	
 	/** Codigos actuacion de CuentaTrabaActuacion **/
+	public static final String CODIGO_ACTUACION_SIN_ACTUACION_AEAT = "30";
+	public static final String CODIGO_ACTUACION_SIN_ACTUACION_NORMA63 = "60";
 	public static final String CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA_AEAT = "35";
 	public static final String CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA_NORMA63 = "65";
 	
@@ -211,6 +215,7 @@ public class EmbargosConstants {
 	public static final String PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA = "embargos.cuentaRecaudacion.oficina";
 	public static final String PARAMETRO_EMBARGOS_CONTABILIZACION_FASE3_CALLBACK = "embargos.contabilizacion.fase3.callback";
 	public static final String PARAMETRO_EMBARGOS_CONTABILIZACION_FASE5_CALLBACK = "embargos.contabilizacion.fase5.callback";
+	public static final String PARAMETRO_EMBARGOS_LEVANTAMIENTO_IMPORTE_MAXIMO_AUTOMATICO_DIVISA = "embargos.levantamiento.importeMaximoAutomaticoDivisa";
 	
 	//Tabla Apoderados
 	public static final String NAME_APODERADO = "name";
@@ -224,10 +229,52 @@ public class EmbargosConstants {
 	public static final String COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO = "P";
 	public static final String LITERAL_EMBARG_IBS_REFERENCE2 = "Embarg";
 	public static final String LITERAL_LEVANT_IBS_REFERENCE2 = "Levant";
+	public static final String IBS_REFERENCE_1 = "IBS_REFERENCE_1";
+	public static final String IBS_REFERENCE_2 = "IBS_REFERENCE_2";
+	
+	//Emails:
+	public static final String EMAIL_DEFAULT_FOOTER_TEXT = "Aplicación de Embargos";
 
 	public static final long ESTADO_FINAL_SIN_ORDEN_LEVANTAMIENTO = 0;
 	public static final long ESTADO_FINAL_LEVANTAMIENTO_TOTAL = 1;
 	public static final long ESTADO_FINAL_LEVANTAMIENTO_PARCIAL = 2;
 	public static final long ESTADO_FINAL_LEVANTAMIENTO_RECHAZADO = 3;
 	public static final long ESTADO_FINAL_OTROS = 4;
+
+	public static final String PROFILE_LOCAL = "LOCAL";
+	public static final String PROFILE_YAMLDB = "YAMLDB";
+
+	//Definicion de Nombres de la tabla PARAMETROS:
+	public static final String PARAMETRO_TSP_DOMINIO = "tsp.dominio";
+	public static final String PARAMETRO_DWH_ENDPOINT_CLIENTACCOUNT = "datawarehouse.endpoint.client-account";
+	public static final String PARAMETRO_TSP_JASPER_TEMP = "tsp.jasper.temp";
+
+	public static final String PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_INCOMING = "embargos.files.path.norma63.incoming";
+	public static final String PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_PROCESSING = "embargos.files.path.norma63.processing";
+	public static final String PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_PROCESSED = "embargos.files.path.norma63.processed";
+	public static final String PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_GENERATED = "embargos.files.path.norma63.generated";
+	public static final String PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_OUTBOX = "embargos.files.path.norma63.outbox";
+	public static final String PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_ERROR = "embargos.files.path.norma63.error";
+
+	public static final String PARAMETRO_EMBARGOS_FILES_PATH_AEAT_INCOMING = "embargos.files.path.aeat.incoming";
+	public static final String PARAMETRO_EMBARGOS_FILES_PATH_AEAT_PROCESSED = "embargos.files.path.aeat.processed";
+	public static final String PARAMETRO_EMBARGOS_FILES_PATH_AEAT_PROCESSING = "embargos.files.path.aeat.processing";
+	public static final String PARAMETRO_EMBARGOS_FILES_PATH_AEAT_GENERATED = "embargos.files.path.aeat.generated";
+	public static final String PARAMETRO_EMBARGOS_FILES_PATH_AEAT_OUTBOX = "embargos.files.path.aeat.outbox";
+	public static final String PARAMETRO_EMBARGOS_FILES_PATH_AEAT_ERROR = "embargos.files.path.aeat.error";
+
+	public static final String PARAMETRO_EMBARGOS_FILES_ENCODING_NORMA63 = "embargos.files.encoding.norma63";
+	public static final String PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT = "embargos.files.encoding.aeat";
+	public static final String PARAMETRO_EMBARGOS_EMAIL_TO = "embargos.email.to";
+	public static final String PARAMETRO_EMBARGOS_EMAIL_FROM = "embargos.email.from";
+	public static final String PARAMETRO_EMBARGOS_FILES_STABLE_TIME = "embargos.files.stableTime";
+	public static final String PARAMETRO_EMBARGOS_FILES_MAX_PROCESSING_TIME = "embargos.files.maxProcessingTime";
+
+	public static final String PARAMETRO_EMBARGOS_FILES_ARCHIVAL_FOLDER_DATE_PATTERN = "embargos.files.archivalFolderDatePattern";
+	
+	//Definicion del valor por defecto de los PARAMETROS:
+	public static final String PARAMETRO_DWH_ENDPOINT_CLIENTACCOUNT_DEFAULT_VALUE = "/datawarehouse/client-account";
+
+	
+		
 }

@@ -18,10 +18,10 @@
 	<parameter name="COD_LEVANTAMIENTO" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[SELECT
-    e.nombre,
-    e.domicilio,
-    e.municipio,
-    e.codigo_postal,
+    dc.nombre,
+    dc.domicilio,
+    dc.municipio,
+    dc.codigo_postal,
 l.F_ULTIMA_MODIFICACION,
     e.numero_embargo,
     t.fecha_traba,
@@ -40,7 +40,9 @@ INNER JOIN CUENTA_LEVANTAMIENTO cl ON
 INNER JOIN EMBARGO e ON
     e.cod_embargo = t.cod_embargo
 INNER JOIN ENTIDADES_ORDENANTES eo ON
-eo.COD_ENTIDAD_ORDENANTE = e.COD_ENTIDAD_ORDENANTE
+    eo.COD_ENTIDAD_ORDENANTE = e.COD_ENTIDAD_ORDENANTE
+inner join DATOS_CLIENTE dc ON
+    dc.nif = l.nif
 WHERE
     l.COD_LEVANTAMIENTO = $P{COD_LEVANTAMIENTO}]]>
 	</queryString>

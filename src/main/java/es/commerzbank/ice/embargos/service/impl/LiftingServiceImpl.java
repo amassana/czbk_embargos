@@ -62,8 +62,10 @@ import net.sf.jasperreports.engine.util.JRLoader;
 public class LiftingServiceImpl implements LiftingService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LiftingServiceImpl.class);
-
-
+	
+	@Autowired
+	private OracleDataSourceEmbargosConfig oracleDataSourceEmbargosConfig;
+	
 	@Autowired
 	private FileControlService fileControlService;
 
@@ -75,19 +77,19 @@ public class LiftingServiceImpl implements LiftingService {
 
 	@Autowired
 	private LiftingBankAccountRepository liftingBankAccountRepository;
-
+	
 	@Autowired
 	private BankAccountLiftingMapper bankAccountLiftingMapper;
-
+	
 	@Autowired
 	private LiftingAuditRepository liftingAuditRepository;
-
+	
 	@Autowired
 	private LiftingAuditMapper liftingAuditMapper;
-
+	
 	@Autowired
 	private LiftingStatusRepository liftingStatusRepository;
-
+	
 	@Autowired
 	private LiftingStatusMapper liftingStatusMapper;
 
@@ -97,14 +99,15 @@ public class LiftingServiceImpl implements LiftingService {
 	@Override
 	public List<LiftingDTO> getAllByControlFichero(ControlFichero controlFichero) {
 		List<LevantamientoTraba> liftingList = liftingRepository.findAllByControlFichero(controlFichero);
-
+		
+		
 		List<LiftingDTO> liftingDTOList = new ArrayList<>();
-		for (LevantamientoTraba levantamiento : liftingList) {
+		for(LevantamientoTraba levantamiento : liftingList) {
 			LiftingDTO lifting = liftingMapper.toLiftingDTO(levantamiento);
 			lifting.setStatus(liftingStatusMapper.toLiftingStatus(levantamiento.getEstadoLevantamiento()));
 			liftingDTOList.add(lifting);
 		}
-
+		
 		return liftingDTOList;
 	}
 
@@ -112,88 +115,79 @@ public class LiftingServiceImpl implements LiftingService {
 	public LiftingDTO getAllByControlFicheroAndLevantamiento(Long codeFileControl, Long codeLifting) {
 		List<BankAccountLiftingDTO> bankAccountList = new ArrayList<>();
 		LiftingDTO response = null;
-
+		
 		Optional<LevantamientoTraba> result = liftingRepository.findById(codeLifting);
-
+		
 		if (result != null) {
-
+			
 			response = liftingMapper.toLiftingDTO(result.get());
 			response.setStatus(liftingStatusMapper.toLiftingStatus(result.get().getEstadoLevantamiento()));
-
-			// TODO mirar si se tiene que hacer join con PeticionInformacion para utilizar
-			// ControlFichero
+			
+			//TODO mirar si se tiene que hacer join con PeticionInformacion para utilizar ControlFichero
 			ControlFichero controlFichero = new ControlFichero();
 			controlFichero.setCodControlFichero(codeFileControl);
-
+			
 			LevantamientoTraba levantamiento = new LevantamientoTraba();
 			levantamiento.setCodLevantamiento(codeLifting);
-
-			List<CuentaLevantamiento> cuentasLevantamiento = liftingBankAccountRepository
-					.findByLevantamientoTraba(levantamiento);
-
+			
+			List<CuentaLevantamiento> cuentasLevantamiento = liftingBankAccountRepository.findByLevantamientoTraba(levantamiento);
+			
 			Double importeLevantado = (double) 0;
-
+			
 			for (CuentaLevantamiento cuentaLevantamiento : cuentasLevantamiento) {
-
-				BankAccountLiftingDTO bankAccountDTO = bankAccountLiftingMapper
-						.toBankAccountLiftingDTO(cuentaLevantamiento);
-				bankAccountDTO
-						.setStatus(liftingStatusMapper.toLiftingStatus(cuentaLevantamiento.getEstadoLevantamiento()));
+				
+				BankAccountLiftingDTO bankAccountDTO = bankAccountLiftingMapper.toBankAccountLiftingDTO(cuentaLevantamiento);
+				bankAccountDTO.setStatus(liftingStatusMapper.toLiftingStatus(cuentaLevantamiento.getEstadoLevantamiento()));
 				bankAccountList.add(bankAccountDTO);
 			}
-
+			
 			response.setAccounts(bankAccountList);
 		}
-
+		
 		return response;
 	}
 
 	@Override
-	public boolean saveLifting(Long codeFileControl, Long codelifting, LiftingDTO lifting, String userModif)
-			throws Exception {
-		boolean response = true;
-
+	public boolean saveLifting(Long codeFileControl, Long codelifting, LiftingDTO lifting, String userModif) throws Exception {
+		boolean response = true; 
+		
 		if (lifting != null) {
 			LevantamientoTraba levantamiento = new LevantamientoTraba();
 			levantamiento.setCodLevantamiento(codelifting);
-
+			
 			if (lifting.getAccounts() != null) {
 				List<BankAccountLiftingDTO> list = lifting.getAccounts();
 				for (BankAccountLiftingDTO account : list) {
 					CuentaLevantamiento cuenta = bankAccountLiftingMapper.toCuentaLevantamiento(account);
-
+					
 					cuenta.setEstadoLevantamiento(liftingStatusMapper.toEstadoLevantamiento(account.getStatus()));
 					cuenta.setLevantamientoTraba(levantamiento);
-					cuenta.setFUltimaModificacion(
-							ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+					cuenta.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 					cuenta.setUsuarioUltModificacion(userModif);
-
+					
 					liftingBankAccountRepository.save(cuenta);
 				}
 			}
 		} else {
 			response = false;
 		}
-
+		
 		return response;
 	}
 
 	@Override
 	public List<LiftingAuditDTO> getAuditByCodeLiftingCase(Long codeLiftingCase) {
-		/*
-		 * List<HLevantamientoTraba> hLevantamientoTrabaList =
-		 * liftingAuditRepository.findByCodLevantamiento(codeLiftingCase);
-		 * 
-		 * List<LiftingAuditDTO> liftingList = new ArrayList<>();
-		 * for(HLevantamientoTraba hLevantamientoTraba : hLevantamientoTrabaList) {
-		 * LiftingAuditDTO lifting =
-		 * liftingAuditMapper.toInformationPetitionDTO(hLevantamientoTraba);
-		 * 
-		 * liftingList.add(lifting); }
-		 * 
-		 * return liftingList;
-		 */
-
+		/*List<HLevantamientoTraba> hLevantamientoTrabaList = liftingAuditRepository.findByCodLevantamiento(codeLiftingCase);
+		
+		List<LiftingAuditDTO> liftingList = new ArrayList<>();
+		for(HLevantamientoTraba hLevantamientoTraba : hLevantamientoTrabaList) {
+			LiftingAuditDTO lifting = liftingAuditMapper.toInformationPetitionDTO(hLevantamientoTraba);
+		
+			liftingList.add(lifting);
+		}
+		
+		return liftingList;*/
+		
 		return null;
 	}
 
@@ -201,17 +195,17 @@ public class LiftingServiceImpl implements LiftingService {
 	public List<LiftingStatusDTO> getListStatus() {
 		List<LiftingStatusDTO> response = null;
 		List<EstadoLevantamiento> list = null;
-
+		
 		list = liftingStatusRepository.findAll();
-
+		
 		if (list != null && list.size() > 0) {
 			response = new ArrayList<LiftingStatusDTO>();
-
+			
 			for (EstadoLevantamiento estado : list) {
 				response.add(liftingStatusMapper.toLiftingStatus(estado));
 			}
 		}
-
+		
 		return response;
 	}
 
@@ -220,28 +214,27 @@ public class LiftingServiceImpl implements LiftingService {
 		boolean response = true;
 		try {
 			if (status != null && codeLifting != null && codeLifting > 0) {
-				liftingRepository.updateStatus(codeLifting, new BigDecimal(status), userName,
-						ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+				liftingRepository.updateStatus(codeLifting, new BigDecimal(status), userName, ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 			} else {
 				response = false;
 			}
-		} catch (Exception e) {
+		} catch(Exception e) {
 			throw new Exception();
 		}
-
+		
 		return response;
 	}
 
 	@Override
 	public void updateLiftingBankAccountingStatus(CuentaLevantamiento cuenta, long codEstado, String userName) {
-
+		
 		EstadoLevantamiento estado = new EstadoLevantamiento();
 		estado.setCodEstado(codEstado);
 		cuenta.setEstadoLevantamiento(estado);
 
 		cuenta.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 		cuenta.setUsuarioUltModificacion(userName);
-
+		
 		liftingBankAccountRepository.save(cuenta);
 	}
 
@@ -311,4 +304,16 @@ public class LiftingServiceImpl implements LiftingService {
 		}
 	}
 
+
+	@Override
+	public void updateLiftingtatus(LevantamientoTraba levantamientoTraba, long codEstado, String userName) {
+		EstadoLevantamiento estado = new EstadoLevantamiento();
+		estado.setCodEstado(codEstado);
+		levantamientoTraba.setEstadoLevantamiento(estado);
+
+		levantamientoTraba.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+		levantamientoTraba.setUsuarioUltModificacion(userName);
+
+		liftingRepository.save(levantamientoTraba);
+	}
 }

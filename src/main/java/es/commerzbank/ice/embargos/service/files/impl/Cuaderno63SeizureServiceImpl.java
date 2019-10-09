@@ -1,7 +1,10 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FilenameUtils;
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
 import org.slf4j.Logger;
@@ -22,8 +26,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.comun.lib.domain.dto.Element;
 import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
@@ -46,11 +52,12 @@ import es.commerzbank.ice.embargos.repository.SeizedBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.SeizedRepository;
 import es.commerzbank.ice.embargos.repository.SeizureBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
+import es.commerzbank.ice.embargos.service.ClientDataService;
 import es.commerzbank.ice.embargos.service.CustomerService;
+import es.commerzbank.ice.embargos.service.EmailService;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63SeizureService;
 import es.commerzbank.ice.utils.EmbargosConstants;
-import es.commerzbank.ice.utils.EmbargosUtils;
 import es.commerzbank.ice.utils.ICEDateUtils;
 
 @Service
@@ -61,15 +68,6 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 
 	@Value("${commerzbank.embargos.beanio.config-path.cuaderno63}")
 	String pathFileConfigCuaderno63;
-
-	@Value("${commerzbank.embargos.files.path.monitoring}")
-	private String pathMonitoring;
-
-	@Value("${commerzbank.embargos.files.path.processed}")
-	private String pathProcessed;
-
-	@Value("${commerzbank.embargos.files.path.generated}")
-	private String pathGenerated;
 
 	@Autowired
 	private Cuaderno63Mapper cuaderno63Mapper;
@@ -88,6 +86,9 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 	
 	@Autowired
 	private TaskService taskService;
+	
+	@Autowired
+	private ClientDataService clientDataService;
 
 	//Agregar repositories de DWH ...
 	@Autowired
@@ -107,15 +108,26 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 
 	@Autowired
 	private OrderingEntityRepository orderingEntityRepository;
+	
+	@Autowired
+	private EmailService emailService;
 
+	@Autowired
+	private GeneralParametersService generalParametersService;
+	
 	@Override
-	public void cargarFicheroEmbargos(File file) throws IOException{
+	public void cargarFicheroEmbargos(File processingFile, String originalName, File processedFile) throws IOException, ICEException{
 		
 		BeanReader beanReader = null;
+		Reader reader = null;
 		
 		ControlFichero controlFicheroEmbargo = null;
 		
+		String seizureFileName = null;
+		
 		try {
+			
+			seizureFileName = FilenameUtils.getName(processingFile.getCanonicalPath());
 
 			// create a StreamFactory
 	        StreamFactory factory = StreamFactory.newInstance();
@@ -124,12 +136,15 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 	        
 	        //Se guarda el registro de ControlFichero del fichero de entrada:
 	        controlFicheroEmbargo = 
-	        		fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63);
+	        		fileControlMapper.generateControlFichero(processingFile, EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63, originalName, processedFile);
 	        
 	        fileControlService.saveFileControlTransaction(controlFicheroEmbargo);
 	        
 	        // use a StreamFactory to create a BeanReader
-	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE3, file);
+	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_NORMA63);
+	        
+			reader = new InputStreamReader(new FileInputStream(processingFile), encoding);
+	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE3, reader);
 	        
 	        Object record = null;
 	    	
@@ -185,6 +200,7 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 		        		for (AccountDTO accountDTO : customerDTO.getBankAccounts()) {    		
 		        			customerAccountsMap.put(accountDTO.getIban(), accountDTO);
 		        		}
+		        		
 	        		}
 	        		
 	        		//Determinacion de la fecha limite de la traba:
@@ -198,20 +214,20 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 	        			fechaLimiteTraba = ICEDateUtils.dateToBigDecimal(fechaLimiteTrabaDate, ICEDateUtils.FORMAT_yyyyMMdd);
 	        		}
 	        		
-	        		//Razon social interna (obtenida del customerDTO de datawarehouse):
-	        		String razonSocialInterna = EmbargosUtils.determineRazonSocialInternaFromCustomer(customerDTO);
-	        		
+                    //Se guardan los datos del cliente:
+	        		clientDataService.createUpdateClientDataTransaction(customerDTO, ordenEjecucionEmbargo.getNifDeudor());
+	        		        		
 	        		//Generacion de las instancias de Embargo y de Traba:
 	        		if (ordenEjecucionEmbargoComp!=null 
 	        				&& ordenEjecucionEmbargo.getNifDeudor().equals(ordenEjecucionEmbargoComp.getNifDeudor())) {
 	        			
-	        			embargo = cuaderno63Mapper.generateEmbargo(ordenEjecucionEmbargo, ordenEjecucionEmbargoComp, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, razonSocialInterna, fechaLimiteTraba, customerAccountsMap);
+	        			embargo = cuaderno63Mapper.generateEmbargo(ordenEjecucionEmbargo, ordenEjecucionEmbargoComp, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, fechaLimiteTraba, customerAccountsMap);
 	        			
 	        			traba =  cuaderno63Mapper.generateTraba(ordenEjecucionEmbargo, ordenEjecucionEmbargoComp, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, fechaLimiteTraba, customerAccountsMap);        			
 	        			traba.setEmbargo(embargo);
 	        			
 	        		} else {
-	        			embargo = cuaderno63Mapper.generateEmbargo(ordenEjecucionEmbargo, new OrdenEjecucionEmbargoComplementarioFase3(), controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, razonSocialInterna, fechaLimiteTraba, customerAccountsMap);
+	        			embargo = cuaderno63Mapper.generateEmbargo(ordenEjecucionEmbargo, new OrdenEjecucionEmbargoComplementarioFase3(), controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, fechaLimiteTraba, customerAccountsMap);
 
 	        			traba =  cuaderno63Mapper.generateTraba(ordenEjecucionEmbargo, ordenEjecucionEmbargoComp, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, fechaLimiteTraba, customerAccountsMap);        			
 	        			traba.setEmbargo(embargo);
@@ -332,10 +348,16 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 					EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_ERROR);
 			*/
 
+			// - Se envia correo del error del parseo del fichero de embargo:
+			emailService.sendEmailFileParserError(seizureFileName, e.getMessage()); 
+			
 			throw e;
 
 		} finally {
 
+			if (reader!=null) {
+				reader.close();
+			}
 			if (beanReader != null) {
 				beanReader.close();
 			}

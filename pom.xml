@@ -164,6 +164,12 @@
 			<version>1.0</version> <scope>system</scope> <systemPath>${basedir}/src/main/resources/fonts/jar/pt-serif.jar</systemPath> 
 			</dependency> -->
 
+		<!-- Emails -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -296,6 +302,20 @@
 				<resources>
 					<resource>
 						<directory>profiles/DES</directory>
+						<includes>
+							<include>**/*</include>
+						</includes>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+
+		<profile>
+			<id>CZBK</id>
+			<build>
+				<resources>
+					<resource>
+						<directory>profiles/CZBK</directory>
 						<includes>
 							<include>**/*</include>
 						</includes>

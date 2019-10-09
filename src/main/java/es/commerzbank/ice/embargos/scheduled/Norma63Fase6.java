@@ -1,5 +1,7 @@
 package es.commerzbank.ice.embargos.scheduled;
 
+import es.commerzbank.ice.comun.lib.file.exchange.FileWriterHelper;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
@@ -56,12 +58,12 @@ public class Norma63Fase6
     FileControlMapper fileControlMapper;
     @Autowired
     FinalFileRepository finalFileRepository;
+ 
+	@Autowired
+	private GeneralParametersService generalParametersService;
 
-    @Value("${commerzbank.embargos.files.path.processed}")
-    private String pathProcessed;
-
-    @Value("${commerzbank.embargos.files.path.generated}")
-    private String pathGenerated;
+    @Autowired
+    private FileWriterHelper fileWriterHelper;
 
     /* to cronify
     @Scheduled("")
@@ -87,10 +89,15 @@ public class Norma63Fase6
 
         try {
             // Guardar fase 6
-            File fase6File = new File(pathGenerated, ficheroFase3.getEntidadesComunicadora().getPrefijoFicheros() +"_"+ ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMdd) +"."+ EmbargosConstants.TIPO_FICHERO_FINAL);
+        	String pathGenerated = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_GENERATED);
+        	
+            String fileNameFinal = ficheroFase3.getEntidadesComunicadora().getPrefijoFicheros() +"_"+ ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMdd) +"."+ EmbargosConstants.TIPO_FICHERO_FINAL;
 
+            File fase6File = fileWriterHelper.getGeneratedFile(pathGenerated, fileNameFinal);
+
+            //Se guarda el registro de ControlFichero del fichero de salida:
             ControlFichero ficheroFase6 =
-                    fileControlMapper.generateControlFichero(fase6File, EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63);
+                    fileControlMapper.generateControlFichero(fase6File, EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63, fileNameFinal, fase6File);
             ficheroFase6.setEntidadesComunicadora(ficheroFase3.getEntidadesComunicadora());
 
             fileControlRepository.save(ficheroFase6);
@@ -98,8 +105,8 @@ public class Norma63Fase6
             // Inicialiar beanIO parser
             StreamFactory factory = StreamFactory.newInstance();
             factory.loadResource(pathFileConfigCuaderno63);
-            // TODO: NUEVO CAMPO en control fichero: RUTA INTERNA
-            beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE3, (new File(pathProcessed + ficheroFase3.getNombreFichero()).getCanonicalFile()));
+	        
+            beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE3, (new File(ficheroFase3.getRutaFichero()).getCanonicalFile()));
 
             Object currentF3Record = null;
 
@@ -241,6 +248,10 @@ public class Norma63Fase6
             ficheroFase6.setEstadoCtrlfichero(estadoCtrlfichero);
 
             fileControlRepository.save(ficheroFase6);
+
+            // Mover a outbox
+            String outboxGenerated = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_OUTBOX);
+            fileWriterHelper.transferToOutbox(fase6File, outboxGenerated, fileNameFinal);
         }
         catch (Exception e)
         {

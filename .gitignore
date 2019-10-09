@@ -1,4 +1,5 @@
 HELP.md
+profiles/LOCAL/
 /target/
 !.mvn/wrapper/maven-wrapper.jar
 

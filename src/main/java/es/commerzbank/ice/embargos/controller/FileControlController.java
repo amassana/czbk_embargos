@@ -1,12 +1,10 @@
 package es.commerzbank.ice.embargos.controller;
 
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.commerzbank.ice.comun.lib.security.Permissions;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
 import es.commerzbank.ice.embargos.domain.dto.FileControlFiltersDTO;
 import es.commerzbank.ice.embargos.domain.dto.FileControlStatusDTO;
@@ -42,9 +41,6 @@ public class FileControlController {
 
 	private static final Logger logger = LoggerFactory.getLogger(FileControlController.class);
 
-	@Value("${commerzbank.jasper.temp}")
-	private String pdfSavedPath;
-
 	@Autowired
 	private FileControlService fileControlService;
 	
@@ -53,6 +49,9 @@ public class FileControlController {
 	
 	@Autowired
 	private FileControlStatusService fileControlStatusService;
+
+	@Autowired
+	private GeneralParametersService generalParametersService;
 
 	@PostMapping(value = "/filter",
 			produces = { "application/json" },
@@ -312,11 +311,10 @@ public class FileControlController {
 			@RequestBody ReportParamsDTO reportParams) throws Exception {
 
 		logger.info("FileControlController - generateFileControlReport - start");
-		DownloadReportFile.setTempFileName("file-control");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
-
 		try {
+			DownloadReportFile.setTempFileName("file-control");
+
+			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			DownloadReportFile.writeFile(fileControlService.generateFileControl(codTipoFichero, codEstado, isPending,
 					reportParams.getFechaInicio(), reportParams.getFechaFin()));

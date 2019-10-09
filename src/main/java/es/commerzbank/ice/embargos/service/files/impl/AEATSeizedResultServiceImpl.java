@@ -1,6 +1,10 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -14,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
@@ -41,13 +46,7 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 	
 	@Value("${commerzbank.embargos.beanio.config-path.aeat}")
 	String pathFileConfigAEAT;
-	
-	@Value("${commerzbank.embargos.files.path.processed}")
-	private String pathProcessed;
-	
-	@Value("${commerzbank.embargos.files.path.generated}")
-	private String pathGenerated;
-	
+			
 	@Autowired
 	private FileControlMapper fileControlMapper;
 
@@ -66,11 +65,16 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 	@Autowired
 	private ErrorRepository errorRepository;
 	
+	@Autowired
+	private GeneralParametersService generalParametersService;	
+	
 	@Override
-	public void tratarFicheroErrores(File file)  {
+	public void tratarFicheroErrores(File processingFile, String originalName, File processedFile)  throws IOException {
 
 		logger.info("AEATSeizureServiceImpl - tratarFicheroErrores - start");
+		
 		BeanReader beanReader = null;
+		Reader reader = null;
 		
 		ControlFichero controlFicheroErrores = null;
 		
@@ -83,13 +87,17 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 	        
 	        //Se guarda el registro de ControlFichero del fichero de entrada:
 	        controlFicheroErrores = 
-	        		fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_ERRORES_TRABAS_ENVIADAS_AEAT);
+	        		fileControlMapper.generateControlFichero(processingFile, EmbargosConstants.COD_TIPO_FICHERO_ERRORES_TRABAS_ENVIADAS_AEAT, originalName, processedFile);
 	        
 	        fileControlService.saveFileControlTransaction(controlFicheroErrores);
 	
 	        
 	        // use a StreamFactory to create a BeanReader
-	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_RESULTADOVALIDACIONTRABAS, file);
+	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT);
+	        
+			reader = new InputStreamReader(new FileInputStream(processingFile), encoding);
+	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_RESULTADOVALIDACIONTRABAS, reader);
+	        
 	        Object record = null;
 	        boolean isEntidadTransmisoraCommerzbank = false;
 	        
@@ -107,8 +115,8 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 	        		entidadTransmisoraValidacionFase4 = (EntidadTransmisoraValidacionFase4) record;
 	        		
 	        		//Si la entidad transmisora es Commerzbank:
-	        		if (entidadCreditoValidacionFase4.getCodigoEntidadTransmisora() != null 
-	        				&& entidadCreditoValidacionFase4.getCodigoEntidadTransmisora().equals(EmbargosConstants.CODIGO_NRBE_COMMERZBANK)) {   			
+	        		if (entidadTransmisoraValidacionFase4.getCodigoEntidadTransmisora() != null 
+	        				&& entidadTransmisoraValidacionFase4.getCodigoEntidadTransmisora().equals(EmbargosConstants.CODIGO_NRBE_COMMERZBANK)) {   			
 	        			
 	        			isEntidadTransmisoraCommerzbank = true;
 	        			
@@ -130,7 +138,7 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 		        		entidadOrdenante = orderingEntityRepository.findByIdentificadorEntidad(identificadorEntidad);
 		        		
 		        		if (entidadOrdenante == null) {
-		        			throw new ICEParserException("01", "No se puede procesar el fichero '" + file.getName() +
+		        			throw new ICEParserException("01", "No se puede procesar el fichero '" + processingFile.getName() +
 		        					"': Entidad Ordenante con identificadorEntidad " + identificadorEntidad + " no encontrada.");
 		        		}
 		        	}
@@ -172,7 +180,9 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 			//throw e;
 			
 		} finally {
-			
+			if (reader!=null) {
+				reader.close();
+			}
 			if (beanReader!=null) {
 				beanReader.close();
 			}

@@ -21,14 +21,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.commerzbank.ice.comun.lib.domain.dto.AccountingNote;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.embargos.domain.dto.BankAccountDTO;
+import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizedBankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureActionDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
+import es.commerzbank.ice.embargos.domain.dto.SeizureSaveDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureStatusDTO;
 import es.commerzbank.ice.embargos.service.AccountingService;
+import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.utils.DownloadReportFile;
+import es.commerzbank.ice.utils.EmbargosConstants;
 import io.swagger.annotations.ApiOperation;
 
 @CrossOrigin("*")
@@ -38,15 +44,18 @@ public class SeizureController {
 
 	private static final Logger logger = LoggerFactory.getLogger(SeizureController.class);
 
-	@Value("${commerzbank.jasper.temp}")
-	private String pdfSavedPath;
-
 	@Autowired
 	private SeizureService seizureService;
 	
 	@Autowired
 	private AccountingService accountingService;
 	
+	@Autowired
+	private GeneralParametersService generalParametersService;
+	
+	@Autowired
+	private FileControlService fileControlService;
+
     @GetMapping(value = "/{codeFileControl}")
     @ApiOperation(value="Devuelve la lista de embargos para una petición de embargo.")
     public ResponseEntity<List<SeizureDTO>> getSeizureListByCodeFileControl(Authentication authentication,
@@ -182,7 +191,7 @@ public class SeizureController {
     public ResponseEntity<String> updateSeizedBankAccountList(Authentication authentication,
     														  @PathVariable("codeFileControl") Long codeFileControl,
     														  @PathVariable("idSeizure") Long idSeizure,
-    														  @RequestBody List<SeizedBankAccountDTO> seizedBankAccountList){
+    														  @RequestBody SeizureSaveDTO seizureSave){
     	logger.info("SeizureController - updateSeizedBankAccountList - start");
 		ResponseEntity<String> response = null;
 		boolean result = false;
@@ -191,7 +200,7 @@ public class SeizureController {
 
 			String userModif = authentication.getName();
 
-			result = seizureService.updateSeizedBankAccountList(codeFileControl, idSeizure, seizedBankAccountList,userModif);
+			result = seizureService.updateSeizedBankAccountList(codeFileControl, idSeizure, seizureSave,userModif);
 
 			if (result) {
 				response = new ResponseEntity<>(HttpStatus.OK);
@@ -340,28 +349,34 @@ public class SeizureController {
   
     @PostMapping(value = "/{codeFileControl}/accounting")
     @ApiOperation(value="Envio de datos a contabilidad.")
-    public ResponseEntity<String> sendAccounting(Authentication authentication,
+    public ResponseEntity<FileControlDTO> sendAccounting(Authentication authentication,
     										  @PathVariable("codeFileControl") Long codeFileControl){
+    	
     	logger.info("SeizureController - sendAccounting - start");
-    	ResponseEntity<String> response = null;
+    	
+    	ResponseEntity<FileControlDTO> response = null;
 		boolean result = false;
 
+		FileControlDTO resultFileControlDTO = null;
+		
 		try {
 
 			String userName = authentication.getName();
 		
 			result = accountingService.sendAccounting(codeFileControl, userName);
 			
+			//Se obtiene el fileControl que se va a retornar:
+			resultFileControlDTO = fileControlService.getByCodeFileControl(codeFileControl);
 			
 			if (result) {
-				response = new ResponseEntity<>(HttpStatus.OK);
+				response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.OK);
 			} else {
-				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+				response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.BAD_REQUEST);
 			}
 
 		} catch (Exception e) {
 
-			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.BAD_REQUEST);
 
 			logger.error("ERROR in doAccounting: ", e);
 		}
@@ -410,7 +425,7 @@ public class SeizureController {
 
     @PostMapping(value = "/accountingNote")
     @ApiOperation(value="Tratamiento de la respuesta de Contabilidad (nota contable).")
-    public ResponseEntity<String> manageAccountingNoteCallback(Authentication authentication,
+    public ResponseEntity<String> manageAccountingNoteSeizureCallback(Authentication authentication,
     										  @RequestBody AccountingNote accountingNote){
     	logger.info("SeizureController - manageAccountingNoteCallback - start");
     	ResponseEntity<String> response = null;
@@ -420,7 +435,7 @@ public class SeizureController {
 
 			String userName = authentication.getName();
 		
-			result = accountingService.manageAccountingNoteCallback(accountingNote, userName);
+			result = accountingService.manageAccountingNoteSeizureCallback(accountingNote, userName);
 			
 			
 			if (result) {
@@ -447,12 +462,11 @@ public class SeizureController {
 	public ResponseEntity<InputStreamResource> generateSeizureLetter(
 			@PathVariable("idSeizure") Integer idSeizure) {
     	logger.info("SeizureController - generateSeizureLetter - start");
-		
-    	DownloadReportFile.setTempFileName("seizure-letter");
 
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
+    	try {
+			DownloadReportFile.setTempFileName("seizure-letter");
 
-		try {
+			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			// seizure service falta
 			DownloadReportFile.writeFile(seizureService.generateSeizureLetter(idSeizure));
@@ -471,12 +485,11 @@ public class SeizureController {
 	@ApiOperation(value = "Devuelve un fichero de resumen trabas fase 3")
 	public ResponseEntity<InputStreamResource> generateSeizureRequestF3(@PathVariable("codeFileControl") Integer codControlFichero) {
 		logger.info("SeizureController - generateSeizureRequestF3 - start");
-		
-		DownloadReportFile.setTempFileName("seizure-request");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
 
 		try {
+			DownloadReportFile.setTempFileName("seizure-request");
+
+			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			// seizure service falta
 			DownloadReportFile.writeFile(seizureService.generateSeizureRequestF3(codControlFichero));
@@ -496,12 +509,11 @@ public class SeizureController {
 	public ResponseEntity<InputStreamResource> generateSeizureResponseF4(
 			@PathVariable("fileControl") Integer codControlFichero) {
 		logger.info("SeizureController - generateSeizureResponseF4 - start");
-		
-		DownloadReportFile.setTempFileName("seizure-response");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
 
 		try {
+			DownloadReportFile.setTempFileName("seizure-response");
+
+			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			// seizure service falta
 			DownloadReportFile.writeFile(seizureService.generateSeizureResponseF4(codControlFichero));
@@ -514,6 +526,12 @@ public class SeizureController {
 
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+
+	}
+
+	private String getPDFSavedPath() throws ICEException {
+
+		return generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP);
 
 	}
 

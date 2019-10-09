@@ -12,6 +12,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 
+import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
@@ -19,9 +20,10 @@ import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTrabaActuacion;
 import es.commerzbank.ice.embargos.domain.entity.CuentasInmovilizacion;
-import es.commerzbank.ice.embargos.domain.entity.CuentasRecaudacion;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
+import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
+import es.commerzbank.ice.embargos.domain.entity.EstadoLevantamiento;
 import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
 import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
 import es.commerzbank.ice.embargos.domain.entity.PeticionInformacion;
@@ -79,34 +81,44 @@ public abstract class Cuaderno63Mapper {
 //	}
 
 	@Mappings({
-		@Mapping(source = "solicitudInfo.nifDeudor", target = "nif"),
+		@Mapping(source = "solicitudInfo.nifDeudor", target = "datosCliente.nif"),
 		@Mapping(source = "solicitudInfo.nombreDeudor", target = "razonSocial"),
-		@Mapping(source = "razonSocialInterna", target = "razonSocialInterna"),
 		@Mapping(source = "solicitudInfo.domicilioDeudor", target = "domicilio"),
 		@Mapping(source = "solicitudInfo.identificadorDeuda", target = "numeroEmbargo"),
 		@Mapping(source = "solicitudInfo.codigoDeuda", target = "codDeudaDeudor"),
 		@Mapping(source = "codControlFicheroPeticion", target = "controlFichero.codControlFichero")
 	})
 	public abstract PeticionInformacion generatePeticionInformacion(SolicitudInformacionFase1 solicitudInfo, 
-			Long codControlFicheroPeticion, List<AccountDTO> listBankAccount, String razonSocialInterna);
+			Long codControlFicheroPeticion, List<AccountDTO> listBankAccount, EntidadesComunicadora entidadComunicadora) throws ICEParserException;
 	
 	@AfterMapping
-	protected void setPeticionInformacionAfterMapping(@MappingTarget PeticionInformacion peticionInformacion, List<AccountDTO> listBankAccount) {
+	protected void setPeticionInformacionAfterMapping(@MappingTarget PeticionInformacion peticionInformacion, 
+			List<AccountDTO> listBankAccount, EntidadesComunicadora entidadComunicadora) throws ICEParserException {
 		
-		//Variables pendientes de cambiar:
-		BigDecimal pendienteCambiarBigDec = new BigDecimal(0);
-		EntidadesOrdenante pendienteCambiarEntidadesOrdenante  = new EntidadesOrdenante();
-		pendienteCambiarEntidadesOrdenante.setCodEntidadOrdenante(Long.valueOf(1));
-				
-		peticionInformacion.setCodSucursal(pendienteCambiarBigDec);
-		peticionInformacion.setEntidadesOrdenante(pendienteCambiarEntidadesOrdenante);
+		//Comprobar que si la entidadComunicadora es NULL -> Exception...
+		if (entidadComunicadora == null) {
+			throw new ICEParserException("", "No se puede procesar el fichero con codControlFichero '" 
+					+ peticionInformacion.getControlFichero().getCodControlFichero() +
+					"': Entidad Comunicadora con valor NULL.");
+		}
+		//Comprobar que la entidad comunicadora tenga entidad Ordenante asociada:
+		if (entidadComunicadora.getEntidadesOrdenantes() == null || entidadComunicadora.getEntidadesOrdenantes().isEmpty()) {
+			throw new ICEParserException("", "No se puede procesar el fichero con codControlFichero '" 
+					+ peticionInformacion.getControlFichero().getCodControlFichero() +
+					"': La entidad Comunicadora con nif '" + entidadComunicadora.getNifEntidad() + "' no tiene asocidada una entidad ordenante.");
+		}
+		
+		peticionInformacion.setEntidadesOrdenante(entidadComunicadora.getEntidadesOrdenantes().get(0));
+
+		//TODO: aplicar la sucursal por defecto?
+		peticionInformacion.setCodSucursal(null);
 		
 		//Se guardaran las primeras cuentas en estado NORMAL del listado de cuentas, hasta un maximo de 6 cuentas:
 		setPreloadedBankAccounts(peticionInformacion,listBankAccount);
 		
         //Usuario y fecha ultima modificacion:
 		peticionInformacion.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
-        peticionInformacion.setFUltimaModificacion(BigDecimal.valueOf(System.currentTimeMillis()));
+        peticionInformacion.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 		
 	}
 	
@@ -186,7 +198,7 @@ public abstract class Cuaderno63Mapper {
 	public abstract FinFicheroFase2 generateFinFicheroFase2(FinFicheroFase1 finFicheroFase1); 
 	
 	@Mappings({
-		@Mapping(source = "ordenEjecucionEmbargo.nifDeudor", target = "nif"),
+		@Mapping(source = "ordenEjecucionEmbargo.nifDeudor", target = "datosCliente.nif"),
 		@Mapping(source = "ordenEjecucionEmbargo.nombreDeudor", target = "nombre"),
 		@Mapping(source = "ordenEjecucionEmbargo.domicilioDeudor", target = "domicilio"),
 		@Mapping(source = "ordenEjecucionEmbargo.municipio", target = "municipio"),
@@ -196,11 +208,10 @@ public abstract class Cuaderno63Mapper {
 		@Mapping(source = "ordenEjecucionEmbargo.codigoDeuda", target = "codDeudaDeudor"),
 		@Mapping(source = "codControlFicheroEmbargo", target = "controlFichero.codControlFichero"),
 		@Mapping(source = "entidadOrdenante", target = "entidadesOrdenante"),
-		@Mapping(source = "razonSocialInterna", target = "razonSocialInterna"),
 		@Mapping(source = "fechaLimiteTraba", target = "fechaLimiteTraba")
 	})
 	public abstract Embargo generateEmbargo(OrdenEjecucionEmbargoFase3 ordenEjecucionEmbargo, 
-			OrdenEjecucionEmbargoComplementarioFase3 ordenEjecucionEmbargoComp, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante, String razonSocialInterna, BigDecimal fechaLimiteTraba,  Map<String, AccountDTO> customerAccountsMap);
+			OrdenEjecucionEmbargoComplementarioFase3 ordenEjecucionEmbargoComp, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante, BigDecimal fechaLimiteTraba,  Map<String, AccountDTO> customerAccountsMap);
 	
 	@AfterMapping
 	public void generateEmbargoAfterMapping(@MappingTarget Embargo embargo, OrdenEjecucionEmbargoFase3 ordenEjecucionEmbargo, 
@@ -482,6 +493,11 @@ public abstract class Cuaderno63Mapper {
 			cuentaTraba.setCuenta(accountDTO.getAccountNum());
 			cuentaTraba.setDivisa(accountDTO.getDivisa());
 			cuentaTraba.setEstadoCuenta(accountDTO.getStatus());
+			
+			//Por defecto informar la actuacion (motivo) de la cuentaTraba a 'Sin actuacion':
+			CuentaTrabaActuacion cuentaTrabaActuacion = new CuentaTrabaActuacion();
+			cuentaTrabaActuacion.setCodActuacion(EmbargosConstants.CODIGO_ACTUACION_SIN_ACTUACION_NORMA63);
+			cuentaTraba.setCuentaTrabaActuacion(cuentaTrabaActuacion);
 		
 		} else {
 			//Sino, si la cuenta no se encuentra en DWH: indicar la actuacion (motivo) de la cuentaTraba a inexistente:
@@ -520,7 +536,7 @@ public abstract class Cuaderno63Mapper {
 	}
 	
 	@Mappings({
-		@Mapping(source = "embargo.nif", target = "nifDeudor"),
+		@Mapping(source = "embargo.datosCliente.nif", target = "nifDeudor"),
 		@Mapping(source = "embargo.nombre", target = "nombreDeudor"),
 		@Mapping(source = "embargo.domicilio", target = "domicilioDeudor"),
 		@Mapping(source = "embargo.municipio", target = "municipio"),
@@ -614,7 +630,9 @@ public abstract class Cuaderno63Mapper {
 	}
 
 	
-	@Mappings({ @Mapping(source = "codControlFichero", target = "controlFichero.codControlFichero") })
+	@Mappings({ @Mapping(source = "codControlFichero", target = "controlFichero.codControlFichero"),
+				@Mapping(source = "ordenLevantamientoRetencionFase5.nifDeudor", target = "datosCliente.nif"),	
+	})
 	public abstract LevantamientoTraba generateLevantamiento(Long codControlFichero,
 			OrdenLevantamientoRetencionFase5 ordenLevantamientoRetencionFase5, Traba traba, CustomerDTO DWHCustomer);
 
@@ -627,11 +645,14 @@ public abstract class Cuaderno63Mapper {
 		levantamiento.setUsuarioUltModificacion(usuarioModif);
 		levantamiento.setFUltimaModificacion(fechaUltmaModif);
 		levantamiento.setTraba(traba);
-		// així?
+
+		EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
+		estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE);
+		levantamiento.setEstadoLevantamiento(estadoLevantamiento);
+		// TODO TO BE DEFINED
 		levantamiento.setEstadoEjecutado(BigDecimal.ZERO);
 		levantamiento.setEstadoContable(BigDecimal.ZERO);
 		levantamiento.setIndCasoRevisado(EmbargosConstants.IND_FLAG_NO);
-
 		// sempre a null levantamiento.setCodDeudaDeudor();
 
 		List<CuentaLevantamiento> cuentas = new ArrayList<>(6);
@@ -643,6 +664,7 @@ public abstract class Cuaderno63Mapper {
 					ordenLevantamientoRetencionFase5.getIbanCuenta1(),
 					ordenLevantamientoRetencionFase5.getImporteALevantarIban1(), DWHCustomer, traba, usuarioModif,
 					fechaUltmaModif);
+			cuentaLevantamiento1.setNumeroOrdenCuenta(new BigDecimal(1));
 			cuentas.add(cuentaLevantamiento1);
 		}
 		if (ordenLevantamientoRetencionFase5.getIbanCuenta2() != null
@@ -651,6 +673,7 @@ public abstract class Cuaderno63Mapper {
 					ordenLevantamientoRetencionFase5.getIbanCuenta2(),
 					ordenLevantamientoRetencionFase5.getImporteALevantarIban2(), DWHCustomer, traba, usuarioModif,
 					fechaUltmaModif);
+			cuentaLevantamiento2.setNumeroOrdenCuenta(new BigDecimal(2));
 			cuentas.add(cuentaLevantamiento2);
 		}
 		if (ordenLevantamientoRetencionFase5.getIbanCuenta3() != null
@@ -659,6 +682,7 @@ public abstract class Cuaderno63Mapper {
 					ordenLevantamientoRetencionFase5.getIbanCuenta3(),
 					ordenLevantamientoRetencionFase5.getImporteALevantarIban3(), DWHCustomer, traba, usuarioModif,
 					fechaUltmaModif);
+			cuentaLevantamiento3.setNumeroOrdenCuenta(new BigDecimal(3));
 			cuentas.add(cuentaLevantamiento3);
 		}
 		if (ordenLevantamientoRetencionFase5.getIbanCuenta4() != null
@@ -667,6 +691,7 @@ public abstract class Cuaderno63Mapper {
 					ordenLevantamientoRetencionFase5.getIbanCuenta4(),
 					ordenLevantamientoRetencionFase5.getImporteALevantarIban4(), DWHCustomer, traba, usuarioModif,
 					fechaUltmaModif);
+			cuentaLevantamiento4.setNumeroOrdenCuenta(new BigDecimal(4));
 			cuentas.add(cuentaLevantamiento4);
 		}
 		if (ordenLevantamientoRetencionFase5.getIbanCuenta5() != null
@@ -675,6 +700,7 @@ public abstract class Cuaderno63Mapper {
 					ordenLevantamientoRetencionFase5.getIbanCuenta5(),
 					ordenLevantamientoRetencionFase5.getImporteALevantarIban5(), DWHCustomer, traba, usuarioModif,
 					fechaUltmaModif);
+			cuentaLevantamiento5.setNumeroOrdenCuenta(new BigDecimal(5));
 			cuentas.add(cuentaLevantamiento5);
 		}
 		if (ordenLevantamientoRetencionFase5.getIbanCuenta6() != null
@@ -683,8 +709,19 @@ public abstract class Cuaderno63Mapper {
 					ordenLevantamientoRetencionFase5.getIbanCuenta6(),
 					ordenLevantamientoRetencionFase5.getImporteALevantarIban6(), DWHCustomer, traba, usuarioModif,
 					fechaUltmaModif);
+			cuentaLevantamiento6.setNumeroOrdenCuenta(new BigDecimal(6));
 			cuentas.add(cuentaLevantamiento6);
 		}
+
+		BigDecimal importeLevantado = BigDecimal.ZERO;
+
+		for (CuentaLevantamiento cuentaLevantamiento : cuentas)
+		{
+			if (cuentaLevantamiento.getImporte() != null)
+				importeLevantado = importeLevantado.add(cuentaLevantamiento.getImporte());
+		}
+
+		levantamiento.setImporteLevantado(importeLevantado);
 	}
 
 	

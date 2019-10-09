@@ -2,12 +2,9 @@ package es.commerzbank.ice.embargos.controller;
 
 import java.util.List;
 
-import es.commerzbank.ice.embargos.service.PetitionService;
-import es.commerzbank.ice.utils.DownloadReportFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,15 +14,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.embargos.domain.dto.BankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.PetitionCaseDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.service.InformationPetitionBankAccountService;
 import es.commerzbank.ice.embargos.service.InformationPetitionService;
+import es.commerzbank.ice.embargos.service.PetitionService;
+import es.commerzbank.ice.utils.DownloadReportFile;
+import es.commerzbank.ice.utils.EmbargosConstants;
 import io.swagger.annotations.ApiOperation;
 
 @CrossOrigin("*")
@@ -44,8 +44,8 @@ public class PetitionController {
 	@Autowired
 	private PetitionService petitionService;
 
-	@Value("${commerzbank.jasper.temp}")
-	private String pdfSavedPath;
+	@Autowired
+	private GeneralParametersService generalParametersService;
 
 	@GetMapping(value = "/{codeFileControl}")
 	@ApiOperation(value = "Devuelve la lista de casos para una peticion de informacion.")
@@ -163,41 +163,16 @@ public class PetitionController {
 
 	}
 
-	////////////// REVISAR:
-
-//	@GetMapping(value = "/filecontrol/{codeFileControl}")
-//	public ResponseEntity<PetitionDTO> getByCodeFileControl(@RequestHeader(value="token",required=true) String token,
-//			  												   @PathVariable("codeFileControl") Long codeFileControl){
-//		ResponseEntity<PetitionDTO> response = null;
-//		PetitionDTO result = null;
-//
-//		try {
-//		
-//			result = petitionService.getByCodeFileControl(codeFileControl);
-//
-//			response = new ResponseEntity<>(result, HttpStatus.OK);
-//			
-//		} catch (Exception e) {
-//			
-//			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-//			
-//			LOG.error("ERROR in getByCodeFileControl: ", e);
-//		}
-//		
-//		return response;
-//	}
-
 	@GetMapping("/{codeFileControl}/report") // f1
 	@ApiOperation(value = "Devuelve report PettitionRequest Fase1")
 	public ResponseEntity<InputStreamResource> f1PettitionRequest(
 			@PathVariable("codeFileControl") Integer codeFileControl) {
 		logger.info("PetitionController - f1PettitionRequest - start");
 		
-		DownloadReportFile.setTempFileName("petitionReportRequest");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
-
 		try {
+			DownloadReportFile.setTempFileName("petitionReportRequest");
+
+			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			DownloadReportFile.writeFile(petitionService.generateF1PettitionRequest(codeFileControl));
 
@@ -217,12 +192,11 @@ public class PetitionController {
 	public ResponseEntity<InputStreamResource> f2PettitionResponse(
 			@PathVariable("codeFileControl") Integer codeFileControl) {
 		logger.info("PetitionController - f2PettitionResponse - start");
-		
-		DownloadReportFile.setTempFileName("pettition-response");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
 
 		try {
+			DownloadReportFile.setTempFileName("pettition-response");
+
+			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			DownloadReportFile.writeFile(petitionService.generateF2PettitionResponse(codeFileControl));
 

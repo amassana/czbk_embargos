@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
 import es.commerzbank.ice.embargos.domain.dto.Representative;
 import es.commerzbank.ice.embargos.domain.entity.Apoderados;
 import es.commerzbank.ice.embargos.domain.entity.Apoderados_;
@@ -51,7 +52,7 @@ public class RepresentativeServiceImpl implements RepresentativeService {
 		
 		if (apoderado != null) {
 			apoderado.setIndActivo(EmbargosConstants.IND_FLAG_SI);
-			apoderado.setfUltimaModificacion(new Timestamp(System.currentTimeMillis()));
+			apoderado.setfUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 			apoderado.setUsuUltimaModificacion(user);
 			
 			result = apoderadosRepository.save(apoderado);
@@ -131,9 +132,11 @@ public class RepresentativeServiceImpl implements RepresentativeService {
 		}, dataPage);
 		
 		logger.info("RepresentativeServiceImpl - filter - Resultado de la consulta - list = " + list.getContent().toString());
-		if (list != null && list.getContent().size() > 0) {
-			for (Apoderados a : list.getContent()) {
-				response.add(representativeMapper.toRepresentative(a));
+		if (list != null) {
+			if (list.getContent().size() > 0) {
+				for (Apoderados a : list.getContent()) {
+					response.add(representativeMapper.toRepresentative(a));
+				}
 			}
 			
 			page = new PageImpl<>(response, list.getPageable(), list.getTotalElements());

@@ -1,11 +1,16 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
 import org.slf4j.Logger;
@@ -18,8 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.comun.lib.domain.dto.Element;
 import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
@@ -37,11 +44,12 @@ import es.commerzbank.ice.embargos.repository.CommunicatingEntityRepository;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.repository.InformationPetitionBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.InformationPetitionRepository;
+import es.commerzbank.ice.embargos.service.ClientDataService;
 import es.commerzbank.ice.embargos.service.CustomerService;
+import es.commerzbank.ice.embargos.service.EmailService;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63PetitionService;
 import es.commerzbank.ice.utils.EmbargosConstants;
-import es.commerzbank.ice.utils.EmbargosUtils;
 import es.commerzbank.ice.utils.ICEDateUtils;
 
 @Service
@@ -52,15 +60,6 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	
 	@Value("${commerzbank.embargos.beanio.config-path.cuaderno63}")
 	String pathFileConfigCuaderno63;
-
-	@Value("${commerzbank.embargos.files.path.monitoring}")
-	private String pathMonitoring;
-
-	@Value("${commerzbank.embargos.files.path.processed}")
-	private String pathProcessed;
-
-	@Value("${commerzbank.embargos.files.path.generated}")
-	private String pathGenerated;
 
 	@Autowired
 	private Cuaderno63Mapper cuaderno63Mapper;
@@ -79,6 +78,9 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 
 	@Autowired
 	private TaskService taskService;
+	
+	@Autowired
+	private ClientDataService clientDataService;
 
 	//Agregar repositories de DWH ...
 	@Autowired
@@ -93,17 +95,27 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	@Autowired
 	private CommunicatingEntityRepository communicatingEntityRepository;
 	
+	@Autowired
+	private EmailService emailService;
+	
+	@Autowired
+	private GeneralParametersService generalParametersService;
+	
 	@Override
 	//Se comenta '@transactional' ya que se utilizara a nivel de clase:
 	//@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
-	public void cargarFicheroPeticion(File file) throws IOException, ICEParserException {
+	public void cargarFicheroPeticion(File processingFile, String originalName, File processedFile) throws IOException, ICEException {
 
 		BeanReader beanReader = null;
 		Reader reader = null;
 
 		ControlFichero controlFicheroPeticion = null;
 
+		String petitionFileName = null;
+		
 		try {
+			
+	        petitionFileName = FilenameUtils.getName(processingFile.getCanonicalPath());
 
 			// create a StreamFactory
 	        StreamFactory factory = StreamFactory.newInstance();
@@ -112,14 +124,16 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	        
 	        //Se guarda el registro de ControlFichero del fichero de entrada:
 	        controlFicheroPeticion = 
-	        		fileControlMapper.generateControlFichero(file, EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63);
+	        		fileControlMapper.generateControlFichero(processingFile, EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63, originalName, processedFile);
 	        
 	        //fileControlRepository.save(controlFicheroPeticion);
 	        fileControlService.saveFileControlTransaction(controlFicheroPeticion);
-	                        
+	        
 	        // use a StreamFactory to create a BeanReader
 
-			reader = new InputStreamReader(new FileInputStream(file), "UTF-8");
+	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_NORMA63);
+	        
+			reader = new InputStreamReader(new FileInputStream(processingFile), encoding);
 	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE1, reader);
 
 	        CabeceraEmisorFase1 cabeceraEmisor = null;
@@ -134,7 +148,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	        		//Registro de detalle:
 	        		
 	        		SolicitudInformacionFase1 solicitudInformacion = (SolicitudInformacionFase1) record;
-	        		LOG.debug(solicitudInformacion.getNifDeudor());
+	        		LOG.info("Consultando NIF "+ solicitudInformacion.getNifDeudor());
 	 		        
 	        		//Llamada a Datawarehouse: Obtener las cuentas del cliente a partir del nif:        		
 	        		CustomerDTO customerDTO = customerService.findCustomerByNif(solicitudInformacion.getNifDeudor());
@@ -146,12 +160,13 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 		        		
 		        		//Tratar solamente los clientes en los que se han encontrado cuentas:
 		        		if(accountList != null && !accountList.isEmpty()) {
-		        		    	        			
-		        			String razonSocialInterna = EmbargosUtils.determineRazonSocialInternaFromCustomer(customerDTO);
+		        		    
+		                    //Se guardan los datos del cliente:
+			        		clientDataService.createUpdateClientDataTransaction(customerDTO, solicitudInformacion.getNifDeudor());
 		        			
 			        		//Se guarda la PeticionInformacion en bbdd:
 			        		PeticionInformacion peticionInformacion = cuaderno63Mapper.generatePeticionInformacion(solicitudInformacion, 
-			        				controlFicheroPeticion.getCodControlFichero(), accountList, razonSocialInterna);
+			        				controlFicheroPeticion.getCodControlFichero(), accountList, entidadComunicadora);
 
 			        		informationPetitionRepository.save(peticionInformacion);
 			        			        		
@@ -164,7 +179,6 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 			        			
 			        			informationPetitionBankAccountRepository.save(peticionInformacionCuenta);
 			        		}
-		  		
 		        		}
 	        		}
 	        		        	
@@ -183,7 +197,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	        		
 	        		//Si entidadComunicadora es NULL -> Exception...
 	        		if (entidadComunicadora == null) {
-	        			throw new ICEParserException("01", "No se puede procesar el fichero '" + file.getName() +
+	        			throw new ICEParserException("01", "No se puede procesar el fichero '" + processingFile.getName() +
 	        					"': Entidad Comunicadora con NIF " + nifOrganismoEmisor + " no encontrada.");
 	        		}
 	        		
@@ -240,7 +254,11 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	        
 	        // - Se guarda el codigo de tarea del calendario:
 	        controlFicheroPeticion.setCodTarea(BigDecimal.valueOf(codTarea));
-	        	        
+	        	  
+	        // - Se envia correo de la recepcion del fichero de peticiones:
+	        //DESACTIVADO, se comenta:
+	        //emailService.sendEmailPetitionReceived(petitionFileName);
+	        
 			fileControlRepository.save(controlFicheroPeticion);
 
 		} catch (Exception e) {
@@ -252,6 +270,9 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 					EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_ERROR);			
 			*/
 
+			// - Se envia correo del error del parseo del fichero de peticiones:
+			emailService.sendEmailFileParserError(petitionFileName, e.getMessage());
+			
 			throw e;
 
 		} finally {

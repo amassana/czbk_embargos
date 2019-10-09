@@ -3,6 +3,11 @@ package es.commerzbank.ice.embargos.controller;
 import java.math.BigDecimal;
 import java.util.List;
 
+import es.commerzbank.ice.comun.lib.security.Permissions;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.embargos.domain.dto.OrderingEntity;
+import es.commerzbank.ice.embargos.scheduled.Norma63Fase6;
+import es.commerzbank.ice.utils.EmbargosConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +39,11 @@ public class FinalResponseController {
 	@Autowired
 	private FinalResponseService finalResponseService;
 
-	@Value("${commerzbank.jasper.temp}")
-	private String pdfSavedPath;
+	@Autowired
+	private Norma63Fase6 norma63Fase6;
+
+	@Autowired
+	private GeneralParametersService generalParametersService;
 
 	@GetMapping(value = "/{codeFileControl}")
 	@ApiOperation(value = "Devuelve la lista de casos de levamtamientos")
@@ -109,11 +117,10 @@ public class FinalResponseController {
 			Integer num_anexo) {
 		logger.info("SeizureController - downloadAnexo - start");
 		
-		DownloadReportFile.setTempFileName("TGSSAnexo" + num_anexo);
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
-
 		try {
+			DownloadReportFile.setTempFileName("TGSSAnexo" + num_anexo);
+
+			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			DownloadReportFile.writeFile(finalResponseService.generarAnexo(cod_usuario, cod_traba, num_anexo));
 
@@ -132,11 +139,10 @@ public class FinalResponseController {
 	public ResponseEntity<InputStreamResource> generarRespuestaFinalEmbargo(
 			@PathVariable("fileControl") Integer codFileControl) {
 
-		DownloadReportFile.setTempFileName("f6_finalization");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
-
 		try {
+			DownloadReportFile.setTempFileName("f6_finalization");
+
+			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			DownloadReportFile.writeFile(finalResponseService.generarRespuestaFinalEmbargo(codFileControl));
 
@@ -154,11 +160,10 @@ public class FinalResponseController {
 	public ResponseEntity<InputStreamResource> generatePaymentLetterCGPJ(
 			@PathVariable("cod_traba") String cod_solicitud_ejecucion) {
 
-		DownloadReportFile.setTempFileName("payment-letter-CGPJ");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
-
 		try {
+			DownloadReportFile.setTempFileName("payment-letter-CGPJ");
+
+			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			DownloadReportFile.writeFile(finalResponseService.generatePaymentLetterCGPJ(cod_solicitud_ejecucion));
 
@@ -176,11 +181,10 @@ public class FinalResponseController {
 	private ResponseEntity<InputStreamResource> generatePaymentLetterN63(
 			@PathVariable(name = "cod_control_fichero") String cod_control_fichero) {
 
-		DownloadReportFile.setTempFileName("payment-letter-N63");
-
-		DownloadReportFile.setFileTempPath(pdfSavedPath);
-
 		try {
+			DownloadReportFile.setTempFileName("payment-letter-N63");
+
+			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			DownloadReportFile.writeFile(finalResponseService.generatePaymentLetterN63(cod_control_fichero));
 
@@ -194,4 +198,33 @@ public class FinalResponseController {
 		}
 	}
 
+	@GetMapping(value = "/{codeFileControl}", produces = { "application/json" })
+	public ResponseEntity<Void> createNorma63(Authentication authentication,
+											  @PathVariable("codeFileControl") Long codeFileControl) {
+		logger.info("SeizureSummaryController - createNorma63 - start");
+		ResponseEntity<Void> response = null;
+		OrderingEntity result = null;
+
+		if (!Permissions.hasPermission(authentication, "ui.impuestos")) {
+			logger.info("SeizureSummaryController - createNorma63 - forbidden");
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
+
+		if (codeFileControl != null) {
+			try {
+				norma63Fase6.generarFase6(codeFileControl);
+				response = new ResponseEntity<>(HttpStatus.OK);
+			} catch (Exception e) {
+				logger.error("eizureSummaryController - createNorma63 - Error while generating norma 63 summary file",
+						e);
+				response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		} else {
+			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
+		logger.info("SeizureSummaryController - createNorma63 - end");
+
+		return response;
+	}
 }
