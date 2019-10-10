@@ -13,9 +13,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import es.commerzbank.ice.comun.lib.domain.dto.AccountingNote;
 import es.commerzbank.ice.comun.lib.security.Permissions;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
@@ -24,6 +27,7 @@ import es.commerzbank.ice.embargos.domain.dto.OrderingEntity;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.scheduled.Norma63Fase6;
 import es.commerzbank.ice.embargos.service.AccountingService;
+import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.FinalResponseService;
 import es.commerzbank.ice.utils.DownloadReportFile;
 import es.commerzbank.ice.utils.EmbargosConstants;
@@ -41,6 +45,9 @@ public class FinalResponseController {
 	@Autowired
 	private AccountingService accountingService;
 
+	@Autowired
+	private FileControlService fileControlService;
+	
 	@Autowired
 	private Norma63Fase6 norma63Fase6;
 
@@ -230,11 +237,80 @@ public class FinalResponseController {
 		return response;
 	}
 	
-//	@GetMapping(value = "/{codeFileControl}")
-//	@ApiOperation(value = "Envia a contabilidad si la entidad ordenante asociada al fichero final tiene cuenta en Commerzbank.")
-//	public ResponseEntity<FileControlDTO> sendAccountingForOrderingEntityWithInternalAccount() {
-//		
-//		
-//		return null;
-//	}
+	
+    @PostMapping(value = "/{codeFileControl}/accounting")
+    @ApiOperation(value="Envio a contabilidad si la entidad ordenante asociada al Fichero final tiene cuenta en Commerzbank.")
+    public ResponseEntity<FileControlDTO> sendAccountingFinalFile(Authentication authentication,
+    										  @PathVariable("codeFileControl") Long codeFileControl){
+    	
+    	logger.info("sendAccountingFinalFile - start");
+    	
+    	ResponseEntity<FileControlDTO> response = null;
+		boolean result = false;
+
+		FileControlDTO resultFileControlDTO = null;
+		
+		try {
+
+			String userName = authentication.getName();
+		
+			result = accountingService.sendAccountingFinalFile(codeFileControl, userName);
+			
+			//Se obtiene el fileControl que se va a retornar del Fichero Final:
+			resultFileControlDTO = fileControlService.getByCodeFileControl(codeFileControl);
+			
+			if (result) {
+				response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.OK);
+			} else {
+				response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.BAD_REQUEST);
+			}
+
+		} catch (Exception e) {
+
+			response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.BAD_REQUEST);
+
+			logger.error("ERROR in sendAccountingFinalFile: ", e);
+		}
+
+		logger.info("sendAccountingFinalFile - end");
+		return response;
+    	
+    }
+
+	
+    @PostMapping(value = "/accountingNote")
+    @ApiOperation(value="Tratamiento de la respuesta de Contabilidad (nota contable) de un Fichero Final.")
+    public ResponseEntity<String> manageAccountingNoteFinalResponseCallback(Authentication authentication,
+    										  @RequestBody AccountingNote accountingNote){
+		
+		
+    	logger.info("SeizureController - manageAccountingNoteFinalResponseCallback - start");
+    	ResponseEntity<String> response = null;
+		boolean result = false;
+
+		try {
+
+			String userName = authentication.getName();
+		
+			result = accountingService.manageAccountingNoteFinalFileCallback(accountingNote, userName);
+			
+			
+			if (result) {
+				response = new ResponseEntity<>(HttpStatus.OK);
+			} else {
+				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+
+		} catch (Exception e) {
+
+			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+			logger.error("ERROR in manageAccountingNoteFinalResponseCallback: ", e);
+		}
+		
+    	logger.info("SeizureController - manageAccountingNoteFinalResponseCallback - end");
+		return response;
+		
+
+	}
 }

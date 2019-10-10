@@ -240,6 +240,10 @@ public class Norma63Fase6
             // TODO: calc?
             ficheroFinal.setFValor(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMdd));
 
+            //Se inicializa el estado de contabilizacion del fichero final:
+            EstadoContabilizacion estadoContabilidadInicial = determineEstadoContabilizacionInicial(ficheroFase6.getEntidadesComunicadora());
+            ficheroFinal.setEstadoContabilizacion(estadoContabilidadInicial);
+            
             finalFileRepository.save(ficheroFinal);
 
             EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
@@ -275,6 +279,27 @@ public class Norma63Fase6
         }
 
         return embargo;
+    }
+    
+    
+    private EstadoContabilizacion determineEstadoContabilizacionInicial(EntidadesComunicadora entidadComunicadora) {
+    	
+    	//Determinacion del estado inicial de contabilizacion:
+    	//Si la Entidad Comunicadora:
+        // - tiene cuenta de commerzbank -> cambiar al estado 'Pendiente de envio a contabilidad'.
+        // - en caso contrario -> cambia al estado 'No aplica'.
+    	
+    	EstadoContabilizacion estadoContabilizacion = new EstadoContabilizacion();
+    	
+    	if (entidadComunicadora!=null && entidadComunicadora.getCuenta()!=null && !entidadComunicadora.getCuenta().trim().isEmpty()) {
+    		
+    		estadoContabilizacion.setCodEstado(EmbargosConstants.COD_ESTADO_CONTABILIZACION_PENDIENTE_ENVIO_A_CONTABILIDAD);
+    	
+    	} else {
+    		estadoContabilizacion.setCodEstado(EmbargosConstants.COD_ESTADO_CONTABILIZACION_NOTAPPLY);
+    	}
+    	
+    	return estadoContabilizacion;
     }
 }
 /*

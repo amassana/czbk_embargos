@@ -7,11 +7,14 @@ import es.commerzbank.ice.embargos.domain.entity.Embargo;
 
 public interface AccountingService {
 
-	public boolean sendAccounting(Long codeFileControl, String userName) throws ICEException, Exception;
-	public boolean undoAccounting(Long codeFileControl, Long idSeizure, String numAccount, String userName) throws ICEException;
-	public boolean manageAccountingNoteSeizureCallback(AccountingNote accountingNote, String userName);
-	public boolean manageAccountingNoteLiftingCallback(AccountingNote accountingNote, String userName);
+	public boolean sendAccountingSeizure(Long codeFileControl, String userName) throws ICEException, Exception;
 	public boolean sendAccountingLifting(Long codeFileControl, String userName) throws ICEException, Exception;
 	public boolean sendAccountingLiftingBankAccount(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, String userName) throws ICEException, Exception;
+	public boolean sendAccountingFinalFile(Long codeFileControl, String userName) throws ICEException, Exception;
+
+	public boolean manageAccountingNoteSeizureCallback(AccountingNote accountingNote, String userName);
+	public boolean manageAccountingNoteLiftingCallback(AccountingNote accountingNote, String userName);
+	public boolean manageAccountingNoteFinalFileCallback(AccountingNote accountingNote, String userName) throws ICEException;
 	
+	public boolean undoAccounting(Long codeFileControl, Long idSeizure, String numAccount, String userName) throws ICEException;
 }
