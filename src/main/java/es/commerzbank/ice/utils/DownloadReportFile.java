@@ -22,6 +22,7 @@ public class DownloadReportFile {
 	private static HttpHeaders respHeaders;
 	private static File jasperReportFile;
 	private static final String PDF_EXTENSION = ".pdf";
+	private static final String SLASH = "/";
 
 	public static void setTempFileName(String fileNameTemp) {
 
@@ -32,7 +33,7 @@ public class DownloadReportFile {
 	}
 
 	public static void setFileTempPath(String pdfSavedPath) {
-		pdfSavedFullPath = pdfSavedPath + getTodayDate() + "/" + filename;
+		pdfSavedFullPath = pdfSavedPath + SLASH + getTodayDate() + SLASH + filename;
 		jasperReportFile = new File(pdfSavedFullPath);
 	}
 
