@@ -98,7 +98,7 @@ WHERE
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["INFORME DE PETICIÓN DE INFORMACIÓN - " + $F{DES_ENTIDAD}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["INFORME DE RESPUESTA DE PETICIÓN - " + $F{DES_ENTIDAD}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
