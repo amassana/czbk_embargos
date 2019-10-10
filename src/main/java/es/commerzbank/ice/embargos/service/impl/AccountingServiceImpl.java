@@ -32,18 +32,22 @@ import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
+import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
 import es.commerzbank.ice.embargos.domain.entity.EstadoLevantamiento;
 import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
+import es.commerzbank.ice.embargos.domain.entity.FicheroFinal;
 import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
 import es.commerzbank.ice.embargos.domain.entity.Peticion;
 import es.commerzbank.ice.embargos.domain.entity.SolicitudesEjecucion;
 import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
+import es.commerzbank.ice.embargos.repository.FinalFileRepository;
 import es.commerzbank.ice.embargos.repository.LiftingBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.SeizedBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.SeizedRepository;
 import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.FileControlService;
+import es.commerzbank.ice.embargos.service.FinalFileService;
 import es.commerzbank.ice.embargos.service.LiftingService;
 import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.utils.EmbargosConstants;
@@ -56,46 +60,53 @@ public class AccountingServiceImpl implements AccountingService{
 	private static final Logger logger = LoggerFactory.getLogger(AccountingServiceImpl.class);
 	
 	@Autowired
-	FileControlService fileControlService;
+	private FileControlService fileControlService;
 	
 	@Autowired
-	SeizureService seizureService;
+	private SeizureService seizureService;
 	
 	@Autowired
-	AccountingNoteService accountingNoteService;
+	private AccountingNoteService accountingNoteService;
 	
 	@Autowired
-	GeneralParametersService generalParametersService;
+	private GeneralParametersService generalParametersService;
 	
 	@Autowired
-	FileControlRepository fileControlRepository;
+	private FinalFileService finalFileService;
 	
 	@Autowired
-	SeizedRepository seizedRepository;
+	private FileControlRepository fileControlRepository;
 	
 	@Autowired
-	SeizedBankAccountRepository seizedBankAccountRepository;
+	private SeizedRepository seizedRepository;
 	
 	@Autowired
-	LiftingService liftingService;
+	private SeizedBankAccountRepository seizedBankAccountRepository;
+	
+	@Autowired
+	private LiftingService liftingService;
 
 	@Autowired
-	ContaGenExecutor contaGenExecutor;
+	private ContaGenExecutor contaGenExecutor;
 	
 	@Autowired
-	es.commerzbank.ice.comun.lib.service.FileControlService fileControlServiceComunes;
+	private es.commerzbank.ice.comun.lib.service.FileControlService fileControlServiceComunes;
 	
 	@Autowired
-	ContadorRepo contadorRepository;
+	private ContadorRepo contadorRepository;
 
 	@Autowired
-	LiftingBankAccountRepository liftingBankAccountRepository;
+	private LiftingBankAccountRepository liftingBankAccountRepository;
 	
+	@Autowired
+	private FinalFileRepository finalFileRepository;
 	
 
 	@Override
-	public boolean sendAccounting(Long codeFileControl, String userName) throws ICEException, Exception {
-		logger.info("AccountingServiceImpl - sendAccounting - start");	
+	public boolean sendAccountingSeizure(Long codeFileControl, String userName) throws ICEException, Exception {
+	
+		logger.info("sendAccountingSeizure - start");	
+		
 		//Se obtiene el fichero de control:
 		Optional<ControlFichero> fileControlOpt = fileControlRepository.findById(codeFileControl);
 		if(!fileControlOpt.isPresent()) {
@@ -169,11 +180,11 @@ public class AccountingServiceImpl implements AccountingService{
 			}
 			
 		} else {
-			logger.info("AccountingServiceImpl - sendAccounting - end");
+			logger.info("sendAccountingSeizure - end");
 			return false;
 		}
 		
-		logger.info("AccountingServiceImpl - sendAccounting - end");
+		logger.info("sendAccountingSeizure - end");
 		return isAccountingSent;
 	}
 
@@ -192,7 +203,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 	private boolean sendAccountingAEATCuaderno63(ControlFichero controlFichero, String userName) throws Exception {
 		
-		logger.info("AccountingServiceImpl - sendAccountingAEATCuaderno63 - start");
+		logger.info("sendAccountingAEATCuaderno63 - start");
 
 		String cuentaRecaudacion = determineCuentaRecaudacion();
 		
@@ -200,7 +211,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 		boolean existsTrabaNotAccounted = false;
 		
-		Long codFileControl = crearControlFicheroComunes(controlFichero, userName);
+		Long codFileControlFicheroComunes = crearControlFicheroComunes(controlFichero, userName);
 		
 		//Se obtienen la trabas asociadas al fichero:
 		for (Embargo embargo : controlFichero.getEmbargos()) {
@@ -227,7 +238,7 @@ public class AccountingServiceImpl implements AccountingService{
 					if (cuentaTraba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE) {
 					
 						int resultContabilizar = contabilizarCuentaTraba(cuentaTraba, cuentaTraba.getCuenta(), cuentaRecaudacion,
-								oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codFileControl, embargo.getDatosCliente().getNombre(), 
+								oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codFileControlFicheroComunes, embargo.getDatosCliente().getNombre(), 
 								embargo.getDatosCliente().getNif(), userName, EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA);
 						
 						//Dependiendo del resultado de contabilizar:
@@ -277,9 +288,9 @@ public class AccountingServiceImpl implements AccountingService{
 				+"; descEstado=" + traba.getEstadoTraba().getDesEstado() + "]");
 			}
 		}
-		logger.info("AccountingServiceImpl - sendAccountingAEATCuaderno63 - end");
+		logger.info("sendAccountingAEATCuaderno63 - end");
 		
-		contaGenExecutor.generacionFicheroContabilidad(codFileControl);
+		contaGenExecutor.generacionFicheroContabilidad(codFileControlFicheroComunes);
 		
 		//Se devuelve true si no existe traba que no haya sido enviada a contabilidad:
 		return !existsTrabaNotAccounted;
@@ -329,14 +340,14 @@ public class AccountingServiceImpl implements AccountingService{
 
 	private boolean sendAccountingCGPJ(ControlFichero controlFichero, String userName) throws ICEException, Exception {
 
-		logger.info("AccountingServiceImpl - sendAccountingCGPJ - start");
+		logger.info("sendAccountingCGPJ - start");
 
 		String cuentaRecaudacion = determineCuentaRecaudacion();
 		Long oficinaCuentaRecaudacion = determineOficinaCuentaRecaudacion();
 
 		boolean existsTrabaNotAccounted = false;
 		
-		Long codFileControl = crearControlFicheroComunes(controlFichero, userName);
+		Long codFileControlFicheroComunes = crearControlFicheroComunes(controlFichero, userName);
 		
 		//Se obtienen las peticiones asociadas al fichero:
 		for (Peticion peticion : controlFichero.getPeticiones()) {
@@ -372,7 +383,7 @@ public class AccountingServiceImpl implements AccountingService{
 							//Para contabilizar la cuentaTraba tiene que estar en estado anterior a "Enviada a Contabilidad":
 							if (cuentaTraba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE) {
 								int resultContabilizar = contabilizarCuentaTraba(cuentaTraba, cuentaTraba.getCuenta(), cuentaRecaudacion,
-										oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codFileControl, embargo.getDatosCliente().getNombre(), 
+										oficinaCuentaRecaudacion, reference1, reference2, detailPayment, codFileControlFicheroComunes, embargo.getDatosCliente().getNombre(), 
 										embargo.getDatosCliente().getNif(), userName, EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA);
 
 								//Dependiendo del resultado de contabilizar:
@@ -425,9 +436,9 @@ public class AccountingServiceImpl implements AccountingService{
 			}
 		}
 
-		logger.info("AccountingServiceImpl - sendAccountingCGPJ - end");
+		logger.info("sendAccountingCGPJ - end");
 		
-		contaGenExecutor.generacionFicheroContabilidad(codFileControl);
+		contaGenExecutor.generacionFicheroContabilidad(codFileControlFicheroComunes);
 
 		//Se devuelve true si no existe traba que no haya sido enviada a contabilidad:
 		return !existsTrabaNotAccounted;
@@ -436,9 +447,9 @@ public class AccountingServiceImpl implements AccountingService{
 
 	private int contabilizarCuentaTraba(CuentaTraba cuentaTraba, String debitAccount, String creditAccount,
 			Long oficinaCuentaRecaudacion, String reference1, String reference2, String detailPayment,
-			Long codFileControl, String nombre, String nif, String userName, Long estadoImporteCero) {
+			Long codFileControlFicheroComunes, String nombre, String nif, String userName, Long estadoImporteCero) {
 		
-		logger.info("AccountingServiceImpl - contabilizarCuentaTraba - start");
+		logger.info("contabilizarCuentaTraba - start");
 		
 		int result = 0;
 		
@@ -461,7 +472,7 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setReference2(reference2);
 			accountingNote.setChange(cuentaTraba.getCambio());
 			accountingNote.setCallback(EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_FASE3_CALLBACK);
-			accountingNote.setCodFileControl(codFileControl);
+			accountingNote.setCodFileControl(codFileControlFicheroComunes);
 			accountingNote.setStatus(EmbargosConstants.COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO);
 			accountingNote.setName(nombre);
 			accountingNote.setNif(nif);
@@ -476,13 +487,13 @@ public class AccountingServiceImpl implements AccountingService{
 			}
 		}
 		
-		logger.info("AccountingServiceImpl - contabilizarCuentaTraba - end");
+		logger.info("contabilizarCuentaTraba - end");
 		
 		return result;
 	}
 	
 	private Long determineOficinaCuentaRecaudacion() throws ICEException {
-		logger.info("AccountingServiceImpl - determineOficinaCuentaRecaudacion - start");
+		logger.info("determineOficinaCuentaRecaudacion - start");
 		GeneralParameter oficinaCuentaRecaudacionGenParam = 
 				generalParametersService.viewParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA);	
 		
@@ -493,12 +504,12 @@ public class AccountingServiceImpl implements AccountingService{
 			throw new ICEException("","ERROR: parameter not found: " + EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA);
 		}
 		
-		logger.info("AccountingServiceImpl - determineOficinaCuentaRecaudacion - end");
+		logger.info("determineOficinaCuentaRecaudacion - end");
 		return oficinaCuentaRecaudacion;
 	}
 
 	private String determineCuentaRecaudacion() throws ICEException {
-		logger.info("AccountingServiceImpl - determineCuentaRecaudacion - start");
+		logger.info("determineCuentaRecaudacion - start");
 		GeneralParameter cuentaRecaudacionGenParam = 
 				generalParametersService.viewParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);	
 		
@@ -508,7 +519,7 @@ public class AccountingServiceImpl implements AccountingService{
 			throw new ICEException("","ERROR: parameter not found: " + EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);
 		}
 		
-		logger.info("AccountingServiceImpl - determineCuentaRecaudacion - end");
+		logger.info("determineCuentaRecaudacion - end");
 		return cuentaRecaudacion;
 	}
 	
@@ -555,7 +566,7 @@ public class AccountingServiceImpl implements AccountingService{
 		//Se tomaran los campos IBS_CREDIT_ACCOUNT,TRIM(IBS_REFERENCE_1+IBS_REFERENCE_2),IBS_AMOUNT para 
 		//determinar que elemento se ha contabilizado y marcar su estado a contabilizado.
 
-		logger.info("AccountingServiceImpl - manageAccountingNoteCallback - start");
+		logger.info("manageAccountingNoteSeizureCallback - start");
 
 		//1. Se obtiene la Cuenta Traba:
 
@@ -687,7 +698,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 		}
 
-		logger.info("AccountingServiceImpl - manageAccountingNoteCallback - end");
+		logger.info("manageAccountingNoteSeizureCallback - end");
 
 		return true;
 	}
@@ -695,6 +706,9 @@ public class AccountingServiceImpl implements AccountingService{
 	@Override
 	public boolean manageAccountingNoteLiftingCallback(AccountingNote accountingNote, String userName)
 	{
+		
+		logger.info("manageAccountingNoteLiftingCallback - start");
+		
 		// Localizar cuenta levantameiento
 		String cuenta = accountingNote.getDebitAccount();
 		BigDecimal importe = BigDecimal.valueOf(accountingNote.getAmount());
@@ -762,14 +776,16 @@ public class AccountingServiceImpl implements AccountingService{
 			Log.debug("ControlFichero con id " + controlFichero.getCodControlFichero() + " cambia a estado 'Contabilizado'");
 
 		}
-
+		
+		logger.info("manageAccountingNoteLiftingCallback - end");
+		
 		return true;
 	}
 
 	@Override
 	public boolean undoAccounting(Long codeFileControl, Long idSeizure, String numAccount, String userName) throws ICEException{
 
-		logger.info("AccountingServiceImpl - undoAccounting - start");
+		logger.info("undoAccounting - start");
 
 		//Solo se puede retroceder cuando este contabilizado (se haya realizado el callback) y una vez realizado
 		//el retroceso, se cambiara el estado a anterior a contabilizado.
@@ -858,12 +874,12 @@ public class AccountingServiceImpl implements AccountingService{
 
 			Log.error("Fallo al deshacer la contabilizacion de la cuentaTraba con id " +  cuentaTraba.getCodCuentaTraba());
 
-			logger.info("AccountingServiceImpl - undoAccounting - end");
+			logger.info("undoAccounting - end");
 			return false;
 		}
 
 
-		logger.info("AccountingServiceImpl - undoAccounting - end");
+		logger.info("undoAccounting - end");
 		return true;
 	}
 	
@@ -871,7 +887,7 @@ public class AccountingServiceImpl implements AccountingService{
 	@Override
 	public boolean sendAccountingLifting(Long codeFileControl, String userName)  throws Exception {
 
-		logger.info("AccountingServiceImpl - sendAccountingLifting - start");
+		logger.info("sendAccountingLifting - start");
 
 		boolean response = true;
 		
@@ -891,7 +907,7 @@ public class AccountingServiceImpl implements AccountingService{
 			}
 		}
 		
-		logger.info("AccountingServiceImpl - sendAccountingLifting - end");
+		logger.info("sendAccountingLifting - end");
 		return response;
 	}
 
@@ -913,7 +929,7 @@ public class AccountingServiceImpl implements AccountingService{
 	private boolean sendAccountingLiftingBankAccountInternal(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, ControlFichero controlFichero, String userName, Long oficinaCuentaRecaudacion, String cuentaRecaudacion, String contabilizacionCallbackNameParameter)
 			throws Exception {
 		
-		logger.info("AccountingServiceImpl - sendAccountingLiftingBankAccountInternal - start");
+		logger.info("sendAccountingLiftingBankAccountInternal - start");
 		
 		boolean response = true;
 
@@ -923,7 +939,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 		AccountingNote accountingNote = new AccountingNote();
 		
-		Long codFileControl = crearControlFicheroComunes(controlFichero, userName);
+		Long codFileControlFicheroComunes = crearControlFicheroComunes(controlFichero, userName);
 		
 		double amount = cuentaLevantamiento.getImporte()!=null ? cuentaLevantamiento.getImporte().doubleValue() : 0;
 
@@ -944,7 +960,7 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setChange(cuentaLevantamiento.getCambio());
 			accountingNote.setCallback(contabilizacionCallbackNameParameter);
 			accountingNote.setStatus(EmbargosConstants.COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO);
-			accountingNote.setCodFileControl(codFileControl);
+			accountingNote.setCodFileControl(codFileControlFicheroComunes);
 			accountingNote.setName(embargo.getDatosCliente().getNombre());
 			accountingNote.setNif(embargo.getDatosCliente().getNif());	
 			accountingNote.setDetailPayment(detailPayment);
@@ -961,9 +977,145 @@ public class AccountingServiceImpl implements AccountingService{
 		//Se actualiza el estado de la Cuenta Levantamiento a "Enviada a contabilidad":
 		liftingService.updateLiftingBankAccountingStatus(cuentaLevantamiento, EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION, userName);
 
-		logger.info("AccountingServiceImpl - sendAccountingLiftingBankAccountInternal - end");
+		logger.info("sendAccountingLiftingBankAccountInternal - end");
 		
 		return response;
+	}
+	
+	@Override
+	public boolean sendAccountingFinalFile(Long codeFileControl, String userName) throws ICEException, Exception {
+		
+		//Para las Entidades Comunicadoras que tengan cuenta en Commerzbank, la transferencia
+		//de la Fase 6 (cierre) se hara internamente llamando a contabilizar():
+		
+		logger.info("sendAccountingFinalFile - start");
+				
+		//- Se obtiene el fichero de control:
+		Optional<ControlFichero> fileControlOpt = fileControlRepository.findById(codeFileControl);
+		if(!fileControlOpt.isPresent()) {
+			throw new ICEException("","ControlFichero not found with codeFileControl: " + codeFileControl);
+		}
+		ControlFichero controlFichero = fileControlOpt.get();
+		
+		//- Se comprueba si la Entidad comunicadora asociada al fichero, tiene cuenta interna en Commerzbank:		
+		EntidadesComunicadora entidadComunicadora = controlFichero.getEntidadesComunicadora();
+		if (entidadComunicadora == null) {			
+			throw new ICEException("","EntidadComunicadora not found for the fileControl with codeFileControl: " + codeFileControl);
+		}
+		
+		if (entidadComunicadora.getCuenta() == null || entidadComunicadora.getCuenta().trim().isEmpty()) {
+			logger.info("Could not be sent to accounting: account not found for the Entidad Comunicadora with NIF: " + entidadComunicadora.getNifEntidad());
+			return false;
+		}
+		
+		//Se obtiene el registro de FicheroFinal asociado al controlFichero:		
+		List<FicheroFinal> ficheroFinalList = controlFichero.getFicheroFinals();
+		
+		if (ficheroFinalList==null || ficheroFinalList.isEmpty()) {
+			logger.info("Could not be sent to accounting: Fichero Final not found for codeFileControl: " + controlFichero.getCodControlFichero());	
+			return false;
+		}
+		
+		FicheroFinal ficheroFinal = ficheroFinalList.get(0);
+		
+		//Obtencion de datos para setear:
+		String cuentaRecaudacion = determineCuentaRecaudacion();
+		String cuentaEntidadComunicadora = entidadComunicadora.getCuenta();
+		Long oficinaCuentaRecaudacion = determineOficinaCuentaRecaudacion();
+		String divisa = EmbargosConstants.ISO_MONEDA_EUR;
+		BigDecimal cambio = null;
+		String contabilizacionCallbackNameParameter = EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_FASE6_CALLBACK;
+		String reference1 = Long.toString(ficheroFinal.getControlFichero().getCodControlFichero());
+		String reference2 = null;
+		String detailPayment = EmbargosConstants.LITERAL_DETAILPAYMENT_FASE6_EMB_TRANSFERRED_TO + entidadComunicadora.getDesEntidad();
+		String name = null;
+		String nif = null;
+		
+		double amount = ficheroFinal.getImporte()!=null ? ficheroFinal.getImporte().doubleValue() : 0;
+		
+		AccountingNote accountingNote = new AccountingNote();
+		
+		if (amount != 0) {
+			//Si el importe a contabilizar no es 0:
+
+			Long codFileControlFicheroComunes = crearControlFicheroComunes(controlFichero, userName);
+			
+			accountingNote.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
+			accountingNote.setCodOffice(oficinaCuentaRecaudacion);
+			accountingNote.setAmount(amount);
+			accountingNote.setCodCurrency(divisa);
+			accountingNote.setDebitAccount(cuentaRecaudacion);
+			accountingNote.setCreditAccount(cuentaEntidadComunicadora);
+			accountingNote.setActualDate(new Date());
+			//accountingNote.setExecutionDate(new Date());
+			accountingNote.setReference1(reference1);
+			accountingNote.setReference2(reference2);
+			accountingNote.setChange(cambio);
+			accountingNote.setCallback(contabilizacionCallbackNameParameter);
+			accountingNote.setStatus(EmbargosConstants.COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO);
+			accountingNote.setCodFileControl(codFileControlFicheroComunes);
+			accountingNote.setName(name);
+			accountingNote.setNif(nif);	
+			accountingNote.setDetailPayment(detailPayment);
+	
+			int resultContabilizar = accountingNoteService.contabilizar(accountingNote);
+			
+			if(resultContabilizar == 1) {
+				//Cambio del estado de contabilizacion del fichero final al estado 'Enviada a contabilidad':				
+				finalFileService.updateFinalFileAccountingStatus(ficheroFinal, EmbargosConstants.COD_ESTADO_CONTABILIZACION_ENVIADA_A_CONTABILIDAD, userName);
+				
+				//Generacion del fichero de contabilidad solo si resultContabilizar es 1:
+				contaGenExecutor.generacionFicheroContabilidad(codFileControlFicheroComunes);
+				
+			} else {
+				Log.warn("Fichero Final with codControlFichero " + codeFileControl + " is not accounted.");
+				
+				return false;
+			}
+		
+		} else {
+			
+			//Si el importe es 0 -> no se llama a contabilizar y se actualiza el estado a 'Contabilizada':
+			
+			finalFileService.updateFinalFileAccountingStatus(ficheroFinal, EmbargosConstants.COD_ESTADO_CONTABILIZACION_CONTABILIZADA, userName);	
+		}	
+		
+		logger.info("sendAccountingFinalFile - end");
+		
+		return true;
+	}
+	
+	/**
+	 * Metodo del callback de contabilizacion del Fichero final, que cambia el 
+	 * estado de contabilizacion del FicheroFinal al estado 'Contabilizada'.
+	 */
+	@Override
+	public boolean manageAccountingNoteFinalFileCallback(AccountingNote accountingNote, String userName) throws ICEException {
+		
+		logger.info("manageAccountingNoteFinalFileCallback - start");
+		
+		if (accountingNote == null || accountingNote.getReference1() == null || accountingNote.getReference1().trim().isEmpty()) {
+			throw new ICEException ("","The field 'Reference1' of the AccountingNote is not informed.");
+		}
+		
+		//En la reference1 de la AccountingNote, nos llega el codControlFichero del Fichero final:
+		Long codControlFicheroFinal = Long.parseLong(accountingNote.getReference1());
+		
+		ControlFichero controlFicheroFinal = new ControlFichero();
+		controlFicheroFinal.setCodControlFichero(codControlFicheroFinal);
+		
+		FicheroFinal ficheroFinal = finalFileRepository.findByControlFichero(controlFicheroFinal);
+		
+		if (ficheroFinal == null) {
+			throw new ICEException ("","FicheroFinal not found with codControlFichero=" + codControlFicheroFinal);
+		}
+		
+		//Actualizar el estado a contabilizada:
+		finalFileService.updateFinalFileAccountingStatus(ficheroFinal, EmbargosConstants.COD_ESTADO_CONTABILIZACION_CONTABILIZADA, userName);
+		
+		logger.info("manageAccountingNoteFinalFileCallback - end");
+		
+		return true;
 	}
 
 }

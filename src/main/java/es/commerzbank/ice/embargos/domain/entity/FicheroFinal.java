@@ -1,8 +1,19 @@
 package es.commerzbank.ice.embargos.domain.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.math.BigDecimal;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 
 /**
@@ -40,6 +51,11 @@ public class FicheroFinal implements Serializable {
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="COD_CONTROL_FICHERO", nullable=false)
 	private ControlFichero controlFichero;
+	
+	//bi-directional many-to-one association to EstadoContabilizacion
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="COD_ESTADO_CONTABILIZACION", nullable=false)
+	private EstadoContabilizacion estadoContabilizacion;
 
 	public FicheroFinal() {
 	}
@@ -98,6 +114,14 @@ public class FicheroFinal implements Serializable {
 
 	public void setControlFichero(ControlFichero controlFichero) {
 		this.controlFichero = controlFichero;
+	}
+	
+	public EstadoContabilizacion getEstadoContabilizacion() {
+		return this.estadoContabilizacion;
+	}
+
+	public void setEstadoContabilizacion(EstadoContabilizacion estadoContabilizacion) {
+		this.estadoContabilizacion = estadoContabilizacion;
 	}
 
 }
