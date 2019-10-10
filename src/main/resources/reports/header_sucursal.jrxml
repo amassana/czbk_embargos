@@ -23,7 +23,7 @@
 				<imageExpression><![CDATA[$P{sub_img_param}]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="410" y="65" width="60" height="20" forecolor="#050505" uuid="070a40e4-b02e-448b-8bed-22d41c5f3ff9">
+				<reportElement x="410" y="60" width="60" height="20" forecolor="#050505" uuid="070a40e4-b02e-448b-8bed-22d41c5f3ff9">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -32,7 +32,8 @@
 				<text><![CDATA[ a Fecha: ]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="470" y="65" width="90" height="20" forecolor="#050505" uuid="0c06d7a9-5e46-4c50-9a3d-97593b7f03e0"/>
+				<reportElement x="470" y="60" width="90" height="20" forecolor="#050505" uuid="0c06d7a9-5e46-4c50-9a3d-97593b7f03e0"/>
+				<box leftPadding="3"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Serif" size="10" isBold="false"/>
 				</textElement>

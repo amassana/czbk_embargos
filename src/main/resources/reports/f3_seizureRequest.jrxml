@@ -182,7 +182,7 @@ ORDER BY
 				<text><![CDATA[Nº Embargo]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement mode="Transparent" x="5" y="7" width="395" height="50" uuid="bb73b3fd-f75b-4f3b-9c9b-ecf0b0ce6ec5"/>
+				<reportElement mode="Transparent" x="5" y="7" width="445" height="50" uuid="bb73b3fd-f75b-4f3b-9c9b-ecf0b0ce6ec5"/>
 			</rectangle>
 			<textField isBlankWhenNull="true">
 				<reportElement x="50" y="21" width="80" height="21" uuid="8014ad15-2fb1-41f9-906a-f210e6fe8163">
