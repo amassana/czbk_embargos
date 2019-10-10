@@ -121,6 +121,12 @@ public class EmbargosConstants {
 	public static final long COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION = 2;
 	public static final long COD_ESTADO_LEVANTAMIENTO_CONTABILIZADO = 3;
 	
+	/** Estados de la tabla ESTADO_CONTABILIZACION **/
+	public static final long COD_ESTADO_CONTABILIZACION_NOTAPPLY = 0;
+	public static final long COD_ESTADO_CONTABILIZACION_PENDIENTE_ENVIO_A_CONTABILIDAD = 1;
+	public static final long COD_ESTADO_CONTABILIZACION_ENVIADA_A_CONTABILIDAD = 2;
+	public static final long COD_ESTADO_CONTABILIZACION_CONTABILIZADA  = 3;
+	
 	/** Stream names del cuaderno 63 **/
 	public static final String STREAM_NAME_CUADERNO63_FASE1 = "fase1";
 	public static final String STREAM_NAME_CUADERNO63_FASE2 = "fase2";
@@ -215,6 +221,7 @@ public class EmbargosConstants {
 	public static final String PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA = "embargos.cuentaRecaudacion.oficina";
 	public static final String PARAMETRO_EMBARGOS_CONTABILIZACION_FASE3_CALLBACK = "embargos.contabilizacion.fase3.callback";
 	public static final String PARAMETRO_EMBARGOS_CONTABILIZACION_FASE5_CALLBACK = "embargos.contabilizacion.fase5.callback";
+	public static final String PARAMETRO_EMBARGOS_CONTABILIZACION_FASE6_CALLBACK = "embargos.contabilizacion.fase6.callback";
 	public static final String PARAMETRO_EMBARGOS_LEVANTAMIENTO_IMPORTE_MAXIMO_AUTOMATICO_DIVISA = "embargos.levantamiento.importeMaximoAutomaticoDivisa";
 	
 	//Tabla Apoderados
@@ -231,6 +238,7 @@ public class EmbargosConstants {
 	public static final String LITERAL_LEVANT_IBS_REFERENCE2 = "Levant";
 	public static final String IBS_REFERENCE_1 = "IBS_REFERENCE_1";
 	public static final String IBS_REFERENCE_2 = "IBS_REFERENCE_2";
+	public static final String LITERAL_DETAILPAYMENT_FASE6_EMB_TRANSFERRED_TO = "EMB Transferencia a ";
 	
 	//Emails:
 	public static final String EMAIL_DEFAULT_FOOTER_TEXT = "Aplicación de Embargos";

@@ -116,7 +116,7 @@ ORDER BY lt.cod_levantamiento, cl.iban]]>
 				<text><![CDATA[Fecha de Traba:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement isPrintRepeatedValues="false" x="350" y="93" width="100" height="20" uuid="fba90554-2346-4bb5-a0e5-a386fcd9d379">
+				<reportElement isPrintRepeatedValues="false" x="353" y="93" width="100" height="20" uuid="fba90554-2346-4bb5-a0e5-a386fcd9d379">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a439b967-a736-41eb-949d-01afc719f1c8"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -167,7 +167,7 @@ ORDER BY lt.cod_levantamiento, cl.iban]]>
 	<columnHeader>
 		<band height="83" splitType="Stretch">
 			<staticText>
-				<reportElement x="180" y="48" width="60" height="30" uuid="3e0f896f-2615-4213-b37a-8b2e9fcba4e4">
+				<reportElement x="180" y="52" width="60" height="30" uuid="3e0f896f-2615-4213-b37a-8b2e9fcba4e4">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="48d8fe62-ed34-4837-be4d-91862a6d9575"/>
 				</reportElement>
 				<box leftPadding="2" bottomPadding="2">
@@ -179,7 +179,7 @@ ORDER BY lt.cod_levantamiento, cl.iban]]>
 				<text><![CDATA[NIF]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="250" y="48" width="210" height="30" uuid="448c8f2c-52f7-4d07-bb01-9336dedad2f2">
+				<reportElement x="250" y="52" width="210" height="30" uuid="448c8f2c-52f7-4d07-bb01-9336dedad2f2">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="14cd551a-0484-4f9b-8d1b-b6fa09dfd68e"/>
 				</reportElement>
 				<box leftPadding="2" bottomPadding="2">
@@ -191,7 +191,7 @@ ORDER BY lt.cod_levantamiento, cl.iban]]>
 				<text><![CDATA[TITULAR]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="470" y="48" width="140" height="30" uuid="66113b0e-8647-48a0-82f9-a0d516a4b809">
+				<reportElement x="470" y="52" width="140" height="30" uuid="66113b0e-8647-48a0-82f9-a0d516a4b809">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="642a7aec-f048-48fa-99fc-fbe2cb965521"/>
 				</reportElement>
 				<box leftPadding="2" bottomPadding="2">
@@ -203,7 +203,7 @@ ORDER BY lt.cod_levantamiento, cl.iban]]>
 				<text><![CDATA[IBAN]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="620" y="48" width="90" height="30" backcolor="#E0E0E0" uuid="67aad77b-bfc4-46db-b25d-36c52a104ed3">
+				<reportElement mode="Transparent" x="620" y="52" width="90" height="30" backcolor="#E0E0E0" uuid="67aad77b-bfc4-46db-b25d-36c52a104ed3">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="da33aa6a-23f8-41d1-b451-f4389a36a9cd"/>
 				</reportElement>
 				<box leftPadding="2" bottomPadding="2">
@@ -215,7 +215,7 @@ ORDER BY lt.cod_levantamiento, cl.iban]]>
 				<text><![CDATA[COD.ACTUACION]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="720" y="48" width="80" height="30" backcolor="#E0E0E0" uuid="7b45eddc-a39c-4e0b-8ef2-a2a82c6256fe">
+				<reportElement mode="Transparent" x="720" y="52" width="80" height="30" backcolor="#E0E0E0" uuid="7b45eddc-a39c-4e0b-8ef2-a2a82c6256fe">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7273501f-bc57-4b8d-b4e7-a4f299f5b876"/>
 				</reportElement>
 				<box leftPadding="2" bottomPadding="2">
@@ -227,7 +227,7 @@ ORDER BY lt.cod_levantamiento, cl.iban]]>
 				<text><![CDATA[IMPORTE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="110" y="48" width="60" height="30" uuid="626b7404-f9cd-4394-8dff-24939addf067">
+				<reportElement x="110" y="52" width="60" height="30" uuid="626b7404-f9cd-4394-8dff-24939addf067">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0163664d-e0ac-49e8-958e-78e9430acaf8"/>
 				</reportElement>
 				<box leftPadding="2" bottomPadding="2">
@@ -239,7 +239,7 @@ ORDER BY lt.cod_levantamiento, cl.iban]]>
 				<text><![CDATA[EMBARGO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="48" width="100" height="30" uuid="ee71d1fd-dfb8-466e-abb8-da6c9aa7df73">
+				<reportElement x="0" y="52" width="100" height="30" uuid="ee71d1fd-dfb8-466e-abb8-da6c9aa7df73">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0163664d-e0ac-49e8-958e-78e9430acaf8"/>
 				</reportElement>
 				<box leftPadding="2" bottomPadding="2">

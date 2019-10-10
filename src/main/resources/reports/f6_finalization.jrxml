@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="respuestaFinalEmbargos" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="920264bd-633e-4e8d-96af-3418561ceef9">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerzBankDataAdapter "/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -12,48 +11,67 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceBankDAdapterEmbargos.xml"/>
 	<parameter name="COD_FILE_CONTROL" class="java.lang.String"/>
 	<parameter name="SUBREPORT_HEADER" class="java.lang.Object" isForPrompting="false"/>
 	<parameter name="sub_img_param" class="java.lang.String" isForPrompting="false"/>
 	<queryString>
-		<![CDATA[SELECT  
-ec.des_entidad AS ENTIDADPRESENTADORA,  
-t.fecha_traba AS FECHATRABA, 
-nvl(t.importe_trabado,0) AS IMPORTETRABADO,
-e.numero_embargo AS NUMEROEMBARGO, 
-e.nif AS NIF,
-e.nombre AS TITULAR, 
-e.importe AS IMPORTEDEUDA,
-NVL(t.importe_trabado,0) AS IMPORTETRABADO,
-NVL(e.importe - t.importe_trabado,0) AS IMPORTEPDTESINLEVANTAMIENTOS, 
-ct.iban AS IBAN, 
- ct.actuacion AS CLAVE, 
-nvl(ct.importe,0) AS IMPORTETRABADOCUENTA,
-cf.fecha_maxima_respuesta AS FECHAVTO,
-cf.FECHA_CREACION AS FECHACREACION, 
- (CASE WHEN ct.iban=cl.iban
-             THEN NVL(cl.importe,0) 
-             ELSE  0
-        END)  AS IMPORTELEVANTADOCUENTA, 
-  (CASE WHEN ct.iban=cl.iban
-             THEN NVL(ct.importe - cl.importe,0) 
-              ELSE nvl(ct.importe,0) 
-        END)  AS  ATRANSFERIRCUENTA, 
-cf.cod_control_fichero AS FICHEROCONTROL
-FROM CONTROL_FICHERO cf
-INNER JOIN fichero_final ff ON ff.cod_control_fichero = cf.cod_control_fichero 
-INNER JOIN embargo e ON	e.cod_control_fichero  = ff.cod_fichero_diligencias
-INNER JOIN trabas t ON t.cod_embargo = e.cod_embargo
-INNER JOIN entidades_comunicadoras ec ON ec.cod_entidad_presentadora = cf.cod_entidad_presentadora
-
-INNER JOIN cuenta_traba ct ON ct.cod_traba = t.cod_traba 
-LEFT OUTER JOIN levantamiento_traba lt ON lt.cod_traba = ct.cod_traba
-LEFT OUTER JOIN cuenta_levantamiento cl ON cl.cod_levantamiento = lt.cod_levantamiento 
-WHERE cf.cod_control_fichero =   $P{COD_FILE_CONTROL}  
-ORDER BY ct.cod_traba, ct.iban]]>
+		<![CDATA[ SELECT
+	ec.des_entidad AS ENTIDADPRESENTADORA,
+	t.fecha_traba AS FECHATRABA,
+	NVL(t.importe_trabado, 0) AS IMPORTETRABADO,
+	e.numero_embargo AS NUMEROEMBARGO,
+	e.nif AS NIF,
+	e.nombre AS TITULAR,
+	e.importe AS IMPORTEDEUDA,
+	NVL(t.importe_trabado, 0) AS IMPORTETRABADO,
+	NVL(e.importe - t.importe_trabado, 0) AS IMPORTEPDTESINLEVANTAMIENTOS,
+	ct.iban AS IBAN,
+	cta.COD_EXTERNO_ACTUACION AS CLAVE,
+	NVL(ct.importe, 0) AS IMPORTETRABADOCUENTA,
+	cf.fecha_maxima_respuesta AS FECHAVTO,
+	cf.FECHA_CREACION AS FECHACREACION,
+	(CASE
+		WHEN ct.iban = cl.iban THEN NVL(cl.importe, 0)
+		ELSE 0
+	END) AS IMPORTELEVANTADOCUENTA,
+	(CASE
+		WHEN ct.iban = cl.iban THEN NVL(ct.importe - cl.importe, 0)
+		ELSE NVL(ct.importe, 0)
+	END) AS ATRANSFERIRCUENTA,
+	cf.cod_control_fichero AS FICHEROCONTROL
+FROM
+	CONTROL_FICHERO cf
+INNER JOIN fichero_final ff ON
+	ff.cod_control_fichero = cf.cod_control_fichero
+INNER JOIN embargo e ON
+	e.cod_control_fichero = ff.cod_fichero_diligencias
+INNER JOIN trabas t ON
+	t.cod_embargo = e.cod_embargo
+INNER JOIN entidades_comunicadoras ec ON
+	ec.cod_entidad_presentadora = cf.cod_entidad_presentadora
+INNER JOIN cuenta_traba ct ON
+	ct.cod_traba = t.cod_traba
+INNER JOIN CUENTA_TRABA_ACTUACION cta ON
+	ct.ACTUACION = cta.COD_ACTUACION
+LEFT OUTER JOIN levantamiento_traba lt ON
+	lt.cod_traba = ct.cod_traba
+LEFT OUTER JOIN cuenta_levantamiento cl ON
+	cl.cod_levantamiento = lt.cod_levantamiento
+WHERE
+	cf.cod_control_fichero = $P{COD_FILE_CONTROL}
+ORDER BY
+	ct.cod_traba,
+	ct.iban]]>
 	</queryString>
 	<field name="ENTIDADPRESENTADORA" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="ENTIDADPRESENTADORA"/>
+	</field>
+	<field name="FECHATRABA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="FECHATRABA"/>
+	</field>
+	<field name="IMPORTETRABADO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="IMPORTETRABADO"/>
 	</field>
 	<field name="NUMEROEMBARGO" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="NUMEROEMBARGO"/>
@@ -67,7 +85,7 @@ ORDER BY ct.cod_traba, ct.iban]]>
 	<field name="IMPORTEDEUDA" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="IMPORTEDEUDA"/>
 	</field>
-	<field name="IMPORTETRABADO" class="java.math.BigDecimal">
+	<field name="COLUMN_8" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="IMPORTETRABADO"/>
 	</field>
 	<field name="IMPORTEPDTESINLEVANTAMIENTOS" class="java.math.BigDecimal">
@@ -94,6 +112,9 @@ ORDER BY ct.cod_traba, ct.iban]]>
 	<field name="ATRANSFERIRCUENTA" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="ATRANSFERIRCUENTA"/>
 	</field>
+	<field name="FICHEROCONTROL" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="FICHEROCONTROL"/>
+	</field>
 	<variable name="total" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{ATRANSFERIRCUENTA}]]></variableExpression>
 	</variable>
@@ -110,14 +131,14 @@ ORDER BY ct.cod_traba, ct.iban]]>
 				<text><![CDATA[FICHERO DE RESPUESTA FINAL DE ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="630" y="82" width="80" height="20" uuid="6a768ecd-1226-49d2-b679-18655221f4c8"/>
+				<reportElement x="602" y="82" width="80" height="20" uuid="6a768ecd-1226-49d2-b679-18655221f4c8"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha Creación:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="630" y="102" width="80" height="20" uuid="dc0c91de-1865-43c9-b636-c165d2240743"/>
+				<reportElement x="602" y="102" width="80" height="20" uuid="dc0c91de-1865-43c9-b636-c165d2240743"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Serif" isBold="true"/>
 				</textElement>
@@ -133,7 +154,7 @@ ORDER BY ct.cod_traba, ct.iban]]>
 				<textFieldExpression><![CDATA[$F{ENTIDADPRESENTADORA}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="710" y="102" width="90" height="20" uuid="fe2329a6-563a-445c-8f60-85f5c1025d91">
+				<reportElement x="682" y="102" width="118" height="20" uuid="fe2329a6-563a-445c-8f60-85f5c1025d91">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f81bdc1c-0b74-4ed0-8e42-a5e3c8a014e7"/>
 				</reportElement>
 				<box leftPadding="3"/>
@@ -143,7 +164,7 @@ ORDER BY ct.cod_traba, ct.iban]]>
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHAVTO}.toString()))]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="710" y="82" width="90" height="20" uuid="263b4219-524a-4e9a-82a0-c3bd1bfba248">
+				<reportElement x="682" y="82" width="118" height="20" uuid="263b4219-524a-4e9a-82a0-c3bd1bfba248">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7c7f0214-50a8-4daa-8080-605c59aa8203"/>
 				</reportElement>
 				<box leftPadding="3"/>
@@ -450,7 +471,7 @@ ORDER BY ct.cod_traba, ct.iban]]>
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{total} + " EUR"]]></textFieldExpression>

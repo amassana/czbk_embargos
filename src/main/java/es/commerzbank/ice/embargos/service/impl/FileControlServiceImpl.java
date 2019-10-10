@@ -442,7 +442,7 @@ public class FileControlServiceImpl implements FileControlService{
 			query = query + " c.COD_TIPO_FICHERO IN (" + fileTypes + ") AND";
 
 			if (codEstado != null) {
-				query = query + " c.COD_ESTADO=" + codEstado.toString() + " AND";
+				query = query + " c.COD_ESTADO= " + codEstado.toString() + " AND";
 			}
 		}
 
@@ -456,26 +456,18 @@ public class FileControlServiceImpl implements FileControlService{
 					+ ICEDateUtils.dateToBigDecimal(fechaFin, ICEDateUtils.FORMAT_yyyyMMddHHmmss) + " AND";
 		}
 
-		if (codTipoFichero == null && codEstado == null && fechaInicio == null && fechaFin == null) {
-			query = "";
-		}
 
-		System.out.println("before empty: " + query);
-
-		if (query.isEmpty()) {
-			query = "WHERE";
-		}
-
-		if (codEstado == null) {
+		if (codEstado == null && codTipoFichero.length >= 1) {
 
 			if (isPending) {
 				query = query + " c.IND_PROCESADO <> 'S'";
 			} else {
 				query = query + " c.IND_PROCESADO = 'S'";
 			}
+		} else {
+			query = query.substring(0, query.length() - 4); // quitamos el AND de la query
 		}
-
-
+		
 		parameters.put("query_param", query);
 
 		try (Connection connEmbargos = oracleDataSourceEmbargosConfig.getEmbargosConnection();) {

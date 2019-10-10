@@ -1,44 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="resumen_trabas_seizures" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4aa0eefd-6a67-4cf2-a136-4b741803eea0">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="resumen_trabas_seizures" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4aa0eefd-6a67-4cf2-a136-4b741803eea0">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceBankDAdapterEmbargos.xml"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="399"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="595"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="521"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="465"/>
 	<parameter name="COD_FILE_CONTROL" class="java.lang.Integer"/>
-	<parameter name="IMAGE_PARAM" class="java.lang.String"/>
+	<parameter name="IMAGE_PARAM" class="java.lang.String" isForPrompting="false"/>
 	<queryString language="SQL">
 		<![CDATA[SELECT
-ec.des_entidad ,
-e.numero_embargo ,
-e.nif ,
-e.NOMBRE ,
-e.importe AS importeDeuda ,
-t.importe_trabado AS importeTrabado ,
-e.importe - t.importe_trabado AS importePendiente ,
-ct.iban ,
-cta.cod_actuacion ,
-cta.descripcion ,
-ct.importe AS importeTrabadoCuenta,
-t.FECHA_LIMITE AS FechaVto,
-cf.FECHA_CREACION,
-e.FECHA_GENERACION
+	ec.des_entidad ,
+	e.numero_embargo ,
+	e.nif ,
+	e.NOMBRE ,
+	e.importe AS importeDeuda ,
+	t.importe_trabado AS importeTrabado ,
+	e.importe - t.importe_trabado AS importePendiente ,
+	ct.iban ,
+	cta.COD_EXTERNO_ACTUACION ,
+	cta.descripcion ,
+	ct.importe AS importeTrabadoCuenta,
+	t.FECHA_LIMITE AS FechaVto,
+	cf.FECHA_CREACION,
+	e.FECHA_GENERACION,
+	cft.COD_CONTROL_FICHERO
 FROM
-CONTROL_FICHERO_TRABA cft
+	CONTROL_FICHERO_TRABA cft
 INNER JOIN control_fichero cf ON
-cf.COD_CONTROL_FICHERO = cft.COD_CONTROL_FICHERO
+	cf.COD_CONTROL_FICHERO = cft.COD_CONTROL_FICHERO
 INNER JOIN entidades_comunicadoras ec ON
-ec.cod_entidad_presentadora = cf.cod_entidad_presentadora
+	ec.cod_entidad_presentadora = cf.cod_entidad_presentadora
 INNER JOIN trabas t ON
-t.cod_traba = cft.cod_traba
+	t.cod_traba = cft.cod_traba
 INNER JOIN cuenta_traba ct ON
-ct.cod_traba = t.cod_traba
+	ct.cod_traba = t.cod_traba
 LEFT OUTER JOIN cuenta_traba_actuacion cta ON
-cta.cod_actuacion = ct.actuacion
+	cta.cod_actuacion = ct.actuacion
 INNER JOIN embargo e ON
-e.cod_embargo = t.cod_embargo
+	e.cod_embargo = t.cod_embargo
 WHERE
-cft.cod_control_fichero = $P{COD_FILE_CONTROL}
+	cft.cod_control_fichero = $P{COD_FILE_CONTROL}
 ORDER BY
-t.cod_traba]]>
+	t.cod_traba,
+ct.IBAN]]>
 	</queryString>
 	<field name="DES_ENTIDAD" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="DES_ENTIDAD"/>
@@ -64,8 +79,8 @@ t.cod_traba]]>
 	<field name="IBAN" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="IBAN"/>
 	</field>
-	<field name="COD_ACTUACION" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="COD_ACTUACION"/>
+	<field name="COD_EXTERNO_ACTUACION" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="COD_EXTERNO_ACTUACION"/>
 	</field>
 	<field name="DESCRIPCION" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="DESCRIPCION"/>
@@ -82,35 +97,126 @@ t.cod_traba]]>
 	<field name="FECHA_GENERACION" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="FECHA_GENERACION"/>
 	</field>
+	<field name="COD_CONTROL_FICHERO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="COD_CONTROL_FICHERO"/>
+	</field>
 	<variable name="IMPORTE_TOTAL_TRABADO" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{IMPORTETRABADOCUENTA}]]></variableExpression>
 	</variable>
 	<group name="TrabasGroup">
 		<groupExpression><![CDATA[$F{NOMBRE}]]></groupExpression>
 		<groupHeader>
-			<band height="53">
+			<band height="31">
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				<textField isBlankWhenNull="true">
-					<reportElement isPrintRepeatedValues="false" x="460" y="20" width="88" height="30" uuid="142f8eb9-9187-4cee-bedc-2dfc084dcc30">
+				<textField pattern="#,##0.00#" isBlankWhenNull="true">
+					<reportElement isPrintRepeatedValues="false" x="600" y="11" width="50" height="20" uuid="142f8eb9-9187-4cee-bedc-2dfc084dcc30">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8b7afc92-88e8-4215-92c0-ecde04ff4aac"/>
 					</reportElement>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Serif" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA["Pendiente " + $F{IMPORTEPENDIENTE}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{IMPORTEPENDIENTE}]]></textFieldExpression>
 				</textField>
-				<textField isBlankWhenNull="true">
-					<reportElement x="350" y="20" width="110" height="30" uuid="50bb0aa2-ca46-4271-b058-70251c42bc73"/>
+				<textField pattern="#,##0.00#" isBlankWhenNull="true">
+					<reportElement x="490" y="11" width="40" height="20" uuid="50bb0aa2-ca46-4271-b058-70251c42bc73"/>
+					<box>
+						<bottomPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Serif" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{IMPORTETRABADO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="670" y="11" width="99" height="20" uuid="b572e6e2-565c-4e0e-96f2-96f615f3bd8c"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Serif" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA["Trabado " + $F{IMPORTETRABADO}]]></textFieldExpression>
+					<text><![CDATA[COD. EXT. ACT.]]></text>
+				</staticText>
+				<textField>
+					<reportElement isPrintRepeatedValues="false" x="20" y="10" width="170" height="20" isPrintWhenDetailOverflows="true" uuid="180c60b1-09f1-4b0f-a377-6fb31bf62b73">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0a869f37-c75c-4970-bcf9-9846010beccc"/>
+					</reportElement>
+					<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+						<bottomPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Serif" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
 				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement isPrintRepeatedValues="false" x="211" y="10" width="80" height="21" uuid="82a73c1d-7f1f-459c-ace9-cce76c640290">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="af1705da-d847-410c-91f9-4b46909ef501"/>
+					</reportElement>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Serif" size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["NIF " + $F{NIF}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00#" isBlankWhenNull="true">
+					<reportElement isPrintRepeatedValues="false" x="360" y="11" width="58" height="20" uuid="8acdaf28-d38d-4ef1-a29a-8372c9924f47">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="da80972e-2364-4fe4-a20d-b640a07dee37"/>
+					</reportElement>
+					<box>
+						<bottomPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Serif" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{IMPORTEDEUDA}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="440" y="11" width="50" height="20" uuid="7e4fa7bc-27bd-46d2-8eaa-ed1b723e43ba"/>
+					<box>
+						<bottomPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Trabado]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="310" y="11" width="50" height="20" uuid="b2ae384b-2007-4e90-8f61-57fe59aa3a76"/>
+					<box>
+						<bottomPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Deuda]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="550" y="11" width="50" height="20" uuid="5ae924aa-2d18-4a1d-af05-b4c4ebc76271"/>
+					<box>
+						<bottomPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Pendiente]]></text>
+				</staticText>
 			</band>
 		</groupHeader>
-	</group>
-	<group name="CuentasGroup">
-		<groupExpression><![CDATA[$F{IBAN}]]></groupExpression>
 	</group>
 	<background>
 		<band splitType="Stretch"/>
@@ -130,7 +236,7 @@ t.cod_traba]]>
 				<text><![CDATA[Organismo]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="369" y="28" width="151" height="30" uuid="25527b05-627b-43d4-8e25-672a61a1733d">
+				<reportElement x="370" y="28" width="151" height="30" uuid="25527b05-627b-43d4-8e25-672a61a1733d">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="70be1e8b-a8d5-423d-865c-bf6dfa56a188"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -140,72 +246,46 @@ t.cod_traba]]>
 			</textField>
 		</band>
 	</title>
-	<pageHeader>
-		<band height="30" splitType="Stretch"/>
-	</pageHeader>
 	<detail>
 		<band height="26" splitType="Stretch">
-			<textField>
-				<reportElement isPrintRepeatedValues="false" x="0" y="-33" width="170" height="30" isPrintWhenDetailOverflows="true" uuid="180c60b1-09f1-4b0f-a377-6fb31bf62b73">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0a869f37-c75c-4970-bcf9-9846010beccc"/>
-				</reportElement>
-				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Serif" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement isPrintRepeatedValues="false" x="170" y="-33" width="80" height="30" uuid="82a73c1d-7f1f-459c-ace9-cce76c640290">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="af1705da-d847-410c-91f9-4b46909ef501"/>
-				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Serif" size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["NIF " + $F{NIF}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement isPrintRepeatedValues="false" x="251" y="-33" width="98" height="30" uuid="8acdaf28-d38d-4ef1-a29a-8372c9924f47">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="da80972e-2364-4fe4-a20d-b640a07dee37"/>
-				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Serif" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Deuda ".concat(String.valueOf($F{IMPORTEDEUDA}))]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="350" y="0" width="91" height="23" uuid="fec3c2cf-9b0d-4dbc-b6c6-3c1ba60feb21">
+			<textField pattern="#,##0.00#" isBlankWhenNull="true">
+				<reportElement x="450" y="2" width="80" height="18" uuid="fec3c2cf-9b0d-4dbc-b6c6-3c1ba60feb21">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="1e777b6b-a90d-4008-af1a-640b01e39b0c"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
+				<box rightPadding="6"/>
+				<textElement textAlignment="Right">
 					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{IMPORTETRABADOCUENTA}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="13" y="0" width="182" height="23" uuid="cba83966-1e5d-4471-9526-62d4644e4369">
+				<reportElement x="21" y="2" width="190" height="18" uuid="cba83966-1e5d-4471-9526-62d4644e4369">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="097735a6-770c-43a7-b1fc-0f2867ddef0c"/>
-					<printWhenExpression><![CDATA[$V{CuentasGroup_COUNT} == 1]]></printWhenExpression>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box leftPadding="5"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
+				<textElement textAlignment="Left" verticalAlignment="Top">
 					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Cuenta: " + $F{IBAN}]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="670" y="2" width="99" height="18" uuid="529036e1-f1ae-49c4-af37-d18bfe505e95">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Serif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COD_EXTERNO_ACTUACION}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
-	<columnFooter>
-		<band height="45" splitType="Stretch"/>
-	</columnFooter>
-	<pageFooter>
-		<band height="17" splitType="Stretch"/>
-	</pageFooter>
 	<summary>
-		<band height="98" splitType="Stretch">
-			<textField isBlankWhenNull="true">
-				<reportElement x="390" y="34" width="140" height="30" uuid="289aea83-2059-456d-aad6-a21b13a94e45"/>
-				<textElement verticalAlignment="Middle">
+		<band height="40" splitType="Stretch">
+			<textField pattern="#,##0.00#" isBlankWhenNull="true">
+				<reportElement x="410" y="5" width="120" height="30" uuid="289aea83-2059-456d-aad6-a21b13a94e45"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Total trabado:  " + $V{IMPORTE_TOTAL_TRABADO}]]></textFieldExpression>
