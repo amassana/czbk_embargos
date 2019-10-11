@@ -321,6 +321,7 @@ public class AccountingServiceImpl implements AccountingService{
 				contador.setContador(new BigDecimal(cuenta));
 			} else {
 				contador.setContador(new BigDecimal(1));
+				contador.setFecha(LocalDate.now());
 			}
 		} else {
 			contador = new Contador();
