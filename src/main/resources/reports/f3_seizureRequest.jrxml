@@ -196,7 +196,7 @@ ORDER BY
 				</textElement>
 				<text><![CDATA[Fecha Vto:]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement isPrintRepeatedValues="false" x="316" y="83" width="156" height="20" uuid="fba90554-2346-4bb5-a0e5-a386fcd9d379">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a439b967-a736-41eb-949d-01afc719f1c8"/>
 				</reportElement>

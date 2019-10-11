@@ -11,7 +11,7 @@
 	<parameter name="conn_param" class="java.sql.Connection"/>
 	<parameter name="COD_CONTROL_FICHERO" class="java.lang.Integer"/>
 	<queryString>
-		<![CDATA[ SELECT
+		<![CDATA[SELECT
 	pic.CUENTA,
 	pti.NIF,
 	pti.RAZON_SOCIAL,

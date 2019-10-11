@@ -253,7 +253,7 @@ ORDER BY lt.cod_levantamiento, cl.iban]]>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="102" splitType="Stretch">
+		<band height="24" splitType="Stretch">
 			<textField isBlankWhenNull="true">
 				<reportElement x="180" y="0" width="60" height="20" printWhenGroupChanges="EMBARGO" uuid="afbdf4d6-c369-4fd8-89fc-3b08d87aaf5d">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="48d8fe62-ed34-4837-be4d-91862a6d9575"/>
@@ -340,16 +340,16 @@ ORDER BY lt.cod_levantamiento, cl.iban]]>
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="103" splitType="Stretch">
+		<band height="33" splitType="Stretch">
 			<textField>
-				<reportElement x="709" y="80" width="50" height="20" uuid="cbfebc5e-d5a7-4746-a5bd-060637daeb54"/>
+				<reportElement x="719" y="5" width="50" height="20" uuid="cbfebc5e-d5a7-4746-a5bd-060637daeb54"/>
 				<textElement textAlignment="Right">
 					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement x="761" y="80" width="30" height="20" uuid="9c2f1333-9442-40ae-a9d1-c5421e8a77d6"/>
+				<reportElement x="771" y="5" width="30" height="20" uuid="9c2f1333-9442-40ae-a9d1-c5421e8a77d6"/>
 				<textElement>
 					<font fontName="Serif"/>
 				</textElement>
@@ -358,7 +358,7 @@ ORDER BY lt.cod_levantamiento, cl.iban]]>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="91">
+		<band height="24">
 			<staticText>
 				<reportElement x="616" y="0" width="100" height="20" uuid="71d046f2-9038-4129-91fa-d9acb4d28c08"/>
 				<box leftPadding="10"/>
