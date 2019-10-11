@@ -19,10 +19,11 @@ import es.commerzbank.ice.embargos.service.CustomerService;
 public class CustomerController {
 
 	private static final Logger logger = LoggerFactory.getLogger(CustomerController.class);
-	
+
 	@Autowired
 	private CustomerService customerService;
-	
+
+	// TODO qui invoca a aquest controller?
 	@GetMapping(value = "/{nif}/accounts")
 	public CustomerDTO listAllAccountsByNif(Authentication authentication,
 			@PathVariable("nif") String nif){
@@ -33,7 +34,7 @@ public class CustomerController {
 		
 		try {
 		
-			customerDTO = customerService.findCustomerByNif(nif);
+			customerDTO = customerService.findCustomerByNif(nif, false);
 		
 		} catch (Exception e) {
 			logger.error("ERROR: ", e);

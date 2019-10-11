@@ -151,7 +151,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	        		LOG.info("Consultando NIF "+ solicitudInformacion.getNifDeudor());
 	 		        
 	        		//Llamada a Datawarehouse: Obtener las cuentas del cliente a partir del nif:        		
-	        		CustomerDTO customerDTO = customerService.findCustomerByNif(solicitudInformacion.getNifDeudor());
+	        		CustomerDTO customerDTO = customerService.findCustomerByNif(solicitudInformacion.getNifDeudor(), false);
 	        		
 	        		//Si existe el cliente:
 	        		if (customerDTO!=null) {

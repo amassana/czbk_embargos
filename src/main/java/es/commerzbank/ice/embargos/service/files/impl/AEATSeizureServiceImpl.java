@@ -201,7 +201,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 		        		Traba traba = null;
 		        		
 		        		//- Se obtienen de Datawarehouse los datos del cliente y sus cuentas a partir del NIF del cliente:
-		        		CustomerDTO customerDTO = customerService.findCustomerByNif(diligenciaFase3.getNifDeudor());
+		        		CustomerDTO customerDTO = customerService.findCustomerByNif(diligenciaFase3.getNifDeudor(), true);
 		        		
 		        		//- Se almacenan las cuentas obtenidas de Datawarehouse en una Hash donde la key es el IBAN:
 		        		Map<String, AccountDTO> customerAccountsMap = new HashMap<>(); 

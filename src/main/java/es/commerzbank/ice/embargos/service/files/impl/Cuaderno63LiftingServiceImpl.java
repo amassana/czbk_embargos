@@ -159,7 +159,7 @@ public class Cuaderno63LiftingServiceImpl
                     // recuperar cod traba
                     // estado contable?
                     // estado ejecutado?
-                    CustomerDTO customerDTO = customerService.findCustomerByNif(ordenLevantamientoRetencionFase5.getNifDeudor());
+                    CustomerDTO customerDTO = customerService.findCustomerByNif(ordenLevantamientoRetencionFase5.getNifDeudor(), false);
 
                     //Se guardan los datos del cliente:
 	        		clientDataService.createUpdateClientDataTransaction(customerDTO, ordenLevantamientoRetencionFase5.getNifDeudor());

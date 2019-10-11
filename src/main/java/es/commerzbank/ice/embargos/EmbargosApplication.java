@@ -21,7 +21,11 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 
-@SpringBootApplication (scanBasePackages = {"es.commerzbank.ice.embargos", "es.commerzbank.ice.comun.lib"})
+@SpringBootApplication (
+        scanBasePackages = {
+                "es.commerzbank.ice.embargos",
+                "es.commerzbank.ice.comun.lib",
+                "es.commerzbank.ice.datawarehouse"})
 @EnableAutoConfiguration
 @EnableSwagger2
 public class EmbargosApplication {
