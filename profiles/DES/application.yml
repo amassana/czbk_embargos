@@ -2,14 +2,6 @@ spring:
   data:
     rest:
       default-page-size: 50
-  datasource:
-    initialize: false
-    continue-on-error: false
-    driverClassName: oracle.jdbc.driver.OracleDriver
-    url: jdbc:oracle:thin:@172.21.0.123:1521:DBADQUIRA
-    username: COMM_EMBARGOS_DES
-    password: comm_3mb4
-    sql-script-encoding: UTF-8
   mvc:
     favicon:
       enabled: false
@@ -22,19 +14,6 @@ spring:
     enable: false
   profiles:
     active: DES
-  ds-comun:
-    url: jdbc:oracle:thin:@172.21.0.123:1521:DBADQUIRA
-    username: COMM_COMUNES_DES
-    password: comm_c0mu
-    driver-class-name: oracle.jdbc.driver.OracleDriver
-  ds-Datawarehouse:
-    initialize-mode: false
-    continue-on-error: false
-    driverClassName: oracle.jdbc.driver.OracleDriver
-    url: jdbc:oracle:thin:@172.21.0.123:1521:DBADQUIRA
-    username: COMM_DATAWAREHOUSE_DES
-    password: comm_d4t4
-    sql-script-encoding: UTF-8
 
 server:
   servlet-path: /*
