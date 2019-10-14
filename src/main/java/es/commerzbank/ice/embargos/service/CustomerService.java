@@ -5,5 +5,5 @@ import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 
 public interface CustomerService {
 
-	public CustomerDTO findCustomerByNif(String nif) throws ICEException;
+	public CustomerDTO findCustomerByNif(String nif, boolean includeInactive) throws ICEException;
 }

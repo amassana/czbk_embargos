@@ -152,7 +152,7 @@ public class AEATLiftingServiceImpl
                     // recuperar cod traba
                     // estado contable?
                     // estado ejecutado?
-                    CustomerDTO customerDTO = customerService.findCustomerByNif(levantamientoAEAT.getNifDeudor());
+                    CustomerDTO customerDTO = customerService.findCustomerByNif(levantamientoAEAT.getNifDeudor(), true);
 
                     //Se guardan los datos del cliente:
 	        		clientDataService.createUpdateClientDataTransaction(customerDTO, levantamientoAEAT.getNifDeudor());

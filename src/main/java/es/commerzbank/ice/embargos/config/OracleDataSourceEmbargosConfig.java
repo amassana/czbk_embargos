@@ -1,5 +1,6 @@
 package es.commerzbank.ice.embargos.config;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -7,6 +8,8 @@ import java.sql.SQLException;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import es.commerzbank.ice.comun.lib.util.ValueConstants;
+import es.commerzbank.ice.comun.lib.util.YAMLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,21 +45,6 @@ import oracle.jdbc.pool.OracleDataSource;
 public class OracleDataSourceEmbargosConfig {
 	private static final Logger logger = LoggerFactory.getLogger(OracleDataSourceEmbargosConfig.class);
 
-	@Value("${spring.datasource.url}")
-	private String url;
-
-	@Value("${spring.datasource.username}")
-	private String userName;
-
-	@Value("${spring.datasource.password}")
-	private String password;
-
-	@Value("${spring.datasource.driverClassName}")
-	private String driverClassName;
-
-	@Value("${spring.ds-comun.driver-class-name}")
-	private String c_driverClassName;
-	
 	@Autowired
 	private OracleDataSourceConfig oracleDataSourceComunes;
 	
@@ -73,16 +61,22 @@ public class OracleDataSourceEmbargosConfig {
 			} 
 		}
 		
-		
-		
 		if (profile != null && profile.equals(EmbargosConstants.PROFILE_YAMLDB)) {
-			OracleDataSource ds = new OracleDataSource();
-			ds.setUser(userName);
-			ds.setURL(url);
-			ds.setPassword(password);
-			ds.setImplicitCachingEnabled(true);
-			ds.setFastConnectionFailoverEnabled(true);
-			return ds;
+			try {
+				OracleDataSource ds = new OracleDataSource();
+				String url = YAMLUtil.getValue(ValueConstants.APPLICATION_YAML_LOCAL_PATH, "spring.datasource.url");
+				String userName = YAMLUtil.getValue(ValueConstants.APPLICATION_YAML_LOCAL_PATH, "spring.datasource.username");
+				String password = YAMLUtil.getValue(ValueConstants.APPLICATION_YAML_LOCAL_PATH, "spring.datasource.password");
+				ds.setUser(userName);
+				ds.setURL(url);
+				ds.setPassword(password);
+				ds.setImplicitCachingEnabled(true);
+				ds.setFastConnectionFailoverEnabled(true);
+				return ds;
+			}
+			catch (IOException e) {
+				return null;
+			}
 		} else {
 			DataSource ds = null;
 			JndiObjectFactoryBean bean = new JndiObjectFactoryBean();
@@ -95,10 +89,6 @@ public class OracleDataSourceEmbargosConfig {
 			ds = (DataSource) bean.getObject();
 			return ds;
 		}
-		
-        
-		
-		
 	}
 
 	private JpaVendorAdapter jpaVendorAdapter() {
@@ -131,13 +121,17 @@ public class OracleDataSourceEmbargosConfig {
 	}
 
 	public Connection getEmbargosConnection() throws ClassNotFoundException, SQLException, IllegalArgumentException, NamingException {
-		Class.forName(driverClassName);
+		// JDBC 4.0: outdated
+		//String driverClassName = YAMLUtil.getValue(ValueConstants.APPLICATION_YAML_LOCAL_PATH, "jdbcDriver");
+		//Class.forName(driverClassName);
 		Connection conn = oracleDataSource().getConnection();
 		return conn;
 	}
 
 	public Connection getComunesConnection() throws ClassNotFoundException, SQLException, IllegalArgumentException, NamingException {
-		Class.forName(c_driverClassName);
+		// JDBC 4.0: outdated
+		//String driverClassName = YAMLUtil.getValue(ValueConstants.APPLICATION_YAML_LOCAL_PATH, "jdbcDriver");
+		//Class.forName(driverClassName);
 		Connection conn = oracleDataSourceComunes.oracleDataSource().getConnection();
 		return conn;
 	}

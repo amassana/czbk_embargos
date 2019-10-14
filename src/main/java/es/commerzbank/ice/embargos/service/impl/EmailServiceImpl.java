@@ -3,6 +3,7 @@ package es.commerzbank.ice.embargos.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,10 @@ public class EmailServiceImpl implements EmailService {
 	
 	@Override
 	public void sendEmailFileParserError(String fileName, String descException) throws ICEException {
-		
+
+		if (!generalParametersService.loadBooleanParameter(ValueConstants.EMAIL_SMTP_ENABLED, true))
+			return;
+
 		ICEEmail iceEmail = new ICEEmail();
 		
 		List<String> recipientsTo = new ArrayList<>(); 
@@ -64,7 +68,10 @@ public class EmailServiceImpl implements EmailService {
 
 	@Override
 	public void sendEmailPetitionReceived(String fileName) {
-		
+
+		if (!generalParametersService.loadBooleanParameter(ValueConstants.EMAIL_SMTP_ENABLED, true))
+			return;
+
 		ICEEmail iceEmail = new ICEEmail();
 		
 		List<String> recipientsTo = new ArrayList<>(); 
