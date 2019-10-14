@@ -254,7 +254,7 @@ public class EmbargosConstants {
 
 	//Definicion de Nombres de la tabla PARAMETROS:
 	public static final String PARAMETRO_TSP_DOMINIO = "tsp.dominio";
-	public static final String PARAMETRO_DWH_ENDPOINT_CLIENTACCOUNT = "datawarehouse.endpoint.client-account";
+	//public static final String PARAMETRO_DWH_ENDPOINT_CLIENTACCOUNT = "datawarehouse.endpoint.client-account";
 	public static final String PARAMETRO_TSP_JASPER_TEMP = "tsp.jasper.temp";
 
 	public static final String PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_INCOMING = "embargos.files.path.norma63.incoming";
