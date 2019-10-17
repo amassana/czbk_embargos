@@ -422,9 +422,14 @@ public class AccountingServiceImpl implements AccountingService{
 
 						String detailPayment = "";//embargo.getDatregcomdet();
 
-						boolean existsCuentaTrabaNotAccounted = false; 
+						boolean existsCuentaTrabaNotAccounted = false;
+						
+						//Se utiliza CopyOnWriteArrayList para evitar ConcurrentModificationException en el 
+						//update del estado de la cuentaTraba en la iteracion del listado de cuentaTrabas:
+						List<CuentaTraba> cuentaTrabasList = new CopyOnWriteArrayList<>();	
+						cuentaTrabasList.addAll(traba.getCuentaTrabas());
 
-						for(CuentaTraba cuentaTraba : traba.getCuentaTrabas()) {
+						for(CuentaTraba cuentaTraba : cuentaTrabasList) {
 							
 							//Se comprueba si la cuenta Traba cumple las condiciones para ser contabilizada:
 							if (isCuentaTrabaPassingPreconditionsForAccounting(cuentaTraba)) {			
