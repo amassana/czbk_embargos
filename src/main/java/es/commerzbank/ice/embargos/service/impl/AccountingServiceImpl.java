@@ -237,7 +237,7 @@ public class AccountingServiceImpl implements AccountingService{
 				for(CuentaTraba cuentaTraba : cuentaTrabasList) {
 					
 					//Se comprueba si la cuenta Traba cumple las condiciones para ser contabilizada:
-					if (isCuentaTrabaPassingTheConditionsForAccounting(cuentaTraba)) {		
+					if (isCuentaTrabaPassingPreconditionsForAccounting(cuentaTraba)) {		
 						
 						//Si la cuentaTraba pasa las condiciones para ser contabilizada:
 				
@@ -321,7 +321,7 @@ public class AccountingServiceImpl implements AccountingService{
 	}
 
 	
-	private boolean isCuentaTrabaPassingTheConditionsForAccounting(CuentaTraba cuentaTraba) {
+	private boolean isCuentaTrabaPassingPreconditionsForAccounting(CuentaTraba cuentaTraba) {
 	
 		//Para contabilizar la cuentaTraba, se tienen que cumplir todos los casos siguientes:
 		// 1.- Estar en estado anterior a "Enviada a Contabilidad" -> corresponde al estado "Pendiente".
@@ -427,7 +427,7 @@ public class AccountingServiceImpl implements AccountingService{
 						for(CuentaTraba cuentaTraba : traba.getCuentaTrabas()) {
 							
 							//Se comprueba si la cuenta Traba cumple las condiciones para ser contabilizada:
-							if (isCuentaTrabaPassConditionsForAccounting(cuentaTraba)) {		
+							if (isCuentaTrabaPassingPreconditionsForAccounting(cuentaTraba)) {			
 								
 								//Si la cuentaTraba pasa las condiciones para ser contabilizada:							
 								
