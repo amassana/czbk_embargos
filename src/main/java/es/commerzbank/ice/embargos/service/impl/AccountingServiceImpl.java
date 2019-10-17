@@ -236,9 +236,11 @@ public class AccountingServiceImpl implements AccountingService{
 				
 				for(CuentaTraba cuentaTraba : cuentaTrabasList) {
 					
-					//Para contabilizar la cuentaTraba tiene que estar en estado anterior a "Enviada a Contabilidad":
-					if (cuentaTraba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE) {
-					
+					//Se comprueba si la cuenta Traba cumple las condiciones para ser contabilizada:
+					if (isCuentaTrabaPassingTheConditionsForAccounting(cuentaTraba)) {		
+						
+						//Si la cuentaTraba pasa las condiciones para ser contabilizada:
+				
 						if (!creado && cuentaTraba.getImporte().doubleValue() > 0) {
 							codFileControlFicheroComunes = crearControlFicheroComunes(controlFichero, userName);
 							creado = true;
@@ -261,12 +263,24 @@ public class AccountingServiceImpl implements AccountingService{
 					
 					} else {
 						
-						//La cuentaTraba se encuentra en un estado donde ya ha sido enviada a Contabilidad.
+						if(cuentaTraba.getEstadoTraba().getCodEstado() != EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE) {
+							//La cuentaTraba se encuentra en un estado donde ya ha sido enviada a Contabilidad:
+							logger.debug("La cuentaTraba con id " + cuentaTraba.getCodCuentaTraba() 
+								+ " no se puede contabilizar ya que se encuentra en estado : [codEstado=" + cuentaTraba.getEstadoTraba().getCodEstado() 
+								+"; descEstado=" + cuentaTraba.getEstadoTraba().getDesEstado() + "]");
 						
-						logger.debug("La cuentaTraba con id " + cuentaTraba.getCodCuentaTraba() 
-							+ " no se puede contabilizar ya que se encuentra en estado : [codEstado=" + cuentaTraba.getEstadoTraba().getCodEstado() 
-							+"; descEstado=" + cuentaTraba.getEstadoTraba().getDesEstado() + "]");
-					
+						} else if (cuentaTraba.getAgregarATraba()==null || !(EmbargosConstants.IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba())
+										|| EmbargosConstants.IND_FLAG_SI.equals(cuentaTraba.getAgregarATraba()))) {					
+							//La cuentaTraba no se ha agregado a la Traba:
+							logger.debug("La cuentaTraba con id " + cuentaTraba.getCodCuentaTraba() + " no se encuentra agregada a la Traba y no se contabiliza.");
+						
+						} else if (cuentaTraba.getEstadoCuenta()==null || !EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE.equals(cuentaTraba.getEstadoCuenta())){
+							//La cuentaTraba no esta activa:
+							logger.debug("La cuentaTraba con id " + cuentaTraba.getCodCuentaTraba() + " no esta activa y no se contabiliza.");
+							
+						} else {
+							logger.debug("La cuentaTraba con id " + cuentaTraba.getCodCuentaTraba() + " no se contabiliza.");
+						}
 					}
 				}
 							
@@ -306,6 +320,21 @@ public class AccountingServiceImpl implements AccountingService{
 		return !existsTrabaNotAccounted;
 	}
 
+	
+	private boolean isCuentaTrabaPassingTheConditionsForAccounting(CuentaTraba cuentaTraba) {
+	
+		//Para contabilizar la cuentaTraba, se tienen que cumplir todos los casos siguientes:
+		// 1.- Estar en estado anterior a "Enviada a Contabilidad" -> corresponde al estado "Pendiente".
+		// 2.- Estar agregada a la Traba (tener activado el flag de agregarATraba).
+		// 3.- La cuentaTraba tenga estadoCuenta con valor "ACTIVE".
+		
+		return cuentaTraba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE
+				&& cuentaTraba.getAgregarATraba()!=null 
+				&& (EmbargosConstants.IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba())
+					|| EmbargosConstants.IND_FLAG_SI.equals(cuentaTraba.getAgregarATraba()))
+				&& cuentaTraba.getEstadoCuenta()!=null && EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE.equals(cuentaTraba.getEstadoCuenta());
+	}
+	
 
 	private Long crearControlFicheroComunes(ControlFichero controlFichero, String userName) throws Exception {
 		Long codControlFichero = null;
@@ -396,9 +425,11 @@ public class AccountingServiceImpl implements AccountingService{
 						boolean existsCuentaTrabaNotAccounted = false; 
 
 						for(CuentaTraba cuentaTraba : traba.getCuentaTrabas()) {
-
-							//Para contabilizar la cuentaTraba tiene que estar en estado anterior a "Enviada a Contabilidad":
-							if (cuentaTraba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE) {
+							
+							//Se comprueba si la cuenta Traba cumple las condiciones para ser contabilizada:
+							if (isCuentaTrabaPassConditionsForAccounting(cuentaTraba)) {		
+								
+								//Si la cuentaTraba pasa las condiciones para ser contabilizada:							
 								
 								if (!creado && cuentaTraba.getImporte().doubleValue() > 0) {
 									codFileControlFicheroComunes = crearControlFicheroComunes(controlFichero, userName);
@@ -422,11 +453,24 @@ public class AccountingServiceImpl implements AccountingService{
 
 							} else {
 
-								//La cuentaTraba se encuentra en un estado donde ya ha sido enviada a Contabilidad.
-
-								logger.debug("La cuentaTraba con id " + cuentaTraba.getCodCuentaTraba()
-									+ " no se puede contabilizar ya que se encuentra en estado : [codEstado=" + cuentaTraba.getEstadoTraba().getCodEstado()
-									+"; descEstado=" + cuentaTraba.getEstadoTraba().getDesEstado() + "]");
+								if(cuentaTraba.getEstadoTraba().getCodEstado() != EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE) {
+									//La cuentaTraba se encuentra en un estado donde ya ha sido enviada a Contabilidad:
+									logger.debug("La cuentaTraba con id " + cuentaTraba.getCodCuentaTraba() 
+										+ " no se puede contabilizar ya que se encuentra en estado : [codEstado=" + cuentaTraba.getEstadoTraba().getCodEstado() 
+										+"; descEstado=" + cuentaTraba.getEstadoTraba().getDesEstado() + "]");
+								
+								} else if (cuentaTraba.getAgregarATraba()==null || !(EmbargosConstants.IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba())
+												|| EmbargosConstants.IND_FLAG_SI.equals(cuentaTraba.getAgregarATraba()))) {					
+									//La cuentaTraba no se ha agregado a la Traba:
+									logger.debug("La cuentaTraba con id " + cuentaTraba.getCodCuentaTraba() + " no se encuentra agregada a la Traba y no se contabiliza.");
+								
+								} else if (cuentaTraba.getEstadoCuenta()==null || !EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE.equals(cuentaTraba.getEstadoCuenta())){
+									//La cuentaTraba no esta activa:
+									logger.debug("La cuentaTraba con id " + cuentaTraba.getCodCuentaTraba() + " no esta activa y no se contabiliza.");
+									
+								} else {
+									logger.debug("La cuentaTraba con id " + cuentaTraba.getCodCuentaTraba() + " no se contabiliza.");
+								}
 							}
 						}
 
@@ -505,6 +549,7 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setDetailPayment(detailPayment);
 			
 			result = accountingNoteService.contabilizar(accountingNote);
+			
 		} else {
 			boolean changed = seizureService.updateSeizedBankStatus(cuentaTraba, estadoImporteCero, userName);
 			
