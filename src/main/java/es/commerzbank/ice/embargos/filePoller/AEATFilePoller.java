@@ -24,10 +24,10 @@ import java.time.Duration;
 import java.time.Instant;
 
 @Component
-public class AEAT63FilePoller
+public class AEATFilePoller
     implements FileProcessor
 {
-    private static final Logger LOG = LoggerFactory.getLogger(AEAT63FilePoller.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AEATFilePoller.class);
 
     private static final String pollerName = "AEAT Poller";
     @Autowired
