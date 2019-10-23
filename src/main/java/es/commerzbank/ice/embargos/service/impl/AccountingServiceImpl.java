@@ -371,6 +371,7 @@ public class AccountingServiceImpl implements AccountingService{
 		entity.setFechaCreacion(ICEDateUtils.numericDateToLocalDate(controlFichero.getFechaCreacion()));
 		entity.setfUltimaModificacion(new Timestamp(date.getTime()));
 		entity.setUsuUltModificacion(userName);
+		entity.setAplicacion(EmbargosConstants.ID_APLICACION_EMBARGOS);
 		
 		result = fileControlServiceComunes.createFileControl(entity);
 		
