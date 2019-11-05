@@ -37,12 +37,14 @@ public abstract class FileControlMapper {
         //Guardar registro del control del fichero de Peticion:
         controlFichero.setTipoFichero(tipoFichero);
         controlFichero.setNombreFichero(originalName);
-        controlFichero.setRutaFichero(processedFile.getCanonicalPath());
+        if (processedFile != null)
+        	controlFichero.setRutaFichero(processedFile.getCanonicalPath());
+
         //Descripcion por defecto:
         controlFichero.setDescripcion(EmbargosConstants.CONTROL_FICHERO_DESCRIPCION_DEFAULT);
         
         //Calculo del CRC del fichero:
-        if (file.exists()) {
+        if (file != null && file.exists()) {
         	controlFichero.setNumCrc(Long.toString(FileUtils.checksumCRC32(file)));
         }
                 
@@ -115,6 +117,10 @@ public abstract class FileControlMapper {
 		else if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63) {
 
 			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_FINAL_GENERANDO;
+		}
+		else if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_FICHERO_FINAL_AEAT_INTERNAL) {
+
+			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_FINAL_AEAT_GENERANDO;
 		}
 		else {
 			//Estado inicial por defecto:

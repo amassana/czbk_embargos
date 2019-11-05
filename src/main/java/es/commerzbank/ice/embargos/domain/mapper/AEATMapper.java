@@ -94,7 +94,7 @@ public abstract class AEATMapper {
 		//Datos cuenta cliente 1:
 		CuentaEmbargo cuentaEmbargo = null;
 		
-		if (diligenciaFase3.getCodigoCuentaCliente1()!=null && !diligenciaFase3.getCodigoCuentaCliente1().isEmpty()) {
+		if (diligenciaFase3.getCodigoCuentaCliente1()!=null && !diligenciaFase3.getCodigoCuentaCliente1().isEmpty() && !"00000000000000000000".equals(diligenciaFase3.getCodigoCuentaCliente1())) {
 			
 			String codigoCuentaCliente1 = diligenciaFase3.getCodigoCuentaCliente1();
 			
@@ -102,7 +102,7 @@ public abstract class AEATMapper {
 			
 			AccountDTO accountDTO = customerAccountsMap.get(ibanFromCCC1);
 			
-			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, ibanFromCCC1, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
+			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, codigoCuentaCliente1, ibanFromCCC1, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
 						
 			cuentaEmbargosList.add(cuentaEmbargo);
 
@@ -111,7 +111,7 @@ public abstract class AEATMapper {
 		}
 		
 		//Datos cuenta cliente 2:		
-		if (diligenciaFase3.getCodigoCuentaCliente2()!=null && !diligenciaFase3.getCodigoCuentaCliente2().isEmpty()) {
+		if (diligenciaFase3.getCodigoCuentaCliente2()!=null && !diligenciaFase3.getCodigoCuentaCliente2().isEmpty() && !"00000000000000000000".equals(diligenciaFase3.getCodigoCuentaCliente2())) {
 			
 			String codigoCuentaCliente2 = diligenciaFase3.getCodigoCuentaCliente2();
 			
@@ -119,7 +119,7 @@ public abstract class AEATMapper {
 			
 			AccountDTO accountDTO = customerAccountsMap.get(ibanFromCCC2);
 			
-			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, ibanFromCCC2, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
+			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, codigoCuentaCliente2, ibanFromCCC2, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
 			
 			cuentaEmbargosList.add(cuentaEmbargo);
 
@@ -127,7 +127,7 @@ public abstract class AEATMapper {
 		}
 		
 		//Datos cuenta cliente 3:	
-		if (diligenciaFase3.getCodigoCuentaCliente3()!=null && !diligenciaFase3.getCodigoCuentaCliente3().isEmpty()) {
+		if (diligenciaFase3.getCodigoCuentaCliente3()!=null && !diligenciaFase3.getCodigoCuentaCliente3().isEmpty() && !"00000000000000000000".equals(diligenciaFase3.getCodigoCuentaCliente3())) {
 			
 			String codigoCuentaCliente3 = diligenciaFase3.getCodigoCuentaCliente3();
 			
@@ -135,7 +135,7 @@ public abstract class AEATMapper {
 			
 			AccountDTO accountDTO = customerAccountsMap.get(ibanFromCCC3);
 			
-			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, ibanFromCCC3, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
+			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, codigoCuentaCliente3, ibanFromCCC3, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
 			
 			cuentaEmbargosList.add(cuentaEmbargo);
 
@@ -149,7 +149,7 @@ public abstract class AEATMapper {
 		
 	}
 
-	private CuentaEmbargo setCuentaEmbargoFromAccountDTO(AccountDTO accountDTO, String ibanCalculatedFromDiligenciaFase3, Embargo embargo, 
+	private CuentaEmbargo setCuentaEmbargoFromAccountDTO(AccountDTO accountDTO, String codigoCuentaCliente, String ibanCalculatedFromDiligenciaFase3, Embargo embargo,
 			BigDecimal numeroOrden,	BigDecimal fechaUltmaModif, String usuarioModif) {
 		
 		CuentaEmbargo cuentaEmbargo = new CuentaEmbargo();
@@ -157,14 +157,14 @@ public abstract class AEATMapper {
 		String cuenta = null;
 		String iban = null;
 		
-		if (accountDTO!=null) {
+		if (false && accountDTO!=null) {
 			//Cuenta encontrada en DWH -> seteo de datos de DWH a partir del accountDTO:
 			cuenta = accountDTO.getAccountNum();
 			iban = accountDTO.getIban();
 		} else {
 			//Cuenta no encontrada en DWH -> setear el iban calculado a partir 
 			//del codigo cuenta cliente que viene del fichero de diligencias de embargo:
-			cuenta = null;
+			cuenta = codigoCuentaCliente; // era null....
 			iban = ibanCalculatedFromDiligenciaFase3;
 		}
 
@@ -227,7 +227,7 @@ public abstract class AEATMapper {
 			
 			AccountDTO accountDTO = customerAccountsMap.get(ibanFromCCC1);
 		
-			cuentaTraba = setCuentaTrabaFromAccountDTO(accountDTO, ibanFromCCC1, traba, numeroOrden, fechaUltmaModif, usuarioModif);
+			cuentaTraba = setCuentaTrabaFromAccountDTO(accountDTO, codigoCuentaCliente1, ibanFromCCC1, traba, numeroOrden, fechaUltmaModif, usuarioModif);
 			
 			cuentaTrabasList.add(cuentaTraba);
 			
@@ -243,7 +243,7 @@ public abstract class AEATMapper {
 			
 			AccountDTO accountDTO = customerAccountsMap.get(ibanFromCCC2);
 		
-			cuentaTraba = setCuentaTrabaFromAccountDTO(accountDTO, ibanFromCCC2, traba, numeroOrden, fechaUltmaModif, usuarioModif);
+			cuentaTraba = setCuentaTrabaFromAccountDTO(accountDTO, codigoCuentaCliente2, ibanFromCCC2, traba, numeroOrden, fechaUltmaModif, usuarioModif);
 			
 			cuentaTrabasList.add(cuentaTraba);
 			
@@ -259,7 +259,7 @@ public abstract class AEATMapper {
 			
 			AccountDTO accountDTO = customerAccountsMap.get(ibanFromCCC3);
 		
-			cuentaTraba = setCuentaTrabaFromAccountDTO(accountDTO, ibanFromCCC3, traba, numeroOrden, fechaUltmaModif, usuarioModif);
+			cuentaTraba = setCuentaTrabaFromAccountDTO(accountDTO, codigoCuentaCliente3, ibanFromCCC3, traba, numeroOrden, fechaUltmaModif, usuarioModif);
 			
 			cuentaTrabasList.add(cuentaTraba);
 
@@ -272,7 +272,7 @@ public abstract class AEATMapper {
 		traba.setFUltimaModificacion(fechaUltmaModif);
 	}
 
-	private CuentaTraba setCuentaTrabaFromAccountDTO(AccountDTO accountDTO, String ibanCalculatedFromDiligenciaFase3, Traba traba,
+	private CuentaTraba setCuentaTrabaFromAccountDTO(AccountDTO accountDTO, String cuenta, String ibanCalculatedFromDiligenciaFase3, Traba traba,
 			BigDecimal numeroOrden, BigDecimal fechaUltmaModif, String usuarioModif) {
 		
 		EstadoTraba estadoTraba;
@@ -293,7 +293,7 @@ public abstract class AEATMapper {
 		
 		} else {
 			//Cuenta no encontrada en DWH:
-			cuentaTraba.setCuenta(null);
+			cuentaTraba.setCuenta(cuenta);
 			cuentaTraba.setEstadoCuenta(EmbargosConstants.BANK_ACCOUNT_STATUS_NOTFOUND);
 			
 			//Iban calculado a partir del 'Codigo de Cuenta Cliente' que viene en el fichero de diligencias de embargos:

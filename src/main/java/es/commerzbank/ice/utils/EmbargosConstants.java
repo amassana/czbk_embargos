@@ -25,6 +25,7 @@ public class EmbargosConstants {
 	public static final long COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT = 3;
 	public static final long COD_TIPO_FICHERO_APUNTES_CONTABLES = 4;
 	public static final long COD_TIPO_FICHERO_ERRORES_TRABAS_ENVIADAS_AEAT = 5;
+	public static final long COD_TIPO_FICHERO_FICHERO_FINAL_AEAT_INTERNAL = 14;
 	public static final long COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63 = 6;
 	public static final long COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63 = 7;
 	public static final long COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63 = 8;
@@ -72,6 +73,9 @@ public class EmbargosConstants {
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_GENERATED = 6;
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_SENT = 7;
 	public static final long COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_CONFIRMED = 8;
+
+	public static final long COD_ESTADO_CTRLFICHERO_FINAL_AEAT_GENERANDO = 1;
+	public static final long COD_ESTADO_CTRLFICHERO_FINAL_AEAT_GENERADO = 6;
 	
 	public static final long COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_RECEIVED = 2;
 	//public static final long COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_ACCOUNTING = 3;

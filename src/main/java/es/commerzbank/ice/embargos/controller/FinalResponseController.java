@@ -207,7 +207,7 @@ public class FinalResponseController {
 		}
 	}
 
-	@GetMapping(value = "/{codeFileControl}", produces = { "application/json" })
+	@PostMapping(value = "/{codeFileControl}/generateFinalResponse", produces = { "application/json" })
 	public ResponseEntity<Void> createNorma63(Authentication authentication,
 											  @PathVariable("codeFileControl") Long codeFileControl) {
 		logger.info("SeizureSummaryController - createNorma63 - start");
