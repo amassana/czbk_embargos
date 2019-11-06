@@ -1,16 +1,15 @@
 package es.commerzbank.ice.embargos.service;
 
-
-import java.math.BigDecimal;
 import java.util.List;
 
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.embargos.domain.dto.SeizedBankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureActionDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureSaveDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureStatusDTO;
-import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
+import es.commerzbank.ice.embargos.domain.entity.Embargo;
 
 public interface SeizureService {
 
@@ -30,4 +29,7 @@ public interface SeizureService {
 	public byte[] generateSeizureLetter(Integer idSeizure) throws Exception;
 	public byte[] generateSeizureRequestF3(Integer codControlFichero) throws Exception;
 	public byte[] generateSeizureResponseF4(Integer codControlFichero) throws Exception;
+	
+	public List<Embargo> listEmbargosTransferToTax();
+	public boolean jobTransferToTax(String authorization, String user) throws ICEException;
 }

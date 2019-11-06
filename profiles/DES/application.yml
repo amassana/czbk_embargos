@@ -5,7 +5,10 @@ spring:
   mvc:
     favicon:
       enabled: false
-      
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: always
   jpa:
     show-sql: true
     hibernate:
