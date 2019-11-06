@@ -519,6 +519,8 @@ public abstract class Cuaderno63Mapper {
 		estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE);
 		cuentaTraba.setEstadoTraba(estadoTraba);
 		cuentaTraba.setOrigenEmb(EmbargosConstants.IND_FLAG_YES);
+		cuentaTraba.setAgregarATraba(EmbargosConstants.IND_FLAG_YES);
+			
 		cuentaTraba.setUsuarioUltModificacion(usuarioModif);
 		cuentaTraba.setFUltimaModificacion(fechaUltmaModif);
 		

@@ -340,7 +340,6 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 			fileControlRepository.save(controlFicheroEmbargo);
 
 		} catch (Exception e) {
-
 			//TODO Estado de ERROR pendiente de ser eliminado, se comenta:
 			/*
 			//Transaccion para cambiar el estado de controlFicheroPeticion a ERROR:

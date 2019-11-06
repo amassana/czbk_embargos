@@ -310,6 +310,7 @@ public abstract class AEATMapper {
 		estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE);
 		cuentaTraba.setEstadoTraba(estadoTraba);
 		cuentaTraba.setOrigenEmb(EmbargosConstants.IND_FLAG_YES);
+		cuentaTraba.setAgregarATraba(EmbargosConstants.IND_FLAG_YES);
 		cuentaTraba.setNumeroOrdenCuenta(numeroOrden);
 		cuentaTraba.setUsuarioUltModificacion(usuarioModif);
 		cuentaTraba.setFUltimaModificacion(fechaUltmaModif);
