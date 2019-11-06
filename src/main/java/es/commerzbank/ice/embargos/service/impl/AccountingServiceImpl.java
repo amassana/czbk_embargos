@@ -669,7 +669,7 @@ public class AccountingServiceImpl implements AccountingService{
 		
 		ControlFichero controlFichero = embargo.getControlFichero();
 		
-		String formatoFichero = EmbargosUtils.determineFileFormatByTipoFichero(controlFichero.getCodControlFichero());
+		String formatoFichero = EmbargosUtils.determineFileFormatByTipoFichero(controlFichero.getTipoFichero().getCodTipoFichero());
 		
 		if (EmbargosConstants.FILE_FORMAT_AEAT.equals(formatoFichero) 
 				|| EmbargosConstants.FILE_FORMAT_NORMA63.equals(formatoFichero)) {
@@ -684,7 +684,7 @@ public class AccountingServiceImpl implements AccountingService{
 				return false;
 			}
 			
-		} else {
+		} else if (EmbargosConstants.FILE_FORMAT_CGPJ.equals(formatoFichero)) {
 			
 			//Si es de CGPJ -> comprobar reference1 y reference2:
 			Map<String,String> referencesMap = generateReferencesForCGPJ(numeroEmbargo);
@@ -701,6 +701,10 @@ public class AccountingServiceImpl implements AccountingService{
 	
 				return false;	
 			}
+		} else {
+			logger.error("El formato de fichero del embargo " + numeroEmbargo + " no coincide con ninguno de los tipos de ficheros registrados");
+			
+			return false;
 		}
 		
 		
