@@ -562,7 +562,7 @@ public class SeizureServiceImpl implements SeizureService {
 		if (listaEmbargos!=null) {
 			for (Embargo embargo : listaEmbargos) {
 				Long importe = obtenerImporteEmbargo(embargo);
-				if (importe!=null) transferEmbargoToTax(embargo, importe, authorization, user);
+				transferEmbargoToTax(embargo, importe, authorization, user);
 			}
 		}
 		
@@ -581,6 +581,8 @@ public class SeizureServiceImpl implements SeizureService {
 		
 		HttpClient httpClient = HttpClients.custom().build();
 		HttpPost request = new HttpPost(generalParametersService.loadStringParameter(EmbargosConstants.ENDPOINT_EMBARGOS_TO_TAX));
+		
+		if (importe==null || Long.valueOf(0).equals(importe)) importe = embargo.getImporte().longValue();
 		
 		String cuenta = null;
 		List <CuentaEmbargo> listaCuentas = embargo.getCuentaEmbargos();
