@@ -1,8 +1,10 @@
 package es.commerzbank.ice.embargos.service.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.net.SocketTimeoutException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -10,6 +12,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.codec.Charsets;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +28,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.util.MimeTypeUtils;
 
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
 import es.commerzbank.ice.embargos.domain.dto.SeizedBankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureActionDTO;
@@ -27,6 +39,7 @@ import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureSaveDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureStatusDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
+import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTrabaActuacion;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
@@ -48,6 +61,7 @@ import es.commerzbank.ice.embargos.repository.SeizedBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.SeizedRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
 import es.commerzbank.ice.embargos.repository.SeizureStatusRepository;
+import es.commerzbank.ice.embargos.repository.SeizureSummaryBankAccountRepository;
 import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.utils.EmbargosConstants;
 import es.commerzbank.ice.utils.EmbargosUtils;
@@ -113,7 +127,11 @@ public class SeizureServiceImpl implements SeizureService {
 	
 	@Autowired
 	private OracleDataSourceEmbargosConfig oracleDataSourceEmbargos;
+	
+	@Autowired
+	private SeizureSummaryBankAccountRepository seizureSummaryBankAccountRepository;
 
+	
 	@Override
 	public List<SeizureDTO> getSeizureListByCodeFileControl(Long codeFileControl) {
 		logger.info("SeizureServiceImpl - getSeizureListByCodeFileControl - start");
@@ -532,5 +550,77 @@ public class SeizureServiceImpl implements SeizureService {
 
 	}
 
+	@Override
+	public List<Embargo> listEmbargosTransferToTax() {
+		return seizureRepository.listEmbargosTransferToTax();
+	}
+	
+	@Override
+	public boolean jobTransferToTax(String authorization, String user) throws ICEException {
+		// TODO: OBTENER EL IMPORTE DE LA TABLA resultado_embargo del campo total_neto
+		List<Embargo> listaEmbargos = listEmbargosTransferToTax();
+		if (listaEmbargos!=null) {
+			for (Embargo embargo : listaEmbargos) {
+				Long importe = obtenerImporteEmbargo(embargo);
+				if (importe!=null) transferEmbargoToTax(embargo, importe, authorization, user);
+			}
+		}
+		
+		return true;
+	}
+	
+	private Long obtenerImporteEmbargo(Embargo embargo) {
+		Long importe = null;
+		List<Long> importes = seizureSummaryBankAccountRepository.getImporteEmbargo(embargo.getCodEmbargo());
+		if (importes!=null && importes.size()>0) importe = importes.get(0);
+		return importe;
+	}
+
+	private boolean transferEmbargoToTax(Embargo embargo, Long importe, String authorization, String user) throws ICEException {
+		boolean result = false;
+		
+		HttpClient httpClient = HttpClients.custom().build();
+		HttpPost request = new HttpPost(generalParametersService.loadStringParameter(EmbargosConstants.ENDPOINT_EMBARGOS_TO_TAX));
+		
+		String cuenta = null;
+		List <CuentaEmbargo> listaCuentas = embargo.getCuentaEmbargos();
+		if (listaCuentas!=null && listaCuentas.size()>0) {
+			cuenta = listaCuentas.get(0).getCuenta();
+		}
+		else {
+			logger.error("Embargo" + embargo.getCodEmbargo() + " sin cuentas");
+			return false;
+		}
+		
+		String message = "{\"user\": \"" + user + "\", \"nombre\": \"" + embargo.getNombre() + "\", \"cuenta\": \"" + cuenta 
+				+ "\", \"nif\": \"" + embargo.getDatosCliente().getNif() + "\", \"sucursal\": \"" + embargo.getCodSucursal() 
+				+ "\", \"importe\": \"" + importe + "\", \"numEmbargo\": \"" + embargo.getNumeroEmbargo() + "\"}";
+		
+		request.setEntity(new StringEntity(message, ContentType.create(MimeTypeUtils.TEXT_XML_VALUE, Charsets.UTF_8)));
+		
+		try {
+			request.setHeader("Content-Type", "application/json");
+			request.setHeader("Authorization", authorization);
+			
+			HttpResponse response = null;
+	        try {
+	            response = httpClient.execute(request);
+	        } catch (ConnectTimeoutException | SocketTimeoutException ex) {
+	        	logger.error("Error comunicacions timeout ", ex);
+	        } catch (IOException ex) {
+	        	logger.error("Error comunicacions ", ex);
+	        }
+	        
+	        int statusCode = response.getStatusLine().getStatusCode();
+	        if (statusCode == HttpStatus.SC_OK) {
+	        	result = true;
+	        }
+	        
+		} catch (Exception e) {
+			logger.error("ERROR Extracting response", e);
+        }
+		
+		return result;
+	}
 
 }

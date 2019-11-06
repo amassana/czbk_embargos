@@ -287,6 +287,9 @@ public class EmbargosConstants {
 	//Definicion del valor por defecto de los PARAMETROS:
 	public static final String PARAMETRO_DWH_ENDPOINT_CLIENTACCOUNT_DEFAULT_VALUE = "/datawarehouse/client-account";
 
+	//JOB de embargos a impuestos
+	public static final String CRON_JOB_EMBARGOS_TO_TAX = "embargos.job.cron.embargo.to.tax";
+	public static final String ENDPOINT_EMBARGOS_TO_TAX = "embargos.endpoint.to.impuesto";
+	public static final String JOB_EMBARGOS_TO_TAX_USER = "embargos.job.embargo.to.tax.user";
 	
-		
 }
