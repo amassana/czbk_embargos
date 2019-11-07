@@ -368,7 +368,7 @@ public class AccountingServiceImpl implements AccountingService{
 		entity.setContador(contador.getContador());
 		entity.setDescripcion(controlFichero.getDescripcion());
 		
-		entity.setFechaCreacion(ICEDateUtils.numericDateToLocalDate(controlFichero.getFechaCreacion()));
+		entity.setFechaCreacion(LocalDate.now());
 		entity.setfUltimaModificacion(new Timestamp(date.getTime()));
 		entity.setUsuUltModificacion(userName);
 		entity.setAplicacion(EmbargosConstants.ID_APLICACION_EMBARGOS);
