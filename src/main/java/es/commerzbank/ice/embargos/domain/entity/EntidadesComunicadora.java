@@ -52,7 +52,7 @@ public class EntidadesComunicadora implements Serializable {
 	@Column(length=100)
 	private String iban;
 
-	@Column(name="IDENTIFICADOR_ENTIDAD", length=2)
+	@Column(name="IDENTIFICADOR_ENTIDAD", length=9)
 	private String identificadorEntidad;
 
 	@Column(name="IND_CGPJ", length=1)

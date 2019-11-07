@@ -71,6 +71,10 @@ public abstract class CommunicatingEntityMapper {
 			entidadesComunicadora.setDiasRespuestaF6(new BigDecimal(communicatingEntity.getResponseDaysF6()));
 		}
 		
+		if (communicatingEntity.isIndAeat()) {
+			entidadesComunicadora.setIdentificadorEntidad(communicatingEntity.getNif());
+		}
+		
 		entidadesComunicadora.setIndFormatoAeat(communicatingEntity.isIndAeat() ? EmbargosConstants.IND_FLAG_SI : EmbargosConstants.IND_FLAG_NO);
 		entidadesComunicadora.setIndCgpj(communicatingEntity.isIndCgpj() ? EmbargosConstants.IND_FLAG_SI : EmbargosConstants.IND_FLAG_NO);
 		entidadesComunicadora.setIndNorma63(communicatingEntity.isIndNorma63() ? EmbargosConstants.IND_FLAG_SI : EmbargosConstants.IND_FLAG_NO);

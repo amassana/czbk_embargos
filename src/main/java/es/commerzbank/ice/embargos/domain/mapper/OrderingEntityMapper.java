@@ -20,7 +20,7 @@ public abstract class OrderingEntityMapper {
 	@Mappings({
 		@Mapping(source = "codOrderingEntity", target = "codEntidadOrdenante"),
 		@Mapping(source = "nifEntity", target = "nifEntidad"),
-		@Mapping(source = "desEntity", target = "desEntidad"),
+		@Mapping(source = "desEntity", target = "desEntidad")
 	})
 	public abstract EntidadesOrdenante toEntidadOrdenante(OrderingEntity orderingEntity);
 
@@ -44,9 +44,15 @@ public abstract class OrderingEntityMapper {
 	protected void setEntidadOrdenanteAfterMapping(@MappingTarget EntidadesOrdenante entidadesOrdenante, OrderingEntity orderingEntity) {
 		EntidadesComunicadora entidad = new EntidadesComunicadora();
 		
+		
+		
 		long code = (int) orderingEntity.getCommunicatingEntity().getCode();
 		entidad.setCodEntidadPresentadora(code);
 		entidadesOrdenante.setEntidadesComunicadora(entidad);
+		
+		if (orderingEntity.getIndAeat()) {
+			entidadesOrdenante.setIdentificadorEntidad(orderingEntity.getNifEntity());
+		}
 		entidadesOrdenante.setIndActivo(orderingEntity.isActive() ? EmbargosConstants.IND_FLAG_SI : EmbargosConstants.IND_FLAG_NO);
 		entidadesOrdenante.setIndFormatoAeat(orderingEntity.getIndAeat() ? EmbargosConstants.IND_FLAG_SI : EmbargosConstants.IND_FLAG_NO);
 		entidadesOrdenante.setIndCgpj(orderingEntity.getIndCgpj() ? EmbargosConstants.IND_FLAG_SI : EmbargosConstants.IND_FLAG_NO);

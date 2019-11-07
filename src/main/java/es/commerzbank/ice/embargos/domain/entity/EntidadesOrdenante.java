@@ -31,7 +31,7 @@ public class EntidadesOrdenante implements Serializable {
 	@Column(name="F_ULTIMA_MODIFICACION", precision=14)
 	private BigDecimal fUltimaModificacion;
 
-	@Column(name="IDENTIFICADOR_ENTIDAD", length=2)
+	@Column(name="IDENTIFICADOR_ENTIDAD", length=9)
 	private String identificadorEntidad;
 
 	@Column(name="IND_CGPJ", length=1)
