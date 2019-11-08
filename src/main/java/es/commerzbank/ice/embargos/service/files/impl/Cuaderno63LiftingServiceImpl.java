@@ -93,7 +93,7 @@ public class Cuaderno63LiftingServiceImpl
     {
         BeanReader beanReader = null;
         Reader reader = null;
-
+        Long codFileControlComunes = null;
 
         try {
             BigDecimal importeMaximoAutomaticoDivisa =
@@ -189,7 +189,11 @@ public class Cuaderno63LiftingServiceImpl
 
                         liftingBankAccountRepository.save(cuentaLevantamiento);
 
-                        accountingService.sendAccountingLiftingBankAccount(cuentaLevantamiento, embargo, EmbargosConstants.USER_AUTOMATICO);
+                        Long aux = accountingService.sendAccountingLiftingBankAccount(cuentaLevantamiento, embargo, EmbargosConstants.USER_AUTOMATICO);
+                        
+                        if (aux != null && aux > 0) {
+                        	codFileControlComunes = aux;
+                        }
                     }
 
                     if (allCuentasLevantamientoContabilizados) {
@@ -206,7 +210,7 @@ public class Cuaderno63LiftingServiceImpl
 
             // cerrar y enviar la contabilización
             if (allLevantamientosContabilizados) {
-                contaGenExecutor.generacionFicheroContabilidad(controlFicheroLevantamiento.getCodControlFichero());
+                contaGenExecutor.generacionFicheroContabilidad(codFileControlComunes);
             }
 
             // Actualizar control fichero

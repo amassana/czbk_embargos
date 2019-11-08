@@ -2,6 +2,7 @@ package es.commerzbank.ice.embargos.service.impl;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,6 +29,9 @@ import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
 import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.comun.lib.util.ValueConstants;
+import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
+import es.commerzbank.ice.datawarehouse.service.AccountService;
+import es.commerzbank.ice.datawarehouse.util.DWHUtils;
 import es.commerzbank.ice.embargos.domain.dto.SeizureStatusDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
@@ -101,6 +105,9 @@ public class AccountingServiceImpl implements AccountingService{
 	
 	@Autowired
 	private FinalFileRepository finalFileRepository;
+	
+	@Autowired
+	private AccountService accountService;
 	
 
 	@Override
@@ -522,7 +529,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 	private int contabilizarCuentaTraba(CuentaTraba cuentaTraba, String debitAccount, String creditAccount,
 			Long oficinaCuentaRecaudacion, String reference1, String reference2, String detailPayment,
-			Long codFileControlFicheroComunes, String nombre, String nif, String userName, Long estadoImporteCero) {
+			Long codFileControlFicheroComunes, String nombre, String nif, String userName, Long estadoImporteCero) throws ParseException {
 		
 		logger.info("contabilizarCuentaTraba - start");
 		
@@ -539,7 +546,7 @@ public class AccountingServiceImpl implements AccountingService{
 			//accountingNote.setContador(contador);
 			accountingNote.setAmount(amount);
 			accountingNote.setCodCurrency(cuentaTraba.getDivisa());
-			accountingNote.setDebitAccount(debitAccount);
+			accountingNote.setDebitAccount(getCuenta(nif, debitAccount));
 			accountingNote.setCreditAccount(creditAccount);
 			accountingNote.setActualDate(new Date());
 			//accountingNote.setExecutionDate(new Date());
@@ -552,6 +559,7 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setName(nombre);
 			accountingNote.setNif(nif);
 			accountingNote.setDetailPayment(detailPayment);
+			
 			
 			result = accountingNoteService.contabilizar(accountingNote);
 			
@@ -637,7 +645,7 @@ public class AccountingServiceImpl implements AccountingService{
 	}
 
 	@Override
-	public boolean manageAccountingNoteSeizureCallback(AccountingNote accountingNote, String userName) {
+	public boolean manageAccountingNoteSeizureCallback(AccountingNote accountingNote, String userName) throws ParseException {
 		
 		//Se tomaran los campos IBS_CREDIT_ACCOUNT,TRIM(IBS_REFERENCE_1+IBS_REFERENCE_2),IBS_AMOUNT para 
 		//determinar que elemento se ha contabilizado y marcar su estado a contabilizado.
@@ -646,7 +654,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 		//1. Se obtiene la Cuenta Traba:
 
-		String cuenta = accountingNote.getDebitAccount();
+		String cuenta = getIban(accountingNote.getNif(), accountingNote.getDebitAccount());
 		BigDecimal importe = BigDecimal.valueOf(accountingNote.getAmount());
 		EstadoTraba estadoTraba = new EstadoTraba();
 		estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_ENVIADA_A_CONTABILIDAD);
@@ -783,14 +791,15 @@ public class AccountingServiceImpl implements AccountingService{
 		return true;
 	}
 
+
 	@Override
-	public boolean manageAccountingNoteLiftingCallback(AccountingNote accountingNote, String userName)
+	public boolean manageAccountingNoteLiftingCallback(AccountingNote accountingNote, String userName) throws ParseException
 	{
 		
 		logger.info("manageAccountingNoteLiftingCallback - start");
 		
 		// Localizar cuenta levantameiento
-		String cuenta = accountingNote.getDebitAccount();
+		String cuenta = getIban(accountingNote.getNif(), accountingNote.getCreditAccount());
 		BigDecimal importe = BigDecimal.valueOf(accountingNote.getAmount());
 		EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
 		estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION);
@@ -863,7 +872,7 @@ public class AccountingServiceImpl implements AccountingService{
 	}
 
 	@Override
-	public boolean undoAccounting(Long codeFileControl, Long idSeizure, String numAccount, String userName) throws ICEException{
+	public boolean undoAccounting(Long codeFileControl, Long idSeizure, String numAccount, String userName) throws ICEException, ParseException{
 
 		logger.info("undoAccounting - start");
 
@@ -1008,10 +1017,9 @@ public class AccountingServiceImpl implements AccountingService{
 	}
 
 	@Override
-	public boolean sendAccountingLiftingBankAccount(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, String userName)
+	public Long sendAccountingLiftingBankAccount(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, String userName)
 			throws Exception
 	{
-		boolean response = true;
 
 		String cuentaRecaudacion = determineCuentaRecaudacion();
 		Long oficinaCuentaRecaudacion = determineOficinaCuentaRecaudacion();
@@ -1026,7 +1034,7 @@ public class AccountingServiceImpl implements AccountingService{
 			sendAccountingLiftingBankAccountInternal(cuentaLevantamiento, embargo, codFileControlFicheroComunes, userName, oficinaCuentaRecaudacion, cuentaRecaudacion, contabilizacionCallbackNameParameter);
 		}
 
-		return response;
+		return codFileControlFicheroComunes;
 	}
 
 	private boolean sendAccountingLiftingBankAccountInternal(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, Long codFileControlFicheroComunes, String userName, Long oficinaCuentaRecaudacion, String cuentaRecaudacion, String contabilizacionCallbackNameParameter)
@@ -1053,7 +1061,7 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setAmount(amount);
 			accountingNote.setCodCurrency(cuentaLevantamiento.getCodDivisa());
 			accountingNote.setDebitAccount(cuentaRecaudacion);
-			accountingNote.setCreditAccount(cuentaLevantamiento.getCuenta());
+			//accountingNote.setCreditAccount(cuentaLevantamiento.getCuenta());
 			accountingNote.setActualDate(new Date());
 			//accountingNote.setExecutionDate(new Date());
 			accountingNote.setReference1(reference1);
@@ -1065,7 +1073,9 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setName(embargo.getDatosCliente().getNombre());
 			accountingNote.setNif(embargo.getDatosCliente().getNif());	
 			accountingNote.setDetailPayment(detailPayment);
-	
+			
+			accountingNote.setCreditAccount(getCuenta(embargo.getDatosCliente().getNif(), cuentaLevantamiento.getCuenta()));
+ 	
 			resultado = accountingNoteService.contabilizar(accountingNote);
 		} else {
 			liftingService.updateLiftingBankAccountingStatus(cuentaLevantamiento, EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_CONTABILIZADO, userName);
@@ -1217,6 +1227,30 @@ public class AccountingServiceImpl implements AccountingService{
 		logger.info("manageAccountingNoteFinalFileCallback - end");
 		
 		return true;
+	}
+	
+	
+	private String getCuenta(String nif, String iban) throws ParseException {
+		String cuenta = null;
+		List<CustomerDTO> customers = accountService.showCustomerDetailsByNif(nif, null, null, false);
+		
+		if (customers != null && customers.size() > 0) {
+			cuenta = DWHUtils.getCuenta(customers.get(0), iban);
+		}
+		
+		return cuenta;
+	}
+	
+	private String getIban(String nif, String debitAccount) throws ParseException {
+		String iban = null;
+		
+		List<CustomerDTO> customers = accountService.showCustomerDetailsByNif(nif, null, null, false);
+		
+		if (customers != null && customers.size() > 0) {
+			iban = DWHUtils.getIban(customers.get(0), debitAccount);
+		}
+		
+		return iban;
 	}
 
 }

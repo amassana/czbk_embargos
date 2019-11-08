@@ -88,6 +88,7 @@ public class AEATLiftingServiceImpl
         
     	BeanReader beanReader = null;
         Reader reader = null;
+        Long codFilesControlComunes = null;
         
         try {
             BigDecimal importeMaximoAutomaticoDivisa =
@@ -182,7 +183,11 @@ public class AEATLiftingServiceImpl
 
                         liftingBankAccountRepository.save(cuentaLevantamiento);
 
-                        accountingService.sendAccountingLiftingBankAccount(cuentaLevantamiento, embargo, EmbargosConstants.USER_AUTOMATICO);
+                        Long aux = accountingService.sendAccountingLiftingBankAccount(cuentaLevantamiento, embargo, EmbargosConstants.USER_AUTOMATICO);
+                        
+                        if (aux != null && aux > 0) {
+                        	codFilesControlComunes = aux;
+                        }
                     }
 
                     if (allCuentasLevantamientoContabilizados) {
@@ -211,7 +216,7 @@ public class AEATLiftingServiceImpl
 
             // cerrar y enviar la contabilización
             if (allLevantamientosContabilizados) {
-                contaGenExecutor.generacionFicheroContabilidad(controlFicheroLevantamiento.getCodControlFichero());
+                contaGenExecutor.generacionFicheroContabilidad(codFilesControlComunes);
             }
 
             // Actualizar control fichero
