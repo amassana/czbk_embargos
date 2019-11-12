@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -146,7 +147,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	        // use a StreamFactory to create a BeanReader
 	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT);
 			
-	        reader = new InputStreamReader(new FileInputStream(processingFile), encoding);
+	        reader = new InputStreamReader(new FileInputStream(processingFile)); 
 	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_DILIGENCIAS, reader);
 	        
 	        Object record = null;
