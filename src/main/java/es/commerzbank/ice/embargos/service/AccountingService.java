@@ -14,8 +14,8 @@ public interface AccountingService {
 	public Long sendAccountingLiftingBankAccount(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, String userName) throws ICEException, Exception;
 	public boolean sendAccountingFinalFile(Long codeFileControl, String userName) throws ICEException, Exception;
 
-	public boolean manageAccountingNoteSeizureCallback(AccountingNote accountingNote, String userName) throws ParseException;
-	public boolean manageAccountingNoteLiftingCallback(AccountingNote accountingNote, String userName) throws ParseException;
+	public boolean manageAccountingNoteSeizureCallback(AccountingNote accountingNote, String userName) throws ParseException, ICEException;
+	public boolean manageAccountingNoteLiftingCallback(AccountingNote accountingNote, String userName) throws ParseException, ICEException;
 	public boolean manageAccountingNoteFinalFileCallback(AccountingNote accountingNote, String userName) throws ICEException;
 	
 	public boolean undoAccounting(Long codeFileControl, Long idSeizure, String numAccount, String userName) throws ICEException, ParseException;

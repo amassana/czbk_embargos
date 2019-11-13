@@ -529,7 +529,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 	private int contabilizarCuentaTraba(CuentaTraba cuentaTraba, String debitAccount, String creditAccount,
 			Long oficinaCuentaRecaudacion, String reference1, String reference2, String detailPayment,
-			Long codFileControlFicheroComunes, String nombre, String nif, String userName, Long estadoImporteCero) throws ParseException {
+			Long codFileControlFicheroComunes, String nombre, String nif, String userName, Long estadoImporteCero) throws ParseException, ICEException {
 		
 		logger.info("contabilizarCuentaTraba - start");
 		
@@ -645,7 +645,7 @@ public class AccountingServiceImpl implements AccountingService{
 	}
 
 	@Override
-	public boolean manageAccountingNoteSeizureCallback(AccountingNote accountingNote, String userName) throws ParseException {
+	public boolean manageAccountingNoteSeizureCallback(AccountingNote accountingNote, String userName) throws ParseException, ICEException {
 		
 		//Se tomaran los campos IBS_CREDIT_ACCOUNT,TRIM(IBS_REFERENCE_1+IBS_REFERENCE_2),IBS_AMOUNT para 
 		//determinar que elemento se ha contabilizado y marcar su estado a contabilizado.
@@ -793,7 +793,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 
 	@Override
-	public boolean manageAccountingNoteLiftingCallback(AccountingNote accountingNote, String userName) throws ParseException
+	public boolean manageAccountingNoteLiftingCallback(AccountingNote accountingNote, String userName) throws ParseException, ICEException
 	{
 		
 		logger.info("manageAccountingNoteLiftingCallback - start");
@@ -1230,7 +1230,7 @@ public class AccountingServiceImpl implements AccountingService{
 	}
 	
 	
-	private String getCuenta(String nif, String iban) throws ParseException {
+	private String getCuenta(String nif, String iban) throws ParseException, ICEException {
 		String cuenta = null;
 		List<CustomerDTO> customers = accountService.showCustomerDetailsByNif(nif, null, null, false);
 		
@@ -1241,7 +1241,7 @@ public class AccountingServiceImpl implements AccountingService{
 		return cuenta;
 	}
 	
-	private String getIban(String nif, String debitAccount) throws ParseException {
+	private String getIban(String nif, String debitAccount) throws ParseException, ICEException {
 		String iban = null;
 		
 		List<CustomerDTO> customers = accountService.showCustomerDetailsByNif(nif, null, null, false);
