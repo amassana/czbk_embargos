@@ -11,8 +11,8 @@
 	<parameter name="conn_param" class="java.sql.Connection"/>
 	<parameter name="COD_CONTROL_FICHERO" class="java.lang.Integer"/>
 	<queryString>
-		<![CDATA[ SELECT
-	pic.CUENTA,
+		<![CDATA[SELECT
+	pic.IBAN,
 	pti.NIF,
 	pti.RAZON_SOCIAL,
 	dc.NOMBRE AS RAZON_SOCIAL_INTERNA,
@@ -28,8 +28,8 @@ INNER JOIN PETICION_INFORMACION_CUENTAS pic ON
 WHERE
 	cf.COD_CONTROL_FICHERO = $P{COD_CONTROL_FICHERO}]]>
 	</queryString>
-	<field name="CUENTA" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="CUENTA"/>
+	<field name="IBAN" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="IBAN"/>
 	</field>
 	<field name="NIF" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="NIF"/>
@@ -92,7 +92,7 @@ WHERE
 				<text><![CDATA[NIF]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="210" y="43" width="168" height="18" uuid="d4342627-c9bd-4d4d-9e97-95ba0e0e5c0e">
+				<reportElement x="229" y="43" width="168" height="18" uuid="d4342627-c9bd-4d4d-9e97-95ba0e0e5c0e">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="70336e19-b482-4d6d-8e95-6a79b597cad8"/>
 				</reportElement>
 				<box leftPadding="3" bottomPadding="3">
@@ -107,7 +107,7 @@ WHERE
 				<text><![CDATA[RAZON SOCIAL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="70" y="43" width="130" height="18" uuid="f12aaf25-bfec-497a-8879-61d9d4430ad9">
+				<reportElement x="70" y="43" width="150" height="18" uuid="f12aaf25-bfec-497a-8879-61d9d4430ad9">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ffff8303-2ce5-4843-b132-428ad5597b6e"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -137,7 +137,7 @@ WHERE
 				<text><![CDATA[FECHA DE CREACIÓN: ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="387" y="43" width="160" height="18" uuid="5204a177-d713-4d8e-bcd4-a3f8041af5cf">
+				<reportElement x="406" y="43" width="160" height="18" uuid="5204a177-d713-4d8e-bcd4-a3f8041af5cf">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="cbaa5abf-4acb-43b2-9be7-7cc1f22a04a3"/>
 				</reportElement>
 				<box leftPadding="2" bottomPadding="2">
@@ -168,7 +168,7 @@ WHERE
 				<textFieldExpression><![CDATA[$F{NIF}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="210" y="1" width="168" height="18" uuid="0f1d4b90-399b-4e67-9ece-1caa97eebb4d">
+				<reportElement x="229" y="1" width="168" height="18" uuid="0f1d4b90-399b-4e67-9ece-1caa97eebb4d">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="70336e19-b482-4d6d-8e95-6a79b597cad8"/>
 				</reportElement>
 				<box topPadding="5" leftPadding="2" bottomPadding="0">
@@ -183,7 +183,7 @@ WHERE
 				<textFieldExpression><![CDATA[$F{RAZON_SOCIAL}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="70" y="1" width="130" height="18" uuid="cc272600-7edf-417f-b1da-b7d3f5767a41">
+				<reportElement x="70" y="1" width="150" height="18" uuid="cc272600-7edf-417f-b1da-b7d3f5767a41">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ffff8303-2ce5-4843-b132-428ad5597b6e"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -196,10 +196,10 @@ WHERE
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{CUENTA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{IBAN}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="387" y="1" width="160" height="18" uuid="465867d3-9861-4b87-a198-37c5e67eaab2">
+				<reportElement x="406" y="1" width="160" height="18" uuid="465867d3-9861-4b87-a198-37c5e67eaab2">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="cbaa5abf-4acb-43b2-9be7-7cc1f22a04a3"/>
 				</reportElement>
 				<box topPadding="5" leftPadding="5">
