@@ -174,39 +174,23 @@ ORDER BY
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="125" splitType="Stretch">
+		<band height="117" splitType="Stretch">
 			<staticText>
-				<reportElement x="5" y="83" width="311" height="20" uuid="abe67322-132f-4faf-aa22-d8c4d7118d6b"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Serif" size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[LISTADO DE DILIGENCIAS DE EMBARGO DE]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="621" y="82" width="80" height="20" uuid="6a768ecd-1226-49d2-b679-18655221f4c8"/>
+				<reportElement x="631" y="73" width="80" height="20" uuid="6a768ecd-1226-49d2-b679-18655221f4c8"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha Creación:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="621" y="102" width="80" height="20" uuid="dc0c91de-1865-43c9-b636-c165d2240743"/>
+				<reportElement x="631" y="93" width="80" height="20" uuid="dc0c91de-1865-43c9-b636-c165d2240743"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha Vto:]]></text>
 			</staticText>
-			<textField>
-				<reportElement isPrintRepeatedValues="false" x="316" y="83" width="156" height="20" uuid="fba90554-2346-4bb5-a0e5-a386fcd9d379">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a439b967-a736-41eb-949d-01afc719f1c8"/>
-				</reportElement>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Serif" size="14" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{DES_ENTIDAD}]]></textFieldExpression>
-			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="701" y="102" width="89" height="20" uuid="fe2329a6-563a-445c-8f60-85f5c1025d91">
+				<reportElement x="711" y="93" width="89" height="20" uuid="fe2329a6-563a-445c-8f60-85f5c1025d91">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f81bdc1c-0b74-4ed0-8e42-a5e3c8a014e7"/>
 				</reportElement>
 				<box leftPadding="3"/>
@@ -216,7 +200,7 @@ ORDER BY
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHAVTO}.toString()))]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="701" y="82" width="89" height="20" uuid="263b4219-524a-4e9a-82a0-c3bd1bfba248">
+				<reportElement x="711" y="73" width="89" height="20" uuid="263b4219-524a-4e9a-82a0-c3bd1bfba248">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7c7f0214-50a8-4daa-8080-605c59aa8203"/>
 				</reportElement>
 				<box leftPadding="3"/>
@@ -226,7 +210,7 @@ ORDER BY
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHA_CREACION}.toString()))]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement x="139" y="0" width="649" height="70" uuid="41d44598-e197-4d61-aab3-6623c7872b1a"/>
+				<reportElement x="147" y="0" width="649" height="70" uuid="41d44598-e197-4d61-aab3-6623c7872b1a"/>
 				<subreportParameter name="sub_img_param">
 					<subreportParameterExpression><![CDATA[$P{sub_img_param}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -235,6 +219,26 @@ ORDER BY
 			</subreport>
 		</band>
 	</title>
+	<pageHeader>
+		<band height="50">
+			<staticText>
+				<reportElement x="1" y="5" width="311" height="20" uuid="abe67322-132f-4faf-aa22-d8c4d7118d6b"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Serif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[LISTADO DE DILIGENCIAS DE EMBARGO DE]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement isPrintRepeatedValues="false" x="311" y="5" width="489" height="20" uuid="fba90554-2346-4bb5-a0e5-a386fcd9d379">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a439b967-a736-41eb-949d-01afc719f1c8"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DES_ENTIDAD}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
 	<columnHeader>
 		<band height="11" splitType="Stretch"/>
 	</columnHeader>

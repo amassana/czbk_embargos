@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="importe_abonado" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3667eb27-55aa-4fa2-98d2-0c8972b2035d">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="importe_abonado" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3667eb27-55aa-4fa2-98d2-0c8972b2035d">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceBankDAdapterEmbargos.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<scriptlet name="NumberToLetter" class="es.commerzbank.ice.comun.lib.util.jasper.NumberToLetterConverter">
@@ -69,7 +69,7 @@ WHERE t.COD_TRABA = $P{COD_TRABA} AND cl.COD_LEVANTAMIENTO = lt.COD_LEVANTAMIENT
 			<rectangle>
 				<reportElement mode="Transparent" x="115" y="51" width="364" height="15" uuid="7061faf7-82f7-4aab-bc60-8f2907f7561b"/>
 			</rectangle>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="115" y="0" width="364" height="16" uuid="ab75abd7-c47b-45d6-943c-47c97b7f69d4">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0291e386-063e-41df-b3a5-0c8b3acad9d8"/>
 				</reportElement>
@@ -79,7 +79,7 @@ WHERE t.COD_TRABA = $P{COD_TRABA} AND cl.COD_LEVANTAMIENTO = lt.COD_LEVANTAMIENT
 				</textElement>
 				<textFieldExpression><![CDATA[$F{IMPORTE}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="115" y="16" width="364" height="34" uuid="1917c9a5-4c91-4a6d-af32-5fad0870da0e">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0291e386-063e-41df-b3a5-0c8b3acad9d8"/>
 				</reportElement>
@@ -89,7 +89,7 @@ WHERE t.COD_TRABA = $P{COD_TRABA} AND cl.COD_LEVANTAMIENTO = lt.COD_LEVANTAMIENT
 				</textElement>
 				<textFieldExpression><![CDATA[$P{NumberToLetter_SCRIPTLET}.Convertir($F{IMPORTE}.toString(), true)]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="115" y="51" width="364" height="15" uuid="4758146d-a4f0-4bf9-a1f9-34857042243c">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c6700bce-f58a-4390-b26d-382b64061bdf"/>
 				</reportElement>

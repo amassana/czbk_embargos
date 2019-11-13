@@ -234,7 +234,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$V{TodayDate}.split("/")[2]]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="190" y="50" width="165" height="19" uuid="a75e7068-c290-4bfd-9b8d-97b424ffacc8">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7c3a0609-31d6-4bdd-a706-fd58298043af"/>
 				</reportElement>
@@ -244,7 +244,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="304" y="78" width="146" height="19" uuid="3790a58d-5bed-43d8-b2a2-2366d838da01">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="16e5394c-d601-4ed0-8527-a13bae2677cf"/>
 				</reportElement>
