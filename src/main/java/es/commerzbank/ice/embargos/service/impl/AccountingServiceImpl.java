@@ -248,7 +248,7 @@ public class AccountingServiceImpl implements AccountingService{
 						
 						//Si la cuentaTraba pasa las condiciones para ser contabilizada:
 				
-						if (!creado && cuentaTraba.getImporte().doubleValue() > 0) {
+						if (!creado && cuentaTraba.getImporte() != null && cuentaTraba.getImporte().doubleValue() > 0) {
 							codFileControlFicheroComunes = crearControlFicheroComunes(controlFichero, userName);
 							creado = true;
 						}
@@ -443,7 +443,7 @@ public class AccountingServiceImpl implements AccountingService{
 								
 								//Si la cuentaTraba pasa las condiciones para ser contabilizada:							
 								
-								if (!creado && cuentaTraba.getImporte().doubleValue() > 0) {
+								if (!creado && cuentaTraba.getImporte() != null && cuentaTraba.getImporte().doubleValue() > 0) {
 									codFileControlFicheroComunes = crearControlFicheroComunes(controlFichero, userName);
 									creado = true;
 								}
