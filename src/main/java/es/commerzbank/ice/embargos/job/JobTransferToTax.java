@@ -61,14 +61,14 @@ public class JobTransferToTax implements Job {
 			logger.error("ERROR en JobTransferToTax con quartz", e);
 			JobExecutionException e2 = new JobExecutionException(e);
 	        //fire it again
-			 e2.setRefireImmediately(true);
+			//e2.setRefireImmediately(true);
 	        throw e2;
 		}
 		catch (Throwable t) {
 			logger.error("ERROR Throwable en JobTransferToTax con quartz", t);
 			JobExecutionException e2 = new JobExecutionException(t);
 	        //fire it again
-			 e2.setRefireImmediately(true);
+			//e2.setRefireImmediately(true);
 	        throw e2;
 		}
 	}
