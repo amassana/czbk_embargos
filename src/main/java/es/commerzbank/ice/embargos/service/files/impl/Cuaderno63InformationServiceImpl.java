@@ -113,9 +113,6 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        controlFicheroPeticion = fileControlRepository.getOne(codControlFicheroPeticion);
 	        
 	        //Fichero de entrada (Peticion):
-	        //String fileNamePeticion = controlFicheroPeticion.getNombreFichero1();
-	        String pathProcessed = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_PROCESSED);
-	        
 	        File ficheroEntrada = new File(controlFicheroPeticion.getRutaFichero());
 	        
 	        //Comprobar que el fichero de peticiones exista:
