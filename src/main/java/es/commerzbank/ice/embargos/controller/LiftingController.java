@@ -1,7 +1,6 @@
 package es.commerzbank.ice.embargos.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import es.commerzbank.ice.comun.lib.domain.dto.AccountingNote;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
@@ -9,7 +8,6 @@ import es.commerzbank.ice.utils.EmbargosConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +20,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.commerzbank.ice.embargos.domain.dto.BankAccountDTO;
-import es.commerzbank.ice.embargos.domain.dto.BankAccountLiftingDTO;
 import es.commerzbank.ice.embargos.domain.dto.LiftingAuditDTO;
 import es.commerzbank.ice.embargos.domain.dto.LiftingDTO;
+import es.commerzbank.ice.embargos.domain.dto.LiftingManualDTO;
 import es.commerzbank.ice.embargos.domain.dto.LiftingStatusDTO;
-import es.commerzbank.ice.embargos.domain.dto.PetitionCaseDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.LiftingService;
@@ -334,4 +330,33 @@ public class LiftingController {
 		return response;
 
 	}
+	
+	@PostMapping(value = "/manual")
+    @ApiOperation(value="Realiza un levantamiento de forma manual.")
+    public ResponseEntity<String> manualLifting(Authentication authentication,
+    											@RequestBody LiftingManualDTO liftingManualDTO) {
+    	logger.info("LiftingController - manualLifting - start");
+		ResponseEntity<String> response = null;
+		boolean result = false;
+
+		try {
+			String userModif = authentication.getName();
+
+			result = liftingService.manualLifting(liftingManualDTO, userModif);
+
+			if (result) {
+				response = new ResponseEntity<>(HttpStatus.OK);
+			} else {
+				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+
+		} catch (Exception e) {
+			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			logger.error("ERROR in manualLifting: ", e);
+		}
+
+		logger.info("LiftingController - manualLifting - end");
+		return response;
+    }
+
 }

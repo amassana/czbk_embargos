@@ -2,7 +2,6 @@ package es.commerzbank.ice.embargos.service.impl;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,7 +25,6 @@ import es.commerzbank.ice.comun.lib.file.generate.ContaGenExecutor;
 import es.commerzbank.ice.comun.lib.repository.ContadorRepo;
 import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
-import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
 import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
@@ -529,7 +527,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 	private int contabilizarCuentaTraba(CuentaTraba cuentaTraba, String debitAccount, String creditAccount,
 			Long oficinaCuentaRecaudacion, String reference1, String reference2, String detailPayment,
-			Long codFileControlFicheroComunes, String nombre, String nif, String userName, Long estadoImporteCero) throws ParseException, ICEException {
+			Long codFileControlFicheroComunes, String nombre, String nif, String userName, Long estadoImporteCero) throws Exception {
 		
 		logger.info("contabilizarCuentaTraba - start");
 		
@@ -645,7 +643,7 @@ public class AccountingServiceImpl implements AccountingService{
 	}
 
 	@Override
-	public boolean manageAccountingNoteSeizureCallback(AccountingNote accountingNote, String userName) throws ParseException, ICEException {
+	public boolean manageAccountingNoteSeizureCallback(AccountingNote accountingNote, String userName) throws Exception {
 		
 		//Se tomaran los campos IBS_CREDIT_ACCOUNT,TRIM(IBS_REFERENCE_1+IBS_REFERENCE_2),IBS_AMOUNT para 
 		//determinar que elemento se ha contabilizado y marcar su estado a contabilizado.
@@ -793,7 +791,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 
 	@Override
-	public boolean manageAccountingNoteLiftingCallback(AccountingNote accountingNote, String userName) throws ParseException, ICEException
+	public boolean manageAccountingNoteLiftingCallback(AccountingNote accountingNote, String userName) throws Exception
 	{
 		
 		logger.info("manageAccountingNoteLiftingCallback - start");
@@ -872,7 +870,7 @@ public class AccountingServiceImpl implements AccountingService{
 	}
 
 	@Override
-	public boolean undoAccounting(Long codeFileControl, Long idSeizure, String numAccount, String userName) throws ICEException, ParseException{
+	public boolean undoAccounting(Long codeFileControl, Long idSeizure, String numAccount, String userName) throws Exception{
 
 		logger.info("undoAccounting - start");
 
@@ -1230,7 +1228,7 @@ public class AccountingServiceImpl implements AccountingService{
 	}
 	
 	
-	private String getCuenta(String nif, String iban) throws ParseException, ICEException {
+	private String getCuenta(String nif, String iban) throws Exception {
 		String cuenta = null;
 		List<CustomerDTO> customers = accountService.showCustomerDetailsByNif(nif, null, null, false);
 		
@@ -1241,7 +1239,7 @@ public class AccountingServiceImpl implements AccountingService{
 		return cuenta;
 	}
 	
-	private String getIban(String nif, String debitAccount) throws ParseException, ICEException {
+	private String getIban(String nif, String debitAccount) throws Exception {
 		String iban = null;
 		
 		List<CustomerDTO> customers = accountService.showCustomerDetailsByNif(nif, null, null, false);

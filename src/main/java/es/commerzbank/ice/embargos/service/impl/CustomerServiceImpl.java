@@ -53,7 +53,7 @@ public class CustomerServiceImpl implements CustomerService {
 			if (result.size() == 0)
 				return null;
 			return result.get(0);
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			// TODO e lost..
 			throw new ICEException("", "Can't recover "+ nif + " details");
 		}
