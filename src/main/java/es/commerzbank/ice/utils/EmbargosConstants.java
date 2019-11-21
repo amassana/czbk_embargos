@@ -173,6 +173,7 @@ public class EmbargosConstants {
 	
 	public static final String USER_SYSTEM = "system";
 	public static final String USER_AUTOMATICO = "AUTOMATICO";
+	public static final String USER_MANUAL = "MANUAL";
 	
 	public static final String CONTROL_FICHERO_DESCRIPCION_DEFAULT = "AUTOMATICO";
 	

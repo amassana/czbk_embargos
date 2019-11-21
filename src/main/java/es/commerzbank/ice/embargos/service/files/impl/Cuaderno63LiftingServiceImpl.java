@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.beanio.BeanReader;
@@ -30,8 +29,6 @@ import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
 import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.embargos.domain.mapper.Cuaderno63Mapper;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
-import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.CabeceraEmisorFase5;
-import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.FinFicheroFase5;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.OrdenLevantamientoRetencionFase5;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.repository.LiftingBankAccountRepository;
@@ -118,15 +115,15 @@ public class Cuaderno63LiftingServiceImpl
 
             boolean allLevantamientosContabilizados = true;
             // almacena las cuentas que se han contabilizado, para su actualización posterior de estado.
-            List<CuentaLevantamiento> cuentasAContabilizar = new ArrayList<>();
+            //List<CuentaLevantamiento> cuentasAContabilizar = new ArrayList<>();
 
             while ((currentRecord = beanReader.read()) != null) {
                 if (EmbargosConstants.RECORD_NAME_CABECERAEMISOR.equals(beanReader.getRecordName())) {
-                    CabeceraEmisorFase5 cabeceraEmisorFase5 = (CabeceraEmisorFase5) currentRecord;
+                    //CabeceraEmisorFase5 cabeceraEmisorFase5 = (CabeceraEmisorFase5) currentRecord;
                     // Recuperar organisme emissor?
                 }
                 else if (EmbargosConstants.RECORD_NAME_FINFICHERO.equals(beanReader.getRecordName())) {
-                    FinFicheroFase5 finFicheroFase5 = (FinFicheroFase5) currentRecord;
+                    //FinFicheroFase5 finFicheroFase5 = (FinFicheroFase5) currentRecord;
                     // validar num línies
                     // validar sum amount
                 }

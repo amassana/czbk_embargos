@@ -1,12 +1,10 @@
 package es.commerzbank.ice.embargos.service;
 
 import java.util.List;
-import java.util.Map;
 
-import es.commerzbank.ice.embargos.domain.dto.BankAccountDTO;
-import es.commerzbank.ice.embargos.domain.dto.BankAccountLiftingDTO;
 import es.commerzbank.ice.embargos.domain.dto.LiftingAuditDTO;
 import es.commerzbank.ice.embargos.domain.dto.LiftingDTO;
+import es.commerzbank.ice.embargos.domain.dto.LiftingManualDTO;
 import es.commerzbank.ice.embargos.domain.dto.LiftingStatusDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
@@ -33,4 +31,6 @@ public interface LiftingService {
 	public byte[] generarResumenLevantamientoF5(Integer cod_file_control) throws Exception;
 
 	public byte[] generateLiftingLetter(Integer idLifting) throws Exception;
+	
+	boolean manualLifting(LiftingManualDTO liftingManualDTO, String userModif) throws Exception;
 }
