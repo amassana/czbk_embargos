@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +33,7 @@ import es.commerzbank.ice.embargos.domain.dto.LiftingStatusDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
+import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
 import es.commerzbank.ice.embargos.domain.entity.EstadoLevantamiento;
 import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
@@ -47,6 +48,7 @@ import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.repository.LiftingBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.LiftingRepository;
 import es.commerzbank.ice.embargos.repository.LiftingStatusRepository;
+import es.commerzbank.ice.embargos.repository.OrderingEntityRepository;
 import es.commerzbank.ice.embargos.repository.SeizedRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
 import es.commerzbank.ice.embargos.service.AccountingService;
@@ -119,6 +121,10 @@ public class LiftingServiceImpl implements LiftingService {
     
     @Autowired
     private ContaGenExecutor contaGenExecutor;
+    
+    @Autowired
+    private OrderingEntityRepository orderingEntityRepository;
+    
     
 	@Override
 	public List<LiftingDTO> getAllByControlFichero(ControlFichero controlFichero) {
@@ -399,12 +405,15 @@ public class LiftingServiceImpl implements LiftingService {
             
             if (mapOrdenLev.size()>0) {
             	
-            	String date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+            	String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
                 
                 // Inicializar control fichero
                 ControlFichero controlFicheroLevantamiento =
                         fileControlMapper.generateControlFichero(null, EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63, EmbargosConstants.USER_MANUAL+"_"+date, null);
 
+                EntidadesOrdenante entidadOrdenante = orderingEntityRepository.findByNifEntidad(liftingManualDTO.getNif());
+                if (entidadOrdenante!=null) controlFicheroLevantamiento.setEntidadesComunicadora(entidadOrdenante.getEntidadesComunicadora());
+                
                 controlFicheroLevantamiento.setUsuarioUltModificacion(userModif);
                 controlFicheroLevantamiento.setDescripcion(EmbargosConstants.USER_MANUAL);
                 fileControlRepository.save(controlFicheroLevantamiento);
