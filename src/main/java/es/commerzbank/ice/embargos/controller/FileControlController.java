@@ -2,12 +2,15 @@ package es.commerzbank.ice.embargos.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,13 +23,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.opencsv.CSVWriter;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+
 import es.commerzbank.ice.comun.lib.security.Permissions;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.embargos.domain.dto.FileControlCsvDTO;
 import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
 import es.commerzbank.ice.embargos.domain.dto.FileControlFiltersDTO;
 import es.commerzbank.ice.embargos.domain.dto.FileControlStatusDTO;
 import es.commerzbank.ice.embargos.domain.dto.FileControlTypeDTO;
 import es.commerzbank.ice.embargos.domain.dto.ReportParamsDTO;
+import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.FileControlStatusService;
 import es.commerzbank.ice.embargos.service.FileTypeService;
@@ -53,6 +62,39 @@ public class FileControlController {
 	@Autowired
 	private GeneralParametersService generalParametersService;
 
+	@Autowired
+	private FileControlMapper fileControlMapper;
+	
+	@PostMapping(value = "/export")
+	public void exportCSV(Authentication authentication, @RequestBody FileControlFiltersDTO fileControlFilters, HttpServletResponse response) throws Exception {
+
+		logger.info("FileControlController - export - start");
+		try {
+	        //set file name and content type
+	        response.setContentType("text/csv");
+	        response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+	                "attachment; filename=\"" + "filecontrol.csv" + "\"");
+	
+	        //create a csv writer
+	        StatefulBeanToCsv<FileControlCsvDTO> writer = new StatefulBeanToCsvBuilder<FileControlCsvDTO>(response.getWriter())
+	                .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
+	                .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
+	                .withOrderedResults(false)
+	                .build();
+	
+	        //write all to csv file
+			Page<FileControlDTO> list = fileControlService.fileSearch(fileControlFilters, Pageable.unpaged());
+			if (list!=null) {
+				List<FileControlCsvDTO> listFileControlCsv = fileControlMapper.toFileControlCsvDTO(list.getContent());
+		        writer.write(listFileControlCsv);
+			}
+			 
+		} catch(Exception e) {
+			logger.error("Error - FileControlController - export", e);
+		}
+        logger.info("FileControlController - export - end");
+	}
+	
 	@PostMapping(value = "/filter",
 			produces = { "application/json" },
 			consumes = { "application/json" })

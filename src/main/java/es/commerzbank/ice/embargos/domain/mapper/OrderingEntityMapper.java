@@ -1,6 +1,7 @@
 package es.commerzbank.ice.embargos.domain.mapper;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -10,6 +11,7 @@ import org.mapstruct.Mappings;
 
 import es.commerzbank.ice.embargos.domain.dto.Item;
 import es.commerzbank.ice.embargos.domain.dto.OrderingEntity;
+import es.commerzbank.ice.embargos.domain.dto.OrderingEntityCsv;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
 import es.commerzbank.ice.utils.EmbargosConstants;
@@ -24,6 +26,14 @@ public abstract class OrderingEntityMapper {
 	})
 	public abstract EntidadesOrdenante toEntidadOrdenante(OrderingEntity orderingEntity);
 
+	@Mappings({
+		@Mapping(source = "communicatingEntity.code", target = "codeCommunicatingEntity"),
+		@Mapping(source = "communicatingEntity.description", target = "descCommunicatingEntity")
+	})
+	public abstract OrderingEntityCsv toOrderingEntityCsv(OrderingEntity orderingEntity);
+	
+	public abstract ArrayList<OrderingEntityCsv> toOrderingEntityCsv(List<OrderingEntity> orderingEntity);
+	
 	@Mappings({
 		@Mapping(source = "codEntidadOrdenante", target = "codOrderingEntity"),
 		@Mapping(source = "nifEntidad", target = "nifEntity"),

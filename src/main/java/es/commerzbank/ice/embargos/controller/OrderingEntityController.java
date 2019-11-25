@@ -1,13 +1,15 @@
 package es.commerzbank.ice.embargos.controller;
 
 import java.util.List;
-import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,9 +23,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.opencsv.CSVWriter;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+
 import es.commerzbank.ice.comun.lib.security.Permissions;
 import es.commerzbank.ice.embargos.domain.dto.OrderingEntity;
-import es.commerzbank.ice.embargos.domain.dto.Representative;
+import es.commerzbank.ice.embargos.domain.dto.OrderingEntityCsv;
+import es.commerzbank.ice.embargos.domain.mapper.OrderingEntityMapper;
 import es.commerzbank.ice.embargos.service.OrderingEntityService;
 
 @CrossOrigin("*")
@@ -34,6 +41,10 @@ public class OrderingEntityController {
 	
 	@Autowired
 	private OrderingEntityService orderingEntityService;
+	
+	@Autowired
+	private OrderingEntityMapper orderingEntityMapper;
+	
 	
 	@PostMapping(value = "",
 	        produces = { "application/json" }, 
@@ -143,6 +154,37 @@ public class OrderingEntityController {
 		
 		logger.info("OrderingEntityController - view - end");
 		return response;
+	}
+	
+	@PostMapping(value = "/export")
+	public void exportCSV(Authentication authentication, HttpServletResponse response) throws Exception {
+
+		logger.info("OrderingEntityController - export - start");
+		try {
+	        //set file name and content type
+	        response.setContentType("text/csv");
+	        response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+	                "attachment; filename=\"" + "orderingEntity.csv" + "\"");
+	
+	        //create a csv writer
+	        StatefulBeanToCsv<OrderingEntityCsv> writer = new StatefulBeanToCsvBuilder<OrderingEntityCsv>(response.getWriter())
+	                .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
+	                .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
+	                .withOrderedResults(false)
+	                .build();
+	
+	        //write all to csv file
+			Page<OrderingEntity> list = orderingEntityService.filter(Pageable.unpaged());
+			
+			if (list!=null) {
+				List<OrderingEntityCsv> listOrderingEntityCsv = orderingEntityMapper.toOrderingEntityCsv(list.getContent());
+		        writer.write(listOrderingEntityCsv);
+			}
+	        
+		} catch(Exception e) {
+			logger.error("Error - OrderingEntityController - export", e);
+		}
+        logger.info("OrderingEntityController - export - end");
 	}
 	
 	@PostMapping(value = "/filter",

@@ -3,7 +3,9 @@ package es.commerzbank.ice.embargos.domain.mapper;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.mapstruct.AfterMapping;
@@ -12,6 +14,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 
+import es.commerzbank.ice.embargos.domain.dto.FileControlCsvDTO;
 import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
@@ -150,6 +153,13 @@ public abstract class FileControlMapper {
 	})
 	public abstract FileControlDTO toFileControlDTO (ControlFichero controlFichero);
 	
+	@Mappings({
+		@Mapping(source = "status.code", target = "codeStatus"),
+		@Mapping(source = "status.description", target = "descriptionStatus")
+	})
+	public abstract FileControlCsvDTO toFileControlCsvDTO (FileControlDTO controlFichero);
+	
+	public abstract ArrayList<FileControlCsvDTO> toFileControlCsvDTO (List<FileControlDTO> controlFichero);
 	
 	@AfterMapping
 	protected void setFileControlDTOAfterMapping(ControlFichero controlFichero, @MappingTarget FileControlDTO fileControlDTO) {
