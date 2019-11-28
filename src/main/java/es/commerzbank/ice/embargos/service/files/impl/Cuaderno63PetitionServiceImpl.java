@@ -8,6 +8,7 @@ import java.io.Reader;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
@@ -140,6 +141,8 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	        EntidadesComunicadora entidadComunicadora = null;
 	        Date fechaObtencionFicheroOrganismo = null;
 	        
+	        HashSet<String> listaNifs = customerService.findCustomerNifs();
+	        
 	        Object record = null;
 	        while ((record = beanReader.read()) != null) {
 	        
@@ -150,34 +153,37 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	        		SolicitudInformacionFase1 solicitudInformacion = (SolicitudInformacionFase1) record;
 	        		LOG.info("Consultando NIF "+ solicitudInformacion.getNifDeudor());
 	 		        
-	        		//Llamada a Datawarehouse: Obtener las cuentas del cliente a partir del nif:        		
-	        		CustomerDTO customerDTO = customerService.findCustomerByNif(solicitudInformacion.getNifDeudor(), false);
-	        		
-	        		//Si existe el cliente:
-	        		if (customerDTO!=null) {
-	        		
-		        		List<AccountDTO> accountList = customerDTO.getBankAccounts();
+	        		//Llamada a Datawarehouse: Obtener las cuentas del cliente a partir del nif:
+	        		if (listaNifs!=null && listaNifs.contains(solicitudInformacion.getNifDeudor())) {
+	        			
+		        		CustomerDTO customerDTO = customerService.findCustomerByNif(solicitudInformacion.getNifDeudor(), false);
 		        		
-		        		//Tratar solamente los clientes en los que se han encontrado cuentas:
-		        		if(accountList != null && !accountList.isEmpty()) {
-		        		    
-		                    //Se guardan los datos del cliente:
-			        		clientDataService.createUpdateClientDataTransaction(customerDTO, solicitudInformacion.getNifDeudor());
-		        			
-			        		//Se guarda la PeticionInformacion en bbdd:
-			        		PeticionInformacion peticionInformacion = cuaderno63Mapper.generatePeticionInformacion(solicitudInformacion, 
-			        				controlFicheroPeticion.getCodControlFichero(), accountList, entidadComunicadora);
-
-			        		informationPetitionRepository.save(peticionInformacion);
-			        			        		
-		        			//Se guardan todas las cuentas del nif en la tabla PETICION_INFORMACION_CUENTAS:
-			        		for(AccountDTO accountDTO : accountList) {
+		        		//Si existe el cliente:
+		        		if (customerDTO!=null) {
+		        		
+			        		List<AccountDTO> accountList = customerDTO.getBankAccounts();
+			        		
+			        		//Tratar solamente los clientes en los que se han encontrado cuentas:
+			        		if(accountList != null && !accountList.isEmpty()) {
+			        		    
+			                    //Se guardan los datos del cliente:
+				        		clientDataService.createUpdateClientDataTransaction(customerDTO, solicitudInformacion.getNifDeudor());
 			        			
-			        			PeticionInformacionCuenta peticionInformacionCuenta = 
-			        					informationPetitionBankAccountMapper.toPeticionInformacionCuenta(accountDTO, 
-			        							peticionInformacion.getCodPeticion());
-			        			
-			        			informationPetitionBankAccountRepository.save(peticionInformacionCuenta);
+				        		//Se guarda la PeticionInformacion en bbdd:
+				        		PeticionInformacion peticionInformacion = cuaderno63Mapper.generatePeticionInformacion(solicitudInformacion, 
+				        				controlFicheroPeticion.getCodControlFichero(), accountList, entidadComunicadora);
+	
+				        		informationPetitionRepository.save(peticionInformacion);
+				        			        		
+			        			//Se guardan todas las cuentas del nif en la tabla PETICION_INFORMACION_CUENTAS:
+				        		for(AccountDTO accountDTO : accountList) {
+				        			
+				        			PeticionInformacionCuenta peticionInformacionCuenta = 
+				        					informationPetitionBankAccountMapper.toPeticionInformacionCuenta(accountDTO, 
+				        							peticionInformacion.getCodPeticion());
+				        			
+				        			informationPetitionBankAccountRepository.save(peticionInformacionCuenta);
+				        		}
 			        		}
 		        		}
 	        		}
