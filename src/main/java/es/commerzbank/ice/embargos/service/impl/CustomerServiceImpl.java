@@ -7,15 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import es.commerzbank.ice.comun.lib.service.ClientRestService;
-import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.embargos.service.CustomerService;
-import es.commerzbank.ice.utils.EmbargosConstants;
-import io.swagger.models.HttpMethod;
 
-import java.text.ParseException;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -25,13 +21,7 @@ public class CustomerServiceImpl implements CustomerService {
 	private static final Logger logger = LoggerFactory.getLogger(CustomerServiceImpl.class);
 	
 	@Autowired
-	private ClientRestService clientRestService;
-	
-	@Autowired
-	private GeneralParametersService generalParametersService;
-
-	@Autowired
-	AccountService accountService;
+	private AccountService accountService;
 
 	@Override
 	public CustomerDTO findCustomerByNif(String nif, boolean includeInactive) throws ICEException{
@@ -55,6 +45,16 @@ public class CustomerServiceImpl implements CustomerService {
 			return result.get(0);
 		} catch (Exception e) {
 			throw new ICEException("Can't recover "+ nif + " details", e);
+		}
+	}
+
+	@Override
+	public HashSet<String> findCustomerNifs() throws ICEException {
+		try {
+			return  accountService.showCustomerNifs();
+		} catch (Exception e) {
+			// TODO e lost..
+			throw new ICEException("", "Can't recover nifs from DWH");
 		}
 	}
 

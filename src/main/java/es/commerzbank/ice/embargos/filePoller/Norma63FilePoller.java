@@ -10,7 +10,6 @@ import es.commerzbank.ice.embargos.service.files.Cuaderno63PetitionService;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63SeizureService;
 import es.commerzbank.ice.utils.EmbargosConstants;
 import org.apache.commons.io.FilenameUtils;
-import org.hibernate.exception.DataException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLDataException;
 import java.time.Duration;
 import java.time.Instant;
 
