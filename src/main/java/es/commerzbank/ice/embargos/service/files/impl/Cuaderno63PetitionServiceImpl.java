@@ -27,7 +27,6 @@ import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
 import es.commerzbank.ice.comun.lib.util.ICEException;
-import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
@@ -197,7 +196,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	        		
 	        		//Si entidadComunicadora es NULL -> Exception...
 	        		if (entidadComunicadora == null) {
-	        			throw new ICEParserException("01", "No se puede procesar el fichero '" + processingFile.getName() +
+	        			throw new ICEException("No se puede procesar el fichero '" + processingFile.getName() +
 	        					"': Entidad Comunicadora con NIF " + nifOrganismoEmisor + " no encontrada.");
 	        		}
 	        		
@@ -262,7 +261,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 			fileControlRepository.save(controlFicheroPeticion);
 
 		} catch (Exception e) {
-			
+			LOG.error("Error in Cuaderno63 Petition Service", e);
 			//TODO Estado de ERROR pendiente de ser eliminado, se comenta:
 			/*
 			//Transaccion para cambiar el estado de ControlFichero a ERROR:

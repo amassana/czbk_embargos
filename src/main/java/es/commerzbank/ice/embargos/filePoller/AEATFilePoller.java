@@ -63,7 +63,7 @@ public class AEATFilePoller
             folderPoller.addAcceptedExtension(YAMLUtil.getValue(ValueConstants.APPLICATION_YAML_LOCAL_PATH, "commerzbank.embargos.files.suffix-file-filter-lev"));
             folderPoller.addAcceptedExtension(YAMLUtil.getValue(ValueConstants.APPLICATION_YAML_LOCAL_PATH, "commerzbank.embargos.files.suffix-file-filter-err"));
         }
-        catch (IOException ioe) {LOG.error(pollerName +": accepted extensions can't be fully configured");}
+        catch (IOException ioe) {LOG.error(pollerName +": accepted extensions can't be fully configured", ioe);}
 
         return folderPoller;
     }

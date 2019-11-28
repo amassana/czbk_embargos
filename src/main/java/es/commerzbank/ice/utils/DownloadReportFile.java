@@ -57,7 +57,7 @@ public class DownloadReportFile {
 				setRequestHeader(jasperReportFile.length(), filenameAux);
 
 			} catch (IOException ex) {
-				throw new Exception("Exception DownloadFile.writeFile: " + ex);
+				throw new Exception("Exception DownloadFile.writeFile", ex);
 			} finally {
 
 				fos.flush();

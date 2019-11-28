@@ -241,17 +241,13 @@ public class LiftingServiceImpl implements LiftingService {
 
 	@Override
 	public boolean changeStatus(Long codeLifting, Long status, String userName) throws Exception {
-		boolean response = true;
-		try {
-			if (status != null && codeLifting != null && codeLifting > 0) {
-				liftingRepository.updateStatus(codeLifting, new BigDecimal(status), userName, ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
-			} else {
-				response = false;
-			}
-		} catch(Exception e) {
-			throw new Exception();
+		boolean response = false;
+
+		if (status != null && codeLifting != null && codeLifting > 0) {
+			liftingRepository.updateStatus(codeLifting, new BigDecimal(status), userName, ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+			response = true;
 		}
-		
+
 		return response;
 	}
 

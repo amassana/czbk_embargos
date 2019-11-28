@@ -583,7 +583,7 @@ public class AccountingServiceImpl implements AccountingService{
 				Long.valueOf(oficinaCuentaRecaudacionGenParam.getValue()) : null;
 		
 		if (oficinaCuentaRecaudacion==null) {
-			throw new ICEException("","ERROR: parameter not found: " + EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA);
+			throw new ICEException("Parameter not found: " + EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA);
 		}
 		
 		logger.info("determineOficinaCuentaRecaudacion - end");
@@ -598,7 +598,7 @@ public class AccountingServiceImpl implements AccountingService{
 		String cuentaRecaudacion = cuentaRecaudacionGenParam!=null ? cuentaRecaudacionGenParam.getValue() :null;		
 		
 		if (cuentaRecaudacion==null || cuentaRecaudacion.isEmpty()) {
-			throw new ICEException("","ERROR: parameter not found: " + EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);
+			throw new ICEException("Parameter not found: " + EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);
 		}
 		
 		logger.info("determineCuentaRecaudacion - end");
@@ -884,7 +884,7 @@ public class AccountingServiceImpl implements AccountingService{
 		CuentaTraba cuentaTraba = seizedBankAccountRepository.findByCodCuentaTrabaAndCuentaAndEstadoTraba(codeFileControl, idSeizure, estadoTraba);
 		
 		if(cuentaTraba == null) {
-			throw new ICEException("","ERROR: no se ha encontrado la cuentaTraba [codeFileControl: " + codeFileControl + "; idSeizure: " + idSeizure + "; estadoTraba: "+ estadoTraba);
+			throw new ICEException("No se ha encontrado la cuentaTraba [codeFileControl: " + codeFileControl + "; idSeizure: " + idSeizure + "; estadoTraba: "+ estadoTraba);
 		}
 		
 		//Preparacion de parametros para enviar a contabilizar:
@@ -923,7 +923,7 @@ public class AccountingServiceImpl implements AccountingService{
 			boolean isStatusTrabaUpdated = seizureService.updateSeizureStatus(traba.getCodTraba(), seizureStatusDTO, userName);
 
 			if(!isStatusTrabaUpdated) {
-				throw new ICEException("", "ERROR: no se ha actualizado el estado de la Traba con codTraba: " + traba.getCodTraba());
+				throw new ICEException("No se ha actualizado el estado de la Traba con codTraba: " + traba.getCodTraba());
 			}
 
 			//Cambio de estado de Control Fichero de Embargos:
@@ -947,14 +947,14 @@ public class AccountingServiceImpl implements AccountingService{
 				codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_GENERATED;
 			} else {
 
-				throw new ICEException("","ERROR: formato de fichero no encontrado para el codigo de tipo de fichero "
+				throw new ICEException("Formato de fichero no encontrado para el codigo de tipo de fichero "
 								+ controlFichero.getTipoFichero().getCodTipoFichero() +".");
 			}
 
 			boolean isStatusFileControlUpdated = fileControlService.updateFileControlStatus(codeFileControl, codEstado, userName);
 
 			if(!isStatusFileControlUpdated) {
-				throw new ICEException("", "ERROR: no se ha actualizado el estado del Control Fichero con codeFileControl: " + codeFileControl);
+				throw new ICEException("No se ha actualizado el estado del Control Fichero con codeFileControl: " + codeFileControl);
 			}
 		
 		} else {
@@ -1102,14 +1102,14 @@ public class AccountingServiceImpl implements AccountingService{
 		//- Se obtiene el fichero de control:
 		Optional<ControlFichero> fileControlOpt = fileControlRepository.findById(codeFileControl);
 		if(!fileControlOpt.isPresent()) {
-			throw new ICEException("","ControlFichero not found with codeFileControl: " + codeFileControl);
+			throw new ICEException("ControlFichero not found with codeFileControl: " + codeFileControl);
 		}
 		ControlFichero controlFichero = fileControlOpt.get();
 		
 		//- Se comprueba si la Entidad comunicadora asociada al fichero, tiene cuenta interna en Commerzbank:		
 		EntidadesComunicadora entidadComunicadora = controlFichero.getEntidadesComunicadora();
 		if (entidadComunicadora == null) {			
-			throw new ICEException("","EntidadComunicadora not found for the fileControl with codeFileControl: " + codeFileControl);
+			throw new ICEException("EntidadComunicadora not found for the fileControl with codeFileControl: " + codeFileControl);
 		}
 		
 		if (entidadComunicadora.getCuenta() == null || entidadComunicadora.getCuenta().trim().isEmpty()) {
@@ -1204,7 +1204,7 @@ public class AccountingServiceImpl implements AccountingService{
 		logger.info("manageAccountingNoteFinalFileCallback - start");
 		
 		if (accountingNote == null || accountingNote.getReference1() == null || accountingNote.getReference1().trim().isEmpty()) {
-			throw new ICEException ("","The field 'Reference1' of the AccountingNote is not informed.");
+			throw new ICEException ("The field 'Reference1' of the AccountingNote is not informed.");
 		}
 		
 		//En la reference1 de la AccountingNote, nos llega el codControlFichero del Fichero final:
@@ -1216,7 +1216,7 @@ public class AccountingServiceImpl implements AccountingService{
 		FicheroFinal ficheroFinal = finalFileRepository.findByControlFichero(controlFicheroFinal);
 		
 		if (ficheroFinal == null) {
-			throw new ICEException ("","FicheroFinal not found with codControlFichero=" + codControlFicheroFinal);
+			throw new ICEException ("FicheroFinal not found with codControlFichero=" + codControlFicheroFinal);
 		}
 		
 		//Actualizar el estado a contabilizada:

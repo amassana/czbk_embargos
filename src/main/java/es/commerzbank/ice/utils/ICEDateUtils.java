@@ -1,5 +1,8 @@
 package es.commerzbank.ice.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,6 +13,7 @@ import java.util.Date;
 //Por tanto, los metodos de esta clase se tendran que pasar a la clase ICEDateUtils de Comunes.
 
 public class ICEDateUtils {
+	private static final Logger logger = LoggerFactory.getLogger(ICEDateUtils.class);
 
 	public static final String FORMAT_yyyyMMddHHmmss = "yyyyMMddHHmmss";
 	
@@ -48,7 +52,7 @@ public class ICEDateUtils {
 			result = simpleDateFormat.parse(bigDecimalDate.toString());
 		
 		} catch (ParseException pe) {
-			
+			logger.error("Can't parse "+ bigDecimalDate.toString() +" to date", pe);
 		}
 		return result;
 		

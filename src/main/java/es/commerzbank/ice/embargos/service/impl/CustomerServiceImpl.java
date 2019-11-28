@@ -54,8 +54,7 @@ public class CustomerServiceImpl implements CustomerService {
 				return null;
 			return result.get(0);
 		} catch (Exception e) {
-			// TODO e lost..
-			throw new ICEException("", "Can't recover "+ nif + " details");
+			throw new ICEException("Can't recover "+ nif + " details", e);
 		}
 	}
 
