@@ -53,8 +53,7 @@ public class CustomerServiceImpl implements CustomerService {
 		try {
 			return  accountService.showCustomerNifs();
 		} catch (Exception e) {
-			// TODO e lost..
-			throw new ICEException("", "Can't recover nifs from DWH");
+			throw new ICEException("Can't recover nifs from DWH", e);
 		}
 	}
 
