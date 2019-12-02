@@ -12,7 +12,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 
-import es.commerzbank.ice.comun.lib.util.ICEParserException;
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
@@ -89,21 +89,21 @@ public abstract class Cuaderno63Mapper {
 		@Mapping(source = "codControlFicheroPeticion", target = "controlFichero.codControlFichero")
 	})
 	public abstract PeticionInformacion generatePeticionInformacion(SolicitudInformacionFase1 solicitudInfo, 
-			Long codControlFicheroPeticion, List<AccountDTO> listBankAccount, EntidadesComunicadora entidadComunicadora) throws ICEParserException;
+			Long codControlFicheroPeticion, List<AccountDTO> listBankAccount, EntidadesComunicadora entidadComunicadora) throws ICEException;
 	
 	@AfterMapping
 	protected void setPeticionInformacionAfterMapping(@MappingTarget PeticionInformacion peticionInformacion, 
-			List<AccountDTO> listBankAccount, EntidadesComunicadora entidadComunicadora) throws ICEParserException {
+			List<AccountDTO> listBankAccount, EntidadesComunicadora entidadComunicadora) throws ICEException {
 		
 		//Comprobar que si la entidadComunicadora es NULL -> Exception...
 		if (entidadComunicadora == null) {
-			throw new ICEParserException("", "No se puede procesar el fichero con codControlFichero '" 
+			throw new ICEException("No se puede procesar el fichero con codControlFichero '" 
 					+ peticionInformacion.getControlFichero().getCodControlFichero() +
 					"': Entidad Comunicadora con valor NULL.");
 		}
 		//Comprobar que la entidad comunicadora tenga entidad Ordenante asociada:
 		if (entidadComunicadora.getEntidadesOrdenantes() == null || entidadComunicadora.getEntidadesOrdenantes().isEmpty()) {
-			throw new ICEParserException("", "No se puede procesar el fichero con codControlFichero '" 
+			throw new ICEException("No se puede procesar el fichero con codControlFichero '" 
 					+ peticionInformacion.getControlFichero().getCodControlFichero() +
 					"': La entidad Comunicadora con nif '" + entidadComunicadora.getNifEntidad() + "' no tiene asocidada una entidad ordenante.");
 		}

@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.comun.lib.file.generate.ContaGenExecutor;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
-import es.commerzbank.ice.comun.lib.util.ICEParserException;
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
@@ -84,7 +84,7 @@ public class AEATLiftingServiceImpl
     ContaGenExecutor contaGenExecutor;
 
     @Override
-    public void tratarFicheroLevantamientos(File processingFile, String originalName, File processedFile) throws IOException, ICEParserException {
+    public void tratarFicheroLevantamientos(File processingFile, String originalName, File processedFile) throws IOException, ICEException {
         
     	BeanReader beanReader = null;
         Reader reader = null;

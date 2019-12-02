@@ -87,7 +87,7 @@ public class Norma63Fase6
         List<Embargo> embargos = seizureRepository.findAllByControlFichero(ficheroFase3);
 
         if (embargos == null)
-            throw new ICEException("", "No seizures found for code "+ codControlFichero);
+            throw new ICEException("No seizures found for code "+ codControlFichero);
 
         if (ficheroFase3.getTipoFichero().getCodTipoFichero() == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63)
             generarFase6Norma63(ficheroFase3, embargos);

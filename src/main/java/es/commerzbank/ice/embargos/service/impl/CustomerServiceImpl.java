@@ -45,7 +45,7 @@ public class CustomerServiceImpl implements CustomerService {
 			return result.get(0);
 		} catch (Exception e) {
 			// TODO e lost..
-			throw new ICEException("", "Can't recover "+ nif + " details");
+			throw new ICEException("Can't recover "+ nif + " details");
 		}
 	}
 
@@ -55,7 +55,7 @@ public class CustomerServiceImpl implements CustomerService {
 			return  accountService.showCustomerNifs();
 		} catch (Exception e) {
 			// TODO e lost..
-			throw new ICEException("", "Can't recover nifs from DWH");
+			throw new ICEException("Can't recover nifs from DWH");
 		}
 	}
 

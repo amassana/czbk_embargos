@@ -30,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
-import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.DatosCliente;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
@@ -117,12 +116,12 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        
 	        //Comprobar que el fichero de peticiones exista:
 	        if (!ficheroEntrada.exists()) {
-	        	throw new ICEParserException("","ERROR: no se ha encontrado el fichero fisico de Embargos.");
+	        	throw new ICEException("ERROR: no se ha encontrado el fichero fisico de Embargos.");
 	        }
 	        
 	        //Comprobar que el CRC del fichero de Peticiones sea el mismo que el guardado en ControlFichero:
 	        if (!controlFicheroPeticion.getNumCrc().equals(Long.toString(FileUtils.checksumCRC32(ficheroEntrada)))){
-	        	throw new ICEParserException("","ERROR: el CRC del fichero de Embargos no coincide con el guardado en ControlFichero.");
+	        	throw new ICEException("ERROR: el CRC del fichero de Embargos no coincide con el guardado en ControlFichero.");
 	        }     
 	        
 	        //Se actualiza el estado de controlFicheroPeticion a TRAMITANDO:

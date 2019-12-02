@@ -30,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
-import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
@@ -132,12 +131,12 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	        
 	        //Comprobar que el fichero de embargos exista:
 	        if (!ficheroEmbargo.exists()) {
-	        	throw new ICEParserException("","ERROR: no se ha encontrado el fichero fisico de Embargos.");
+	        	throw new ICEException("ERROR: no se ha encontrado el fichero fisico de Embargos.");
 	        }
 	        
 	        //Comprobar que el CRC del fichero de Embargos sea el mismo que el guardado en ControlFichero:
 	        if (!controlFicheroEmbargo.getNumCrc().equals(Long.toString(FileUtils.checksumCRC32(ficheroEmbargo)))){
-	        	throw new ICEParserException("","ERROR: el CRC del fichero de Embargos no coincide con el guardado en ControlFichero.");
+	        	throw new ICEException("ERROR: el CRC del fichero de Embargos no coincide con el guardado en ControlFichero.");
 	        }
 	        
 	        //Se actualiza el estado de controlFicheroEmbargo a Pendiente de envio:
@@ -159,7 +158,7 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 		        	entidadComunicadora = entidadComunicadoraOpt.get();
 		        	prefijoFichero = entidadComunicadora.getPrefijoFicheros();
 				} else {					
-		        	throw new ICEParserException("","ERROR: no se ha encontrado la entidad comunicadora asociada al codControlFichero=" + controlFicheroEmbargo.getCodControlFichero());
+		        	throw new ICEException("ERROR: no se ha encontrado la entidad comunicadora asociada al codControlFichero=" + controlFicheroEmbargo.getCodControlFichero());
 			
 				}
 	        }
@@ -225,19 +224,19 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	        }
 		        
 	        if (entidadTransmisoraFase3==null) {
-	        	throw new ICEParserException("11","ERROR: No se ha encontrado el registro de entidadTransmisora del fichero de Embargos '"+ fileNameEmbargo + "'.");
+	        	throw new ICEException("ERROR: No se ha encontrado el registro de entidadTransmisora del fichero de Embargos '"+ fileNameEmbargo + "'.");
 	        }
 	        
 	        if (entidadCreditoFase3==null) {
-	        	throw new ICEParserException("12","ERROR: No se ha encontrado el registro entidadCredito del fichero de Embargos '"+ fileNameEmbargo + "'.");
+	        	throw new ICEException("ERROR: No se ha encontrado el registro entidadCredito del fichero de Embargos '"+ fileNameEmbargo + "'.");
 	        }
 	        
 	        if (finEntidadCreditoFase3==null) {
-	        	throw new ICEParserException("12","ERROR: No se ha encontrado el registro finEntidadCredito del fichero de Embargos '"+ fileNameEmbargo + "'.");
+	        	throw new ICEException("ERROR: No se ha encontrado el registro finEntidadCredito del fichero de Embargos '"+ fileNameEmbargo + "'.");
 	        }
 	        
 	        if (finEntidadTransmisoraFase3==null) {
-	        	throw new ICEParserException("12","ERROR: No se ha encontrado el registro finEntidadTransmisora del fichero de Embargos '"+ fileNameEmbargo + "'.");
+	        	throw new ICEException("ERROR: No se ha encontrado el registro finEntidadTransmisora del fichero de Embargos '"+ fileNameEmbargo + "'.");
 	        }
 	        
 	        int numeroRegistrosFichero = 0;
@@ -271,7 +270,7 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	    		if (embargo.getTrabas()!=null) {
 	    			traba = embargo.getTrabas().get(0);
 	    		} else {
-	    			throw new ICEParserException("", "ERROR: el embargo no tiene una traba asociada.");
+	    			throw new ICEException("ERROR: el embargo no tiene una traba asociada.");
 	    		}
 	        	
 	        	//Cuentas

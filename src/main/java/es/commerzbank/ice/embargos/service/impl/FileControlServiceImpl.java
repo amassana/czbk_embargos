@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.comun.lib.util.ICEException;
-import es.commerzbank.ice.comun.lib.util.ICEParserException;
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
 import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
 import es.commerzbank.ice.embargos.domain.dto.FileControlFiltersDTO;
@@ -145,13 +144,13 @@ public class FileControlServiceImpl implements FileControlService{
 	}
 
 	@Override
-	public boolean tramitarFicheroInformacion(Long codeFileControl, String usuarioTramitador) throws IOException, ICEException, ICEParserException {
+	public boolean tramitarFicheroInformacion(Long codeFileControl, String usuarioTramitador) throws IOException, ICEException {
 		logger.info("FileControlServiceImpl - tramitarFicheroInformacion - start");
 		//Obtener el codigo del fichero de control:
 		Optional<ControlFichero> controlFicheroOpt = fileControlRepository.findById(codeFileControl);
 		
 		if(!controlFicheroOpt.isPresent()) {
-			throw new ICEException("", "ERROR: no se ha encontrado el ControlFichero con id: " +codeFileControl);
+			throw new ICEException("ERROR: no se ha encontrado el ControlFichero con id: " +codeFileControl);
 		}
 		
 		ControlFichero controlFichero = controlFicheroOpt.get();
@@ -183,7 +182,7 @@ public class FileControlServiceImpl implements FileControlService{
 				msg = "No se puede tramitar: no se ha revisado todas las peticiones de informacion.";
 			}
 			
-			//throw new ICEException("", "ERROR: " + msg);
+			//throw new ICEException("ERROR: " + msg);
 			logger.error("ERROR: "+ msg);
 			
 			return false;
