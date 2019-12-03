@@ -1,8 +1,6 @@
 package es.commerzbank.ice.embargos.service.impl;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -19,14 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.comun.lib.domain.dto.AccountingNote;
 import es.commerzbank.ice.comun.lib.domain.dto.GeneralParameter;
-import es.commerzbank.ice.comun.lib.domain.entity.Contador;
-import es.commerzbank.ice.comun.lib.domain.entity.ContadorPK;
-import es.commerzbank.ice.comun.lib.file.generate.ContaGenExecutor;
-import es.commerzbank.ice.comun.lib.repository.ContadorRepo;
 import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
-import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.datawarehouse.service.AccountService;
 import es.commerzbank.ice.datawarehouse.util.DWHUtils;
@@ -88,15 +81,6 @@ public class AccountingServiceImpl implements AccountingService{
 	
 	@Autowired
 	private LiftingService liftingService;
-
-	@Autowired
-	private ContaGenExecutor contaGenExecutor;
-	
-	@Autowired
-	private es.commerzbank.ice.comun.lib.service.FileControlService fileControlServiceComunes;
-	
-	@Autowired
-	private ContadorRepo contadorRepository;
 
 	@Autowired
 	private LiftingBankAccountRepository liftingBankAccountRepository;
@@ -217,6 +201,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 		boolean existsTrabaNotAccounted = false;
 		
+		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = null;
 		Long codFileControlFicheroComunes = null;
 
 		boolean creado = false, contabilizado = false;
@@ -247,7 +232,8 @@ public class AccountingServiceImpl implements AccountingService{
 						//Si la cuentaTraba pasa las condiciones para ser contabilizada:
 				
 						if (!creado && cuentaTraba.getImporte() != null && cuentaTraba.getImporte().doubleValue() > 0) {
-							codFileControlFicheroComunes = crearControlFicheroComunes(controlFichero, userName);
+							fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion());
+							codFileControlFicheroComunes = fileControlFicheroComunes.getCodControlFichero(); 
 							creado = true;
 						}
 						
@@ -318,7 +304,7 @@ public class AccountingServiceImpl implements AccountingService{
 		logger.info("sendAccountingAEATCuaderno63 - end");
 		
 		if (creado && contabilizado) {
-			contaGenExecutor.generacionFicheroContabilidad(codFileControlFicheroComunes);
+			accountingNoteService.generacionFicheroContabilidad(fileControlFicheroComunes);
 		}
 		
 		//Se devuelve true si no existe traba que no haya sido enviada a contabilidad:
@@ -341,7 +327,7 @@ public class AccountingServiceImpl implements AccountingService{
 	}
 	
 
-	private Long crearControlFicheroComunes(ControlFichero controlFichero, String userName) throws Exception {
+	/*private Long crearControlFicheroComunes(ControlFichero controlFichero, String userName) throws Exception {
 		Long codControlFichero = null;
 		
 		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero entity = new es.commerzbank.ice.comun.lib.domain.entity.ControlFichero(), result = null;
@@ -385,7 +371,7 @@ public class AccountingServiceImpl implements AccountingService{
 		} 
 		
 		return codControlFichero;
-	}
+	}*/
 
 
 	private boolean sendAccountingCGPJ(ControlFichero controlFichero, String userName) throws ICEException, Exception {
@@ -397,6 +383,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 		boolean existsTrabaNotAccounted = false;
 		
+		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = null;
 		Long codFileControlFicheroComunes = null;
 		
 		boolean creado = false, contabilizado = false;
@@ -442,7 +429,8 @@ public class AccountingServiceImpl implements AccountingService{
 								//Si la cuentaTraba pasa las condiciones para ser contabilizada:							
 								
 								if (!creado && cuentaTraba.getImporte() != null && cuentaTraba.getImporte().doubleValue() > 0) {
-									codFileControlFicheroComunes = crearControlFicheroComunes(controlFichero, userName);
+									fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion());
+									codFileControlFicheroComunes = fileControlFicheroComunes.getCodControlFichero();
 									creado = true;
 								}
 								
@@ -517,7 +505,7 @@ public class AccountingServiceImpl implements AccountingService{
 		logger.info("sendAccountingCGPJ - end");
 		
 		if (creado && contabilizado) {
-			contaGenExecutor.generacionFicheroContabilidad(codFileControlFicheroComunes);
+			accountingNoteService.generacionFicheroContabilidad(fileControlFicheroComunes);
 		}
 
 		//Se devuelve true si no existe traba que no haya sido enviada a contabilidad:
@@ -540,8 +528,6 @@ public class AccountingServiceImpl implements AccountingService{
 		if (amount != 0) {
 			accountingNote.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
 			accountingNote.setCodOffice(oficinaCuentaRecaudacion.toString());
-			//El contador lo gestiona Comunes
-			//accountingNote.setContador(contador);
 			accountingNote.setAmount(amount);
 			accountingNote.setCodCurrency(cuentaTraba.getDivisa());
 			accountingNote.setDebitAccount(getCuenta(nif, debitAccount));
@@ -989,11 +975,13 @@ public class AccountingServiceImpl implements AccountingService{
 			
 			boolean creado = false;
 			Long codFileControl = null;
+			es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = null;
 			
 			for (LevantamientoTraba levantamiento : fileControlOpt.get().getLevantamientoTrabas()) {
 				for (CuentaLevantamiento cuenta : levantamiento.getCuentaLevantamientos()) {
 					if (cuenta.getImporte().doubleValue() > 0) {
-						codFileControl = crearControlFicheroComunes(fileControlOpt.get(), userName);
+						fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, fileControlOpt.get().getDescripcion());
+						codFileControl = fileControlFicheroComunes.getCodControlFichero();
 						if (codFileControl != null) {
 							creado = true;
 						}
@@ -1006,7 +994,7 @@ public class AccountingServiceImpl implements AccountingService{
 			}
 			
 			if (creado) {
-				contaGenExecutor.generacionFicheroContabilidad(codFileControl);
+				accountingNoteService.generacionFicheroContabilidad(fileControlFicheroComunes);
 			}
 		}
 		
@@ -1015,7 +1003,7 @@ public class AccountingServiceImpl implements AccountingService{
 	}
 
 	@Override
-	public Long sendAccountingLiftingBankAccount(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, String userName)
+	public es.commerzbank.ice.comun.lib.domain.entity.ControlFichero sendAccountingLiftingBankAccount(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, String userName)
 			throws Exception
 	{
 
@@ -1023,16 +1011,18 @@ public class AccountingServiceImpl implements AccountingService{
 		Long oficinaCuentaRecaudacion = determineOficinaCuentaRecaudacion();
 		String contabilizacionCallbackNameParameter = EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_FASE5_CALLBACK;
 		Long codFileControlFicheroComunes = null;
+		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = null;
 		
 		if (cuentaLevantamiento.getImporte().doubleValue() > 0) {
-			codFileControlFicheroComunes = crearControlFicheroComunes(embargo.getControlFichero(), userName);
+			fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, embargo.getControlFichero().getDescripcion());
+			codFileControlFicheroComunes = fileControlFicheroComunes.getCodControlFichero();
 		}
 		
 		if (codFileControlFicheroComunes != null) {
 			sendAccountingLiftingBankAccountInternal(cuentaLevantamiento, embargo, codFileControlFicheroComunes, userName, oficinaCuentaRecaudacion, cuentaRecaudacion, contabilizacionCallbackNameParameter);
 		}
 
-		return codFileControlFicheroComunes;
+		return fileControlFicheroComunes;
 	}
 
 	private boolean sendAccountingLiftingBankAccountInternal(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, Long codFileControlFicheroComunes, String userName, Long oficinaCuentaRecaudacion, String cuentaRecaudacion, String contabilizacionCallbackNameParameter)
@@ -1054,8 +1044,6 @@ public class AccountingServiceImpl implements AccountingService{
 		if (amount != 0) {
 			accountingNote.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
 			accountingNote.setCodOffice(oficinaCuentaRecaudacion.toString());
-			//El contador lo gestiona Comunes
-			//accountingNote.setContador(contador);
 			accountingNote.setAmount(amount);
 			accountingNote.setCodCurrency(cuentaLevantamiento.getCodDivisa());
 			accountingNote.setDebitAccount(cuentaRecaudacion);
@@ -1147,7 +1135,8 @@ public class AccountingServiceImpl implements AccountingService{
 		if (amount != 0) {
 			//Si el importe a contabilizar no es 0:
 
-			Long codFileControlFicheroComunes = crearControlFicheroComunes(controlFichero, userName);
+			es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion());
+			Long codFileControlFicheroComunes = fileControlFicheroComunes.getCodControlFichero();
 			
 			accountingNote.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
 			accountingNote.setCodOffice(oficinaCuentaRecaudacion.toString());
@@ -1174,7 +1163,7 @@ public class AccountingServiceImpl implements AccountingService{
 				finalFileService.updateFinalFileAccountingStatus(ficheroFinal, EmbargosConstants.COD_ESTADO_CONTABILIZACION_ENVIADA_A_CONTABILIDAD, userName);
 				
 				//Generacion del fichero de contabilidad solo si resultContabilizar es 1:
-				contaGenExecutor.generacionFicheroContabilidad(codFileControlFicheroComunes);
+				accountingNoteService.generacionFicheroContabilidad(fileControlFicheroComunes);
 				
 			} else {
 				Log.warn("Fichero Final with codControlFichero " + codeFileControl + " is not accounted.");
