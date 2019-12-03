@@ -539,7 +539,7 @@ public class AccountingServiceImpl implements AccountingService{
 		
 		if (amount != 0) {
 			accountingNote.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
-			accountingNote.setCodOffice(oficinaCuentaRecaudacion);
+			accountingNote.setCodOffice(oficinaCuentaRecaudacion.toString());
 			//El contador lo gestiona Comunes
 			//accountingNote.setContador(contador);
 			accountingNote.setAmount(amount);
@@ -1053,7 +1053,7 @@ public class AccountingServiceImpl implements AccountingService{
 		int resultado = 0;
 		if (amount != 0) {
 			accountingNote.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
-			accountingNote.setCodOffice(oficinaCuentaRecaudacion);
+			accountingNote.setCodOffice(oficinaCuentaRecaudacion.toString());
 			//El contador lo gestiona Comunes
 			//accountingNote.setContador(contador);
 			accountingNote.setAmount(amount);
@@ -1150,7 +1150,7 @@ public class AccountingServiceImpl implements AccountingService{
 			Long codFileControlFicheroComunes = crearControlFicheroComunes(controlFichero, userName);
 			
 			accountingNote.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
-			accountingNote.setCodOffice(oficinaCuentaRecaudacion);
+			accountingNote.setCodOffice(oficinaCuentaRecaudacion.toString());
 			accountingNote.setAmount(amount);
 			accountingNote.setCodCurrency(divisa);
 			accountingNote.setDebitAccount(cuentaRecaudacion);

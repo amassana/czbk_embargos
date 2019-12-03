@@ -181,8 +181,7 @@ public class FileControlServiceImpl implements FileControlService{
 			} else if (countReviewedPetitionCases.compareTo(countPetitionCases)!=0) {
 				msg = "No se puede tramitar: no se ha revisado todas las peticiones de informacion.";
 			}
-			
-			//throw new ICEException("", "ERROR: " + msg);
+
 			logger.error("ERROR: "+ msg);
 			
 			return false;
