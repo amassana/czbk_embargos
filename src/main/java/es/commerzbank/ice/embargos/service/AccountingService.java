@@ -9,7 +9,7 @@ public interface AccountingService {
 
 	public boolean sendAccountingSeizure(Long codeFileControl, String userName) throws ICEException, Exception;
 	public boolean sendAccountingLifting(Long codeFileControl, String userName) throws ICEException, Exception;
-	public Long sendAccountingLiftingBankAccount(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, String userName) throws ICEException, Exception;
+	public es.commerzbank.ice.comun.lib.domain.entity.ControlFichero sendAccountingLiftingBankAccount(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, String userName) throws ICEException, Exception;
 	public boolean sendAccountingFinalFile(Long codeFileControl, String userName) throws ICEException, Exception;
 
 	public boolean manageAccountingNoteSeizureCallback(AccountingNote accountingNote, String userName) throws Exception;

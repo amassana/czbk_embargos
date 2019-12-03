@@ -19,7 +19,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import es.commerzbank.ice.comun.lib.file.generate.ContaGenExecutor;
+import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
@@ -118,13 +118,12 @@ public class LiftingServiceImpl implements LiftingService {
     
     @Autowired
     private AccountingService accountingService;
-    
-    @Autowired
-    private ContaGenExecutor contaGenExecutor;
-    
+        
     @Autowired
     private OrderingEntityRepository orderingEntityRepository;
     
+    @Autowired
+	private AccountingNoteService accountingNoteService;
     
 	@Override
 	public List<LiftingDTO> getAllByControlFichero(ControlFichero controlFichero) {
@@ -351,8 +350,8 @@ public class LiftingServiceImpl implements LiftingService {
 	@Transactional(transactionManager = "transactionManager", rollbackFor = Exception.class)
 	public boolean manualLifting(LiftingManualDTO liftingManualDTO, String userModif) throws Exception {
 		
-        Long codFileControlComunes = null;
-
+        es.commerzbank.ice.comun.lib.domain.entity.ControlFichero controlFichero = null;
+        
         try {
             BigDecimal importeMaximoAutomaticoDivisa =
                     generalParametersService.loadBigDecimalParameter(EmbargosConstants.PARAMETRO_EMBARGOS_LEVANTAMIENTO_IMPORTE_MAXIMO_AUTOMATICO_DIVISA);
@@ -475,11 +474,7 @@ public class LiftingServiceImpl implements LiftingService {
 
                         liftingBankAccountRepository.save(cuentaLevantamiento);
 
-                        Long aux = accountingService.sendAccountingLiftingBankAccount(cuentaLevantamiento, embargo, userModif);
-                        
-                        if (aux != null && aux > 0) {
-                        	codFileControlComunes = aux;
-                        }
+                        controlFichero = accountingService.sendAccountingLiftingBankAccount(cuentaLevantamiento, embargo, userModif);
                     }
 
                     if (allCuentasLevantamientoContabilizados) {
@@ -493,8 +488,8 @@ public class LiftingServiceImpl implements LiftingService {
             	
             	
                 // cerrar y enviar la contabilización
-                if (allLevantamientosContabilizados) {
-                    contaGenExecutor.generacionFicheroContabilidad(codFileControlComunes);
+                if (allLevantamientosContabilizados && controlFichero!=null) {
+                	accountingNoteService.generacionFicheroContabilidad(controlFichero);
                 }
 
                 // Actualizar control fichero

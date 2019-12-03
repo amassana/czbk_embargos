@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import es.commerzbank.ice.comun.lib.file.generate.ContaGenExecutor;
+import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
@@ -62,35 +62,45 @@ public class Cuaderno63LiftingServiceImpl
 	private ClientDataService clientDataService;
 
     @Autowired
-    FileControlMapper fileControlMapper;
+    private FileControlMapper fileControlMapper;
+    
     @Autowired
-    FileControlRepository fileControlRepository;
+    private FileControlRepository fileControlRepository;
+    
     @Autowired
-    LiftingRepository liftingRepository;
+    private LiftingRepository liftingRepository;
+    
     @Autowired
-    SeizureRepository seizureRepository;
+    private SeizureRepository seizureRepository;
+    
     @Autowired
-    SeizedRepository seizedRepository;
+    private SeizedRepository seizedRepository;
+    
     @Autowired
-    LiftingBankAccountRepository liftingBankAccountRepository;
+    private LiftingBankAccountRepository liftingBankAccountRepository;
+    
     @Autowired
-    CustomerService customerService;
+    private CustomerService customerService;
+    
     @Autowired
-    Cuaderno63Mapper cuaderno63Mapper;
+    private Cuaderno63Mapper cuaderno63Mapper;
+    
     @Autowired
-    AccountingService accountingService;
+    private AccountingService accountingService;
+    
     @Autowired
-    GeneralParametersService generalParametersService;
+    private GeneralParametersService generalParametersService;
+    
     @Autowired
-    ContaGenExecutor contaGenExecutor;
-
+	private AccountingNoteService accountingNoteService;
+    
     @Override
     public void tratarFicheroLevantamientos(File processingFile, String originalName, File processedFile)
         throws IOException
     {
         BeanReader beanReader = null;
         Reader reader = null;
-        Long codFileControlComunes = null;
+        es.commerzbank.ice.comun.lib.domain.entity.ControlFichero controlFichero = null;
 
         try {
             BigDecimal importeMaximoAutomaticoDivisa =
@@ -186,11 +196,7 @@ public class Cuaderno63LiftingServiceImpl
 
                         liftingBankAccountRepository.save(cuentaLevantamiento);
 
-                        Long aux = accountingService.sendAccountingLiftingBankAccount(cuentaLevantamiento, embargo, EmbargosConstants.USER_AUTOMATICO);
-                        
-                        if (aux != null && aux > 0) {
-                        	codFileControlComunes = aux;
-                        }
+                        controlFichero = accountingService.sendAccountingLiftingBankAccount(cuentaLevantamiento, embargo, EmbargosConstants.USER_AUTOMATICO);
                     }
 
                     if (allCuentasLevantamientoContabilizados) {
@@ -206,8 +212,8 @@ public class Cuaderno63LiftingServiceImpl
             }
 
             // cerrar y enviar la contabilización
-            if (allLevantamientosContabilizados) {
-                contaGenExecutor.generacionFicheroContabilidad(codFileControlComunes);
+            if (allLevantamientosContabilizados && controlFichero!=null) {
+            	accountingNoteService.generacionFicheroContabilidad(controlFichero);
             }
 
             // Actualizar control fichero
