@@ -17,6 +17,7 @@ public class FileControlDTO {
 	private String modifiedUser;
 	private Boolean isTGSS;
 	private Boolean isCuaderno63;
+	private String rutaFichero;
 	
 	public String getCode() {
 		return code;
@@ -95,6 +96,12 @@ public class FileControlDTO {
 	}
 	public void setIsCuaderno63(Boolean isCuaderno63) {
 		this.isCuaderno63 = isCuaderno63;
+	}
+	public String getRutaFichero() {
+		return rutaFichero;
+	}
+	public void setRutaFichero(String rutaFichero) {
+		this.rutaFichero = rutaFichero;
 	}
 		
 }

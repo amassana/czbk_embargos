@@ -1,5 +1,9 @@
 package es.commerzbank.ice.embargos.controller;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -7,11 +11,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -345,6 +352,53 @@ public class FileControlController {
 		return response;
 	}
 
+	@GetMapping(value = "/{codeFileControl}/download")
+	public ResponseEntity<Resource> download(Authentication authentication,
+			 @PathVariable("codeFileControl") Long codeFileControl){
+		logger.info("FileControlController - download - start");
+		ResponseEntity<Resource> response = null;
+		FileControlDTO result = null;
+		
+		try {
+			result = fileControlService.getByCodeFileControl(codeFileControl);
+			if (result != null) {
+				try {
+					File file = new File(result.getRutaFichero());
+					HttpHeaders header = new HttpHeaders();
+			        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + result.getFileName());
+			        header.add("Cache-Control", "no-cache, no-store, must-revalidate");
+			        header.add("Pragma", "no-cache");
+			        header.add("Expires", "0");
+					
+			        Path path = Paths.get(file.getAbsolutePath());
+			        ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
+			        
+			        response = ResponseEntity.ok()
+			                .headers(header)
+			                .contentLength(file.length())
+			                .contentType(MediaType.parseMediaType("text/plain"))
+			                .body(resource);
+				}
+				catch (Exception e){
+					logger.error("FileControlController - download - error", e);
+					response = new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+				}
+		        
+			} else {
+				response = new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+			}
+			
+		} catch (Exception e) {
+			
+			response = new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+			
+			logger.error("ERROR in download: ", e);
+		}	
+			
+		logger.info("FileControlController - download - end");
+		return response;
+	}
+	
 	@PostMapping("/reports/files")
 	public ResponseEntity<InputStreamResource> generateFileControlReport(
 			@RequestParam(name = "codTipoFichero", required = false) Integer[] codTipoFichero,
