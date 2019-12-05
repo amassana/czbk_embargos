@@ -2,6 +2,10 @@ package es.commerzbank.ice.embargos.domain.entity;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import es.commerzbank.ice.comun.lib.util.ValueConstants;
+import es.commerzbank.ice.utils.EmbargosConstants;
+
 import java.math.BigDecimal;
 
 
@@ -119,5 +123,20 @@ public class TareasPendiente implements Serializable {
 	public void setControlFichero(ControlFichero controlFichero) {
 		this.controlFichero = controlFichero;
 	}
-
+	
+	public String getAccionPorDefecto() {
+		return EmbargosConstants.TAREA_PENDIENTE;
+	}
+	
+	public String getAplicacionPorDefecto() {
+		return EmbargosConstants.ID_APLICACION_EMBARGOS;
+	}
+	
+	public String getIndActivoPorDefecto() {
+		return EmbargosConstants.IND_FLAG_SI;
+	}
+	
+	public String getEstadoPorDefecto() {
+		return ValueConstants.STATUS_TASK_PENDING;
+	}
 }
