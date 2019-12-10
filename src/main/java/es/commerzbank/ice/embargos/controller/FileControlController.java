@@ -207,7 +207,7 @@ public class FileControlController {
 			 @PathVariable("codeFileControl") Long codeFileControl){
 		logger.info("FileControlController - tramitar - start");
 		ResponseEntity<FileControlDTO> response = null;
-		Boolean result = null;
+		Boolean result = false;
 		
 		FileControlDTO resultFileControlDTO = null;
 		
