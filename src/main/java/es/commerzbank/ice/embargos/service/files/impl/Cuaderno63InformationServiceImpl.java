@@ -189,8 +189,8 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        		DatosCliente datosCliente = new DatosCliente();
 	        		datosCliente.setNif(solicitudInformacion.getNifDeudor());
 	        		PeticionInformacion peticionInformacion = 
-	        				informationPetitionRepository.findByControlFicheroAndDatosCliente(controlFicheroPeticion,
-	        						datosCliente);		
+	        				informationPetitionRepository.findByControlFicheroAndDatosClienteAndNumeroEmbargo(controlFicheroPeticion,
+	        						datosCliente, solicitudInformacion.getIdentificadorDeuda());		
 	        		
 	        		if(peticionInformacion!=null) {
 	        			//Se guardan:
