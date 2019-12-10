@@ -543,7 +543,7 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setName(nombre);
 			accountingNote.setNif(nif);
 			accountingNote.setDetailPayment(detailPayment);
-			
+			accountingNote.setRecaudAccount(debitAccount);
 			
 			result = accountingNoteService.contabilizar(accountingNote);
 			
@@ -1047,6 +1047,7 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setAmount(amount);
 			accountingNote.setCodCurrency(cuentaLevantamiento.getCodDivisa());
 			accountingNote.setDebitAccount(cuentaRecaudacion);
+			accountingNote.setRecaudAccount(cuentaRecaudacion);
 			//accountingNote.setCreditAccount(cuentaLevantamiento.getCuenta());
 			accountingNote.setActualDate(new Date());
 			//accountingNote.setExecutionDate(new Date());
@@ -1143,6 +1144,7 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setAmount(amount);
 			accountingNote.setCodCurrency(divisa);
 			accountingNote.setDebitAccount(cuentaRecaudacion);
+			accountingNote.setRecaudAccount(cuentaRecaudacion);
 			accountingNote.setCreditAccount(cuentaEntidadComunicadora);
 			accountingNote.setActualDate(new Date());
 			//accountingNote.setExecutionDate(new Date());
