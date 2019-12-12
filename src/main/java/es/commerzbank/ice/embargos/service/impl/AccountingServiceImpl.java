@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.comun.lib.domain.dto.AccountingNote;
 import es.commerzbank.ice.comun.lib.domain.dto.GeneralParameter;
+import es.commerzbank.ice.comun.lib.domain.entity.Sucursal;
+import es.commerzbank.ice.comun.lib.repository.OfficeCRepo;
 import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
@@ -91,6 +93,8 @@ public class AccountingServiceImpl implements AccountingService{
 	@Autowired
 	private AccountService accountService;
 	
+	@Autowired
+	private OfficeCRepo officeCRepo;
 
 	@Override
 	public boolean sendAccountingSeizure(Long codeFileControl, String userName) throws ICEException, Exception {
@@ -197,8 +201,17 @@ public class AccountingServiceImpl implements AccountingService{
 
 		String cuentaRecaudacion = determineCuentaRecaudacion();
 		
+		Long sucursal = null;
 		Long oficinaCuentaRecaudacion = determineOficinaCuentaRecaudacion();
-
+		try {
+			Optional<Sucursal> sucursalOpt = officeCRepo.findByNumeroSucursal(new BigDecimal(oficinaCuentaRecaudacion));
+			if (sucursalOpt.isPresent()) {
+				sucursal = sucursalOpt.get().getCodSucursal();
+			}
+		} catch (Exception e) {
+			logger.error("sendAccountingAEATCuaderno63 - error obteniendo código de oficina", e);	
+		}
+		
 		boolean existsTrabaNotAccounted = false;
 		
 		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = null;
@@ -232,7 +245,7 @@ public class AccountingServiceImpl implements AccountingService{
 						//Si la cuentaTraba pasa las condiciones para ser contabilizada:
 				
 						if (!creado && cuentaTraba.getImporte() != null && cuentaTraba.getImporte().doubleValue() > 0) {
-							fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion());
+							fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion(), sucursal);
 							codFileControlFicheroComunes = fileControlFicheroComunes.getCodControlFichero(); 
 							creado = true;
 						}
@@ -379,7 +392,17 @@ public class AccountingServiceImpl implements AccountingService{
 		logger.info("sendAccountingCGPJ - start");
 
 		String cuentaRecaudacion = determineCuentaRecaudacion();
+		
+		Long sucursal = null;
 		Long oficinaCuentaRecaudacion = determineOficinaCuentaRecaudacion();
+		try {
+			Optional<Sucursal> sucursalOpt = officeCRepo.findByNumeroSucursal(new BigDecimal(oficinaCuentaRecaudacion));
+			if (sucursalOpt.isPresent()) {
+				sucursal = sucursalOpt.get().getCodSucursal();
+			}
+		} catch (Exception e) {
+			logger.error("sendAccountingAEATCuaderno63 - error obteniendo código de oficina", e);	
+		}
 
 		boolean existsTrabaNotAccounted = false;
 		
@@ -429,7 +452,7 @@ public class AccountingServiceImpl implements AccountingService{
 								//Si la cuentaTraba pasa las condiciones para ser contabilizada:							
 								
 								if (!creado && cuentaTraba.getImporte() != null && cuentaTraba.getImporte().doubleValue() > 0) {
-									fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion());
+									fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion(), sucursal);
 									codFileControlFicheroComunes = fileControlFicheroComunes.getCodControlFichero();
 									creado = true;
 								}
@@ -970,7 +993,18 @@ public class AccountingServiceImpl implements AccountingService{
 		} else {
 		
 			String cuentaRecaudacion = determineCuentaRecaudacion();
+			
+			Long sucursal = null;
 			Long oficinaCuentaRecaudacion = determineOficinaCuentaRecaudacion();
+			try {
+				Optional<Sucursal> sucursalOpt = officeCRepo.findByNumeroSucursal(new BigDecimal(oficinaCuentaRecaudacion));
+				if (sucursalOpt.isPresent()) {
+					sucursal = sucursalOpt.get().getCodSucursal();
+				}
+			} catch (Exception e) {
+				logger.error("sendAccountingAEATCuaderno63 - error obteniendo código de oficina", e);	
+			}
+			
 			String contabilizacionCallbackNameParameter = EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_FASE5_CALLBACK;
 			
 			boolean creado = false;
@@ -980,7 +1014,7 @@ public class AccountingServiceImpl implements AccountingService{
 			for (LevantamientoTraba levantamiento : fileControlOpt.get().getLevantamientoTrabas()) {
 				for (CuentaLevantamiento cuenta : levantamiento.getCuentaLevantamientos()) {
 					if (cuenta.getImporte().doubleValue() > 0) {
-						fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, fileControlOpt.get().getDescripcion());
+						fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, fileControlOpt.get().getDescripcion(), sucursal);
 						codFileControl = fileControlFicheroComunes.getCodControlFichero();
 						if (codFileControl != null) {
 							creado = true;
@@ -1008,13 +1042,24 @@ public class AccountingServiceImpl implements AccountingService{
 	{
 
 		String cuentaRecaudacion = determineCuentaRecaudacion();
+		
+		Long sucursal = null;
 		Long oficinaCuentaRecaudacion = determineOficinaCuentaRecaudacion();
+		try {
+			Optional<Sucursal> sucursalOpt = officeCRepo.findByNumeroSucursal(new BigDecimal(oficinaCuentaRecaudacion));
+			if (sucursalOpt.isPresent()) {
+				sucursal = sucursalOpt.get().getCodSucursal();
+			}
+		} catch (Exception e) {
+			logger.error("sendAccountingAEATCuaderno63 - error obteniendo código de oficina", e);	
+		}
+		
 		String contabilizacionCallbackNameParameter = EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_FASE5_CALLBACK;
 		Long codFileControlFicheroComunes = null;
 		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = null;
 		
 		if (cuentaLevantamiento.getImporte().doubleValue() > 0) {
-			fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, embargo.getControlFichero().getDescripcion());
+			fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, embargo.getControlFichero().getDescripcion(), sucursal);
 			codFileControlFicheroComunes = fileControlFicheroComunes.getCodControlFichero();
 		}
 		
@@ -1119,7 +1164,18 @@ public class AccountingServiceImpl implements AccountingService{
 		//Obtencion de datos para setear:
 		String cuentaRecaudacion = determineCuentaRecaudacion();
 		String cuentaEntidadComunicadora = entidadComunicadora.getCuenta();
+		
+		Long sucursal = null;
 		Long oficinaCuentaRecaudacion = determineOficinaCuentaRecaudacion();
+		try {
+			Optional<Sucursal> sucursalOpt = officeCRepo.findByNumeroSucursal(new BigDecimal(oficinaCuentaRecaudacion));
+			if (sucursalOpt.isPresent()) {
+				sucursal = sucursalOpt.get().getCodSucursal();
+			}
+		} catch (Exception e) {
+			logger.error("sendAccountingAEATCuaderno63 - error obteniendo código de oficina", e);	
+		}
+		
 		String divisa = EmbargosConstants.ISO_MONEDA_EUR;
 		BigDecimal cambio = null;
 		String contabilizacionCallbackNameParameter = EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_FASE6_CALLBACK;
@@ -1136,7 +1192,7 @@ public class AccountingServiceImpl implements AccountingService{
 		if (amount != 0) {
 			//Si el importe a contabilizar no es 0:
 
-			es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion());
+			es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion(), sucursal);
 			Long codFileControlFicheroComunes = fileControlFicheroComunes.getCodControlFichero();
 			
 			accountingNote.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
