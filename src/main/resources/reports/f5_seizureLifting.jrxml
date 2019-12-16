@@ -17,7 +17,6 @@
 	<parameter name="sub_img_param" class="java.lang.String" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[SELECT  
-ec.des_entidad AS ENTIDADPRESENTADORA, 
 t.cod_traba AS CODIGOTRABA,
 t.fecha_traba AS FECHATRABA, 
 NULL AS FECHALEVANTAMIENTO, 
@@ -34,15 +33,11 @@ cf.cod_control_fichero AS FICHEROCONTROL
 FROM CONTROL_FICHERO cf 
 INNER JOIN levantamiento_traba lt ON lt.cod_control_fichero = cf.cod_control_fichero
 INNER JOIN cuenta_levantamiento cl ON cl.cod_levantamiento = lt.cod_levantamiento 
-INNER JOIN entidades_comunicadoras ec ON ec.cod_entidad_presentadora = cf.cod_entidad_presentadora
 INNER JOIN trabas t ON t.cod_traba = lt.cod_traba  
 INNER JOIN embargo e ON	e.cod_embargo = t.cod_embargo 
 WHERE cf.cod_control_fichero =   $P{COD_FILE_CONTROL}  
 ORDER BY lt.cod_levantamiento, cl.iban]]>
 	</queryString>
-	<field name="ENTIDADPRESENTADORA" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="ENTIDADPRESENTADORA"/>
-	</field>
 	<field name="NUMEROEMBARGO" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="NUMEROEMBARGO"/>
 	</field>
@@ -115,15 +110,6 @@ ORDER BY lt.cod_levantamiento, cl.iban]]>
 				</textElement>
 				<text><![CDATA[Fecha de Traba:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement isPrintRepeatedValues="false" x="353" y="93" width="100" height="20" uuid="fba90554-2346-4bb5-a0e5-a386fcd9d379">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a439b967-a736-41eb-949d-01afc719f1c8"/>
-				</reportElement>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Serif" size="14" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{ENTIDADPRESENTADORA}]]></textFieldExpression>
-			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="709" y="72" width="70" height="20" uuid="263b4219-524a-4e9a-82a0-c3bd1bfba248">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7c7f0214-50a8-4daa-8080-605c59aa8203"/>
