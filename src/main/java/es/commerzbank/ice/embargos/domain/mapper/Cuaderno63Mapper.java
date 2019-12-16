@@ -245,7 +245,7 @@ public abstract class Cuaderno63Mapper {
 
 			String claveSeguridadIban1 = ordenEjecucionEmbargo.getClaveSeguridadIban1();
 			
-			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, embargo, numeroOrden, claveSeguridadIban1, fechaUltmaModif, usuarioModif);
+			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, embargo, numeroOrden, claveSeguridadIban1, fechaUltmaModif, usuarioModif, ordenEjecucionEmbargo.getIbanCuenta1());
 			
 			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
 			
@@ -259,7 +259,7 @@ public abstract class Cuaderno63Mapper {
 
 			String claveSeguridadIban2 = ordenEjecucionEmbargo.getClaveSeguridadIban2();
 			
-			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, embargo, numeroOrden, claveSeguridadIban2, fechaUltmaModif, usuarioModif);
+			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, embargo, numeroOrden, claveSeguridadIban2, fechaUltmaModif, usuarioModif, ordenEjecucionEmbargo.getIbanCuenta2());
 			
 			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
 			
@@ -273,7 +273,7 @@ public abstract class Cuaderno63Mapper {
 
 			String claveSeguridadIban3 = ordenEjecucionEmbargo.getClaveSeguridadIban3();
 			
-			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, embargo, numeroOrden, claveSeguridadIban3, fechaUltmaModif, usuarioModif);
+			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, embargo, numeroOrden, claveSeguridadIban3, fechaUltmaModif, usuarioModif, ordenEjecucionEmbargo.getIbanCuenta3());
 			
 			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
 			
@@ -287,7 +287,7 @@ public abstract class Cuaderno63Mapper {
 
 			String claveSeguridadIban4 = ordenEjecucionEmbargo.getClaveSeguridadIban4();
 			
-			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, embargo, numeroOrden, claveSeguridadIban4, fechaUltmaModif, usuarioModif);
+			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, embargo, numeroOrden, claveSeguridadIban4, fechaUltmaModif, usuarioModif, ordenEjecucionEmbargo.getIbanCuenta4());
 			
 			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
 			
@@ -301,7 +301,7 @@ public abstract class Cuaderno63Mapper {
 
 			String claveSeguridadIban5 = ordenEjecucionEmbargo.getClaveSeguridadIban5();
 			
-			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, embargo, numeroOrden, claveSeguridadIban5, fechaUltmaModif, usuarioModif);
+			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, embargo, numeroOrden, claveSeguridadIban5, fechaUltmaModif, usuarioModif, ordenEjecucionEmbargo.getIbanCuenta5());
 			
 			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
 			
@@ -315,7 +315,7 @@ public abstract class Cuaderno63Mapper {
 
 			String claveSeguridadIban6 = ordenEjecucionEmbargo.getClaveSeguridadIban6();
 			
-			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, embargo, numeroOrden, claveSeguridadIban6, fechaUltmaModif, usuarioModif);
+			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, embargo, numeroOrden, claveSeguridadIban6, fechaUltmaModif, usuarioModif, ordenEjecucionEmbargo.getIbanCuenta6());
 			
 			cuentaEmbargosList.add(cuentaEmbargo);
 		}
@@ -330,7 +330,7 @@ public abstract class Cuaderno63Mapper {
 	
 	
 	private CuentaEmbargo setCuentaEmbargoFromAccountDTO(AccountDTO accountDTO, Embargo embargo, 
-			BigDecimal numeroOrden, String claveSeguridadIban, BigDecimal fechaUltmaModif, String usuarioModif) {
+			BigDecimal numeroOrden, String claveSeguridadIban, BigDecimal fechaUltmaModif, String usuarioModif, String ibanFromOrdenEjecucionEmbargo) {
 		
 		CuentaEmbargo cuentaEmbargo = new CuentaEmbargo();
 		
@@ -340,6 +340,8 @@ public abstract class Cuaderno63Mapper {
 		} else {
 			//Sino, si la cuenta no se encuentra en DWH: indicar motivo de cuenta embargo a inexistente
 			cuentaEmbargo.setActuacion(EmbargosConstants.CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA_NORMA63);
+			//Iban obtenido del fichero de embargos:
+			cuentaEmbargo.setIban(ibanFromOrdenEjecucionEmbargo);
 		}
 
 		cuentaEmbargo.setClaveSeguridad(claveSeguridadIban);
