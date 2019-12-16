@@ -34,23 +34,20 @@
 	t.FECHA_LIMITE AS FechaVto,
 	cf.FECHA_CREACION,
 	e.FECHA_GENERACION,
-	cft.COD_CONTROL_FICHERO
-FROM
-	CONTROL_FICHERO_TRABA cft
-INNER JOIN control_fichero cf ON
-	cf.COD_CONTROL_FICHERO = cft.COD_CONTROL_FICHERO
+	cf.COD_CONTROL_FICHERO
+FROM control_fichero cf 
 INNER JOIN entidades_comunicadoras ec ON
 	ec.cod_entidad_presentadora = cf.cod_entidad_presentadora
+INNER JOIN embargo e ON
+	e.COD_CONTROL_FICHERO = cf.COD_CONTROL_FICHERO
 INNER JOIN trabas t ON
-	t.cod_traba = cft.cod_traba
+	t.cod_embargo = e.cod_embargo
 INNER JOIN cuenta_traba ct ON
 	ct.cod_traba = t.cod_traba
 LEFT OUTER JOIN cuenta_traba_actuacion cta ON
 	cta.cod_actuacion = ct.actuacion
-INNER JOIN embargo e ON
-	e.cod_embargo = t.cod_embargo
 WHERE
-	cft.cod_control_fichero = $P{COD_FILE_CONTROL}
+	cf.cod_control_fichero = (select cod_control_fichero_origen from control_fichero where cod_control_fichero = $P{COD_FILE_CONTROL})
 ORDER BY
 	t.cod_traba,
 ct.IBAN]]>
