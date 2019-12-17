@@ -563,9 +563,9 @@ public abstract class Cuaderno63Mapper {
 
 		//TODO: falta setear --> fechaEjecucionRetenciones
 		
+		int cont = 1;
+		
 		for (CuentaTraba cuentaTraba : cuentaTrabaOrderedList) {
-			
-			int cont = 1;
 			
 			boolean agregarATraba = cuentaTraba.getAgregarATraba() != null && EmbargosConstants.IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba());
 			
