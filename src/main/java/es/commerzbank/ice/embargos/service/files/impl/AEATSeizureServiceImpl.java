@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
-import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -196,6 +195,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 		        	if(EmbargosConstants.RECORD_NAME_AEAT_DILIGENCIA.equals(beanReader.getRecordName())) {
 		        		
 		        		diligenciaFase3 = (DiligenciaFase3) record;
+		        		diligenciaFase3 = revisarCuentaVacias(diligenciaFase3);
 		        		
 		        		Embargo embargo = null;
 		        		Traba traba = null;
@@ -356,6 +356,37 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 		}
 	
 		logger.info("AEATSeizureServiceImpl - tratarFicheroDiligenciasEmbargo - end");
+	}
+
+	private DiligenciaFase3 revisarCuentaVacias(DiligenciaFase3 diligenciaFase3) {
+		
+		DiligenciaFase3 retorno = diligenciaFase3;
+		
+		if (retorno.getCodigoCuentaCliente1()!=null && retorno.getCodigoCuentaCliente1().length()>0) {
+			try {
+				if (Long.valueOf(retorno.getCodigoCuentaCliente1()).equals(Long.valueOf(0))) {
+					retorno.setCodigoCuentaCliente1(null);
+				}
+			} catch (Exception e) {}
+		}
+		
+		if (retorno.getCodigoCuentaCliente2()!=null && retorno.getCodigoCuentaCliente2().length()>0) {
+			try {
+				if (Long.valueOf(retorno.getCodigoCuentaCliente2()).equals(Long.valueOf(0))) {
+					retorno.setCodigoCuentaCliente2(null);
+				}
+			} catch (Exception e) {}
+		}
+		
+		if (retorno.getCodigoCuentaCliente3()!=null && retorno.getCodigoCuentaCliente3().length()>0) {
+			try {
+				if (Long.valueOf(retorno.getCodigoCuentaCliente3()).equals(Long.valueOf(0))) {
+					retorno.setCodigoCuentaCliente3(null);
+				}
+			} catch (Exception e) {}
+		}
+		
+		return retorno;
 	}
 
 }
