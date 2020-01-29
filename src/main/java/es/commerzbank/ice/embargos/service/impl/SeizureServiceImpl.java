@@ -7,11 +7,9 @@ import java.math.BigDecimal;
 import java.net.SocketTimeoutException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
+import net.sf.jasperreports.engine.*;
 import org.apache.commons.codec.Charsets;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -67,11 +65,6 @@ import es.commerzbank.ice.utils.EmbargosConstants;
 import es.commerzbank.ice.utils.EmbargosUtils;
 import es.commerzbank.ice.utils.ICEDateUtils;
 import es.commerzbank.ice.utils.ResourcesUtil;
-import net.sf.jasperreports.engine.JRPrintPage;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 @Service
@@ -455,6 +448,8 @@ public class SeizureServiceImpl implements SeizureService {
 			parameters.put("IMAGE_PARAM", image.toString());
 			// parameters.put("TEMPLATE_STYLE_PATH", templateStyleStream);
 
+			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
+
 			InputStream justificanteInputStream = embargosJrxml.getInputStream();
 
 			JasperPrint fillReport = JasperFillManager.fillReport(justificanteInputStream, parameters, conn);
@@ -489,6 +484,8 @@ public class SeizureServiceImpl implements SeizureService {
 
 			parameters.put("IMAGE_PARAM", image.toString());
 			parameters.put("COD_FILE_CONTROL", codControlFichero);
+
+			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 
 			InputStream resumenInputStream = resumenTrabasJrxml.getInputStream();
 
@@ -530,6 +527,8 @@ public class SeizureServiceImpl implements SeizureService {
 			parameters.put("sub_img_param", image.toString());
 			parameters.put("SUBREPORT_HEADER", subReportHeader);
 			parameters.put("COD_FILE_CONTROL", codControlFichero);
+
+			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 
 			InputStream resumenInputStream = resumenTrabasJrxml.getInputStream();
 

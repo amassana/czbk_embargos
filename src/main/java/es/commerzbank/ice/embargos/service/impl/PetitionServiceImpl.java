@@ -5,7 +5,9 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
+import net.sf.jasperreports.engine.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +27,6 @@ import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.InformationPetitionService;
 import es.commerzbank.ice.embargos.service.PetitionService;
 import es.commerzbank.ice.utils.ResourcesUtil;
-import net.sf.jasperreports.engine.JRPrintPage;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 @Service
@@ -97,6 +94,8 @@ public class PetitionServiceImpl implements PetitionService{
 				parameters.put("img_param", image.toString());
 				parameters.put("COD_CONTROL_FICHERO", codeFileControl);
 				parameters.put("file_param", subReport);
+
+				parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 	
 	
 				InputStream resourceInputStream = jrxmlResource.getInputStream();
@@ -133,6 +132,8 @@ public class PetitionServiceImpl implements PetitionService{
 			parameters.put("img_param", image.toString());
 			parameters.put("cod_control_fichero", codeFileControl);
 			parameters.put("file_param", subReport);
+
+			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 
 
 			InputStream resourceInputStream = jrxmlResource.getInputStream();

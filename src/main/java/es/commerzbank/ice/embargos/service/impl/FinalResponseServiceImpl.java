@@ -5,11 +5,9 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
+import net.sf.jasperreports.engine.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +27,6 @@ import es.commerzbank.ice.embargos.repository.FinalResponseBankAccountRepository
 import es.commerzbank.ice.embargos.repository.FinalResponseRepository;
 import es.commerzbank.ice.embargos.service.FinalResponseService;
 import es.commerzbank.ice.utils.ResourcesUtil;
-import net.sf.jasperreports.engine.JRPrintPage;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 @Service
@@ -119,6 +112,8 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 			parameters.put("REPORT_IMPORTE_ABONADO", importeAbonadoReport);
 			parameters.put("COD_USUARIO", cod_usuario);
 			parameters.put("COD_TRABA", cod_traba);
+
+			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 	
 
 			InputStream anexo1Input = anexoJasperFile.getInputStream();
@@ -158,6 +153,8 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 			parameters.put("SUBREPORT_HEADER", subReportHeader);
 			parameters.put("COD_FILE_CONTROL", cod_file_control);
 
+			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
+
 			InputStream finalEmbargosIS = respFinalEmbargoResource.getInputStream();
 			JasperPrint fillReport = JasperFillManager.fillReport(finalEmbargosIS, parameters, conn_embargos);
 
@@ -186,6 +183,8 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 
 			parameters.put("IMAGE_PARAM", logoFile.toString());
 			parameters.put("COD_TRABA", cod_traba);
+
+			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 
 			InputStream isOrdenTransferencia = transOrder.getInputStream();
 			JasperPrint transOrderJP = JasperFillManager.fillReport(isOrdenTransferencia, parameters, conn_embargos);
@@ -218,6 +217,8 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 
 			parameters.put("IMAGE_PARAM", logoFile.toString());
 			parameters.put("COD_CONTROL_FICHERO", cod_control_fichero);
+
+			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 
 			InputStream isOrdenTransferencia = transOrder.getInputStream();
 			JasperPrint transOrderJP = JasperFillManager.fillReport(isOrdenTransferencia, parameters, conn_embargos);

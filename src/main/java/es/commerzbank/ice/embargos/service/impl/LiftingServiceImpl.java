@@ -6,12 +6,9 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
+import net.sf.jasperreports.engine.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,11 +55,6 @@ import es.commerzbank.ice.embargos.service.LiftingService;
 import es.commerzbank.ice.utils.EmbargosConstants;
 import es.commerzbank.ice.utils.EmbargosUtils;
 import es.commerzbank.ice.utils.ResourcesUtil;
-import net.sf.jasperreports.engine.JRPrintPage;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 @Service
@@ -282,6 +274,8 @@ public class LiftingServiceImpl implements LiftingService {
 			parameters.put("SUBREPORT_HEADER", subReportHeader);
 			parameters.put("COD_FILE_CONTROL", cod_file_control);
 
+			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
+
 			InputStream finalEmbargosIS = resumenLevantamiento.getInputStream();
 			JasperPrint fillReport = JasperFillManager.fillReport(finalEmbargosIS, parameters, conn_embargos);
 
@@ -310,6 +304,8 @@ public class LiftingServiceImpl implements LiftingService {
 
 			parameters.put("COD_LEVANTAMIENTO", idLifting);
 			parameters.put("IMAGE_PARAM", image.toString());
+
+			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 
 			InputStream justificanteInputStream = embargosJrxml.getInputStream();
 

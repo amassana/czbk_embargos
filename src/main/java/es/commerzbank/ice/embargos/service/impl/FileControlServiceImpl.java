@@ -4,14 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import net.sf.jasperreports.engine.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,11 +43,6 @@ import es.commerzbank.ice.embargos.service.files.Cuaderno63SeizedService;
 import es.commerzbank.ice.utils.EmbargosConstants;
 import es.commerzbank.ice.utils.ICEDateUtils;
 import es.commerzbank.ice.utils.ResourcesUtil;
-import net.sf.jasperreports.engine.JRPrintPage;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 @Service
@@ -479,6 +470,8 @@ public class FileControlServiceImpl implements FileControlService{
 
 			JasperReport subReport = (JasperReport) JRLoader.loadObject(subResourceInputStream);
 			parameters.put("file_param", subReport);
+
+			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 
 			Resource resource = ResourcesUtil.getFromJasperFolder("file_control.jasper");
 			InputStream resourceInputStream = resource.getInputStream();
