@@ -53,13 +53,12 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 				<subreportParameter name="sub_img_param">
 					<subreportParameterExpression><![CDATA[$P{img_param}]]></subreportParameterExpression>
 				</subreportParameter>
+				<subreportParameter name="sub_sucursal">
+					<subreportParameterExpression><![CDATA[$P{sucursal}]]></subreportParameterExpression>
+				</subreportParameter>
 				<connectionExpression><![CDATA[$P{conn_param}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{file_param}]]></subreportExpression>
 			</subreport>
-			<textField>
-				<reportElement x="40" y="60" width="100" height="30" uuid="c704e979-fe41-4187-8e90-1f29a56b8892"/>
-				<textFieldExpression><![CDATA[$P{sucursal}]]></textFieldExpression>
-			</textField>
 		</band>
 	</title>
 	<pageHeader>
@@ -79,7 +78,7 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 	<columnHeader>
 		<band height="58" splitType="Stretch">
 			<staticText>
-				<reportElement x="4" y="40" width="276" height="18" uuid="2c8d4731-5d93-4ef6-90b8-920d963350a1">
+				<reportElement x="4" y="40" width="256" height="18" uuid="2c8d4731-5d93-4ef6-90b8-920d963350a1">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="cbaa5abf-4acb-43b2-9be7-7cc1f22a04a3"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -92,7 +91,7 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 				<text><![CDATA[NOMBRE FICHERO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="303" y="40" width="207" height="18" uuid="321785ed-ead9-47e8-9b94-8a93644f5c39">
+				<reportElement x="280" y="40" width="220" height="18" uuid="321785ed-ead9-47e8-9b94-8a93644f5c39">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="cbaa5abf-4acb-43b2-9be7-7cc1f22a04a3"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -105,7 +104,7 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 				<text><![CDATA[TIPO FICHERO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="530" y="40" width="107" height="18" uuid="1c816283-e5ec-484f-be70-79f9e8a68a84">
+				<reportElement x="520" y="40" width="117" height="18" uuid="1c816283-e5ec-484f-be70-79f9e8a68a84">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="cbaa5abf-4acb-43b2-9be7-7cc1f22a04a3"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -135,7 +134,7 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 	<detail>
 		<band height="21" splitType="Stretch">
 			<textField isBlankWhenNull="true">
-				<reportElement x="4" y="0" width="276" height="20" uuid="61a166f7-7f75-4126-83fe-b57352eff15c">
+				<reportElement x="4" y="0" width="256" height="20" uuid="61a166f7-7f75-4126-83fe-b57352eff15c">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="9746bfe5-6627-4a64-a56e-b656d4ce668d"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -146,7 +145,7 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 				<textFieldExpression><![CDATA[$F{NOMBRE_FICHERO}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="303" y="0" width="207" height="20" uuid="af919cb8-b4ae-4547-9200-4d814fa97a4f">
+				<reportElement x="280" y="0" width="220" height="20" uuid="af919cb8-b4ae-4547-9200-4d814fa97a4f">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0c37f62d-72ac-4bd0-8ae4-30c27b63e896"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -157,7 +156,7 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 				<textFieldExpression><![CDATA[$F{DES_TIPO_FICHERO}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="530" y="0" width="107" height="20" uuid="8d949686-f761-4612-9908-3a8bac8eba3f">
+				<reportElement x="520" y="0" width="117" height="20" uuid="8d949686-f761-4612-9908-3a8bac8eba3f">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e585d553-9e9b-4f2a-82fc-71ebd4013a3f"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -191,7 +190,7 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 			</textField>
 			<textField evaluationTime="Report">
 				<reportElement x="740" y="50" width="28" height="30" uuid="e6fca5b5-211a-4b20-8685-6586fa5c0c62"/>
-				<box leftPadding="0"/>
+				<box leftPadding="4"/>
 				<textElement>
 					<font fontName="Serif"/>
 				</textElement>
