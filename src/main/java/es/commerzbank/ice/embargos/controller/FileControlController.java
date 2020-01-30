@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -21,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -400,13 +402,16 @@ public class FileControlController {
 	}
 	
 	@PostMapping("/reports/files")
-	public ResponseEntity<InputStreamResource> generateFileControlReport(
+	public ResponseEntity<InputStreamResource> generateFileControlReport(Authentication authentication,
 			@RequestParam(name = "codTipoFichero", required = false) Integer[] codTipoFichero,
 			@RequestParam(name = "codEstado", required = false) Integer codEstado,
 			@RequestParam(name = "isPending", required = false) boolean isPending,
 			@RequestBody ReportParamsDTO reportParams) throws Exception {
 
 		logger.info("FileControlController - generateFileControlReport - start");
+		Map<String, Object> map = (Map<String, Object>)authentication.getDetails();
+		logger.info("Office: "+ map.get("codOffice"));
+
 		try {
 			DownloadReportFile.setTempFileName("file-control");
 
