@@ -36,6 +36,6 @@ public interface FileControlService {
 	
 	public void saveFileControlTransaction(ControlFichero controlFichero);
 
-	public byte[] generateFileControl(Integer [] codTipoFichero, Integer codEstado, boolean isPending, Date fechaInicio, Date fechaFin) throws Exception;
+	public byte[] generateFileControl(Integer [] codTipoFichero, Integer codEstado, boolean isPending, Date fechaInicio, Date fechaFin, Integer codSucursal) throws Exception;
 	
 }

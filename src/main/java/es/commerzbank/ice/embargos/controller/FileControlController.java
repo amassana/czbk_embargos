@@ -409,16 +409,13 @@ public class FileControlController {
 			@RequestBody ReportParamsDTO reportParams) throws Exception {
 
 		logger.info("FileControlController - generateFileControlReport - start");
-		//Map<String, Object> map = (Map<String, Object>)authentication.getDetails();
-		logger.info("Details: "+ authentication.getDetails());
-		logger.info("Autorithies: "+ authentication.getAuthorities());
 		try {
 			DownloadReportFile.setTempFileName("file-control");
 
 			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			DownloadReportFile.writeFile(fileControlService.generateFileControl(codTipoFichero, codEstado, isPending,
-					reportParams.getFechaInicio(), reportParams.getFechaFin()));
+					reportParams.getFechaInicio(), reportParams.getFechaFin(), Integer.parseInt(authentication.getDetails().toString())));
 
 			logger.info("FileControlController - generateFileControlReport - end");
 			return DownloadReportFile.returnToDownloadFile();

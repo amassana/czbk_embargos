@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import es.commerzbank.ice.comun.lib.service.OfficeCService;
 import net.sf.jasperreports.engine.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,6 +81,9 @@ public class FileControlServiceImpl implements FileControlService{
 
 	@Autowired
 	private OracleDataSourceEmbargosConfig oracleDataSourceEmbargosConfig;
+
+	@Autowired
+	private OfficeCService officeCService;
 
 	@Override
 	public Page<FileControlDTO> fileSearch(FileControlFiltersDTO fileControlFiltersDTO, Pageable pageable) throws Exception{
@@ -419,7 +423,7 @@ public class FileControlServiceImpl implements FileControlService{
 
 	@Override
 	public byte[] generateFileControl(Integer[] codTipoFichero, Integer codEstado, boolean isPending,
-			Date fechaInicio, Date fechaFin) throws Exception {
+			Date fechaInicio, Date fechaFin, Integer codSucursal) throws Exception {
 
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
@@ -470,6 +474,8 @@ public class FileControlServiceImpl implements FileControlService{
 
 			JasperReport subReport = (JasperReport) JRLoader.loadObject(subResourceInputStream);
 			parameters.put("file_param", subReport);
+
+			parameters.put("sucursal", officeCService.findById(codSucursal).getNombre());
 
 			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 
