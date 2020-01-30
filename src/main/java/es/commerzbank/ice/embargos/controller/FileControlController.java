@@ -409,8 +409,8 @@ public class FileControlController {
 			@RequestBody ReportParamsDTO reportParams) throws Exception {
 
 		logger.info("FileControlController - generateFileControlReport - start");
-		Map<String, Object> map = (Map<String, Object>)authentication.getDetails();
-		logger.info("Office: "+ map.get("codOffice"));
+		//Map<String, Object> map = (Map<String, Object>)authentication.getDetails();
+		logger.info("Details: "+ authentication.getDetails());
 
 		try {
 			DownloadReportFile.setTempFileName("file-control");
