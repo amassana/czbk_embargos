@@ -71,7 +71,7 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["INFORME DE PETICIÓN DE INFORMACIÓN"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["INFORME DE ARCHIVOS"]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -190,7 +190,7 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 			</textField>
 			<textField evaluationTime="Report">
 				<reportElement x="740" y="50" width="28" height="30" uuid="e6fca5b5-211a-4b20-8685-6586fa5c0c62"/>
-				<box leftPadding="4"/>
+				<box leftPadding="3"/>
 				<textElement>
 					<font fontName="Serif"/>
 				</textElement>
