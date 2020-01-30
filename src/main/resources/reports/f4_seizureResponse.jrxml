@@ -287,7 +287,7 @@ ct.IBAN]]>
 				<textFieldExpression><![CDATA[$F{COD_EXTERNO_ACTUACION}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="550" y="2" width="20" height="18" uuid="43d0da8a-574f-4de3-8f11-f20727044309">
+				<reportElement x="550" y="2" width="22" height="18" uuid="43d0da8a-574f-4de3-8f11-f20727044309">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="1e777b6b-a90d-4008-af1a-640b01e39b0c"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$F{IMPORTETRABADOCUENTA} != null]]></printWhenExpression>
