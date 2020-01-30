@@ -41,7 +41,7 @@
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new Date())]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="400" y="60" width="100" height="20" uuid="d94bd869-e2da-4442-a2a4-5bcad8d42703"/>
+				<reportElement x="376" y="60" width="124" height="20" uuid="d94bd869-e2da-4442-a2a4-5bcad8d42703"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Serif"/>
 				</textElement>
