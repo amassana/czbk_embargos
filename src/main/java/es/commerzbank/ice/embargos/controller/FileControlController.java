@@ -411,7 +411,7 @@ public class FileControlController {
 		logger.info("FileControlController - generateFileControlReport - start");
 		//Map<String, Object> map = (Map<String, Object>)authentication.getDetails();
 		logger.info("Details: "+ authentication.getDetails());
-
+		logger.info("Autorithies: "+ authentication.getAuthorities());
 		try {
 			DownloadReportFile.setTempFileName("file-control");
 
