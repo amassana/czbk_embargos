@@ -17,14 +17,14 @@
 	<title>
 		<band height="100" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-			<image>
+			<image hAlign="Left" vAlign="Bottom">
 				<reportElement x="376" y="20" width="219" height="40" uuid="73e22134-d71d-4d7c-8c5f-0a4330344fc9">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<imageExpression><![CDATA[$P{sub_img_param}]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="500" y="60" width="45" height="20" forecolor="#050505" uuid="070a40e4-b02e-448b-8bed-22d41c5f3ff9">
+				<reportElement x="499" y="60" width="46" height="20" forecolor="#050505" uuid="070a40e4-b02e-448b-8bed-22d41c5f3ff9">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -41,7 +41,7 @@
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new Date())]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="376" y="60" width="124" height="20" uuid="d94bd869-e2da-4442-a2a4-5bcad8d42703"/>
+				<reportElement x="376" y="60" width="123" height="20" uuid="d94bd869-e2da-4442-a2a4-5bcad8d42703"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Serif"/>
 				</textElement>
