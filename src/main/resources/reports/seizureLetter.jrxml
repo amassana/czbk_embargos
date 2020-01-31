@@ -322,7 +322,7 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font fontName="Serif" size="12" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{IMPORTETRABA} + " EUR"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00#").format($F{IMPORTETRABA}) + " EUR"]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="100" y="28" width="140" height="20" uuid="97ab5fe5-f3c3-405c-9b9f-d394129ec0b3">
