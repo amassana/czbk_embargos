@@ -69,7 +69,7 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 	</field>
 	<group name="IterarCuentas">
 		<groupHeader>
-			<band height="207">
+			<band height="195">
 				<staticText>
 					<reportElement x="0" y="10" width="165" height="30" uuid="f523de7e-5773-4c38-a635-11a435ed5b72"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -94,19 +94,19 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 				<staticText>
 					<reportElement x="0" y="94" width="55" height="20" uuid="a6785840-3483-4671-bfb2-24a6ff8c8fb4"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Serif" size="13" isBold="true"/>
+						<font fontName="Serif" size="12" isBold="true"/>
 					</textElement>
 					<text><![CDATA[CIF/NIF:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="0" y="118" width="66" height="20" uuid="26b2eea2-8ef3-4a85-adfd-25df1fcaa078"/>
+					<reportElement x="0" y="115" width="66" height="20" uuid="26b2eea2-8ef3-4a85-adfd-25df1fcaa078"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Serif" size="13" isBold="true"/>
+						<font fontName="Serif" size="12" isBold="true"/>
 					</textElement>
 					<text><![CDATA[NOMBRE:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="0" y="165" width="486" height="30" uuid="477b6876-a0cd-47d8-9fbb-d535172f6a2b"/>
+					<reportElement x="0" y="162" width="486" height="30" uuid="477b6876-a0cd-47d8-9fbb-d535172f6a2b"/>
 					<textElement>
 						<font fontName="Serif" size="12" isBold="true"/>
 					</textElement>
@@ -122,13 +122,13 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 					<textFieldExpression><![CDATA[$F{NIF}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement isPrintRepeatedValues="false" x="72" y="138" width="244" height="20" uuid="e7561877-c18c-42ac-a654-85c83ad97f70">
+					<reportElement isPrintRepeatedValues="false" x="72" y="135" width="244" height="20" uuid="e7561877-c18c-42ac-a654-85c83ad97f70">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="891fdffe-38ba-48fd-b302-fe4baa8a541c"/>
 					</reportElement>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Serif" size="12" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{IMPORTEEMBARGO} + " EUR"]]></textFieldExpression>
+					<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00#").format($F{IMPORTEEMBARGO}) + " EUR"]]></textFieldExpression>
 				</textField>
 				<line>
 					<reportElement x="165" y="31" width="110" height="1" uuid="079e693f-7e8f-4b33-b960-e39996c936f1">
@@ -147,7 +147,7 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 					</graphicElement>
 				</line>
 				<line>
-					<reportElement x="67" y="136" width="333" height="1" uuid="0c80ea2b-41c8-4b2f-a032-86b7a7771f27">
+					<reportElement x="67" y="133" width="333" height="1" uuid="0c80ea2b-41c8-4b2f-a032-86b7a7771f27">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<graphicElement>
@@ -155,7 +155,7 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 					</graphicElement>
 				</line>
 				<line>
-					<reportElement x="72" y="158" width="244" height="1" uuid="0538859b-bc49-4a3e-b7b9-f8417de15eb6">
+					<reportElement x="72" y="155" width="244" height="1" uuid="0538859b-bc49-4a3e-b7b9-f8417de15eb6">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<graphicElement>
@@ -163,9 +163,9 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 					</graphicElement>
 				</line>
 				<staticText>
-					<reportElement x="0" y="139" width="69" height="20" uuid="5c158429-e5b9-4119-89d6-a0cd8b17515e"/>
+					<reportElement x="0" y="136" width="69" height="20" uuid="5c158429-e5b9-4119-89d6-a0cd8b17515e"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Serif" size="13" isBold="true"/>
+						<font fontName="Serif" size="12" isBold="true"/>
 					</textElement>
 					<text><![CDATA[IMPORTE:]]></text>
 				</staticText>
@@ -196,7 +196,7 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 					</graphicElement>
 				</line>
 				<textField isBlankWhenNull="true">
-					<reportElement isPrintRepeatedValues="false" x="67" y="117" width="333" height="20" uuid="e3848e4c-a64f-4647-9dc9-624a19259395">
+					<reportElement isPrintRepeatedValues="false" x="67" y="114" width="333" height="20" uuid="e3848e4c-a64f-4647-9dc9-624a19259395">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="16dcd533-3d49-4634-b336-f64c3a91946b"/>
 					</reportElement>
 					<textElement verticalAlignment="Middle">
@@ -302,7 +302,7 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 				<text><![CDATA[Cuenta núm:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="30" width="100" height="20" uuid="147dd69e-2618-4eb4-86b6-334dc60fccfe"/>
+				<reportElement x="0" y="30" width="90" height="20" uuid="147dd69e-2618-4eb4-86b6-334dc60fccfe"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
@@ -315,7 +315,7 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 				</textElement>
 				<text><![CDATA[Importe:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField pattern="#,##0.00#" isBlankWhenNull="true">
 				<reportElement x="355" y="3" width="94" height="20" uuid="fa2ef9a5-62c3-4267-b9b0-035013747863">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="891fdffe-38ba-48fd-b302-fe4baa8a541c"/>
 				</reportElement>
@@ -325,7 +325,7 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 				<textFieldExpression><![CDATA[$F{IMPORTETRABA} + " EUR"]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="103" y="28" width="115" height="20" uuid="97ab5fe5-f3c3-405c-9b9f-d394129ec0b3">
+				<reportElement x="100" y="28" width="140" height="20" uuid="97ab5fe5-f3c3-405c-9b9f-d394129ec0b3">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c36c65b6-4cba-46e7-86fb-480553b3eb68"/>
 				</reportElement>
 				<textElement verticalAlignment="Bottom">
@@ -342,7 +342,7 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement x="103" y="48" width="118" height="1" uuid="6d4c20f3-ba83-4d92-9700-d928da266a12">
+				<reportElement x="100" y="48" width="140" height="1" uuid="6d4c20f3-ba83-4d92-9700-d928da266a12">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<graphicElement>
@@ -371,14 +371,14 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 	<lastPageFooter>
 		<band height="133">
 			<staticText>
-				<reportElement x="26" y="29" width="314" height="19" uuid="a6bcf41e-55e5-4c50-8c93-ab971483b873"/>
+				<reportElement x="0" y="29" width="340" height="19" uuid="a6bcf41e-55e5-4c50-8c93-ab971483b873"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="8" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Aprovechamos la ocasión para saludarles muy atentamente.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="26" y="47" width="140" height="40" uuid="ed0da00f-9da0-4a28-8e0b-c037a73cac59"/>
+				<reportElement x="0" y="47" width="166" height="40" uuid="ed0da00f-9da0-4a28-8e0b-c037a73cac59"/>
 				<textElement>
 					<font fontName="Serif" isBold="true"/>
 				</textElement>
@@ -387,7 +387,7 @@ Aktiengeselleschaft
 Sucursal en España]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="26" y="90" width="290" height="18" uuid="06955709-9791-4b25-b996-b330a3480912"/>
+				<reportElement x="0" y="90" width="316" height="18" uuid="06955709-9791-4b25-b996-b330a3480912"/>
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
@@ -401,7 +401,7 @@ Sucursal en España]]></text>
 				<text><![CDATA[Esta notificación no precisa firma.]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="26" y="19" width="464" height="10" uuid="66722ec0-57b3-4571-9724-c9919e79653f">
+				<reportElement x="0" y="19" width="490" height="10" uuid="66722ec0-57b3-4571-9724-c9919e79653f">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f9c8ca2d-4dc6-4b24-9ce1-5d02fe847a7f"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -410,7 +410,7 @@ Sucursal en España]]></text>
 				<textFieldExpression><![CDATA[$F{DATREGCOMDET}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="26" y="9" width="84" height="10" uuid="b799b760-9ef9-4f75-88c6-6cddf191ea5e"/>
+				<reportElement x="0" y="9" width="110" height="10" uuid="b799b760-9ef9-4f75-88c6-6cddf191ea5e"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="6"/>
 				</textElement>
