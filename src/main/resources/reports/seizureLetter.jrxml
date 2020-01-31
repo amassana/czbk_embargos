@@ -302,7 +302,7 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 				<text><![CDATA[Cuenta núm:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="30" width="90" height="20" uuid="147dd69e-2618-4eb4-86b6-334dc60fccfe"/>
+				<reportElement x="0" y="30" width="92" height="20" uuid="147dd69e-2618-4eb4-86b6-334dc60fccfe"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
