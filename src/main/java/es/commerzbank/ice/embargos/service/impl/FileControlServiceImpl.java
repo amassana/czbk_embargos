@@ -475,7 +475,7 @@ public class FileControlServiceImpl implements FileControlService{
 			JasperReport subReport = (JasperReport) JRLoader.loadObject(subResourceInputStream);
 			parameters.put("file_param", subReport);
 
-			parameters.put("sucursal", officeCService.findById(codSucursal).getNombre());
+			parameters.put("sucursal", officeCService.findById(Long.valueOf(codSucursal)).getNombre());
 
 			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 
