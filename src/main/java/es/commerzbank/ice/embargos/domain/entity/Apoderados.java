@@ -2,10 +2,10 @@ package es.commerzbank.ice.embargos.domain.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,9 +13,12 @@ import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import es.commerzbank.ice.embargos.domain.entity.listener.ApoderadosListener;
+
 @Entity
 @Table(name="APODERADOS")
 @NamedQuery(name="Apoderados.findAll", query="SELECT a FROM Apoderados a")
+@EntityListeners(ApoderadosListener.class)
 public class Apoderados implements Serializable {
 	private static final long serialVersionUID = 1L;
 

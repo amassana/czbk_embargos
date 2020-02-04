@@ -12,7 +12,7 @@ public interface RepresentativeService {
 
 	boolean createUpdateRepresentative(Representative representative, String user);
 
-	boolean deleteRepresentative(Long idRepresentative);
+	boolean deleteRepresentative(Long idRepresentative, String user);
 
 	Representative viewRepresentative(Long idRepresentative);
 

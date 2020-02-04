@@ -296,4 +296,10 @@ public class EmbargosConstants {
 	public static final Object IND_AEAT_ENTIDAD = "AEAT";
 	
 	public static final String TAREA_PENDIENTE = "P";
+	
+	//Auditoria Tablas
+	public static final String TABLA_APODERADOS = "APODERADOS";
+	public static final String TABLA_ENTIDADES_COMUNICADORAS = "ENTIDADES_COMUNICADORAS";
+	public static final String TABLA_ENTIDADES_ORDENANTES = "ENTIDADES_ORDENANTES";
+	
 }

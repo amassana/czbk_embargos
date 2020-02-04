@@ -137,7 +137,7 @@ public class AuditoriaEmbServiceImpl implements AuditoriaEmbService {
 	}
 
 	@Override
-	@Transactional(transactionManager="transactionManagerImpuestos", propagation = Propagation.REQUIRES_NEW)
+	@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
 	public void saveAuditoria(AuditoriaEmb auditoria) {
 		auditoriaRepo.save(auditoria);
 	}
