@@ -36,7 +36,7 @@ import es.commerzbank.ice.utils.EmbargosConstants;
 
 public class PeticionInformacionListener {
 
-private static final Logger logger = LoggerFactory.getLogger(PeticionInformacionListener.class);
+	private static final Logger logger = LoggerFactory.getLogger(PeticionInformacionListener.class);
 	
 	@Autowired
 	private AuditoriaEmbService auditoriaEmbService; 
