@@ -205,6 +205,8 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        			//- El calculo de las claves de seguridad de cada cuenta (el calculo se realiza en la fase 2, al tramitar, y no antes):
 	        			EmbargosUtils.calculateClavesSeguridadInPeticionInformacion(peticionInformacion);
 	        			
+	        			peticionInformacion.setUsuarioUltModificacion(usuarioTramitador);
+	        	        peticionInformacion.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 	        			informationPetitionRepository.save(peticionInformacion);
 	        			
 	        		} else {

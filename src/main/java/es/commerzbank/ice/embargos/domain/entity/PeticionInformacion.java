@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,6 +18,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import es.commerzbank.ice.embargos.domain.entity.listener.PeticionInformacionListener;
+
 
 /**
  * The persistent class for the PETICION_INFORMACION database table.
@@ -25,6 +28,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name="PETICION_INFORMACION")
 @NamedQuery(name="PeticionInformacion.findAll", query="SELECT p FROM PeticionInformacion p")
+@EntityListeners(PeticionInformacionListener.class)
 public class PeticionInformacion implements Serializable {
 	private static final long serialVersionUID = 1L;
 
