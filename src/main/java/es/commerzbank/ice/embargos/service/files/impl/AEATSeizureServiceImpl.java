@@ -326,6 +326,8 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	        // - Se guarda el codigo de tarea del calendario:
 	        controlFicheroEmbargo.setCodTarea(BigDecimal.valueOf(codTarea));
 	        	        
+	        controlFicheroEmbargo.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+	        controlFicheroEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 			fileControlRepository.save(controlFicheroEmbargo);
 
 

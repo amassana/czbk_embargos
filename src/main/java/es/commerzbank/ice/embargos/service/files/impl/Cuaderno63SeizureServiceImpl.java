@@ -337,7 +337,9 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 	        // - Se guarda el codigo de tarea del calendario:
 	        controlFicheroEmbargo.setCodTarea(BigDecimal.valueOf(codTarea));
 
-			fileControlRepository.save(controlFicheroEmbargo);
+	        controlFicheroEmbargo.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+	        controlFicheroEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+            fileControlRepository.save(controlFicheroEmbargo);
 
 		} catch (Exception e) {
 			LOG.error("Error in Cuaderno63 Seizure Service", e);

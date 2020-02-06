@@ -30,7 +30,7 @@ public interface FileControlService {
 	
 	public boolean updateFileControlStatus(Long codeFileControl, Long codFileControlStatus, String userModif);
 	
-	public void updateFileControlStatusTransaction(ControlFichero controlFichero, Long codEstado);
+	//public void updateFileControlStatusTransaction(ControlFichero controlFichero, Long codEstado);
 	
 	public void updateFileControlStatusTransaction(ControlFichero controlFichero, Long codEstado, String userModif);
 	

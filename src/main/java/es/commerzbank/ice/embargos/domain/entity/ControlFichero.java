@@ -2,6 +2,9 @@ package es.commerzbank.ice.embargos.domain.entity;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import es.commerzbank.ice.embargos.domain.entity.listener.ControlFicheroListener;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -13,6 +16,7 @@ import java.util.List;
 @Entity
 @Table(name="CONTROL_FICHERO")
 @NamedQuery(name="ControlFichero.findAll", query="SELECT c FROM ControlFichero c")
+@EntityListeners(ControlFicheroListener.class)
 public class ControlFichero implements Serializable {
 	private static final long serialVersionUID = 1L;
 

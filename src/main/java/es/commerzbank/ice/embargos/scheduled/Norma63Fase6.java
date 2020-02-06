@@ -81,7 +81,7 @@ public class Norma63Fase6
     }
     */
 
-    public void generarFase6(Long codControlFichero) throws ICEException, IOException {
+    public void generarFase6(Long codControlFichero, String user) throws ICEException, IOException {
         ControlFichero ficheroFase3 = fileControlRepository.getOne(codControlFichero);
 
         List<Embargo> embargos = seizureRepository.findAllByControlFichero(ficheroFase3);
@@ -90,12 +90,12 @@ public class Norma63Fase6
             throw new ICEException("No seizures found for code "+ codControlFichero);
 
         if (ficheroFase3.getTipoFichero().getCodTipoFichero() == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63)
-            generarFase6Norma63(ficheroFase3, embargos);
+            generarFase6Norma63(ficheroFase3, embargos, user);
         else if (ficheroFase3.getTipoFichero().getCodTipoFichero() == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT)
-            generarFase6AEAT(ficheroFase3, embargos);
+            generarFase6AEAT(ficheroFase3, embargos, user);
     }
 
-    private void generarFase6Norma63(ControlFichero ficheroFase3, List<Embargo> embargos) throws ICEException, IOException
+    private void generarFase6Norma63(ControlFichero ficheroFase3, List<Embargo> embargos, String user) throws ICEException, IOException
     {
         BeanReader beanReader = null;
 
@@ -112,6 +112,8 @@ public class Norma63Fase6
                     fileControlMapper.generateControlFichero(fase6File, EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63, fileNameFinal, fase6File);
             ficheroFase6.setEntidadesComunicadora(ficheroFase3.getEntidadesComunicadora());
 
+            ficheroFase6.setUsuarioUltModificacion(user);
+            ficheroFase6.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
             fileControlRepository.save(ficheroFase6);
 
             // Inicialiar beanIO parser
@@ -263,6 +265,8 @@ public class Norma63Fase6
                     EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63);
             ficheroFase6.setEstadoCtrlfichero(estadoCtrlfichero);
 
+            ficheroFase6.setUsuarioUltModificacion(user);
+            ficheroFase6.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
             fileControlRepository.save(ficheroFase6);
 
             // Mover a outbox
@@ -282,7 +286,7 @@ public class Norma63Fase6
         }
     }
 
-    private void generarFase6AEAT(ControlFichero ficheroFase3, List<Embargo> embargos) throws ICEException, IOException
+    private void generarFase6AEAT(ControlFichero ficheroFase3, List<Embargo> embargos, String user) throws ICEException, IOException
     {
         BeanReader beanReader = null;
 
@@ -299,6 +303,8 @@ public class Norma63Fase6
                     fileControlMapper.generateControlFichero(null, EmbargosConstants.COD_TIPO_FICHERO_FICHERO_FINAL_AEAT_INTERNAL, null, null);
             ficheroFase6.setEntidadesComunicadora(ficheroFase3.getEntidadesComunicadora());
 
+            ficheroFase6.setUsuarioUltModificacion(user);
+            ficheroFase6.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
             fileControlRepository.save(ficheroFase6);
 
             // Inicialiar beanIO parser
@@ -447,6 +453,8 @@ public class Norma63Fase6
                     EmbargosConstants.COD_TIPO_FICHERO_FICHERO_FINAL_AEAT_INTERNAL);
             ficheroFase6.setEstadoCtrlfichero(estadoCtrlfichero);
 
+            ficheroFase6.setUsuarioUltModificacion(user);
+            ficheroFase6.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
             fileControlRepository.save(ficheroFase6);
 
             /*

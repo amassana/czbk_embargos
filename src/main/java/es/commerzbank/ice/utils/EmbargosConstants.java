@@ -301,5 +301,6 @@ public class EmbargosConstants {
 	public static final String TABLA_APODERADOS = "APODERADOS";
 	public static final String TABLA_ENTIDADES_COMUNICADORAS = "ENTIDADES_COMUNICADORAS";
 	public static final String TABLA_ENTIDADES_ORDENANTES = "ENTIDADES_ORDENANTES";
+	public static final String TABLA_CONTROL_FICHERO = "CONTROL_FICHERO";
 	
 }

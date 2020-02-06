@@ -406,6 +406,7 @@ public class LiftingServiceImpl implements LiftingService {
                 if (entidadOrdenante!=null) controlFicheroLevantamiento.setEntidadesComunicadora(entidadOrdenante.getEntidadesComunicadora());
                 
                 controlFicheroLevantamiento.setUsuarioUltModificacion(userModif);
+                controlFicheroLevantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
                 controlFicheroLevantamiento.setDescripcion(EmbargosConstants.USER_MANUAL);
                 fileControlRepository.save(controlFicheroLevantamiento);
             	
@@ -504,6 +505,8 @@ public class LiftingServiceImpl implements LiftingService {
 
                 controlFicheroLevantamiento.setEstadoCtrlfichero(estadoCtrlfichero);
 
+                controlFicheroLevantamiento.setUsuarioUltModificacion(userModif);
+                controlFicheroLevantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
                 fileControlRepository.save(controlFicheroLevantamiento);
             }
         }

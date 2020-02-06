@@ -90,8 +90,8 @@ public class FileControlServiceImpl implements FileControlService{
 		logger.info("FileControlServiceImpl - fileSearch - start");
 		List<FileControlDTO> fileSearchResponseDTOList = new ArrayList<>();
 				
-		Date startDate = fileControlFiltersDTO.getStartDate();
-		Date endDate = fileControlFiltersDTO.getEndDate();
+		//Date startDate = fileControlFiltersDTO.getStartDate();
+		//Date endDate = fileControlFiltersDTO.getEndDate();
 		
 //		//Validar fechas:
 //		if (!validateDates(startDate,endDate)) {
@@ -121,10 +121,10 @@ public class FileControlServiceImpl implements FileControlService{
 		
 	}
 	
-	private boolean validateDates(Date startDate, Date endDate) {
+	/*private boolean validateDates(Date startDate, Date endDate) {
 		
 		return (startDate != null && endDate!=null && startDate.compareTo(endDate) <= 0);
-	}
+	}*/
 
 	@Override
 	public FileControlDTO getByCodeFileControl(Long codeFileControl) {
@@ -237,7 +237,10 @@ public class FileControlServiceImpl implements FileControlService{
 		//controlFichero.setFicheroRespuesta("PRUEBA2");
 		
 		//TODO no se esta guardando el EstadoCtrlfichero, puede ser debido al problema en ControlFichero del "Repeated Columns" de COD_TIPO_FICHERO.
-		
+
+		//Usuario y fecha ultima modificacion:
+		controlFichero.setUsuarioUltModificacion(userModif);
+		controlFichero.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 		fileControlRepository.save(controlFichero);
 		
 		logger.info("FileControlServiceImpl - updateFileControl - end");
@@ -336,7 +339,7 @@ public class FileControlServiceImpl implements FileControlService{
 		return EmbargosConstants.IND_FLAG_NO;
 	}
 	
-	@Override
+	/*@Override
 	@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
 	public void updateFileControlStatusTransaction(ControlFichero controlFichero, Long codEstado) {
 		
@@ -350,7 +353,7 @@ public class FileControlServiceImpl implements FileControlService{
 				        
 			fileControlRepository.save(controlFichero);
 		}
-	}
+	}*/
 
 	@Override
 	@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
@@ -367,6 +370,8 @@ public class FileControlServiceImpl implements FileControlService{
 	        	userModif = controlFichero.getUsuarioUltModificacion()!=null ? controlFichero.getUsuarioUltModificacion() : null;
 	        }       
 	        controlFichero.setUsuarioUltModificacion(userModif);
+	        
+	        controlFichero.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 	        
 			fileControlRepository.save(controlFichero);
 		}
