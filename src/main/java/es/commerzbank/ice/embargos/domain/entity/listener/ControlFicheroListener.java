@@ -61,6 +61,7 @@ public class ControlFicheroListener {
 			AutowireEmbHelper.autowire(this, this.fileControlMapper);
 			AutowireEmbHelper.autowire(this, this.fileControlStatusRepository);
 			AutowireEmbHelper.autowire(this, this.fileControlRepository);
+			AutowireEmbHelper.autowire(this, this.communicatingEntityRepository);
 			
 			if (controlFichero.getEstadoCtrlfichero()!=null) {
 				Optional<EstadoCtrlfichero> optEstadoCtrlfichero = fileControlStatusRepository.findById(controlFichero.getEstadoCtrlfichero().getId());

@@ -57,6 +57,8 @@ public class EmbargoListener {
 		try {
 			AutowireEmbHelper.autowire(this, this.auditoriaEmbService);
 			AutowireEmbHelper.autowire(this, this.seizureMapper);
+			AutowireEmbHelper.autowire(this, this.clientDataRepository);
+			AutowireEmbHelper.autowire(this, this.seizedRepository);
 			
 			if (embargo.getDatosCliente()!=null) {
 				Optional<DatosCliente> optDatosCliente = clientDataRepository.findById(embargo.getDatosCliente().getNif());

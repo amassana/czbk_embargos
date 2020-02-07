@@ -50,6 +50,7 @@ public class EntidadesOrdenanteListener {
 		try {
 			AutowireEmbHelper.autowire(this, this.auditoriaEmbService);
 			AutowireEmbHelper.autowire(this, this.orderingEntityMapper);
+			AutowireEmbHelper.autowire(this, this.communicatingEntityRepository);
 			
 			if (entidadOrdenante.getEntidadesComunicadora()!=null) {
 				Optional<EntidadesComunicadora> optEntidadCom = communicatingEntityRepository.findById(entidadOrdenante.getEntidadesComunicadora().getCodEntidadPresentadora());

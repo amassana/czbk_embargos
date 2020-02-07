@@ -207,6 +207,9 @@ public class Cuaderno63LiftingServiceImpl
                         estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION);
                         levantamiento.setEstadoLevantamiento(estadoLevantamiento);
                         levantamiento.setIndCasoRevisado(EmbargosConstants.IND_FLAG_YES);
+                        
+                        levantamiento.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+                		levantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
                         liftingRepository.save(levantamiento);
                     }
                 }
