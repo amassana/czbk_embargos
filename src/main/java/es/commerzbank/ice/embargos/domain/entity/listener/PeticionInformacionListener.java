@@ -39,9 +39,6 @@ public class PeticionInformacionListener {
 	private static final Logger logger = LoggerFactory.getLogger(PeticionInformacionListener.class);
 	
 	@Autowired
-	private AuditoriaEmbService auditoriaEmbService; 
-	
-	@Autowired
 	private InformationPetitionMapper informationPetitionMapper;
 	
 	@Autowired
@@ -50,6 +47,9 @@ public class PeticionInformacionListener {
 	@Autowired
 	private InformationPetitionBankAccountRepository informationPetitionBankAccountRepository; 
 	
+	@Autowired
+	private AuditoriaEmbService auditoriaEmbService;
+
 	@PostPersist
 	@PostUpdate
 	public void methodExecuteBeforeSave(PeticionInformacion peticionInformacion) {
@@ -77,7 +77,8 @@ public class PeticionInformacionListener {
 						}						
 					}
 				}
-				peticionInformacion.setPeticionInformacionCuentas(peticionList);
+				
+				if (peticionList.size()>0) peticionInformacion.setPeticionInformacionCuentas(peticionList);
 			}
 			
 			AuditoriaEmb auditoria = new AuditoriaEmb();

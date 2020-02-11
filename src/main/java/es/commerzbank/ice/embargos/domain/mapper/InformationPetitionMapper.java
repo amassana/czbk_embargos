@@ -78,5 +78,31 @@ public abstract class InformationPetitionMapper {
 				}
 			} 
 		}
+		else {
+			if (petitionCaseDTO.getBankAccount1() != null && petitionCaseDTO.getBankAccount1().getCodeBankAccount() !=null) {
+				
+				petitionCaseDTO.getBankAccount1().setStatus(EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE);
+			
+			} else if (petitionCaseDTO.getBankAccount2() != null && petitionCaseDTO.getBankAccount2().getCodeBankAccount() !=null ) {
+	
+				petitionCaseDTO.getBankAccount2().setStatus(EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE);
+	
+			} else if (petitionCaseDTO.getBankAccount3() != null && petitionCaseDTO.getBankAccount3().getCodeBankAccount() !=null ) {
+				
+				petitionCaseDTO.getBankAccount3().setStatus(EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE);
+			
+			} else if (petitionCaseDTO.getBankAccount4() != null && petitionCaseDTO.getBankAccount4().getCodeBankAccount() !=null ) {
+				
+				petitionCaseDTO.getBankAccount4().setStatus(EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE);
+			
+			} else if (petitionCaseDTO.getBankAccount5() != null && petitionCaseDTO.getBankAccount5().getCodeBankAccount() !=null ) {
+				
+				petitionCaseDTO.getBankAccount5().setStatus(EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE);
+			
+			} else if (petitionCaseDTO.getBankAccount6() != null && petitionCaseDTO.getBankAccount6().getCodeBankAccount() !=null ) {
+				
+				petitionCaseDTO.getBankAccount6().setStatus(EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE);
+			}
+		}
 	}	
 }
