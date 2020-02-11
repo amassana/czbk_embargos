@@ -2,6 +2,9 @@ package es.commerzbank.ice.embargos.domain.entity;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import es.commerzbank.ice.embargos.domain.entity.listener.TrabaListener;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -13,6 +16,7 @@ import java.util.List;
 @Entity
 @Table(name="TRABAS")
 @NamedQuery(name="Traba.findAll", query="SELECT t FROM Traba t")
+@EntityListeners(TrabaListener.class)
 public class Traba implements Serializable {
 	private static final long serialVersionUID = 1L;
 

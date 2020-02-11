@@ -4,8 +4,6 @@ package es.commerzbank.ice.embargos.domain.entity;
 import java.io.Serializable;
 import javax.persistence.*;
 
-import es.commerzbank.ice.embargos.domain.entity.listener.EmbargoListener;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -17,7 +15,6 @@ import java.util.List;
 @Entity
 @Table(name="EMBARGO")
 @NamedQuery(name="Embargo.findAll", query="SELECT e FROM Embargo e")
-@EntityListeners(EmbargoListener.class)
 public class Embargo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
