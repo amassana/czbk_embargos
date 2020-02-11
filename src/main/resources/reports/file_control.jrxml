@@ -183,7 +183,7 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 		<band height="80" splitType="Stretch">
 			<textField>
 				<reportElement x="700" y="50" width="40" height="30" uuid="b649f815-4064-4989-b413-c1ca27325e54"/>
-				<textElement>
+				<textElement textAlignment="Right">
 					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER} + " de "]]></textFieldExpression>
