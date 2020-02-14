@@ -21,27 +21,25 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import es.commerzbank.ice.embargos.config.AutowireEmbHelper;
-import es.commerzbank.ice.embargos.domain.dto.LiftingDTO;
+import es.commerzbank.ice.embargos.domain.dto.BankAccountLiftingDTO;
 import es.commerzbank.ice.embargos.domain.entity.AuditoriaEmb;
+import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
 import es.commerzbank.ice.embargos.domain.entity.EstadoLevantamiento;
-import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
-import es.commerzbank.ice.embargos.domain.entity.Traba;
-import es.commerzbank.ice.embargos.domain.mapper.LiftingMapper;
+import es.commerzbank.ice.embargos.domain.mapper.BankAccountLiftingMapper;
 import es.commerzbank.ice.embargos.domain.mapper.LiftingStatusMapper;
 import es.commerzbank.ice.embargos.repository.LiftingStatusRepository;
-import es.commerzbank.ice.embargos.repository.SeizedRepository;
 import es.commerzbank.ice.embargos.service.AuditoriaEmbService;
 import es.commerzbank.ice.utils.EmbargosConstants;
 
-public class LevantamientoTrabaListener {
+public class CuentaLevantamientoListener {
 
-	private static final Logger logger = LoggerFactory.getLogger(LevantamientoTrabaListener.class);
+	private static final Logger logger = LoggerFactory.getLogger(CuentaLevantamientoListener.class);
 	
 	@Autowired
 	private AuditoriaEmbService auditoriaEmbService; 
 	
 	@Autowired
-	private LiftingMapper liftingMapper;
+	private BankAccountLiftingMapper bankAccountLiftingMapper;
 	
 	@Autowired
 	private LiftingStatusMapper liftingStatusMapper;
@@ -49,44 +47,33 @@ public class LevantamientoTrabaListener {
 	@Autowired
 	private LiftingStatusRepository liftingStatusRepository;
 	
-	@Autowired
-	private SeizedRepository seizedRepository;
-	
 	@PostPersist
 	@PostUpdate
-	public void methodExecuteBeforeSave(LevantamientoTraba levantamientoTraba) {
+	public void methodExecuteBeforeSave(CuentaLevantamiento cuentaLevantamiento) {
 	   	
 		try {
 			AutowireEmbHelper.autowire(this, this.auditoriaEmbService);
-			AutowireEmbHelper.autowire(this, this.liftingMapper);
+			AutowireEmbHelper.autowire(this, this.bankAccountLiftingMapper);
 			AutowireEmbHelper.autowire(this, this.liftingStatusMapper);
 			AutowireEmbHelper.autowire(this, this.liftingStatusRepository);
-			AutowireEmbHelper.autowire(this, this.seizedRepository);
 			
-			if (levantamientoTraba.getEstadoLevantamiento()!=null) {
-				Optional<EstadoLevantamiento> optEstadoLevantamiento = liftingStatusRepository.findById(levantamientoTraba.getEstadoLevantamiento().getCodEstado());
+			if (cuentaLevantamiento.getEstadoLevantamiento()!=null) {
+				Optional<EstadoLevantamiento> optEstadoLevantamiento = liftingStatusRepository.findById(cuentaLevantamiento.getEstadoLevantamiento().getCodEstado());
 				if (optEstadoLevantamiento.isPresent()) {
-					levantamientoTraba.setEstadoLevantamiento(optEstadoLevantamiento.get());
-				}
-			}
-			
-			if (levantamientoTraba.getTraba()!=null) {
-				Optional<Traba> optTraba = seizedRepository.findById(levantamientoTraba.getTraba().getCodTraba());
-				if (optTraba.isPresent()) {
-					levantamientoTraba.setTraba(optTraba.get());
+					cuentaLevantamiento.setEstadoLevantamiento(optEstadoLevantamiento.get());
 				}
 			}
 			
 			AuditoriaEmb auditoria = new AuditoriaEmb();
-			auditoria.setTabla(EmbargosConstants.TABLA_LEVANTAMIENTO_TRABA);
-			auditoria.setValorPk(String.valueOf(levantamientoTraba.getCodLevantamiento()));
-			auditoria.setPkLogico(String.valueOf(levantamientoTraba.getCodLevantamiento()));
-			auditoria.setUsuario(levantamientoTraba.getUsuarioUltModificacion());
+			auditoria.setTabla(EmbargosConstants.TABLA_CUENTA_LEVANTAMIENTO);
+			auditoria.setValorPk(String.valueOf(cuentaLevantamiento.getCodCuentaLevantamiento()));
+			auditoria.setPkLogico(String.valueOf(cuentaLevantamiento.getCodCuentaLevantamiento()));
+			auditoria.setUsuario(cuentaLevantamiento.getUsuarioUltModificacion());
 			auditoria.setFecha(LocalDateTime.now());
 			
-			LiftingDTO liftingDTO = liftingMapper.toLiftingDTO(levantamientoTraba);
-			if (levantamientoTraba.getEstadoLevantamiento()!=null) {
-				liftingDTO.setStatus(liftingStatusMapper.toLiftingStatus(levantamientoTraba.getEstadoLevantamiento()));	
+			BankAccountLiftingDTO bankAccountLiftingDTO = bankAccountLiftingMapper.toBankAccountLiftingDTO(cuentaLevantamiento);
+			if (cuentaLevantamiento.getEstadoLevantamiento()!=null) {
+				bankAccountLiftingDTO.setStatus(liftingStatusMapper.toLiftingStatus(cuentaLevantamiento.getEstadoLevantamiento()));	
 			}
 			
 			Gson gson = new GsonBuilder().registerTypeAdapter(ZonedDateTime.class, new JsonSerializer<ZonedDateTime>() {
@@ -96,14 +83,14 @@ public class LevantamientoTrabaListener {
 				}
 	            }).create();
 			
-			String liftingDTOStr = gson.toJson(liftingDTO);
+			String bankAccountLiftingDTOStr = gson.toJson(bankAccountLiftingDTO);
 			
-			auditoria.setNewValue(liftingDTOStr);
+			auditoria.setNewValue(bankAccountLiftingDTOStr);
 			
 			auditoriaEmbService.saveAuditoria(auditoria);				
 		}
 		catch (Exception e) {
-			logger.error("Error en el grabado de auditoria de LevantamientoTraba", e);
+			logger.error("Error en el grabado de auditoria de CuentaLevantamiento", e);
 		}
 	}
 }

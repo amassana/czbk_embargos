@@ -306,5 +306,6 @@ public class EmbargosConstants {
 	public static final String TABLA_LEVANTAMIENTO_TRABA = "LEVANTAMIENTO_TRABA";
 	public static final String TABLA_EMBARGO = "EMBARGO";
 	public static final String TABLA_CUENTA_TRABA = "CUENTA_TRABA";
+	public static final String TABLA_CUENTA_LEVANTAMIENTO = "CUENTA_LEVANTAMIENTO";
 	
 }

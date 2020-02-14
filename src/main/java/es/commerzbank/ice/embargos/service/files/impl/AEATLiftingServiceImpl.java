@@ -190,6 +190,8 @@ public class AEATLiftingServiceImpl
                             cuentaLevantamiento.setEstadoLevantamiento(estadoLevantamiento);
                         }
 
+                        cuentaLevantamiento.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+                        cuentaLevantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
                         liftingBankAccountRepository.save(cuentaLevantamiento);
 
                         controlFichero = accountingService.sendAccountingLiftingBankAccount(cuentaLevantamiento, embargo, EmbargosConstants.USER_AUTOMATICO);

@@ -480,6 +480,8 @@ public class LiftingServiceImpl implements LiftingService {
                             cuentaLevantamiento.setEstadoLevantamiento(estadoLevantamiento);
                         }
 
+                        cuentaLevantamiento.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+                        cuentaLevantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
                         liftingBankAccountRepository.save(cuentaLevantamiento);
 
                         controlFichero = accountingService.sendAccountingLiftingBankAccount(cuentaLevantamiento, embargo, userModif);
