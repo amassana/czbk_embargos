@@ -111,7 +111,7 @@ public class CommunicatingEntityController {
 		}
 		
 		if (idCommunicatingEntity != null && idCommunicatingEntity > 0) {
-			result = service.deleteCommunicatingEntity(idCommunicatingEntity);
+			result = service.deleteCommunicatingEntity(idCommunicatingEntity, authentication.getName());
 			
 			if (result) {
 				response = new ResponseEntity<>(HttpStatus.OK);

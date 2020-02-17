@@ -11,7 +11,7 @@ public interface CommunicatingEntityService {
 
 	boolean createUpdateCommunicatingEntity(CommunicatingEntity communicatingEntity, String name);
 
-	boolean deleteCommunicatingEntity(Long idCommunicatingEntity);
+	boolean deleteCommunicatingEntity(Long idCommunicatingEntity, String name);
 
 	CommunicatingEntity viewCommunicatingEntity(Long idCommunicatingEntity);
 

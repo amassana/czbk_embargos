@@ -40,7 +40,7 @@ public class LevantamientoHelperMapper {
     {
         String bankAccount = null;
 
-        if (DWHCustomer.getBankAccounts() != null && iban != null)
+        if (DWHCustomer!=null && DWHCustomer.getBankAccounts() != null && iban != null)
         {
             for (AccountDTO DWHBankAccount : DWHCustomer.getBankAccounts())
             {

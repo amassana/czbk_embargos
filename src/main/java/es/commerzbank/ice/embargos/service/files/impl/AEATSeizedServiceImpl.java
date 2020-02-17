@@ -56,6 +56,7 @@ import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.embargos.service.files.AEATSeizedService;
 import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.utils.ICEDateUtils;
 
 @Service
 @Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
@@ -145,6 +146,9 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	        		EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT);
 	        controlFicheroEmbargo.setEstadoCtrlfichero(estadoCtrlfichero);
 	        	        
+	        controlFicheroEmbargo.setUsuarioUltModificacion(usuarioTramitador);
+	        controlFicheroEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+            
 	        fileControlService.saveFileControlTransaction(controlFicheroEmbargo);
 	        
 	        
@@ -179,7 +183,8 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	        
 	        //Usuario que realiza la tramitacion:
 	        controlFicheroTrabas.setUsuarioUltModificacion(usuarioTramitador);
-	        	        
+	        controlFicheroTrabas.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+	        
 	        //fileControlRepository.save(controlFicheroTrabas);
 	        fileControlService.saveFileControlTransaction(controlFicheroTrabas);
 	                
@@ -318,6 +323,8 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	        //4.- Actualizacion del fichero de origen:
 	        controlFicheroTrabas.setControlFicheroOrigen(controlFicheroEmbargo);
 	        
+	        controlFicheroTrabas.setUsuarioUltModificacion(usuarioTramitador);
+	        controlFicheroTrabas.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 	        fileControlRepository.save(controlFicheroTrabas);
 	        
 	        //ACTUALIZACIONES DEL FICHERO DE ENTRADA (controlFicheroEmbargo):
@@ -333,6 +340,8 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	        		EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT);
 	        controlFicheroEmbargo.setEstadoCtrlfichero(estadoCtrlfichero);
 	        
+	        controlFicheroEmbargo.setUsuarioUltModificacion(usuarioTramitador);
+	        controlFicheroEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 	        fileControlRepository.save(controlFicheroEmbargo);
         
 	        //Cerrar la tarea:

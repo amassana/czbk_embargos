@@ -1,7 +1,6 @@
 package es.commerzbank.ice.embargos.service;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +11,7 @@ public interface OrderingEntityService {
 
 	boolean createUpdateOrderingEntity(OrderingEntity orderingEntity, String name);
 
-	boolean deleteOrderingEntity(Long idOrderingEntity);
+	boolean deleteOrderingEntity(Long idOrderingEntity, String name);
 
 	OrderingEntity viewOrderingEntity(Long idOrderingEntity);
 

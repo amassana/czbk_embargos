@@ -3,7 +3,6 @@ package es.commerzbank.ice.embargos.service.impl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -21,12 +20,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import es.commerzbank.ice.embargos.domain.dto.CommunicatingEntity;
 import es.commerzbank.ice.embargos.domain.dto.OrderingEntity;
-import es.commerzbank.ice.embargos.domain.entity.Apoderados;
-import es.commerzbank.ice.embargos.domain.entity.Apoderados_;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora_;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante_;
 import es.commerzbank.ice.embargos.domain.mapper.OrderingEntityMapper;
@@ -72,12 +66,21 @@ public class OrderingEntityServiceImpl implements OrderingEntityService {
 	}
 
 	@Override
-	public boolean deleteOrderingEntity(Long idOrderingEntity) {
+	public boolean deleteOrderingEntity(Long idOrderingEntity, String name) {
 		logger.info("OrderingEntityServiceImpl - deleteOrderingEntity - start");
 		boolean response = true;
 		
 		if (repository.existsById(idOrderingEntity)) {
-			repository.updateIndActivo(idOrderingEntity, EmbargosConstants.IND_FLAG_NO);
+			Optional<EntidadesOrdenante> optEntidad = repository.findById(idOrderingEntity);
+			if (optEntidad.isPresent()) {
+				EntidadesOrdenante entidad = optEntidad.get();
+				entidad.setIndActivo(EmbargosConstants.IND_FLAG_NO);
+				entidad.setFUltimaModificacion(new BigDecimal(System.currentTimeMillis()));
+				entidad.setUsuarioUltModificacion(name);
+				repository.save(entidad);
+			}
+			
+			//repository.updateIndActivo(idOrderingEntity, EmbargosConstants.IND_FLAG_NO);
 		} else {
 			response = false;
 		}

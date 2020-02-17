@@ -66,12 +66,21 @@ public class CommunicatingEntityServiceImpl implements CommunicatingEntityServic
 	}
 
 	@Override
-	public boolean deleteCommunicatingEntity(Long idCommunicatingEntity) {
+	public boolean deleteCommunicatingEntity(Long idCommunicatingEntity, String name) {
 		logger.info("CommunicatingEntityServiceImpl - deleteCommunicatingEntity - start");
 		boolean response = true;
 		
 		if (repository.existsById(idCommunicatingEntity)) {
-			repository.updateIndActivo(idCommunicatingEntity, EmbargosConstants.IND_FLAG_NO);
+			Optional<EntidadesComunicadora> optEntidad = repository.findById(idCommunicatingEntity);
+			if (optEntidad.isPresent()) {
+				EntidadesComunicadora entidad = optEntidad.get();
+				entidad.setIndActivo(EmbargosConstants.IND_FLAG_NO);
+				entidad.setFUltimaModificacion(new BigDecimal(System.currentTimeMillis()));
+				entidad.setUsuarioUltModificacion(name);
+				repository.save(entidad);
+			}
+			
+			//repository.updateIndActivo(idCommunicatingEntity, EmbargosConstants.IND_FLAG_NO);
 		} else {
 			response = false;
 		}

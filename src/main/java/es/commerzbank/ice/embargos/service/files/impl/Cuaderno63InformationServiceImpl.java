@@ -50,6 +50,7 @@ import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63InformationService;
 import es.commerzbank.ice.utils.EmbargosConstants;
 import es.commerzbank.ice.utils.EmbargosUtils;
+import es.commerzbank.ice.utils.ICEDateUtils;
 
 @Service
 @Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
@@ -133,6 +134,9 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        //Actualizacion del flag IND_PROCESADO al iniciar la tramitacion:
 	        controlFicheroPeticion.setIndProcesado(EmbargosConstants.IND_FLAG_SI);
 	        
+	        controlFicheroPeticion.setUsuarioUltModificacion(usuarioTramitador);
+	        controlFicheroPeticion.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+            
 	        //fileControlRepository.saveAndFlush(controlFicheroPeticion);
 	        fileControlService.saveFileControlTransaction(controlFicheroPeticion);
 	        
@@ -162,7 +166,8 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        
 	        //Usuario que realiza la tramitacion:
 	        controlFicheroInformacion.setUsuarioUltModificacion(usuarioTramitador);
-	        	        
+	        controlFicheroInformacion.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+	        
 	        //fileControlRepository.save(controlFicheroInformacion);
 	        fileControlService.saveFileControlTransaction(controlFicheroInformacion);
 	                
@@ -200,6 +205,8 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        			//- El calculo de las claves de seguridad de cada cuenta (el calculo se realiza en la fase 2, al tramitar, y no antes):
 	        			EmbargosUtils.calculateClavesSeguridadInPeticionInformacion(peticionInformacion);
 	        			
+	        			peticionInformacion.setUsuarioUltModificacion(usuarioTramitador);
+	        	        peticionInformacion.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 	        			informationPetitionRepository.save(peticionInformacion);
 	        			
 	        		} else {
@@ -261,6 +268,8 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        //4.- Actualizacion del fichero de origen:
 	        controlFicheroInformacion.setControlFicheroOrigen(controlFicheroPeticion);
 	        
+	        controlFicheroInformacion.setUsuarioUltModificacion(usuarioTramitador);
+	        controlFicheroInformacion.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 	        fileControlRepository.save(controlFicheroInformacion);
 	        
 	        //ACTUALIZACIONES DEL FICHERO DE ENTRADA (controlFicheroPeticion):
@@ -276,6 +285,8 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        		EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63);
 	        controlFicheroPeticion.setEstadoCtrlfichero(estadoCtrlfichero);
 	        
+	        controlFicheroPeticion.setUsuarioUltModificacion(usuarioTramitador);
+	        controlFicheroPeticion.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 	        fileControlRepository.save(controlFicheroPeticion);
         
 	        //Cerrar la tarea:

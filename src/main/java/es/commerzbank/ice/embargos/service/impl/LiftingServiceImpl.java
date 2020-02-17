@@ -235,8 +235,22 @@ public class LiftingServiceImpl implements LiftingService {
 		boolean response = false;
 
 		if (status != null && codeLifting != null && codeLifting > 0) {
-			liftingRepository.updateStatus(codeLifting, new BigDecimal(status), userName, ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
-			response = true;
+			Optional<LevantamientoTraba> levantamientoOpt = liftingRepository.findById(codeLifting);
+			if (levantamientoOpt.isPresent()) {
+				LevantamientoTraba levantamiento = levantamientoOpt.get();
+				levantamiento.setUsuarioUltModificacion(userName);
+				levantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+				
+				EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
+				estadoLevantamiento.setCodEstado(status);
+				levantamiento.setEstadoLevantamiento(estadoLevantamiento);
+				
+				liftingRepository.save(levantamiento);
+				
+				response = true;
+			}
+			
+			//liftingRepository.updateStatus(codeLifting, new BigDecimal(status), userName, ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 		}
 
 		return response;
@@ -406,6 +420,7 @@ public class LiftingServiceImpl implements LiftingService {
                 if (entidadOrdenante!=null) controlFicheroLevantamiento.setEntidadesComunicadora(entidadOrdenante.getEntidadesComunicadora());
                 
                 controlFicheroLevantamiento.setUsuarioUltModificacion(userModif);
+                controlFicheroLevantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
                 controlFicheroLevantamiento.setDescripcion(EmbargosConstants.USER_MANUAL);
                 fileControlRepository.save(controlFicheroLevantamiento);
             	
@@ -443,6 +458,7 @@ public class LiftingServiceImpl implements LiftingService {
                     
                     LevantamientoTraba levantamiento = cuaderno63Mapper.generateLevantamiento(controlFicheroLevantamiento.getCodControlFichero(), ordenLev, traba, customerDTO);
 
+                    levantamiento.setUsuarioUltModificacion(userModif);
                     liftingRepository.save(levantamiento);
 
                     boolean allCuentasLevantamientoContabilizados = true;
@@ -464,6 +480,8 @@ public class LiftingServiceImpl implements LiftingService {
                             cuentaLevantamiento.setEstadoLevantamiento(estadoLevantamiento);
                         }
 
+                        cuentaLevantamiento.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+                        cuentaLevantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
                         liftingBankAccountRepository.save(cuentaLevantamiento);
 
                         controlFichero = accountingService.sendAccountingLiftingBankAccount(cuentaLevantamiento, embargo, userModif);
@@ -474,6 +492,9 @@ public class LiftingServiceImpl implements LiftingService {
                         estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION);
                         levantamiento.setEstadoLevantamiento(estadoLevantamiento);
                         levantamiento.setIndCasoRevisado(EmbargosConstants.IND_FLAG_YES);
+                        
+                        levantamiento.setUsuarioUltModificacion(userModif);
+                		levantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
                         liftingRepository.save(levantamiento);
                     }
             	}
@@ -504,6 +525,8 @@ public class LiftingServiceImpl implements LiftingService {
 
                 controlFicheroLevantamiento.setEstadoCtrlfichero(estadoCtrlfichero);
 
+                controlFicheroLevantamiento.setUsuarioUltModificacion(userModif);
+                controlFicheroLevantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
                 fileControlRepository.save(controlFicheroLevantamiento);
             }
         }

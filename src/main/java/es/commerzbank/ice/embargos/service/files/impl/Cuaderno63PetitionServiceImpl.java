@@ -264,6 +264,8 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	        //DESACTIVADO, se comenta:
 	        //emailService.sendEmailPetitionReceived(petitionFileName);
 	        
+	        controlFicheroPeticion.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+	        controlFicheroPeticion.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 			fileControlRepository.save(controlFicheroPeticion);
 
 		} catch (Exception e) {

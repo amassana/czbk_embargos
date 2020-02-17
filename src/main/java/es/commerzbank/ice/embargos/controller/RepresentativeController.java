@@ -111,7 +111,7 @@ public class RepresentativeController {
 		}
 		
 		if (idRepresentative != null && idRepresentative > 0) {
-			result = representativeService.deleteRepresentative(idRepresentative);
+			result = representativeService.deleteRepresentative(idRepresentative, authentication.getName());
 			
 			if (result) {
 				response = new ResponseEntity<>(HttpStatus.OK);

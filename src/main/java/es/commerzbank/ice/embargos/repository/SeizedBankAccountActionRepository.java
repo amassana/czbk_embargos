@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import es.commerzbank.ice.embargos.domain.entity.CuentaTrabaActuacion;
 
-public interface SeizedBankAccountActionRepository extends JpaRepository<CuentaTrabaActuacion, Long>{
+public interface SeizedBankAccountActionRepository extends JpaRepository<CuentaTrabaActuacion, String>{
 
 	public List<CuentaTrabaActuacion> findAllByTipoEntidadOrderByCodActuacion(String tipoEntidad);
 }

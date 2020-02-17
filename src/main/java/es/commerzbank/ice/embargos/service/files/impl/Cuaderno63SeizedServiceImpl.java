@@ -51,6 +51,7 @@ import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63SeizedService;
 import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.utils.ICEDateUtils;
 
 @Service
 @Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
@@ -140,6 +141,9 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	        		EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63);
 	        controlFicheroEmbargo.setEstadoCtrlfichero(estadoCtrlfichero);
 	        	        
+	        controlFicheroEmbargo.setUsuarioUltModificacion(usuarioTramitador);
+	        controlFicheroEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+            
 	        fileControlService.saveFileControlTransaction(controlFicheroEmbargo);
 	        
 	        //Para determinar el nombre del fichero de salida (Informacion):
@@ -174,7 +178,8 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	        
 	        //Usuario que realiza la tramitacion:
 	        controlFicheroTrabas.setUsuarioUltModificacion(usuarioTramitador);
-	        	        
+	        controlFicheroTrabas.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+            
 	        //fileControlRepository.save(controlFicheroTrabas);
 	        fileControlService.saveFileControlTransaction(controlFicheroTrabas);
 	                
@@ -277,6 +282,8 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	        //4.- Actualizacion del fichero de origen:
 	        controlFicheroTrabas.setControlFicheroOrigen(controlFicheroEmbargo);
 	        
+	        controlFicheroTrabas.setUsuarioUltModificacion(usuarioTramitador);
+	        controlFicheroTrabas.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 	        fileControlRepository.save(controlFicheroTrabas);
 	        
 	        //ACTUALIZACIONES DEL FICHERO DE ENTRADA (controlFicheroEmbargo):
@@ -292,6 +299,8 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
     				EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63);
 	        controlFicheroEmbargo.setEstadoCtrlfichero(estadoCtrlfichero);
 	        
+	        controlFicheroEmbargo.setUsuarioUltModificacion(usuarioTramitador);
+	        controlFicheroEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 	        fileControlRepository.save(controlFicheroEmbargo);
         
 	        //Cerrar la tarea:

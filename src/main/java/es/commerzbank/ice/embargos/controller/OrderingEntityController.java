@@ -117,7 +117,7 @@ public class OrderingEntityController {
 		}
 		
 		if (idOrderingEntity != null && idOrderingEntity > 0) {
-			result = orderingEntityService.deleteOrderingEntity(idOrderingEntity);
+			result = orderingEntityService.deleteOrderingEntity(idOrderingEntity, authentication.getName());
 			
 			if (result) {
 				response = new ResponseEntity<>(HttpStatus.OK);

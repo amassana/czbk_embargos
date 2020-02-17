@@ -2,7 +2,6 @@ package es.commerzbank.ice.embargos.config;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import javax.naming.NamingException;
@@ -10,17 +9,15 @@ import javax.sql.DataSource;
 
 import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import es.commerzbank.ice.comun.lib.util.YAMLUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jndi.JndiObjectFactoryBean;
-import org.springframework.jndi.JndiTemplate;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -43,7 +40,7 @@ import oracle.jdbc.pool.OracleDataSource;
 @EnableTransactionManagement
 @EnableCaching
 public class OracleDataSourceEmbargosConfig {
-	private static final Logger logger = LoggerFactory.getLogger(OracleDataSourceEmbargosConfig.class);
+	//private static final Logger logger = LoggerFactory.getLogger(OracleDataSourceEmbargosConfig.class);
 
 	@Autowired
 	private OracleDataSourceConfig oracleDataSourceComunes;
@@ -135,4 +132,13 @@ public class OracleDataSourceEmbargosConfig {
 		Connection conn = oracleDataSourceComunes.oracleDataSource().getConnection();
 		return conn;
 	}
+	
+    /**
+     * Used by entity listeners
+     */
+    @Bean
+    public AutowireEmbHelper getAutowireEmbHelper() {
+        return AutowireEmbHelper.getInstance();
+    }
+
 }

@@ -1,9 +1,6 @@
 package es.commerzbank.ice.embargos.service.impl;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -69,12 +66,21 @@ public class RepresentativeServiceImpl implements RepresentativeService {
 	}
 
 	@Override
-	public boolean deleteRepresentative(Long idRepresentative) {
+	public boolean deleteRepresentative(Long idRepresentative, String user) {
 		logger.info("RepresentativeServiceImpl - deleteRepresentative - start");
 		boolean response = true;
 		
 		if (apoderadosRepository.existsById(idRepresentative)) {
-			apoderadosRepository.updateIndActivo(idRepresentative, EmbargosConstants.IND_FLAG_NO);
+			Optional<Apoderados> optApoderado = apoderadosRepository.findById(idRepresentative);
+			if (optApoderado.isPresent()) {
+				Apoderados apoderado = optApoderado.get();
+				apoderado.setIndActivo(EmbargosConstants.IND_FLAG_NO);
+				apoderado.setfUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+				apoderado.setUsuUltimaModificacion(user);
+				apoderadosRepository.save(apoderado);
+			}
+			
+			//apoderadosRepository.updateIndActivo(idRepresentative, EmbargosConstants.IND_FLAG_NO);
 		} else {
 			response = false;
 		}

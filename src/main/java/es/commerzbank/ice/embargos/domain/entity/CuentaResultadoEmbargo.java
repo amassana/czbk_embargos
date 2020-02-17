@@ -2,6 +2,9 @@ package es.commerzbank.ice.embargos.domain.entity;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import es.commerzbank.ice.embargos.domain.entity.listener.CuentaResultadoEmbargoListener;
+
 import java.math.BigDecimal;
 
 
@@ -12,6 +15,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name="CUENTA_RESULTADO_EMBARGO")
 @NamedQuery(name="CuentaResultadoEmbargo.findAll", query="SELECT c FROM CuentaResultadoEmbargo c")
+@EntityListeners(CuentaResultadoEmbargoListener.class)
 public class CuentaResultadoEmbargo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -24,6 +28,12 @@ public class CuentaResultadoEmbargo implements Serializable {
 	@Column(name="IMPORTE_NETO")
 	private BigDecimal importeNeto;
 
+	@Column(name="F_ULTIMA_MODIFICACION", precision=14)
+	private BigDecimal fUltimaModificacion;
+	
+	@Column(name="USUARIO_ULT_MODIFICACION", length=10)
+	private String usuarioUltModificacion;
+	
 	//bi-directional many-to-one association to CuentaEmbargo
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="COD_CUENTA_EMBARGO")
@@ -93,6 +103,22 @@ public class CuentaResultadoEmbargo implements Serializable {
 
 	public void setResultadoEmbargo(ResultadoEmbargo resultadoEmbargo) {
 		this.resultadoEmbargo = resultadoEmbargo;
+	}
+
+	public BigDecimal getfUltimaModificacion() {
+		return fUltimaModificacion;
+	}
+
+	public void setfUltimaModificacion(BigDecimal fUltimaModificacion) {
+		this.fUltimaModificacion = fUltimaModificacion;
+	}
+
+	public String getUsuarioUltModificacion() {
+		return usuarioUltModificacion;
+	}
+
+	public void setUsuarioUltModificacion(String usuarioUltModificacion) {
+		this.usuarioUltModificacion = usuarioUltModificacion;
 	}
 
 }

@@ -43,38 +43,66 @@ public abstract class InformationPetitionMapper {
 		petitionCaseDTO.setIsReviewed(isReviewed);
 				
 		//Estados de las cuentas:
-		for (PeticionInformacionCuenta peticionInformacionCuentas : peticionInformacion.getPeticionInformacionCuentas()) {
-			
-			if (petitionCaseDTO.getBankAccount1() != null && petitionCaseDTO.getBankAccount1().getCodeBankAccount() !=null 
-					&& petitionCaseDTO.getBankAccount1().getCodeBankAccount().equals(peticionInformacionCuentas.getCuenta())) {
+		if (peticionInformacion.getPeticionInformacionCuentas()!=null) {
+			for (PeticionInformacionCuenta peticionInformacionCuentas : peticionInformacion.getPeticionInformacionCuentas()) {
 				
-				petitionCaseDTO.getBankAccount1().setStatus(peticionInformacionCuentas.getEstadoCuenta());
+				if (petitionCaseDTO.getBankAccount1() != null && petitionCaseDTO.getBankAccount1().getCodeBankAccount() !=null 
+						&& petitionCaseDTO.getBankAccount1().getCodeBankAccount().equals(peticionInformacionCuentas.getCuenta())) {
+					
+					petitionCaseDTO.getBankAccount1().setStatus(peticionInformacionCuentas.getEstadoCuenta());
+				
+				} else if (petitionCaseDTO.getBankAccount2() != null && petitionCaseDTO.getBankAccount2().getCodeBankAccount() !=null 
+						&& petitionCaseDTO.getBankAccount2().getCodeBankAccount().equals(peticionInformacionCuentas.getCuenta())) {
+		
+					petitionCaseDTO.getBankAccount2().setStatus(peticionInformacionCuentas.getEstadoCuenta());
+		
+				} else if (petitionCaseDTO.getBankAccount3() != null && petitionCaseDTO.getBankAccount3().getCodeBankAccount() !=null 
+						&& petitionCaseDTO.getBankAccount3().getCodeBankAccount().equals(peticionInformacionCuentas.getCuenta())) {
+					
+					petitionCaseDTO.getBankAccount3().setStatus(peticionInformacionCuentas.getEstadoCuenta());
+				
+				} else if (petitionCaseDTO.getBankAccount4() != null && petitionCaseDTO.getBankAccount4().getCodeBankAccount() !=null 
+						&& petitionCaseDTO.getBankAccount4().getCodeBankAccount().equals(peticionInformacionCuentas.getCuenta())) {
+					
+					petitionCaseDTO.getBankAccount4().setStatus(peticionInformacionCuentas.getEstadoCuenta());
+				
+				} else if (petitionCaseDTO.getBankAccount5() != null && petitionCaseDTO.getBankAccount5().getCodeBankAccount() !=null 
+						&& petitionCaseDTO.getBankAccount5().getCodeBankAccount().equals(peticionInformacionCuentas.getCuenta())) {
+					
+					petitionCaseDTO.getBankAccount5().setStatus(peticionInformacionCuentas.getEstadoCuenta());
+				
+				} else if (petitionCaseDTO.getBankAccount6() != null && petitionCaseDTO.getBankAccount6().getCodeBankAccount() !=null 
+						&& petitionCaseDTO.getBankAccount6().getCodeBankAccount().equals(peticionInformacionCuentas.getCuenta())) {
+					
+					petitionCaseDTO.getBankAccount6().setStatus(peticionInformacionCuentas.getEstadoCuenta());
+				}
+			} 
+		}
+		else {
+			if (petitionCaseDTO.getBankAccount1() != null && petitionCaseDTO.getBankAccount1().getCodeBankAccount() !=null) {
+				
+				petitionCaseDTO.getBankAccount1().setStatus(EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE);
 			
-			} else if (petitionCaseDTO.getBankAccount2() != null && petitionCaseDTO.getBankAccount2().getCodeBankAccount() !=null 
-					&& petitionCaseDTO.getBankAccount2().getCodeBankAccount().equals(peticionInformacionCuentas.getCuenta())) {
+			} else if (petitionCaseDTO.getBankAccount2() != null && petitionCaseDTO.getBankAccount2().getCodeBankAccount() !=null ) {
 	
-				petitionCaseDTO.getBankAccount2().setStatus(peticionInformacionCuentas.getEstadoCuenta());
+				petitionCaseDTO.getBankAccount2().setStatus(EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE);
 	
-			} else if (petitionCaseDTO.getBankAccount3() != null && petitionCaseDTO.getBankAccount3().getCodeBankAccount() !=null 
-					&& petitionCaseDTO.getBankAccount3().getCodeBankAccount().equals(peticionInformacionCuentas.getCuenta())) {
+			} else if (petitionCaseDTO.getBankAccount3() != null && petitionCaseDTO.getBankAccount3().getCodeBankAccount() !=null ) {
 				
-				petitionCaseDTO.getBankAccount3().setStatus(peticionInformacionCuentas.getEstadoCuenta());
+				petitionCaseDTO.getBankAccount3().setStatus(EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE);
 			
-			} else if (petitionCaseDTO.getBankAccount4() != null && petitionCaseDTO.getBankAccount4().getCodeBankAccount() !=null 
-					&& petitionCaseDTO.getBankAccount4().getCodeBankAccount().equals(peticionInformacionCuentas.getCuenta())) {
+			} else if (petitionCaseDTO.getBankAccount4() != null && petitionCaseDTO.getBankAccount4().getCodeBankAccount() !=null ) {
 				
-				petitionCaseDTO.getBankAccount4().setStatus(peticionInformacionCuentas.getEstadoCuenta());
+				petitionCaseDTO.getBankAccount4().setStatus(EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE);
 			
-			} else if (petitionCaseDTO.getBankAccount5() != null && petitionCaseDTO.getBankAccount5().getCodeBankAccount() !=null 
-					&& petitionCaseDTO.getBankAccount5().getCodeBankAccount().equals(peticionInformacionCuentas.getCuenta())) {
+			} else if (petitionCaseDTO.getBankAccount5() != null && petitionCaseDTO.getBankAccount5().getCodeBankAccount() !=null ) {
 				
-				petitionCaseDTO.getBankAccount5().setStatus(peticionInformacionCuentas.getEstadoCuenta());
+				petitionCaseDTO.getBankAccount5().setStatus(EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE);
 			
-			} else if (petitionCaseDTO.getBankAccount6() != null && petitionCaseDTO.getBankAccount6().getCodeBankAccount() !=null 
-					&& petitionCaseDTO.getBankAccount6().getCodeBankAccount().equals(peticionInformacionCuentas.getCuenta())) {
+			} else if (petitionCaseDTO.getBankAccount6() != null && petitionCaseDTO.getBankAccount6().getCodeBankAccount() !=null ) {
 				
-				petitionCaseDTO.getBankAccount6().setStatus(peticionInformacionCuentas.getEstadoCuenta());
+				petitionCaseDTO.getBankAccount6().setStatus(EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE);
 			}
-		} 
+		}
 	}	
 }

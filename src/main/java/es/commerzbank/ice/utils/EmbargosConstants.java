@@ -296,4 +296,18 @@ public class EmbargosConstants {
 	public static final Object IND_AEAT_ENTIDAD = "AEAT";
 	
 	public static final String TAREA_PENDIENTE = "P";
+	
+	//Auditoria Tablas
+	public static final String TABLA_APODERADOS = "APODERADOS";
+	public static final String TABLA_ENTIDADES_COMUNICADORAS = "ENTIDADES_COMUNICADORAS";
+	public static final String TABLA_ENTIDADES_ORDENANTES = "ENTIDADES_ORDENANTES";
+	public static final String TABLA_CONTROL_FICHERO = "CONTROL_FICHERO";
+	public static final String TABLA_PETICION_INFORMACION = "PETICION_INFORMACION";
+	public static final String TABLA_LEVANTAMIENTO_TRABA = "LEVANTAMIENTO_TRABA";
+	public static final String TABLA_EMBARGO = "EMBARGO";
+	public static final String TABLA_CUENTA_TRABA = "CUENTA_TRABA";
+	public static final String TABLA_CUENTA_LEVANTAMIENTO = "CUENTA_LEVANTAMIENTO";
+	public static final String TABLA_RESULTADO_EMBARGO = "RESULTADO_EMBARGO";
+	public static final String TABLA_CUENTA_RESULTADO_EMBARGO = "CUENTA_RESULTADO_EMBARGO";
+	
 }
