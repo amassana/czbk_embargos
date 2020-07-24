@@ -51,6 +51,8 @@ import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.utils.EmbargosConstants;
 import es.commerzbank.ice.utils.EmbargosUtils;
 
+import static es.commerzbank.ice.utils.EmbargosConstants.*;
+
 @Service
 @Transactional(transactionManager="transactionManager")
 public class AccountingServiceImpl implements AccountingService{
@@ -245,7 +247,7 @@ public class AccountingServiceImpl implements AccountingService{
 						//Si la cuentaTraba pasa las condiciones para ser contabilizada:
 				
 						if (!creado && cuentaTraba.getImporte() != null && cuentaTraba.getImporte().doubleValue() > 0) {
-							fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion(), sucursal, false);
+							fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion(), sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_IMPUESTOS_TRABAS);
 							codFileControlFicheroComunes = fileControlFicheroComunes.getCodControlFichero(); 
 							creado = true;
 						}
@@ -452,7 +454,7 @@ public class AccountingServiceImpl implements AccountingService{
 								//Si la cuentaTraba pasa las condiciones para ser contabilizada:							
 								
 								if (!creado && cuentaTraba.getImporte() != null && cuentaTraba.getImporte().doubleValue() > 0) {
-									fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion(), sucursal, false);
+									fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion(), sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_IMPUESTOS_TRABAS);
 									codFileControlFicheroComunes = fileControlFicheroComunes.getCodControlFichero();
 									creado = true;
 								}
@@ -1014,7 +1016,7 @@ public class AccountingServiceImpl implements AccountingService{
 			for (LevantamientoTraba levantamiento : fileControlOpt.get().getLevantamientoTrabas()) {
 				for (CuentaLevantamiento cuenta : levantamiento.getCuentaLevantamientos()) {
 					if (cuenta.getImporte().doubleValue() > 0) {
-						fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, fileControlOpt.get().getDescripcion(), sucursal, false);
+						fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, fileControlOpt.get().getDescripcion(), sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_IMPUESTOS_LEVANTAMIENTOS);
 						codFileControl = fileControlFicheroComunes.getCodControlFichero();
 						if (codFileControl != null) {
 							creado = true;
@@ -1059,7 +1061,7 @@ public class AccountingServiceImpl implements AccountingService{
 		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = null;
 		
 		if (cuentaLevantamiento.getImporte().doubleValue() > 0) {
-			fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, embargo.getControlFichero().getDescripcion(), sucursal, false);
+			fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, embargo.getControlFichero().getDescripcion(), sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_IMPUESTOS_LEVANTAMIENTOS);
 			codFileControlFicheroComunes = fileControlFicheroComunes.getCodControlFichero();
 		}
 		
@@ -1192,7 +1194,7 @@ public class AccountingServiceImpl implements AccountingService{
 		if (amount != 0) {
 			//Si el importe a contabilizar no es 0:
 
-			es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion(), sucursal, false);
+			es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion(), sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_EMBARGO_F6);
 			Long codFileControlFicheroComunes = fileControlFicheroComunes.getCodControlFichero();
 			
 			accountingNote.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);

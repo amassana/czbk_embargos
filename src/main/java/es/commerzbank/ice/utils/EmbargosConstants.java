@@ -296,4 +296,13 @@ public class EmbargosConstants {
 	public static final Object IND_AEAT_ENTIDAD = "AEAT";
 	
 	public static final String TAREA_PENDIENTE = "P";
+
+	/****
+	 ACCOUNTING
+	 */
+
+	public static final String ACCOUNTING_EMBARGOS_PATTERN = "yyyyMMdd_HHmmss'.CON'";
+	public static final String ACCOUNTING_EMBARGO_F6 = "TGSS";
+	public static final String ACCOUNTING_IMPUESTOS_TRABAS = "TRABAS";
+	public static final String ACCOUNTING_IMPUESTOS_LEVANTAMIENTOS = "LEVANTAMIENTOS";
 }
