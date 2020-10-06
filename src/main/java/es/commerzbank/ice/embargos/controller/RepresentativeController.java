@@ -162,9 +162,12 @@ public class RepresentativeController {
 	
 	        //create a csv writer
 	        StatefulBeanToCsv<Representative> writer = new StatefulBeanToCsvBuilder<Representative>(response.getWriter())
-	                .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
-	                .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
-	                .withOrderedResults(false)
+					.withApplyQuotesToAll(true)
+					.withEscapechar('"')
+					.withQuotechar('"')
+					.withSeparator(',')
+					.withThrowExceptions(true)
+					.withOrderedResults(false)
 	                .build();
 	
 	        //write all to csv file
