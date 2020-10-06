@@ -84,9 +84,12 @@ public class FileControlController {
 	
 	        //create a csv writer
 	        StatefulBeanToCsv<FileControlCsvDTO> writer = new StatefulBeanToCsvBuilder<FileControlCsvDTO>(response.getWriter())
-	                .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
-	                .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
-	                .withOrderedResults(false)
+					.withApplyQuotesToAll(true)
+					.withEscapechar('"')
+					.withQuotechar('"')
+					.withSeparator(',')
+					.withThrowExceptions(true)
+					.withOrderedResults(false)
 	                .build();
 	
 	        //write all to csv file

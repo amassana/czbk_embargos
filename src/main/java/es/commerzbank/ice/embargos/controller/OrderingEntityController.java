@@ -168,9 +168,12 @@ public class OrderingEntityController {
 	
 	        //create a csv writer
 	        StatefulBeanToCsv<OrderingEntityCsv> writer = new StatefulBeanToCsvBuilder<OrderingEntityCsv>(response.getWriter())
-	                .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
-	                .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
-	                .withOrderedResults(false)
+					.withApplyQuotesToAll(true)
+					.withEscapechar('"')
+					.withQuotechar('"')
+					.withSeparator(',')
+					.withThrowExceptions(true)
+					.withOrderedResults(false)
 	                .build();
 	
 	        //write all to csv file

@@ -296,7 +296,7 @@ public class EmbargosConstants {
 	public static final Object IND_AEAT_ENTIDAD = "AEAT";
 	
 	public static final String TAREA_PENDIENTE = "P";
-	
+
 	//Auditoria Tablas
 	public static final String TABLA_APODERADOS = "APODERADOS";
 	public static final String TABLA_ENTIDADES_COMUNICADORAS = "ENTIDADES_COMUNICADORAS";
@@ -309,5 +309,13 @@ public class EmbargosConstants {
 	public static final String TABLA_CUENTA_LEVANTAMIENTO = "CUENTA_LEVANTAMIENTO";
 	public static final String TABLA_RESULTADO_EMBARGO = "RESULTADO_EMBARGO";
 	public static final String TABLA_CUENTA_RESULTADO_EMBARGO = "CUENTA_RESULTADO_EMBARGO";
-	
+
+	/****
+	 ACCOUNTING
+	 */
+
+	public static final String ACCOUNTING_EMBARGOS_PATTERN = "yyyyMMdd_HHmmss'.CON'";
+	public static final String ACCOUNTING_EMBARGO_F6 = "TGSS";
+	public static final String ACCOUNTING_IMPUESTOS_TRABAS = "TRABAS";
+	public static final String ACCOUNTING_IMPUESTOS_LEVANTAMIENTOS = "LEVANTAMIENTOS";
 }
