@@ -37,7 +37,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 		 */
 		try {
-			List<CustomerDTO> result = accountService.showCustomerDetailsByNif(nif, null, null, includeInactive);
+			List<CustomerDTO> result = accountService.showCustomerDetailsByNif(nif, null, null, includeInactive, false);
 			if (result == null)
 				return null;
 			if (result.size() == 0)

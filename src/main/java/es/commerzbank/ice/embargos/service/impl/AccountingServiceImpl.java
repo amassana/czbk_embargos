@@ -1279,7 +1279,7 @@ public class AccountingServiceImpl implements AccountingService{
 	
 	private String getCuenta(String nif, String iban) throws Exception {
 		String cuenta = null;
-		List<CustomerDTO> customers = accountService.showCustomerDetailsByNif(nif, null, null, false);
+		List<CustomerDTO> customers = accountService.showCustomerDetailsByNif(nif, null, null, false, false);
 		
 		if (customers != null && customers.size() > 0) {
 			cuenta = DWHUtils.getCuenta(customers.get(0), iban);
@@ -1291,7 +1291,7 @@ public class AccountingServiceImpl implements AccountingService{
 	private String getIban(String nif, String debitAccount) throws Exception {
 		String iban = null;
 		
-		List<CustomerDTO> customers = accountService.showCustomerDetailsByNif(nif, null, null, false);
+		List<CustomerDTO> customers = accountService.showCustomerDetailsByNif(nif, null, null, false, false);
 		
 		if (customers != null && customers.size() > 0) {
 			iban = DWHUtils.getIban(customers.get(0), debitAccount);
