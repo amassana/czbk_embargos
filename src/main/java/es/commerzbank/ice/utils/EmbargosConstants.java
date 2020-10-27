@@ -238,7 +238,6 @@ public class EmbargosConstants {
 	public static final Object BANK_ACCOUNT_LIFTING_LIST = "bankAccountLiftingList";
 
 	//Contabilidad
-	public static final String COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO = "P";
 	public static final String LITERAL_EMBARG_IBS_REFERENCE2 = "Embarg";
 	public static final String LITERAL_LEVANT_IBS_REFERENCE2 = "Levant";
 	public static final String IBS_REFERENCE_1 = "IBS_REFERENCE_1";
@@ -258,7 +257,6 @@ public class EmbargosConstants {
 	public static final String PROFILE_YAMLDB = "YAMLDB";
 
 	//Definicion de Nombres de la tabla PARAMETROS:
-	public static final String PARAMETRO_TSP_DOMINIO = "tsp.dominio";
 	//public static final String PARAMETRO_DWH_ENDPOINT_CLIENTACCOUNT = "datawarehouse.endpoint.client-account";
 	public static final String PARAMETRO_TSP_JASPER_TEMP = "tsp.jasper.temp";
 

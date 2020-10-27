@@ -564,7 +564,6 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setChange(cuentaTraba.getCambio());
 			accountingNote.setCallback(EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_FASE3_CALLBACK);
 			accountingNote.setCodFileControl(codFileControlFicheroComunes);
-			accountingNote.setStatus(EmbargosConstants.COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO);
 			accountingNote.setName(nombre);
 			accountingNote.setNif(nif);
 			accountingNote.setDetailPayment(detailPayment);
@@ -1102,7 +1101,6 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setReference2(reference2);
 			accountingNote.setChange(cuentaLevantamiento.getCambio());
 			accountingNote.setCallback(contabilizacionCallbackNameParameter);
-			accountingNote.setStatus(EmbargosConstants.COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO);
 			accountingNote.setCodFileControl(codFileControlFicheroComunes);
 			accountingNote.setName(embargo.getDatosCliente().getNombre());
 			accountingNote.setNif(embargo.getDatosCliente().getNif());	
@@ -1210,7 +1208,6 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setReference2(reference2);
 			accountingNote.setChange(cambio);
 			accountingNote.setCallback(contabilizacionCallbackNameParameter);
-			accountingNote.setStatus(EmbargosConstants.COD_ESTADO_APUNTE_CONTABLE_PENDIENTE_ENVIO);
 			accountingNote.setCodFileControl(codFileControlFicheroComunes);
 			accountingNote.setName(name);
 			accountingNote.setNif(nif);	

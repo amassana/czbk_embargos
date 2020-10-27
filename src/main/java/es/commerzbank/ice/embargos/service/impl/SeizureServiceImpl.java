@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 
+import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import net.sf.jasperreports.engine.*;
 import org.apache.commons.codec.Charsets;
 import org.apache.http.HttpResponse;
@@ -579,7 +580,7 @@ public class SeizureServiceImpl implements SeizureService {
 		boolean result = false;
 		
 		HttpClient httpClient = HttpClients.custom().build();
-		HttpPost request = new HttpPost(generalParametersService.loadStringParameter(EmbargosConstants.ENDPOINT_EMBARGOS_TO_TAX));
+		HttpPost request = new HttpPost(generalParametersService.loadStringParameter(ValueConstants.PARAMETRO_TSP_DOMINIO) + generalParametersService.loadStringParameter(EmbargosConstants.ENDPOINT_EMBARGOS_TO_TAX));
 		
 		if (importe==null || Long.valueOf(0).equals(importe)) importe = embargo.getImporte().longValue();
 		
