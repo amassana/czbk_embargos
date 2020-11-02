@@ -558,7 +558,9 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setDebitAccount(getCuenta(nif, debitAccount));
 			accountingNote.setCreditAccount(creditAccount);
 			accountingNote.setActualDate(new Date());
-			//accountingNote.setExecutionDate(new Date());
+			accountingNote.setExecutionDate(new Date());
+			accountingNote.setDebitValueDate(new Date());
+			accountingNote.setCreditValueDate(new Date());
 			accountingNote.setReference1(reference1);
 			accountingNote.setReference2(reference2);
 			accountingNote.setChange(cuentaTraba.getCambio());
@@ -1096,7 +1098,9 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setRecaudAccount(cuentaRecaudacion);
 			//accountingNote.setCreditAccount(cuentaLevantamiento.getCuenta());
 			accountingNote.setActualDate(new Date());
-			//accountingNote.setExecutionDate(new Date());
+			accountingNote.setExecutionDate(new Date());
+			accountingNote.setDebitValueDate(new Date());
+			accountingNote.setCreditValueDate(new Date());
 			accountingNote.setReference1(reference1);
 			accountingNote.setReference2(reference2);
 			accountingNote.setChange(cuentaLevantamiento.getCambio());
@@ -1203,7 +1207,9 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setRecaudAccount(cuentaRecaudacion);
 			accountingNote.setCreditAccount(cuentaEntidadComunicadora);
 			accountingNote.setActualDate(new Date());
-			//accountingNote.setExecutionDate(new Date());
+			accountingNote.setExecutionDate(new Date());
+			accountingNote.setDebitValueDate(new Date());
+			accountingNote.setCreditValueDate(new Date());
 			accountingNote.setReference1(reference1);
 			accountingNote.setReference2(reference2);
 			accountingNote.setChange(cambio);
