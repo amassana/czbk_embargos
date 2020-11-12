@@ -165,6 +165,8 @@ public class OrderingEntityController {
 	        response.setContentType("text/csv");
 	        response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
 	                "attachment; filename=\"" + "orderingEntity.csv" + "\"");
+
+			response.getWriter().println("sep=,");
 	
 	        //create a csv writer
 	        StatefulBeanToCsv<OrderingEntityCsv> writer = new StatefulBeanToCsvBuilder<OrderingEntityCsv>(response.getWriter())

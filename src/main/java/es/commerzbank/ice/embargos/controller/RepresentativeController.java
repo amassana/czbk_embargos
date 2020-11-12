@@ -159,6 +159,8 @@ public class RepresentativeController {
 	        response.setContentType("text/csv");
 	        response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
 	                "attachment; filename=\"" + "representative.csv" + "\"");
+
+			response.getWriter().println("sep=,");
 	
 	        //create a csv writer
 	        StatefulBeanToCsv<Representative> writer = new StatefulBeanToCsvBuilder<Representative>(response.getWriter())

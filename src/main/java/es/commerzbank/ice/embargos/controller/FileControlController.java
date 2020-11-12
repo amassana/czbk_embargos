@@ -81,6 +81,8 @@ public class FileControlController {
 	        response.setContentType("text/csv");
 	        response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
 	                "attachment; filename=\"" + "filecontrol.csv" + "\"");
+
+			response.getWriter().println("sep=,");
 	
 	        //create a csv writer
 	        StatefulBeanToCsv<FileControlCsvDTO> writer = new StatefulBeanToCsvBuilder<FileControlCsvDTO>(response.getWriter())
