@@ -1,0 +1,4 @@
+"COD_ESTADO_PRIMARIO_PETICION","DES_ESTADO_PRIMARIO_PETICION"
+"1000","Enviando petición única"
+"1001","Enviando petición particionada"
+"1002","Enviando petición vacía"

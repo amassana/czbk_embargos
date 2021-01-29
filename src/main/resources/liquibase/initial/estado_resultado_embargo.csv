@@ -1,0 +1,6 @@
+"COD_ESTADO_RESULTADO_EMBARGO","DESCRIPCION"
+"0","Embargo sin orden de levantamiento"
+"1","Embargo con levantamiento total realizado"
+"2","Embargo con levantamiento parcial realizado"
+"3","Embargo con levantamiento rechazado"
+"4","Otros motivos"

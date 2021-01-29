@@ -1,0 +1,7 @@
+"COD_ESTADO_RESP_TRABA","DES_ESTADO_RESP_TRABA"
+"2000","Traba Procesada Totalmente"
+"2001","Traba Procesada Parcialmente"
+"3001","Cliente Sin Saldo"
+"3007","Importe no válido"
+"3008","Cliente sin saldo con otras posiciones"
+"3009","Otros tipos de error no especificados"

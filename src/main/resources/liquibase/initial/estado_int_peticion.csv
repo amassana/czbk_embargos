@@ -1,0 +1,6 @@
+"COD_ESTADO_INT_PETICION","DES_ESTADO_INT_PETICION"
+"1","Inicial"
+"2","Procesada"
+"3","Pendiente de Enviar"
+"4","Enviada"
+"5","Error"

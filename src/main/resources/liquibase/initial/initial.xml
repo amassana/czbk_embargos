@@ -1,0 +1,1968 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="aniol.massana (generated)" id="1611851242566-1">
+        <createSequence sequenceName="AUDITORIA_SEQ" startValue="1013561"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-2">
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_APODERADOS" startValue="100013"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-3">
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_CONTROL_FICHERO" startValue="100791"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-4">
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_CUENTA_EMBARGO" startValue="100454"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-5">
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="0" sequenceName="SEC_CUENTA_LEVANTAMIENTO" startValue="100125"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-6">
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="0" sequenceName="SEC_CUENTA_RESULTADO_EMBARGO" startValue="100024"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-7">
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_CUENTA_TRABA" startValue="101421"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-8">
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_EMBARGO" startValue="100653"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-9">
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_ENTIDADES_ORDENANTES" startValue="100019"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-10">
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_ERROR_TRABA" startValue="100000"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-11">
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_FICHERO_FINAL" startValue="100020"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-12">
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="0" sequenceName="SEC_LEVANTAMIENTO_TRABA" startValue="100110"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-13">
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_PETICION_INFORMACION" startValue="198649"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-14">
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="0" sequenceName="SEC_RESULTADO_EMBARGO" startValue="100053"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-15">
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="0" sequenceName="SEC_TAREAS_PENDIENTES" startValue="100000"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-16">
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_TRABAS" startValue="100653"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-17">
+        <createTable tableName="APODERADOS" tablespace="EMBARGOS2_DATA">
+            <column name="ID" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="TABLE1_PK"/>
+            </column>
+            <column name="NOMBRE" type="VARCHAR2(50 CHAR)"/>
+            <column name="CARGO" type="VARCHAR2(20 CHAR)"/>
+            <column name="IND_ACTIVO" type="CHAR(1 CHAR)"/>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+            <column name="USU_ULTIMA_MODIFICACION" type="VARCHAR2(20 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-18">
+        <createTable tableName="AUDITORIA" tablespace="EMBARGOS2_DATA">
+            <column name="COD_AUDITORIA" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_AUDITORIA"/>
+            </column>
+            <column name="VALOR_PK" type="VARCHAR2(200 CHAR)"/>
+            <column name="TABLA" type="VARCHAR2(60 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="SYSDATE" name="FECHA" type="date"/>
+            <column name="USUARIO" type="VARCHAR2(20 CHAR)"/>
+            <column name="NEW_VALUE" type="VARCHAR2(4000 CHAR)"/>
+            <column name="PK_LOGICO" type="VARCHAR2(200 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-19">
+        <createTable tableName="CONTROL_FICHERO" tablespace="EMBARGOS2_DATA">
+            <column name="COD_CONTROL_FICHERO" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CONTROL_FICHERO"/>
+            </column>
+            <column name="COD_TIPO_FICHERO" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COD_ENTIDAD_PRESENTADORA" type="NUMBER"/>
+            <column name="FECHA_COMIENZO_CICLO" type="NUMBER(8, 0)"/>
+            <column name="FECHA_CREACION" type="NUMBER(8, 0)"/>
+            <column name="NOMBRE_FICHERO" type="VARCHAR2(100 CHAR)"/>
+            <column name="RUTA_FICHERO" type="VARCHAR2(256 CHAR)"/>
+            <column name="DESCRIPCION" type="VARCHAR2(30 CHAR)"/>
+            <column name="ISO_MONEDA" type="VARCHAR2(3 CHAR)"/>
+            <column name="FECHA_INCORPORACION" type="NUMBER(14, 0)"/>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+            <column name="NUM_CRC" type="VARCHAR2(30 CHAR)"/>
+            <column name="IND_PROCESADO" type="VARCHAR2(1 CHAR)"/>
+            <column name="NUM_ENVIO" type="VARCHAR2(8 CHAR)"/>
+            <column defaultValue="N" name="IND_6301" type="VARCHAR2(1 CHAR)"/>
+            <column defaultValue="N" name="IND_CGPJ" type="VARCHAR2(1 CHAR)"/>
+            <column name="COD_ESTADO" type="NUMBER"/>
+            <column name="FECHA_MAXIMA_RESPUESTA" type="NUMBER"/>
+            <column name="FECHA_GENERACION_RESPUESTA" type="NUMBER"/>
+            <column name="COD_CONTROL_FICHERO_RESPUESTA" type="NUMBER"/>
+            <column name="COD_CONTROL_FICHERO_ORIGEN" type="NUMBER"/>
+            <column name="COD_TAREA" type="NUMBER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-20">
+        <createTable tableName="CONTROL_FICHERO_TRABA" tablespace="EMBARGOS2_DATA">
+            <column name="COD_CONTROL_FICHERO" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CONTROL_FICHERO_TRABA"/>
+            </column>
+            <column name="COD_TRABA" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CONTROL_FICHERO_TRABA"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-21">
+        <createTable tableName="CUENTAS_INMOVILIZACION" tablespace="EMBARGOS2_DATA">
+            <column name="COD_CUENTA_INMOVILIZACION" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CUENTAS_INMOVILIZACION"/>
+            </column>
+            <column name="BANCO" type="VARCHAR2(4 CHAR)"/>
+            <column name="SUCURSAL" type="VARCHAR2(4 CHAR)"/>
+            <column name="DC" type="VARCHAR2(2 CHAR)"/>
+            <column name="CUENTA" type="VARCHAR2(20 CHAR)"/>
+            <column name="DESCRIPCION_CUENTA" type="VARCHAR2(40 CHAR)"/>
+            <column name="IND_ACTIVA" type="VARCHAR2(1 CHAR)"/>
+            <column name="ISO_MONEDA" type="VARCHAR2(3 CHAR)"/>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+            <column name="COD_SUCURSAL" type="NUMBER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-22">
+        <createTable tableName="CUENTAS_RECAUDACION" tablespace="EMBARGOS2_DATA">
+            <column name="COD_CUENTA_RECAUDACION" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CUENTAS_RECAUDACION"/>
+            </column>
+            <column name="BANCO" type="VARCHAR2(4 CHAR)"/>
+            <column name="SUCURSAL" type="VARCHAR2(4 CHAR)"/>
+            <column name="DC" type="VARCHAR2(2 CHAR)"/>
+            <column name="CUENTA" type="VARCHAR2(20 CHAR)"/>
+            <column name="DESCRIPCION_CUENTA" type="VARCHAR2(40 CHAR)"/>
+            <column name="IND_ACTIVA" type="VARCHAR2(1 CHAR)"/>
+            <column name="ISO_MONEDA" type="VARCHAR2(3 CHAR)"/>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-23">
+        <createTable tableName="CUENTA_EMBARGO" tablespace="EMBARGOS2_DATA">
+            <column name="COD_CUENTA_EMBARGO" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CUENTA_EMBARGO"/>
+            </column>
+            <column name="COD_EMBARGO" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CUENTA" type="VARCHAR2(20 CHAR)"/>
+            <column name="IMPORTE" type="NUMBER"/>
+            <column name="ACTUACION" type="VARCHAR2(2 CHAR)"/>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+            <column name="NUMERO_ORDEN_CUENTA" type="NUMBER"/>
+            <column name="CLAVE_SEGURIDAD" type="VARCHAR2(20 CHAR)"/>
+            <column name="IBAN" type="VARCHAR2(24 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-24">
+        <createTable tableName="CUENTA_LEVANTAMIENTO" tablespace="EMBARGOS2_DATA">
+            <column name="COD_CUENTA_LEVANTAMIENTO" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CUENTA_LEVANTAMIENTO"/>
+            </column>
+            <column name="COD_LEVANTAMIENTO" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CUENTA" type="VARCHAR2(20 CHAR)"/>
+            <column name="IMPORTE" type="NUMBER"/>
+            <column name="ACTUACION" type="VARCHAR2(2 CHAR)"/>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+            <column name="NUMERO_ORDEN_CUENTA" type="NUMBER"/>
+            <column name="CAMBIO" type="NUMBER"/>
+            <column name="IND_CONTABILIZADO" type="VARCHAR2(1 CHAR)"/>
+            <column name="COD_CONTROL_FICHERO" type="NUMBER"/>
+            <column name="IBAN" type="VARCHAR2(24 CHAR)"/>
+            <column name="COD_DIVISA" type="VARCHAR2(3 CHAR)"/>
+            <column name="ESTADO" type="NUMBER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-25">
+        <createTable tableName="CUENTA_RESULTADO_EMBARGO" tablespace="EMBARGOS2_DATA">
+            <column name="COD_CUENTA_RESULTADO_EMBARGO" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="SYS_C0023940"/>
+            </column>
+            <column name="COD_RESULTADO_EMBARGO" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COD_CUENTA_EMBARGO" type="NUMBER"/>
+            <column name="COD_CUENTA_TRABA" type="NUMBER"/>
+            <column name="IMPORTE_NETO" type="NUMBER"/>
+            <column name="COD_ESTADO_RESULTADO_EMBARGO" type="NUMBER"/>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-26">
+        <createTable tableName="CUENTA_TRABA" tablespace="EMBARGOS2_DATA">
+            <column name="COD_CUENTA_TRABA" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CUENTA_TRABA"/>
+            </column>
+            <column name="COD_TRABA" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CUENTA" type="VARCHAR2(20 CHAR)"/>
+            <column name="IMPORTE" type="NUMBER"/>
+            <column name="ACTUACION" type="VARCHAR2(2 CHAR)"/>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+            <column name="NUMERO_ORDEN_CUENTA" type="NUMBER"/>
+            <column name="COD_ESTADO" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CAMBIO" type="NUMBER"/>
+            <column name="IBAN" type="VARCHAR2(24 CHAR)"/>
+            <column name="ORIGEN_EMB" type="VARCHAR2(1 CHAR)"/>
+            <column name="AGREGAR_A_TRABA" type="VARCHAR2(1 CHAR)"/>
+            <column name="ESTADO_CUENTA" type="VARCHAR2(10 CHAR)"/>
+            <column name="DIVISA" type="VARCHAR2(3 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-27">
+        <createTable tableName="CUENTA_TRABA_ACTUACION" tablespace="EMBARGOS2_DATA">
+            <column name="COD_ACTUACION" type="CHAR(2 CHAR)"/>
+            <column name="DESCRIPCION" type="VARCHAR2(60 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TIPO_ENTIDAD" type="VARCHAR2(10 CHAR)"/>
+            <column name="COD_EXTERNO_ACTUACION" type="CHAR(2 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-28">
+        <createTable tableName="DATOS_CLIENTE" tablespace="EMBARGOS2_DATA">
+            <column name="NIF" type="VARCHAR2(9 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="DATOS_CLIENTE_PK"/>
+            </column>
+            <column name="NOMBRE" type="VARCHAR2(100 CHAR)"/>
+            <column name="DOMICILIO" type="VARCHAR2(100 CHAR)"/>
+            <column name="MUNICIPIO" type="VARCHAR2(50 CHAR)"/>
+            <column name="CODIGO_POSTAL" type="VARCHAR2(5 CHAR)"/>
+            <column defaultValue="N" name="IND_PENDIENTE_DWH" type="VARCHAR2(1 BYTE)"/>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-29">
+        <createTable tableName="DETALLE_CONTROL_FICHERO" tablespace="EMBARGOS2_DATA">
+            <column name="COD_CONTROL_FICHERO" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="DETALLE_CONTR_PK41024905790039"/>
+            </column>
+            <column name="NUM_SECUENCIA" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="DETALLE_CONTR_PK41024905790039"/>
+            </column>
+            <column name="LINEA" type="CHAR(1048 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-30">
+        <createTable tableName="EMBARGO" tablespace="EMBARGOS2_DATA">
+            <column name="COD_EMBARGO" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_EMBARGO"/>
+            </column>
+            <column name="COD_CONTROL_FICHERO" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COD_ENTIDAD_ORDENANTE" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NIF" type="VARCHAR2(9 CHAR)"/>
+            <column name="NOMBRE" type="VARCHAR2(100 CHAR)"/>
+            <column name="SIGLAS_VP" type="VARCHAR2(2 CHAR)"/>
+            <column name="NOMBRE_VP" type="VARCHAR2(25 CHAR)"/>
+            <column name="NUMERO" type="NUMBER"/>
+            <column name="LETRA" type="VARCHAR2(1 CHAR)"/>
+            <column name="ESCALERA" type="VARCHAR2(2 CHAR)"/>
+            <column name="PISO" type="VARCHAR2(2 CHAR)"/>
+            <column name="PUERTA" type="VARCHAR2(2 CHAR)"/>
+            <column name="MUNICIPIO" type="VARCHAR2(12 CHAR)"/>
+            <column name="CODIGO_POSTAL" type="VARCHAR2(5 CHAR)"/>
+            <column name="NUMERO_EMBARGO" type="VARCHAR2(40 CHAR)"/>
+            <column name="IMPORTE" type="NUMBER"/>
+            <column name="FECHA_GENERACION" type="NUMBER(8, 0)"/>
+            <column name="FECHA_LIMITE_TRABA" type="NUMBER(8, 0)"/>
+            <column name="ISO_MONEDA" type="VARCHAR2(3 CHAR)"/>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+            <column name="COD_SUCURSAL" type="NUMBER"/>
+            <column name="DOMICILIO" type="VARCHAR2(39 CHAR)"/>
+            <column name="TIPO_DEUDA" type="VARCHAR2(2 CHAR)"/>
+            <column name="IND_PROCESADO" type="CHAR(1 CHAR)"/>
+            <column name="DATREGCOMDET" type="VARCHAR2(200 CHAR)"/>
+            <column name="COD_DEUDA_DEUDOR" type="VARCHAR2(8 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-31">
+        <createTable tableName="ENTIDADES_COMUNICADORAS" tablespace="EMBARGOS2_DATA">
+            <column name="COD_ENTIDAD_PRESENTADORA" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_ENTIDADES_COMUNICADORAS"/>
+            </column>
+            <column name="DES_ENTIDAD" type="VARCHAR2(40 CHAR)"/>
+            <column name="NIF_ENTIDAD" type="VARCHAR2(9 CHAR)"/>
+            <column name="IDENTIFICADOR_ENTIDAD" type="VARCHAR2(9 CHAR)"/>
+            <column name="IND_NORMA63" type="VARCHAR2(1 CHAR)"/>
+            <column name="IND_FORMATO_AEAT" type="VARCHAR2(1 CHAR)"/>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+            <column name="COD_CUENTA_RECAUDACION" type="NUMBER"/>
+            <column name="PREFIJO_FICHEROS" type="VARCHAR2(10 CHAR)"/>
+            <column name="CODIGO_INE" type="VARCHAR2(6 CHAR)"/>
+            <column defaultValue="N" name="IND_CGPJ" type="VARCHAR2(1 CHAR)"/>
+            <column name="DIAS_RESPUESTA_F1" type="NUMBER"/>
+            <column name="DIAS_RESPUESTA_F3" type="NUMBER"/>
+            <column name="DIAS_RESPUESTA_F6" type="NUMBER"/>
+            <column name="BIC" type="VARCHAR2(100 CHAR)"/>
+            <column name="IBAN" type="VARCHAR2(100 CHAR)"/>
+            <column name="CUENTA" type="VARCHAR2(100 CHAR)"/>
+            <column defaultValue="S" name="IND_ACTIVO" type="CHAR(1 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-32">
+        <createTable tableName="ENTIDADES_ORDENANTES" tablespace="EMBARGOS2_DATA">
+            <column name="COD_ENTIDAD_ORDENANTE" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_ENTIDADES_ORDENANTES"/>
+            </column>
+            <column name="COD_ENTIDAD_PRESENTADORA" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DES_ENTIDAD" type="VARCHAR2(40 CHAR)"/>
+            <column name="IDENTIFICADOR_ENTIDAD" type="VARCHAR2(9 CHAR)"/>
+            <column name="NIF_ENTIDAD" type="VARCHAR2(9 CHAR)"/>
+            <column name="IND_NORMA63" type="VARCHAR2(1 CHAR)"/>
+            <column name="IND_FORMATO_AEAT" type="VARCHAR2(1 CHAR)"/>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+            <column name="CODIGO_INE" type="VARCHAR2(6 CHAR)"/>
+            <column name="RPT_NOMENT" type="VARCHAR2(50 CHAR)"/>
+            <column name="RPT_DIRENT" type="VARCHAR2(100 CHAR)"/>
+            <column name="RPT_CONENT" type="VARCHAR2(50 CHAR)"/>
+            <column name="RPT_TELENT" type="VARCHAR2(50 CHAR)"/>
+            <column defaultValue="N" name="IND_CGPJ" type="VARCHAR2(1 CHAR)"/>
+            <column defaultValue="S" name="IND_ACTIVO" type="CHAR(1 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-33">
+        <createTable tableName="ERRORES" tablespace="EMBARGOS2_DATA">
+            <column name="COD_ERROR" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_ERRORES"/>
+            </column>
+            <column name="NUMERO_ERROR" type="VARCHAR2(3 CHAR)"/>
+            <column name="DESCRIPCION_ERROR" type="VARCHAR2(240 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-34">
+        <createTable tableName="ERROR_TRABA" tablespace="EMBARGOS2_DATA">
+            <column name="COD_TRABA" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COD_ERROR" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NUMERO_CAMPO" type="NUMBER(3, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COD_CONTROL_FICHERO" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-35">
+        <createTable tableName="ESTADO_CONTABILIZACION" tablespace="EMBARGOS2_DATA">
+            <column name="COD_ESTADO" type="NUMBER">
+                <constraints primaryKey="true" primaryKeyName="PK_ESTADO_CONTABILIZACION"/>
+            </column>
+            <column name="DESCRIPCION" type="VARCHAR2(50 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-36">
+        <createTable tableName="ESTADO_CTRLFICHERO" tablespace="EMBARGOS2_DATA">
+            <column name="COD_TIPO_FICHERO" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="ESTADO_CTRLFICHERO_PK"/>
+            </column>
+            <column name="COD_ESTADO" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="ESTADO_CTRLFICHERO_PK"/>
+            </column>
+            <column name="DESCRIPCION" type="VARCHAR2(100 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-37">
+        <createTable remarks="Tabla Base para almacenar el estado interno de una solicitud de cancelación del CGPJ." tableName="ESTADO_INT_CANCELACION" tablespace="EMBARGOS2_DATA">
+            <column name="COD_ESTADO_INT_CANCELACION" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="ESTADO_INT_CANCELACION_PK"/>
+            </column>
+            <column name="DES_ESTADO_INT_CANCELACION" type="VARCHAR2(60 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-38">
+        <createTable remarks="Tabla Base para almacenar el estado interno de una solicitud de ejecución del CGPJ." tableName="ESTADO_INT_EJECUCION" tablespace="EMBARGOS2_DATA">
+            <column name="COD_ESTADO_INT_EJECUCION" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="ESTADO_INT_EJECUCION_PK"/>
+            </column>
+            <column name="DES_ESTADO_INT_EJECUCION" type="VARCHAR2(60 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-39">
+        <createTable remarks="Tabla Base para almacenar el estado interno de una solicitud de levantamiento del CGPJ." tableName="ESTADO_INT_LEVANTAMIENTO" tablespace="EMBARGOS2_DATA">
+            <column name="COD_ESTADO_INT_LEVANTAMIENTO" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="ESTADO_INT_LEVANTAMIENTO_PK"/>
+            </column>
+            <column name="DES_ESTADO_INT_LEVANTAMIENTO" type="VARCHAR2(60 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-40">
+        <createTable remarks="Tabla Base para almacenar el estado interno de un fichero de peticiones." tableName="ESTADO_INT_PETICION" tablespace="EMBARGOS2_DATA">
+            <column name="COD_ESTADO_INT_PETICION" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="ESTADO_INTERNO_PETICION_PK"/>
+            </column>
+            <column name="DES_ESTADO_INT_PETICION" type="VARCHAR2(60 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-41">
+        <createTable remarks="Tabla Base para almacenar el estado interno de una solicitud de traba del CGPJ." tableName="ESTADO_INT_TRABA" tablespace="EMBARGOS2_DATA">
+            <column name="COD_ESTADO_INT_TRABA" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="ESTADO_INT_TRABA_PK"/>
+            </column>
+            <column name="DES_ESTADO_INT_TRABA" type="VARCHAR2(60 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-42">
+        <createTable tableName="ESTADO_LEVANTAMIENTO" tablespace="EMBARGOS2_DATA">
+            <column name="COD_ESTADO" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="ESTADO_LEVANTAMIENTO_PK"/>
+            </column>
+            <column name="ESTADO" type="VARCHAR2(40 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-43">
+        <createTable tableName="ESTADO_PETICION_INFORMACION" tablespace="EMBARGOS2_DATA">
+            <column name="COD_ESTADO" type="NUMBER"/>
+            <column name="DESCRIPCION" type="VARCHAR2(30 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-44">
+        <createTable remarks="Tabla base para los estados de envío que manda el CGPJ a la Entidad Financiera." tableName="ESTADO_PRIMARIO_PETICION" tablespace="EMBARGOS2_DATA">
+            <column name="COD_ESTADO_PRIMARIO_PETICION" type="VARCHAR2(4 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="ESTADO_PRIMARIO_PETICION_PK"/>
+            </column>
+            <column name="DES_ESTADO_PRIMARIO_PETICION" type="VARCHAR2(60 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-45">
+        <createTable remarks="Tabla base para los estados de las respuestas que manda la Entidad Financiera al CGPJ." tableName="ESTADO_PRIMARIO_RESP" tablespace="EMBARGOS2_DATA">
+            <column name="COD_ESTADO_PRIMARIO_RESP" type="VARCHAR2(4 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="ESTADO_PRIMARIO_RESP_PK"/>
+            </column>
+            <column name="DES_ESTADO_PRIMARIO_RESP" type="VARCHAR2(60 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-46">
+        <createTable remarks="Tabla con las posibles respuestas a las solicitudes de ejecución." tableName="ESTADO_RESP_EJECUCION" tablespace="EMBARGOS2_DATA">
+            <column name="COD_ESTADO_RESP_EJECUCION" type="VARCHAR2(4 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="ESTADO_RESP_EJECUCION_PK"/>
+            </column>
+            <column name="DES_ESTADO_RESP_EJECUCION" type="VARCHAR2(60 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-47">
+        <createTable remarks="Tabla con las posibles respuestas a las solicitudes de levantamiento." tableName="ESTADO_RESP_LEVANTAMIENTO" tablespace="EMBARGOS2_DATA">
+            <column name="COD_ESTADO_RESP_LEVANTAMIENTO" type="VARCHAR2(4 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="ESTADO_RESP_LEVANTAMIENTO_PK"/>
+            </column>
+            <column name="DES_ESTADO_RESP_LEVANTAMIENTO" type="VARCHAR2(60 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-48">
+        <createTable remarks="Tabla con las posibles respuestas a las peticiones de traba." tableName="ESTADO_RESP_TRABA" tablespace="EMBARGOS2_DATA">
+            <column name="COD_ESTADO_RESP_TRABA" type="VARCHAR2(4 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="ESTADO_RESP_TRABA_PK"/>
+            </column>
+            <column name="DES_ESTADO_RESP_TRABA" type="VARCHAR2(60 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-49">
+        <createTable tableName="ESTADO_RESULTADO_EMBARGO" tablespace="EMBARGOS2_DATA">
+            <column name="COD_ESTADO_RESULTADO_EMBARGO" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="SYS_C0024011"/>
+            </column>
+            <column name="DESCRIPCION" type="VARCHAR2(50 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-50">
+        <createTable remarks="Tabla base para los estados secundarios de las respuestas que manda la Entidad Financiera al CGPJ." tableName="ESTADO_SECUNDARIO_RESP" tablespace="EMBARGOS2_DATA">
+            <column name="COD_ESTADO_SECUNDARIO_RESP" type="VARCHAR2(16 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="ESTADO_SECUNDARIO_RESP_PK"/>
+            </column>
+            <column name="DES_ESTADO_SECUNDARIO_RESP" type="VARCHAR2(60 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-51">
+        <createTable tableName="ESTADO_TRABA" tablespace="EMBARGOS2_DATA">
+            <column name="COD_ESTADO" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_ESTADO_TRABA"/>
+            </column>
+            <column name="DES_ESTADO" type="VARCHAR2(40 CHAR)"/>
+            <column name="OCULTAR_A_USUARIO" type="VARCHAR2(1 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-52">
+        <createTable tableName="FESTIVO" tablespace="EMBARGOS2_DATA">
+            <column name="COD_FESTIVO" type="NUMBER"/>
+            <column name="COD_LOCALIDAD" type="NUMBER"/>
+            <column name="F_FESTIVO" type="NUMBER"/>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER"/>
+            <column name="DES_FESTIVO" type="VARCHAR2(25 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-53">
+        <createTable tableName="FICHERO_FINAL" tablespace="EMBARGOS2_DATA">
+            <column name="COD_FICHERO_FINAL" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="SYS_C0024024"/>
+            </column>
+            <column name="COD_CONTROL_FICHERO" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IMPORTE" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="F_VALOR" type="NUMBER(14, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COD_FICHERO_DILIGENCIAS" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(20 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="COD_ESTADO_CONTABILIZACION" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-54">
+        <createTable tableName="HISTORIAL_ESTADO_TRABA" tablespace="EMBARGOS2_DATA">
+            <column name="COD_TRABA" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_HISTORIAL_ESTADO_TRABA"/>
+            </column>
+            <column name="SECUENCIA_ESTADO" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_HISTORIAL_ESTADO_TRABA"/>
+            </column>
+            <column name="COD_ESTADO" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FECHA_ESTADO" type="NUMBER(14, 0)"/>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-55">
+        <createTable tableName="LEVANTAMIENTO_TRABA" tablespace="EMBARGOS2_DATA">
+            <column name="COD_LEVANTAMIENTO" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_LEVANTAMIENTO_TRABA"/>
+            </column>
+            <column name="COD_TRABA" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COD_CONTROL_FICHERO" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ESTADO_CONTABLE" type="NUMBER"/>
+            <column name="ESTADO_EJECUTADO" type="NUMBER"/>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+            <column name="COD_DEUDA_DEUDOR" type="VARCHAR2(8 CHAR)"/>
+            <column defaultValue="N" name="IND_CASO_REVISADO" type="CHAR(1 CHAR)"/>
+            <column name="IMPORTE_LEVANTADO" type="NUMBER"/>
+            <column name="ESTADO_LEVANTAMIENTO" type="NUMBER"/>
+            <column name="NIF" type="VARCHAR2(9 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-56">
+        <createTable tableName="PETICIONES" tablespace="EMBARGOS2_DATA">
+            <column name="COD_PETICION" type="VARCHAR2(16 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PETICIONES_PK"/>
+            </column>
+            <column name="NUM_ELEMENTOS" type="NUMBER"/>
+            <column name="TIMESTAMP" type="VARCHAR2(29 CHAR)"/>
+            <column name="COD_ESTADO_PRIMARIO_PETICION" type="VARCHAR2(4 CHAR)"/>
+            <column name="COD_ESTADO_PRIMARIO_RESP" type="VARCHAR2(4 CHAR)"/>
+            <column name="ESTADO_SECUNDARIO_PETICION" type="VARCHAR2(16 CHAR)"/>
+            <column name="COD_ESTADO_SECUNDARIO_RESP" type="VARCHAR2(16 CHAR)"/>
+            <column name="LITERAL_ERROR" type="VARCHAR2(255 CHAR)"/>
+            <column name="TIEMPO_ESTIMADO_RESPUESTA" type="NUMBER"/>
+            <column name="COD_CONTROL_FICHERO" type="NUMBER"/>
+            <column name="COD_ESTADO_INT_PETICION" type="NUMBER"/>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-57">
+        <createTable tableName="PETICION_INFORMACION" tablespace="EMBARGOS2_DATA">
+            <column name="COD_CONTROL_FICHERO" type="NUMBER"/>
+            <column name="NIF" type="VARCHAR2(9 CHAR)"/>
+            <column name="RAZON_SOCIAL" type="VARCHAR2(100 CHAR)"/>
+            <column name="DOMICILIO" type="VARCHAR2(39 CHAR)"/>
+            <column name="MUNICIPIO" type="VARCHAR2(12 CHAR)"/>
+            <column name="CODIGO_POSTAL" type="VARCHAR2(5 CHAR)"/>
+            <column name="NUMERO_EMBARGO" type="VARCHAR2(13 CHAR)"/>
+            <column name="CUENTA1" type="VARCHAR2(20 CHAR)"/>
+            <column name="CLAVE_SEGURIDAD1" type="VARCHAR2(12 CHAR)"/>
+            <column name="CUENTA2" type="VARCHAR2(20 CHAR)"/>
+            <column name="CLAVE_SEGURIDAD2" type="VARCHAR2(12 CHAR)"/>
+            <column name="CUENTA3" type="VARCHAR2(20 CHAR)"/>
+            <column name="CLAVE_SEGURIDAD3" type="VARCHAR2(20 CHAR)"/>
+            <column name="IND_INFORMACION_CORRECTA" type="VARCHAR2(1 CHAR)"/>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+            <column name="COD_ENTIDAD_ORDENANTE" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TIPO_DEUDA" type="VARCHAR2(2 CHAR)"/>
+            <column name="IND_MAS_CUENTAS" type="VARCHAR2(1 CHAR)"/>
+            <column name="COD_SUCURSAL" type="NUMBER"/>
+            <column name="COD_FICHERO_RESPUESTA" type="NUMBER"/>
+            <column name="CUENTA4" type="VARCHAR2(20 CHAR)"/>
+            <column name="CLAVE_SEGURIDAD4" type="VARCHAR2(12 CHAR)"/>
+            <column name="CUENTA5" type="VARCHAR2(20 CHAR)"/>
+            <column name="CLAVE_SEGURIDAD5" type="VARCHAR2(12 CHAR)"/>
+            <column name="CUENTA6" type="VARCHAR2(20 CHAR)"/>
+            <column name="CLAVE_SEGURIDAD6" type="VARCHAR2(12 CHAR)"/>
+            <column name="IBAN1" type="VARCHAR2(24 CHAR)"/>
+            <column name="IBAN2" type="VARCHAR2(24 CHAR)"/>
+            <column name="IBAN3" type="VARCHAR2(24 CHAR)"/>
+            <column name="IBAN4" type="VARCHAR2(24 CHAR)"/>
+            <column name="IBAN5" type="VARCHAR2(24 CHAR)"/>
+            <column name="IBAN6" type="VARCHAR2(24 CHAR)"/>
+            <column name="COD_DEUDA_DEUDOR" type="VARCHAR2(8 CHAR)"/>
+            <column defaultValue="N" name="IND_CASO_REVISADO" type="VARCHAR2(1 CHAR)"/>
+            <column name="COD_PETICION" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_PETICION_INFORMACION"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-58">
+        <createTable tableName="PETICION_INFORMACION_CUENTAS" tablespace="EMBARGOS2_DATA">
+            <column name="IBAN" type="VARCHAR2(47 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CUENTA" type="VARCHAR2(20 CHAR)"/>
+            <column name="ESTADO_CUENTA" type="VARCHAR2(10 CHAR)"/>
+            <column name="COD_PETICION_INFORMACION" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!--changeSet author="aniol.massana (generated)" id="1611851242566-59">
+        <createTable tableName="QRTZ_BLOB_TRIGGERS" tablespace="EMBARGOS2_DATA">
+            <column name="SCHED_NAME" type="VARCHAR2(120 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_BLOB_TRIG_PK"/>
+            </column>
+            <column name="TRIGGER_NAME" type="VARCHAR2(200 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_BLOB_TRIG_PK"/>
+            </column>
+            <column name="TRIGGER_GROUP" type="VARCHAR2(200 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_BLOB_TRIG_PK"/>
+            </column>
+            <column name="BLOB_DATA" type="BLOB"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-60">
+        <createTable tableName="QRTZ_CALENDARS" tablespace="EMBARGOS2_DATA">
+            <column name="SCHED_NAME" type="VARCHAR2(120 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_CALENDARS_PK"/>
+            </column>
+            <column name="CALENDAR_NAME" type="VARCHAR2(200 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_CALENDARS_PK"/>
+            </column>
+            <column name="CALENDAR" type="BLOB">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-61">
+        <createTable tableName="QRTZ_CRON_TRIGGERS" tablespace="EMBARGOS2_DATA">
+            <column name="SCHED_NAME" type="VARCHAR2(120 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_CRON_TRIG_PK"/>
+            </column>
+            <column name="TRIGGER_NAME" type="VARCHAR2(200 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_CRON_TRIG_PK"/>
+            </column>
+            <column name="TRIGGER_GROUP" type="VARCHAR2(200 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_CRON_TRIG_PK"/>
+            </column>
+            <column name="CRON_EXPRESSION" type="VARCHAR2(120 BYTE)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TIME_ZONE_ID" type="VARCHAR2(80 BYTE)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-62">
+        <createTable tableName="QRTZ_FIRED_TRIGGERS" tablespace="EMBARGOS2_DATA">
+            <column name="SCHED_NAME" type="VARCHAR2(120 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_FIRED_TRIGGER_PK"/>
+            </column>
+            <column name="ENTRY_ID" type="VARCHAR2(95 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_FIRED_TRIGGER_PK"/>
+            </column>
+            <column name="TRIGGER_NAME" type="VARCHAR2(200 BYTE)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TRIGGER_GROUP" type="VARCHAR2(200 BYTE)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="INSTANCE_NAME" type="VARCHAR2(200 BYTE)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FIRED_TIME" type="NUMBER(13, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SCHED_TIME" type="NUMBER(13, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PRIORITY" type="NUMBER(13, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STATE" type="VARCHAR2(16 BYTE)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="JOB_NAME" type="VARCHAR2(200 BYTE)"/>
+            <column name="JOB_GROUP" type="VARCHAR2(200 BYTE)"/>
+            <column name="IS_NONCONCURRENT" type="VARCHAR2(1 BYTE)"/>
+            <column name="REQUESTS_RECOVERY" type="VARCHAR2(1 BYTE)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-63">
+        <createTable tableName="QRTZ_JOB_DETAILS" tablespace="EMBARGOS2_DATA">
+            <column name="SCHED_NAME" type="VARCHAR2(120 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_JOB_DETAILS_PK"/>
+            </column>
+            <column name="JOB_NAME" type="VARCHAR2(200 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_JOB_DETAILS_PK"/>
+            </column>
+            <column name="JOB_GROUP" type="VARCHAR2(200 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_JOB_DETAILS_PK"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR2(250 BYTE)"/>
+            <column name="JOB_CLASS_NAME" type="VARCHAR2(250 BYTE)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IS_DURABLE" type="VARCHAR2(1 BYTE)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IS_NONCONCURRENT" type="VARCHAR2(1 BYTE)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IS_UPDATE_DATA" type="VARCHAR2(1 BYTE)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REQUESTS_RECOVERY" type="VARCHAR2(1 BYTE)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="JOB_DATA" type="BLOB"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-64">
+        <createTable tableName="QRTZ_LOCKS" tablespace="EMBARGOS2_DATA">
+            <column name="SCHED_NAME" type="VARCHAR2(120 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_LOCKS_PK"/>
+            </column>
+            <column name="LOCK_NAME" type="VARCHAR2(40 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_LOCKS_PK"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-65">
+        <createTable tableName="QRTZ_PAUSED_TRIGGER_GRPS" tablespace="EMBARGOS2_DATA">
+            <column name="SCHED_NAME" type="VARCHAR2(120 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_PAUSED_TRIG_GRPS_PK"/>
+            </column>
+            <column name="TRIGGER_GROUP" type="VARCHAR2(200 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_PAUSED_TRIG_GRPS_PK"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-66">
+        <createTable tableName="QRTZ_SCHEDULER_STATE" tablespace="EMBARGOS2_DATA">
+            <column name="SCHED_NAME" type="VARCHAR2(120 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_SCHEDULER_STATE_PK"/>
+            </column>
+            <column name="INSTANCE_NAME" type="VARCHAR2(200 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_SCHEDULER_STATE_PK"/>
+            </column>
+            <column name="LAST_CHECKIN_TIME" type="NUMBER(13, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CHECKIN_INTERVAL" type="NUMBER(13, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-67">
+        <createTable tableName="QRTZ_SIMPLE_TRIGGERS" tablespace="EMBARGOS2_DATA">
+            <column name="SCHED_NAME" type="VARCHAR2(120 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_SIMPLE_TRIG_PK"/>
+            </column>
+            <column name="TRIGGER_NAME" type="VARCHAR2(200 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_SIMPLE_TRIG_PK"/>
+            </column>
+            <column name="TRIGGER_GROUP" type="VARCHAR2(200 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_SIMPLE_TRIG_PK"/>
+            </column>
+            <column name="REPEAT_COUNT" type="NUMBER(7, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REPEAT_INTERVAL" type="NUMBER(12, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TIMES_TRIGGERED" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-68">
+        <createTable tableName="QRTZ_SIMPROP_TRIGGERS" tablespace="EMBARGOS2_DATA">
+            <column name="SCHED_NAME" type="VARCHAR2(120 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_SIMPROP_TRIG_PK"/>
+            </column>
+            <column name="TRIGGER_NAME" type="VARCHAR2(200 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_SIMPROP_TRIG_PK"/>
+            </column>
+            <column name="TRIGGER_GROUP" type="VARCHAR2(200 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_SIMPROP_TRIG_PK"/>
+            </column>
+            <column name="STR_PROP_1" type="VARCHAR2(512 BYTE)"/>
+            <column name="STR_PROP_2" type="VARCHAR2(512 BYTE)"/>
+            <column name="STR_PROP_3" type="VARCHAR2(512 BYTE)"/>
+            <column name="INT_PROP_1" type="NUMBER(10, 0)"/>
+            <column name="INT_PROP_2" type="NUMBER(10, 0)"/>
+            <column name="LONG_PROP_1" type="NUMBER(13, 0)"/>
+            <column name="LONG_PROP_2" type="NUMBER(13, 0)"/>
+            <column name="DEC_PROP_1" type="NUMBER(13, 4)"/>
+            <column name="DEC_PROP_2" type="NUMBER(13, 4)"/>
+            <column name="BOOL_PROP_1" type="VARCHAR2(1 BYTE)"/>
+            <column name="BOOL_PROP_2" type="VARCHAR2(1 BYTE)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-69">
+        <createTable tableName="QRTZ_TRIGGERS" tablespace="EMBARGOS2_DATA">
+            <column name="SCHED_NAME" type="VARCHAR2(120 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_TRIGGERS_PK"/>
+            </column>
+            <column name="TRIGGER_NAME" type="VARCHAR2(200 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_TRIGGERS_PK"/>
+            </column>
+            <column name="TRIGGER_GROUP" type="VARCHAR2(200 BYTE)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="QRTZ_TRIGGERS_PK"/>
+            </column>
+            <column name="JOB_NAME" type="VARCHAR2(200 BYTE)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="JOB_GROUP" type="VARCHAR2(200 BYTE)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR2(250 BYTE)"/>
+            <column name="NEXT_FIRE_TIME" type="NUMBER(13, 0)"/>
+            <column name="PREV_FIRE_TIME" type="NUMBER(13, 0)"/>
+            <column name="PRIORITY" type="NUMBER(13, 0)"/>
+            <column name="TRIGGER_STATE" type="VARCHAR2(16 BYTE)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TRIGGER_TYPE" type="VARCHAR2(8 BYTE)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="START_TIME" type="NUMBER(13, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="END_TIME" type="NUMBER(13, 0)"/>
+            <column name="CALENDAR_NAME" type="VARCHAR2(200 BYTE)"/>
+            <column name="MISFIRE_INSTR" type="NUMBER(2, 0)"/>
+            <column name="JOB_DATA" type="BLOB"/>
+        </createTable>
+    </changeSet-->
+    <changeSet author="aniol.massana (generated)" id="1611851242566-70">
+        <createTable tableName="RESULTADO_EMBARGO" tablespace="EMBARGOS2_DATA">
+            <column name="COD_RESULTADO_EMBARGO" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="SYS_C0024050"/>
+            </column>
+            <column name="COD_EMBARGO" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COD_TRABA" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TOTAL_LEVANTADO" type="NUMBER"/>
+            <column name="TOTAL_NETO" type="NUMBER"/>
+            <column name="COD_ESTADO_RESULTADO_EMBARGO" type="NUMBER"/>
+            <column name="COD_CONTROL_FICHERO" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-71">
+        <createTable tableName="SEMAFORO" tablespace="EMBARGOS2_DATA">
+            <column name="FECHA" type="NUMBER(14, 0)"/>
+            <column name="USUARIO" type="VARCHAR2(25 CHAR)"/>
+            <column name="MAQUINA" type="VARCHAR2(25 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-72">
+        <createTable tableName="SEMAFORO_CGPJ" tablespace="EMBARGOS2_DATA">
+            <column name="FECHA" type="NUMBER(14, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="USUARIO" type="NVARCHAR2(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MAQUINA" type="NVARCHAR2(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-73">
+        <createTable tableName="SOLICITUDES_CANCELACION" tablespace="EMBARGOS2_DATA">
+            <column name="COD_SOLICITUD_CANCELACION" type="VARCHAR2(40 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="SOLICITUDES_CANCELACION_PK"/>
+            </column>
+            <column name="COD_PETICION" type="VARCHAR2(16 CHAR)"/>
+            <column name="COD_ESTADO_INT_CANCELACION" type="NUMBER"/>
+            <column name="NIF_EMISOR" type="VARCHAR2(10 CHAR)"/>
+            <column name="NOMBRE_EMISOR" type="VARCHAR2(50 CHAR)"/>
+            <column name="IDENTIFICADOR_SOLICITANTE" type="VARCHAR2(10 CHAR)"/>
+            <column name="NOMBRE_SOLICITANTE" type="VARCHAR2(50 CHAR)"/>
+            <column name="FINALIDAD" type="VARCHAR2(250 CHAR)"/>
+            <column name="CONSENTIMIENTO" type="VARCHAR2(20 CHAR)"/>
+            <column name="NOMBRE_COMPLETO_FUNCIONARIO" type="VARCHAR2(122 CHAR)"/>
+            <column name="NIF_FUNCIONARIO" type="VARCHAR2(10 CHAR)"/>
+            <column name="COD_TIPO_DOCUMENTACION" type="NUMBER"/>
+            <column name="DOCUMENTACION" type="VARCHAR2(14 CHAR)"/>
+            <column name="NOMBRE_COMPLETO_TITULAR" type="VARCHAR2(122 CHAR)"/>
+            <column name="NOMBRE_TITULAR" type="VARCHAR2(40 CHAR)"/>
+            <column name="APELLIDO1_TITULAR" type="VARCHAR2(40 CHAR)"/>
+            <column name="APELLIDO2_TITULAR" type="VARCHAR2(40 CHAR)"/>
+            <column name="CODIGO_CERTIFICADO" type="VARCHAR2(64 CHAR)"/>
+            <column name="ID_TRANSMISION" type="VARCHAR2(26 CHAR)"/>
+            <column name="FECHA_GENERACION" type="VARCHAR2(29 CHAR)"/>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+            <column name="COD_SOLICITUD_A_CANCELAR" type="VARCHAR2(40 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-74">
+        <createTable tableName="SOLICITUDES_EJECUCION" tablespace="EMBARGOS2_DATA">
+            <column name="COD_SOLICITUD_EJECUCION" type="VARCHAR2(40 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="SOLICITUDES_EJECUCION_PK"/>
+            </column>
+            <column name="COD_PETICION" type="VARCHAR2(16 CHAR)"/>
+            <column name="COD_TRABA" type="NUMBER"/>
+            <column name="COD_ESTADO_INT_EJECUCION" type="NUMBER"/>
+            <column name="COD_ESTADO_RESP_EJECUCION" type="VARCHAR2(4 CHAR)"/>
+            <column name="ORDENANTE" type="VARCHAR2(70 CHAR)"/>
+            <column name="ID_ORDENANTE" type="VARCHAR2(14 CHAR)"/>
+            <column name="IBAN" type="VARCHAR2(24 CHAR)"/>
+            <column name="CONCEPTO" type="VARCHAR2(140 CHAR)"/>
+            <column name="BENEFICIARIO" type="VARCHAR2(70 CHAR)"/>
+            <column name="BIC" type="VARCHAR2(11 CHAR)"/>
+            <column name="TIPOTR" type="VARCHAR2(4 CHAR)"/>
+            <column name="PROPOSITOTR" type="VARCHAR2(4 CHAR)"/>
+            <column name="IMPORTE_SOLICITUD" type="VARCHAR2(13 CHAR)"/>
+            <column name="IMPORTE_RESPUESTA" type="VARCHAR2(13 CHAR)"/>
+            <column name="NIF_EMISOR" type="VARCHAR2(10 CHAR)"/>
+            <column name="NOMBRE_EMISOR" type="VARCHAR2(50 CHAR)"/>
+            <column name="IDENTIFICADOR_SOLICITANTE" type="VARCHAR2(10 CHAR)"/>
+            <column name="NOMBRE_SOLICITANTE" type="VARCHAR2(50 CHAR)"/>
+            <column name="FINALIDAD" type="VARCHAR2(250 CHAR)"/>
+            <column name="CONSENTIMIENTO" type="VARCHAR2(20 CHAR)"/>
+            <column name="NOMBRE_COMPLETO_FUNCIONARIO" type="VARCHAR2(122 CHAR)"/>
+            <column name="NIF_FUNCIONARIO" type="VARCHAR2(10 CHAR)"/>
+            <column name="COD_TIPO_DOCUMENTACION" type="NUMBER"/>
+            <column name="DOCUMENTACION" type="VARCHAR2(14 CHAR)"/>
+            <column name="NOMBRE_COMPLETO_TITULAR" type="VARCHAR2(122 CHAR)"/>
+            <column name="NOMBRE_TITULAR" type="VARCHAR2(40 CHAR)"/>
+            <column name="APELLIDO1_TITULAR" type="VARCHAR2(40 CHAR)"/>
+            <column name="APELLIDO2_TITULAR" type="VARCHAR2(40 CHAR)"/>
+            <column name="CODIGO_CERTIFICADO" type="VARCHAR2(64 CHAR)"/>
+            <column name="ID_TRANSMISION" type="VARCHAR2(26 CHAR)"/>
+            <column name="FECHA_GENERACION" type="VARCHAR2(29 CHAR)"/>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-75">
+        <createTable tableName="SOLICITUDES_LEVANTAMIENTO" tablespace="EMBARGOS2_DATA">
+            <column name="COD_SOLICITUD_LEVANTAMIENTO" type="VARCHAR2(40 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="SOLICITUDES_LEVANTAMIENTO_PK"/>
+            </column>
+            <column name="COD_PETICION" type="VARCHAR2(16 CHAR)"/>
+            <column name="COD_TRABA" type="NUMBER"/>
+            <column name="COD_ESTADO_INT_LEVANTAMIENTO" type="NUMBER"/>
+            <column name="COD_ESTADO_RESP_LEVANTAMIENTO" type="VARCHAR2(4 CHAR)"/>
+            <column name="IMPORTE_SOLICITUD" type="VARCHAR2(13 CHAR)"/>
+            <column name="IMPORTE_RESPUESTA" type="VARCHAR2(13 CHAR)"/>
+            <column name="NIF_EMISOR" type="VARCHAR2(10 CHAR)"/>
+            <column name="NOMBRE_EMISOR" type="VARCHAR2(50 CHAR)"/>
+            <column name="IDENTIFICADOR_SOLICITANTE" type="VARCHAR2(10 CHAR)"/>
+            <column name="NOMBRE_SOLICITANTE" type="VARCHAR2(50 CHAR)"/>
+            <column name="FINALIDAD" type="VARCHAR2(250 CHAR)"/>
+            <column name="CONSENTIMIENTO" type="VARCHAR2(20 CHAR)"/>
+            <column name="NOMBRE_COMPLETO_FUNCIONARIO" type="VARCHAR2(122 CHAR)"/>
+            <column name="NIF_FUNCIONARIO" type="VARCHAR2(10 CHAR)"/>
+            <column name="COD_TIPO_DOCUMENTACION" type="NUMBER"/>
+            <column name="DOCUMENTACION" type="VARCHAR2(14 CHAR)"/>
+            <column name="NOMBRE_COMPLETO_TITULAR" type="VARCHAR2(122 CHAR)"/>
+            <column name="NOMBRE_TITULAR" type="VARCHAR2(40 CHAR)"/>
+            <column name="APELLIDO1_TITULAR" type="VARCHAR2(40 CHAR)"/>
+            <column name="APELLIDO2_TITULAR" type="VARCHAR2(40 CHAR)"/>
+            <column name="CODIGO_CERTIFICADO" type="VARCHAR2(64 CHAR)"/>
+            <column name="ID_TRANSMISION" type="VARCHAR2(26 CHAR)"/>
+            <column name="FECHA_GENERACION" type="VARCHAR2(29 CHAR)"/>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+            <column defaultValue="N" name="INTERVENCION_USUARIO" type="VARCHAR2(1 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-76">
+        <createTable tableName="SOLICITUDES_TRABA" tablespace="EMBARGOS2_DATA">
+            <column name="COD_SOLICITUD_TRABA" type="VARCHAR2(40 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="SOLICITUDES_TRABA_PK"/>
+            </column>
+            <column name="COD_PETICION" type="VARCHAR2(16 CHAR)"/>
+            <column name="COD_TRABA" type="NUMBER"/>
+            <column name="COD_ESTADO_INT_TRABA" type="NUMBER"/>
+            <column name="COD_ESTADO_RESP_TRABA" type="VARCHAR2(4 CHAR)"/>
+            <column name="IMPORTE_SOLICITUD" type="VARCHAR2(13 CHAR)"/>
+            <column name="IMPORTE_RESPUESTA" type="VARCHAR2(13 CHAR)"/>
+            <column name="TIENE_POSICIONES" type="VARCHAR2(1 CHAR)"/>
+            <column name="NIF_EMISOR" type="VARCHAR2(10 CHAR)"/>
+            <column name="NOMBRE_EMISOR" type="VARCHAR2(50 CHAR)"/>
+            <column name="IDENTIFICADOR_SOLICITANTE" type="VARCHAR2(10 CHAR)"/>
+            <column name="NOMBRE_SOLICITANTE" type="VARCHAR2(50 CHAR)"/>
+            <column name="FINALIDAD" type="VARCHAR2(250 CHAR)"/>
+            <column name="CONSENTIMIENTO" type="VARCHAR2(20 CHAR)"/>
+            <column name="NOMBRE_COMPLETO_FUNCIONARIO" type="VARCHAR2(122 CHAR)"/>
+            <column name="NIF_FUNCIONARIO" type="VARCHAR2(10 CHAR)"/>
+            <column name="COD_TIPO_DOCUMENTACION" type="NUMBER"/>
+            <column name="DOCUMENTACION" type="VARCHAR2(14 CHAR)"/>
+            <column name="NOMBRE_COMPLETO_TITULAR" type="VARCHAR2(122 CHAR)"/>
+            <column name="NOMBRE_TITULAR" type="VARCHAR2(40 CHAR)"/>
+            <column name="APELLIDO1_TITULAR" type="VARCHAR2(40 CHAR)"/>
+            <column name="APELLIDO2_TITULAR" type="VARCHAR2(40 CHAR)"/>
+            <column name="CODIGO_CERTIFICADO" type="VARCHAR2(64 CHAR)"/>
+            <column name="ID_TRANSMISION" type="VARCHAR2(26 CHAR)"/>
+            <column name="FECHA_GENERACION" type="VARCHAR2(29 CHAR)"/>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-77">
+        <createTable tableName="TAREAS_PENDIENTES" tablespace="EMBARGOS2_DATA">
+            <column name="COD_TAREA_PENDIENTE" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_TAREAS_PENDIENTES"/>
+            </column>
+            <column name="DESCRIPCION" type="VARCHAR2(200 CHAR)"/>
+            <column name="FECHA_TOPE_REALIZACION" type="NUMBER(14, 0)"/>
+            <column name="FECHA_INICIO_AVISO" type="NUMBER(14, 0)"/>
+            <column name="FECHA_EFECTIVA_REALIZACION" type="NUMBER(14, 0)"/>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+            <column name="COD_SUCURSAL" type="NUMBER"/>
+            <column name="COD_CONTROL_FICHERO" type="NUMBER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-78">
+        <createTable tableName="TAREAS_REALIZADAS" tablespace="EMBARGOS2_DATA">
+            <column name="COD_TAREA_REALIZADA" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_TAREAS_REALIZADAS"/>
+            </column>
+            <column name="FECHA_TOPE_REALIZACION" type="NUMBER(14, 0)"/>
+            <column name="FECHA_EFECTIVA_REALIZACION" type="NUMBER(14, 0)"/>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+            <column name="FECHA_INICIO_AVISO" type="NUMBER(14, 0)"/>
+            <column name="DESCRIPCION" type="VARCHAR2(200 CHAR)"/>
+            <column name="COD_SUCURSAL" type="NUMBER"/>
+            <column name="COD_CONTROL_FICHERO" type="NUMBER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-79">
+        <createTable remarks="Tabla con las posibles tipos de documento para identificar a un cliente." tableName="TIPO_DOCUMENTACION" tablespace="EMBARGOS2_DATA">
+            <column name="COD_TIPO_DOCUMENTACION" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="TIPO_DOCUMENTACION_PK"/>
+            </column>
+            <column name="DES_TIPO_DOCUMENTACION" type="VARCHAR2(60 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-80">
+        <createTable tableName="TIPO_FICHERO" tablespace="EMBARGOS2_DATA">
+            <column name="COD_TIPO_FICHERO" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_TIPO_FICHERO"/>
+            </column>
+            <column name="DES_TIPO_FICHERO" type="VARCHAR2(70 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-81">
+        <createTable tableName="TRABAS" tablespace="EMBARGOS2_DATA">
+            <column name="COD_TRABA" type="NUMBER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_TRABAS"/>
+            </column>
+            <column name="COD_EMBARGO" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COD_CUENTA_RECAUDACION" type="NUMBER"/>
+            <column name="COD_CUENTA_INMOVILIZACION" type="NUMBER"/>
+            <column name="IMPORTE_TRABADO" type="NUMBER"/>
+            <column name="FECHA_TRABA" type="NUMBER(8, 0)"/>
+            <column name="IND_MAS_CUENTAS" type="NUMBER"/>
+            <column name="FECHA_LIMITE" type="NUMBER(14, 0)"/>
+            <column name="IND_MODIFICADO" type="VARCHAR2(1 CHAR)"/>
+            <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+            <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+            <column name="COD_ESTADO" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REVISADO" type="CHAR(1 BYTE)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-83">
+        <loadData commentLineStartsWith="#" encoding="UTF-8" file="liquibase/initial/cuentas_inmovilizacion.csv" quotchar="&quot;" separator="," tableName="CUENTAS_INMOVILIZACION">
+            <column header="COD_CUENTA_INMOVILIZACION" name="COD_CUENTA_INMOVILIZACION" type="NUMERIC"/>
+            <column header="BANCO" name="BANCO" type="STRING"/>
+            <column header="SUCURSAL" name="SUCURSAL" type="STRING"/>
+            <column header="DC" name="DC" type="STRING"/>
+            <column header="CUENTA" name="CUENTA" type="STRING"/>
+            <column header="DESCRIPCION_CUENTA" name="DESCRIPCION_CUENTA" type="STRING"/>
+            <column header="IND_ACTIVA" name="IND_ACTIVA" type="STRING"/>
+            <column header="ISO_MONEDA" name="ISO_MONEDA" type="STRING"/>
+            <column header="F_ULTIMA_MODIFICACION" name="F_ULTIMA_MODIFICACION" type="NUMERIC"/>
+            <column header="USUARIO_ULT_MODIFICACION" name="USUARIO_ULT_MODIFICACION" type="skip"/>
+            <column header="COD_SUCURSAL" name="COD_SUCURSAL" type="NUMERIC"/>
+        </loadData>
+        <rollback>
+            <delete tableName="CUENTAS_INMOVILIZACION"></delete>
+        </rollback>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-84">
+        <loadData commentLineStartsWith="#" encoding="UTF-8" file="liquibase/initial/cuentas_recaudacion.csv" quotchar="&quot;" separator="," tableName="CUENTAS_RECAUDACION">
+            <column header="COD_CUENTA_RECAUDACION" name="COD_CUENTA_RECAUDACION" type="NUMERIC"/>
+            <column header="BANCO" name="BANCO" type="STRING"/>
+            <column header="SUCURSAL" name="SUCURSAL" type="STRING"/>
+            <column header="DC" name="DC" type="STRING"/>
+            <column header="CUENTA" name="CUENTA" type="STRING"/>
+            <column header="DESCRIPCION_CUENTA" name="DESCRIPCION_CUENTA" type="STRING"/>
+            <column header="IND_ACTIVA" name="IND_ACTIVA" type="STRING"/>
+            <column header="ISO_MONEDA" name="ISO_MONEDA" type="STRING"/>
+            <column header="F_ULTIMA_MODIFICACION" name="F_ULTIMA_MODIFICACION" type="NUMERIC"/>
+            <column header="USUARIO_ULT_MODIFICACION" name="USUARIO_ULT_MODIFICACION" type="STRING"/>
+        </loadData>
+        <rollback>
+            <delete tableName="CUENTAS_RECAUDACION"></delete>
+        </rollback>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-89">
+        <loadData commentLineStartsWith="#" encoding="UTF-8" file="liquibase/initial/entidades_comunicadoras.csv" quotchar="&quot;" separator="," tableName="ENTIDADES_COMUNICADORAS">
+            <column header="COD_ENTIDAD_PRESENTADORA" name="COD_ENTIDAD_PRESENTADORA" type="NUMERIC"/>
+            <column header="DES_ENTIDAD" name="DES_ENTIDAD" type="STRING"/>
+            <column header="NIF_ENTIDAD" name="NIF_ENTIDAD" type="STRING"/>
+            <column header="IDENTIFICADOR_ENTIDAD" name="IDENTIFICADOR_ENTIDAD" type="STRING"/>
+            <column header="IND_NORMA63" name="IND_NORMA63" type="STRING"/>
+            <column header="IND_FORMATO_AEAT" name="IND_FORMATO_AEAT" type="STRING"/>
+            <column header="F_ULTIMA_MODIFICACION" name="F_ULTIMA_MODIFICACION" type="NUMERIC"/>
+            <column header="USUARIO_ULT_MODIFICACION" name="USUARIO_ULT_MODIFICACION" type="STRING"/>
+            <column header="COD_CUENTA_RECAUDACION" name="COD_CUENTA_RECAUDACION" type="NUMERIC"/>
+            <column header="PREFIJO_FICHEROS" name="PREFIJO_FICHEROS" type="STRING"/>
+            <column header="CODIGO_INE" name="CODIGO_INE" type="STRING"/>
+            <column header="IND_CGPJ" name="IND_CGPJ" type="STRING"/>
+            <column header="DIAS_RESPUESTA_F1" name="DIAS_RESPUESTA_F1" type="NUMERIC"/>
+            <column header="DIAS_RESPUESTA_F3" name="DIAS_RESPUESTA_F3" type="NUMERIC"/>
+            <column header="DIAS_RESPUESTA_F6" name="DIAS_RESPUESTA_F6" type="NUMERIC"/>
+            <column header="BIC" name="BIC" type="STRING"/>
+            <column header="IBAN" name="IBAN" type="STRING"/>
+            <column header="CUENTA" name="CUENTA" type="STRING"/>
+            <column header="IND_ACTIVO" name="IND_ACTIVO" type="STRING"/>
+        </loadData>
+        <rollback>
+            <delete tableName="ENTIDADES_COMUNICADORAS"></delete>
+        </rollback>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-90">
+        <loadData commentLineStartsWith="#" encoding="UTF-8" file="liquibase/initial/entidades_ordenantes.csv" quotchar="&quot;" separator="," tableName="ENTIDADES_ORDENANTES">
+            <column header="COD_ENTIDAD_ORDENANTE" name="COD_ENTIDAD_ORDENANTE" type="NUMERIC"/>
+            <column header="COD_ENTIDAD_PRESENTADORA" name="COD_ENTIDAD_PRESENTADORA" type="NUMERIC"/>
+            <column header="DES_ENTIDAD" name="DES_ENTIDAD" type="STRING"/>
+            <column header="IDENTIFICADOR_ENTIDAD" name="IDENTIFICADOR_ENTIDAD" type="STRING"/>
+            <column header="NIF_ENTIDAD" name="NIF_ENTIDAD" type="STRING"/>
+            <column header="IND_NORMA63" name="IND_NORMA63" type="STRING"/>
+            <column header="IND_FORMATO_AEAT" name="IND_FORMATO_AEAT" type="STRING"/>
+            <column header="F_ULTIMA_MODIFICACION" name="F_ULTIMA_MODIFICACION" type="NUMERIC"/>
+            <column header="USUARIO_ULT_MODIFICACION" name="USUARIO_ULT_MODIFICACION" type="STRING"/>
+            <column header="CODIGO_INE" name="CODIGO_INE" type="STRING"/>
+            <column header="RPT_NOMENT" name="RPT_NOMENT" type="skip"/>
+            <column header="RPT_DIRENT" name="RPT_DIRENT" type="skip"/>
+            <column header="RPT_CONENT" name="RPT_CONENT" type="skip"/>
+            <column header="RPT_TELENT" name="RPT_TELENT" type="skip"/>
+            <column header="IND_CGPJ" name="IND_CGPJ" type="STRING"/>
+            <column header="IND_ACTIVO" name="IND_ACTIVO" type="STRING"/>
+        </loadData>
+        <rollback>
+            <delete tableName="ENTIDADES_ORDENANTES"></delete>
+        </rollback>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-91">
+        <loadData commentLineStartsWith="#" encoding="UTF-8" file="liquibase/initial/errores.csv" quotchar="&quot;" separator="," tableName="ERRORES">
+            <column header="COD_ERROR" name="COD_ERROR" type="NUMERIC"/>
+            <column header="NUMERO_ERROR" name="NUMERO_ERROR" type="STRING"/>
+            <column header="DESCRIPCION_ERROR" name="DESCRIPCION_ERROR" type="STRING"/>
+        </loadData>
+        <rollback>
+            <delete tableName="ERRORES"></delete>
+        </rollback>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-92">
+        <loadData commentLineStartsWith="#" encoding="UTF-8" file="liquibase/initial/estado_contabilizacion.csv" quotchar="&quot;" separator="," tableName="ESTADO_CONTABILIZACION">
+            <column header="COD_ESTADO" name="COD_ESTADO" type="NUMERIC"/>
+            <column header="DESCRIPCION" name="DESCRIPCION" type="STRING"/>
+        </loadData>
+        <rollback>
+            <delete tableName="ESTADO_CONTABILIZACION"></delete>
+        </rollback>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-93">
+        <loadData commentLineStartsWith="#" encoding="UTF-8" file="liquibase/initial/estado_ctrlfichero.csv" quotchar="&quot;" separator="," tableName="ESTADO_CTRLFICHERO">
+            <column header="COD_TIPO_FICHERO" name="COD_TIPO_FICHERO" type="NUMERIC"/>
+            <column header="COD_ESTADO" name="COD_ESTADO" type="NUMERIC"/>
+            <column header="DESCRIPCION" name="DESCRIPCION" type="STRING"/>
+        </loadData>
+        <rollback>
+            <delete tableName="ESTADO_CTRLFICHERO"></delete>
+        </rollback>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-94">
+        <loadData commentLineStartsWith="#" encoding="UTF-8" file="liquibase/initial/estado_int_cancelacion.csv" quotchar="&quot;" separator="," tableName="ESTADO_INT_CANCELACION">
+            <column header="COD_ESTADO_INT_CANCELACION" name="COD_ESTADO_INT_CANCELACION" type="NUMERIC"/>
+            <column header="DES_ESTADO_INT_CANCELACION" name="DES_ESTADO_INT_CANCELACION" type="STRING"/>
+        </loadData>
+        <rollback>
+            <delete tableName="ESTADO_INT_CANCELACION"></delete>
+        </rollback>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-95">
+        <loadData commentLineStartsWith="#" encoding="UTF-8" file="liquibase/initial/estado_int_ejecucion.csv" quotchar="&quot;" separator="," tableName="ESTADO_INT_EJECUCION">
+            <column header="COD_ESTADO_INT_EJECUCION" name="COD_ESTADO_INT_EJECUCION" type="NUMERIC"/>
+            <column header="DES_ESTADO_INT_EJECUCION" name="DES_ESTADO_INT_EJECUCION" type="STRING"/>
+        </loadData>
+        <rollback>
+            <delete tableName="ESTADO_INT_EJECUCION"></delete>
+        </rollback>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-96">
+        <loadData commentLineStartsWith="#" encoding="UTF-8" file="liquibase/initial/estado_int_levantamiento.csv" quotchar="&quot;" separator="," tableName="ESTADO_INT_LEVANTAMIENTO">
+            <column header="COD_ESTADO_INT_LEVANTAMIENTO" name="COD_ESTADO_INT_LEVANTAMIENTO" type="NUMERIC"/>
+            <column header="DES_ESTADO_INT_LEVANTAMIENTO" name="DES_ESTADO_INT_LEVANTAMIENTO" type="STRING"/>
+        </loadData>
+        <rollback>
+            <delete tableName="ESTADO_INT_LEVANTAMIENTO"></delete>
+        </rollback>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-97">
+        <loadData commentLineStartsWith="#" encoding="UTF-8" file="liquibase/initial/estado_int_peticion.csv" quotchar="&quot;" separator="," tableName="ESTADO_INT_PETICION">
+            <column header="COD_ESTADO_INT_PETICION" name="COD_ESTADO_INT_PETICION" type="NUMERIC"/>
+            <column header="DES_ESTADO_INT_PETICION" name="DES_ESTADO_INT_PETICION" type="STRING"/>
+        </loadData>
+        <rollback>
+            <delete tableName="ESTADO_INT_PETICION"></delete>
+        </rollback>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-98">
+        <loadData commentLineStartsWith="#" encoding="UTF-8" file="liquibase/initial/estado_int_traba.csv" quotchar="&quot;" separator="," tableName="ESTADO_INT_TRABA">
+            <column header="COD_ESTADO_INT_TRABA" name="COD_ESTADO_INT_TRABA" type="NUMERIC"/>
+            <column header="DES_ESTADO_INT_TRABA" name="DES_ESTADO_INT_TRABA" type="STRING"/>
+        </loadData>
+        <rollback>
+            <delete tableName="ESTADO_INT_TRABA"></delete>
+        </rollback>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-99">
+        <loadData commentLineStartsWith="#" encoding="UTF-8" file="liquibase/initial/estado_levantamiento.csv" quotchar="&quot;" separator="," tableName="ESTADO_LEVANTAMIENTO">
+            <column header="COD_ESTADO" name="COD_ESTADO" type="NUMERIC"/>
+            <column header="ESTADO" name="ESTADO" type="STRING"/>
+        </loadData>
+        <rollback>
+            <delete tableName="ESTADO_LEVANTAMIENTO"></delete>
+        </rollback>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-101">
+        <loadData commentLineStartsWith="#" encoding="UTF-8" file="liquibase/initial/estado_primario_peticion.csv" quotchar="&quot;" separator="," tableName="ESTADO_PRIMARIO_PETICION">
+            <column header="COD_ESTADO_PRIMARIO_PETICION" name="COD_ESTADO_PRIMARIO_PETICION" type="STRING"/>
+            <column header="DES_ESTADO_PRIMARIO_PETICION" name="DES_ESTADO_PRIMARIO_PETICION" type="STRING"/>
+        </loadData>
+        <rollback>
+            <delete tableName="ESTADO_PRIMARIO_PETICION"></delete>
+        </rollback>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-102">
+        <loadData commentLineStartsWith="#" encoding="UTF-8" file="liquibase/initial/estado_primario_resp.csv" quotchar="&quot;" separator="," tableName="ESTADO_PRIMARIO_RESP">
+            <column header="COD_ESTADO_PRIMARIO_RESP" name="COD_ESTADO_PRIMARIO_RESP" type="STRING"/>
+            <column header="DES_ESTADO_PRIMARIO_RESP" name="DES_ESTADO_PRIMARIO_RESP" type="STRING"/>
+        </loadData>
+        <rollback>
+            <delete tableName="ESTADO_PRIMARIO_RESP"></delete>
+        </rollback>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-103">
+        <loadData commentLineStartsWith="#" encoding="UTF-8" file="liquibase/initial/estado_resp_ejecucion.csv" quotchar="&quot;" separator="," tableName="ESTADO_RESP_EJECUCION">
+            <column header="COD_ESTADO_RESP_EJECUCION" name="COD_ESTADO_RESP_EJECUCION" type="STRING"/>
+            <column header="DES_ESTADO_RESP_EJECUCION" name="DES_ESTADO_RESP_EJECUCION" type="STRING"/>
+        </loadData>
+        <rollback>
+            <delete tableName="ESTADO_RESP_EJECUCION"></delete>
+        </rollback>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-104">
+        <loadData commentLineStartsWith="#" encoding="UTF-8" file="liquibase/initial/estado_resp_levantamiento.csv" quotchar="&quot;" separator="," tableName="ESTADO_RESP_LEVANTAMIENTO">
+            <column header="COD_ESTADO_RESP_LEVANTAMIENTO" name="COD_ESTADO_RESP_LEVANTAMIENTO" type="STRING"/>
+            <column header="DES_ESTADO_RESP_LEVANTAMIENTO" name="DES_ESTADO_RESP_LEVANTAMIENTO" type="STRING"/>
+        </loadData>
+        <rollback>
+            <delete tableName="ESTADO_RESP_LEVANTAMIENTO"></delete>
+        </rollback>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-105">
+        <loadData commentLineStartsWith="#" encoding="UTF-8" file="liquibase/initial/estado_resp_traba.csv" quotchar="&quot;" separator="," tableName="ESTADO_RESP_TRABA">
+            <column header="COD_ESTADO_RESP_TRABA" name="COD_ESTADO_RESP_TRABA" type="STRING"/>
+            <column header="DES_ESTADO_RESP_TRABA" name="DES_ESTADO_RESP_TRABA" type="STRING"/>
+        </loadData>
+        <rollback>
+            <delete tableName="ESTADO_RESP_TRABA"></delete>
+        </rollback>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-107">
+        <loadData commentLineStartsWith="#" encoding="UTF-8" file="liquibase/initial/estado_secundario_resp.csv" quotchar="&quot;" separator="," tableName="ESTADO_SECUNDARIO_RESP">
+            <column header="COD_ESTADO_SECUNDARIO_RESP" name="COD_ESTADO_SECUNDARIO_RESP" type="STRING"/>
+            <column header="DES_ESTADO_SECUNDARIO_RESP" name="DES_ESTADO_SECUNDARIO_RESP" type="STRING"/>
+        </loadData>
+        <rollback>
+            <delete tableName="ESTADO_SECUNDARIO_RESP"></delete>
+        </rollback>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-108">
+        <loadData commentLineStartsWith="#" encoding="UTF-8" file="liquibase/initial/estado_traba.csv" quotchar="&quot;" separator="," tableName="ESTADO_TRABA">
+            <column header="COD_ESTADO" name="COD_ESTADO" type="NUMERIC"/>
+            <column header="DES_ESTADO" name="DES_ESTADO" type="STRING"/>
+            <column header="OCULTAR_A_USUARIO" name="OCULTAR_A_USUARIO" type="STRING"/>
+        </loadData>
+        <rollback>
+            <delete tableName="ESTADO_TRABA"></delete>
+        </rollback>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-112">
+        <loadData commentLineStartsWith="#" encoding="UTF-8" file="liquibase/initial/tipo_documentacion.csv" quotchar="&quot;" separator="," tableName="TIPO_DOCUMENTACION">
+            <column header="COD_TIPO_DOCUMENTACION" name="COD_TIPO_DOCUMENTACION" type="NUMERIC"/>
+            <column header="DES_TIPO_DOCUMENTACION" name="DES_TIPO_DOCUMENTACION" type="STRING"/>
+        </loadData>
+        <rollback>
+            <delete tableName="TIPO_DOCUMENTACION"></delete>
+        </rollback>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-113">
+        <loadData commentLineStartsWith="#" encoding="UTF-8" file="liquibase/initial/tipo_fichero.csv" quotchar="&quot;" separator="," tableName="TIPO_FICHERO">
+            <column header="COD_TIPO_FICHERO" name="COD_TIPO_FICHERO" type="NUMERIC"/>
+            <column header="DES_TIPO_FICHERO" name="DES_TIPO_FICHERO" type="STRING"/>
+        </loadData>
+        <rollback>
+            <delete tableName="TIPO_FICHERO"></delete>
+        </rollback>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-115">
+        <createIndex indexName="PETINFO_CUENTAS_PK" tableName="PETICION_INFORMACION_CUENTAS" unique="true">
+            <column name="COD_PETICION_INFORMACION"/>
+            <column name="IBAN"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-116">
+        <addPrimaryKey columnNames="COD_PETICION_INFORMACION, IBAN" constraintName="PETINFO_CUENTAS_PK" forIndexName="PETINFO_CUENTAS_PK" tableName="PETICION_INFORMACION_CUENTAS"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-117">
+        <createIndex indexName="COD_ESTADO_ACTUAL_FK" tableName="TRABAS">
+            <column name="COD_ESTADO"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-118">
+        <createIndex indexName="CONTROL_FICHERO_TRABA_FK" tableName="CONTROL_FICHERO_TRABA">
+            <column name="COD_TRABA"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-119">
+        <createIndex indexName="CONTROL_FICHERO_TRABA_FK2" tableName="CONTROL_FICHERO_TRABA">
+            <column name="COD_CONTROL_FICHERO"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-120">
+        <createIndex indexName="ERROR_TRABA_FK" tableName="ERROR_TRABA">
+            <column name="COD_ERROR"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-121">
+        <createIndex indexName="ERROR_TRABA_FK2" tableName="ERROR_TRABA">
+            <column name="COD_TRABA"/>
+        </createIndex>
+    </changeSet>
+    <!--changeSet author="aniol.massana (generated)" id="1611851242566-122">
+        <createIndex indexName="IDX_QRTZ_FT_INST_JOB_REQ_RCVRY" tableName="QRTZ_FIRED_TRIGGERS">
+            <column name="SCHED_NAME"/>
+            <column name="INSTANCE_NAME"/>
+            <column name="REQUESTS_RECOVERY"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-123">
+        <createIndex indexName="IDX_QRTZ_FT_JG" tableName="QRTZ_FIRED_TRIGGERS">
+            <column name="SCHED_NAME"/>
+            <column name="JOB_GROUP"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-124">
+        <createIndex indexName="IDX_QRTZ_FT_J_G" tableName="QRTZ_FIRED_TRIGGERS">
+            <column name="SCHED_NAME"/>
+            <column name="JOB_NAME"/>
+            <column name="JOB_GROUP"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-125">
+        <createIndex indexName="IDX_QRTZ_FT_TG" tableName="QRTZ_FIRED_TRIGGERS">
+            <column name="SCHED_NAME"/>
+            <column name="TRIGGER_GROUP"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-126">
+        <createIndex indexName="IDX_QRTZ_FT_TRIG_INST_NAME" tableName="QRTZ_FIRED_TRIGGERS">
+            <column name="SCHED_NAME"/>
+            <column name="INSTANCE_NAME"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-127">
+        <createIndex indexName="IDX_QRTZ_FT_T_G" tableName="QRTZ_FIRED_TRIGGERS">
+            <column name="SCHED_NAME"/>
+            <column name="TRIGGER_NAME"/>
+            <column name="TRIGGER_GROUP"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-128">
+        <createIndex indexName="IDX_QRTZ_J_GRP" tableName="QRTZ_JOB_DETAILS">
+            <column name="SCHED_NAME"/>
+            <column name="JOB_GROUP"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-129">
+        <createIndex indexName="IDX_QRTZ_J_REQ_RECOVERY" tableName="QRTZ_JOB_DETAILS">
+            <column name="SCHED_NAME"/>
+            <column name="REQUESTS_RECOVERY"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-130">
+        <createIndex indexName="IDX_QRTZ_T_C" tableName="QRTZ_TRIGGERS">
+            <column name="SCHED_NAME"/>
+            <column name="CALENDAR_NAME"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-131">
+        <createIndex indexName="IDX_QRTZ_T_G" tableName="QRTZ_TRIGGERS">
+            <column name="SCHED_NAME"/>
+            <column name="TRIGGER_GROUP"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-132">
+        <createIndex indexName="IDX_QRTZ_T_J" tableName="QRTZ_TRIGGERS">
+            <column name="SCHED_NAME"/>
+            <column name="JOB_NAME"/>
+            <column name="JOB_GROUP"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-133">
+        <createIndex indexName="IDX_QRTZ_T_JG" tableName="QRTZ_TRIGGERS">
+            <column name="SCHED_NAME"/>
+            <column name="JOB_GROUP"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-134">
+        <createIndex indexName="IDX_QRTZ_T_NEXT_FIRE_TIME" tableName="QRTZ_TRIGGERS">
+            <column name="SCHED_NAME"/>
+            <column name="NEXT_FIRE_TIME"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-135">
+        <createIndex indexName="IDX_QRTZ_T_NFT_MISFIRE" tableName="QRTZ_TRIGGERS">
+            <column name="SCHED_NAME"/>
+            <column name="MISFIRE_INSTR"/>
+            <column name="NEXT_FIRE_TIME"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-136">
+        <createIndex indexName="IDX_QRTZ_T_NFT_ST" tableName="QRTZ_TRIGGERS">
+            <column name="SCHED_NAME"/>
+            <column name="TRIGGER_STATE"/>
+            <column name="NEXT_FIRE_TIME"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-137">
+        <createIndex indexName="IDX_QRTZ_T_NFT_ST_MISFIRE" tableName="QRTZ_TRIGGERS">
+            <column name="SCHED_NAME"/>
+            <column name="MISFIRE_INSTR"/>
+            <column name="NEXT_FIRE_TIME"/>
+            <column name="TRIGGER_STATE"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-138">
+        <createIndex indexName="IDX_QRTZ_T_NFT_ST_MISFIRE_GRP" tableName="QRTZ_TRIGGERS">
+            <column name="SCHED_NAME"/>
+            <column name="MISFIRE_INSTR"/>
+            <column name="NEXT_FIRE_TIME"/>
+            <column name="TRIGGER_GROUP"/>
+            <column name="TRIGGER_STATE"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-139">
+        <createIndex indexName="IDX_QRTZ_T_N_G_STATE" tableName="QRTZ_TRIGGERS">
+            <column name="SCHED_NAME"/>
+            <column name="TRIGGER_GROUP"/>
+            <column name="TRIGGER_STATE"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-140">
+        <createIndex indexName="IDX_QRTZ_T_N_STATE" tableName="QRTZ_TRIGGERS">
+            <column name="SCHED_NAME"/>
+            <column name="TRIGGER_NAME"/>
+            <column name="TRIGGER_GROUP"/>
+            <column name="TRIGGER_STATE"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-141">
+        <createIndex indexName="IDX_QRTZ_T_STATE" tableName="QRTZ_TRIGGERS">
+            <column name="SCHED_NAME"/>
+            <column name="TRIGGER_STATE"/>
+        </createIndex>
+    </changeSet-->
+    <changeSet author="aniol.massana (generated)" id="1611851242566-142">
+        <createIndex indexName="PK_ERROR_TRABA" tableName="ERROR_TRABA" unique="true">
+            <column name="COD_TRABA"/>
+            <column name="COD_ERROR"/>
+            <column name="NUMERO_CAMPO"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-143">
+        <createIndex indexName="RELATION_102_FK" tableName="TRABAS">
+            <column name="COD_EMBARGO"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-144">
+        <createIndex indexName="RELATION_1897_FK" tableName="CUENTA_EMBARGO">
+            <column name="COD_EMBARGO"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-145">
+        <createIndex indexName="RELATION_1898_FK" tableName="CUENTA_TRABA">
+            <column name="COD_TRABA"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-146">
+        <createIndex indexName="RELATION_1899_FK" tableName="CUENTA_LEVANTAMIENTO">
+            <column name="COD_LEVANTAMIENTO"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-147">
+        <createIndex indexName="RELATION_204_FK" tableName="LEVANTAMIENTO_TRABA">
+            <column name="COD_TRABA"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-148">
+        <createIndex indexName="RELATION_2052_FK" tableName="CONTROL_FICHERO">
+            <column name="COD_ENTIDAD_PRESENTADORA"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-149">
+        <createIndex indexName="RELATION_2053_FK" tableName="ENTIDADES_ORDENANTES">
+            <column name="COD_ENTIDAD_PRESENTADORA"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-150">
+        <createIndex indexName="RELATION_2054_FK" tableName="EMBARGO">
+            <column name="COD_ENTIDAD_ORDENANTE"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-151">
+        <createIndex indexName="RELATION_2587_FK" tableName="CUENTA_TRABA">
+            <column name="COD_ESTADO"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-152">
+        <createIndex indexName="RELATION_2589_FK" tableName="ENTIDADES_COMUNICADORAS">
+            <column name="COD_CUENTA_RECAUDACION"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-153">
+        <createIndex indexName="RELATION_436_FK" tableName="CONTROL_FICHERO">
+            <column name="COD_TIPO_FICHERO"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-154">
+        <createIndex indexName="RELATION_586_FK" tableName="EMBARGO">
+            <column name="COD_CONTROL_FICHERO"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-155">
+        <createIndex indexName="RELATION_588_FK" tableName="LEVANTAMIENTO_TRABA">
+            <column name="COD_CONTROL_FICHERO"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-156">
+        <createIndex indexName="RELATION_610_FK" tableName="HISTORIAL_ESTADO_TRABA">
+            <column name="COD_TRABA"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-157">
+        <createIndex indexName="RELATION_611_FK" tableName="HISTORIAL_ESTADO_TRABA">
+            <column name="COD_ESTADO"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-158">
+        <createIndex indexName="TRABA_C_INMOVILIZACION_FK" tableName="TRABAS">
+            <column name="COD_CUENTA_INMOVILIZACION"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-159">
+        <createIndex indexName="TRABA_C_RECAUDACION_FK" tableName="TRABAS">
+            <column name="COD_CUENTA_RECAUDACION"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-160">
+        <addForeignKeyConstraint baseColumnNames="COD_CUENTA_EMBARGO" baseTableName="CUENTA_RESULTADO_EMBARGO" constraintName="CC_RES_EMB__CC_EMB_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_CUENTA_EMBARGO" referencedTableName="CUENTA_EMBARGO" validate="true"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-161">
+        <addForeignKeyConstraint baseColumnNames="COD_CUENTA_TRABA" baseTableName="CUENTA_RESULTADO_EMBARGO" constraintName="CC_RES_EMB__CC_TRA_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_CUENTA_TRABA" referencedTableName="CUENTA_TRABA" validate="true"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-162">
+        <addForeignKeyConstraint baseColumnNames="COD_ESTADO_RESULTADO_EMBARGO" baseTableName="CUENTA_RESULTADO_EMBARGO" constraintName="CC_RES_EMB__ESTADO_RES_EMB_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_ESTADO_RESULTADO_EMBARGO" referencedTableName="ESTADO_RESULTADO_EMBARGO" validate="true"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-163">
+        <addForeignKeyConstraint baseColumnNames="COD_RESULTADO_EMBARGO" baseTableName="CUENTA_RESULTADO_EMBARGO" constraintName="CC_RES_EMB__RES_EMB_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_RESULTADO_EMBARGO" referencedTableName="RESULTADO_EMBARGO" validate="true"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-164">
+        <addForeignKeyConstraint baseColumnNames="COD_CONTROL_FICHERO_ORIGEN" baseTableName="CONTROL_FICHERO" constraintName="CONTROL_FICHERO_ORIGEN_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_CONTROL_FICHERO" referencedTableName="CONTROL_FICHERO" validate="true"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-165">
+        <addForeignKeyConstraint baseColumnNames="COD_CONTROL_FICHERO_RESPUESTA" baseTableName="CONTROL_FICHERO" constraintName="CONTROL_FICHERO_RESPUESTA_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_CONTROL_FICHERO" referencedTableName="CONTROL_FICHERO" validate="true"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-166">
+        <addForeignKeyConstraint baseColumnNames="ESTADO" baseTableName="CUENTA_LEVANTAMIENTO" constraintName="CUENTA_LEVANTAMIENTO_FK1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_ESTADO" referencedTableName="ESTADO_LEVANTAMIENTO" validate="true"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-167">
+        <addForeignKeyConstraint baseColumnNames="COD_CONTROL_FICHERO" baseTableName="DETALLE_CONTROL_FICHERO" constraintName="DETALLE_CONTR_FK61024905808615" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_CONTROL_FICHERO" referencedTableName="CONTROL_FICHERO" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-168">
+        <addForeignKeyConstraint baseColumnNames="COD_TIPO_FICHERO" baseTableName="ESTADO_CTRLFICHERO" constraintName="ESTADO_CTRLF_TIPOF_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_TIPO_FICHERO" referencedTableName="TIPO_FICHERO" validate="true"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-169">
+        <addForeignKeyConstraint baseColumnNames="COD_TIPO_FICHERO,COD_ESTADO" baseTableName="CONTROL_FICHERO" constraintName="FK_CONTROL_ESTADO_CTRLF" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_TIPO_FICHERO,COD_ESTADO" referencedTableName="ESTADO_CTRLFICHERO" validate="true"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-170">
+        <addForeignKeyConstraint baseColumnNames="COD_CONTROL_FICHERO" baseTableName="CONTROL_FICHERO_TRABA" constraintName="FK_CONTROL__CONTROL_F_CONTROL_" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_CONTROL_FICHERO" referencedTableName="CONTROL_FICHERO" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-171">
+        <addForeignKeyConstraint baseColumnNames="COD_TRABA" baseTableName="CONTROL_FICHERO_TRABA" constraintName="FK_CONTROL__CONTROL_F_TRABAS" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_TRABA" referencedTableName="TRABAS" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-172">
+        <addForeignKeyConstraint baseColumnNames="COD_ENTIDAD_PRESENTADORA" baseTableName="CONTROL_FICHERO" constraintName="FK_CONTROL__RELATION__ENTIDADE" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_ENTIDAD_PRESENTADORA" referencedTableName="ENTIDADES_COMUNICADORAS" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-173">
+        <addForeignKeyConstraint baseColumnNames="COD_TIPO_FICHERO" baseTableName="CONTROL_FICHERO" constraintName="FK_CONTROL__RELATION__TIPO_FIC" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_TIPO_FICHERO" referencedTableName="TIPO_FICHERO" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-174">
+        <addForeignKeyConstraint baseColumnNames="COD_EMBARGO" baseTableName="CUENTA_EMBARGO" constraintName="FK_CUENTA_E_RELATION__EMBARGO" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_EMBARGO" referencedTableName="EMBARGO" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-175">
+        <addForeignKeyConstraint baseColumnNames="COD_LEVANTAMIENTO" baseTableName="CUENTA_LEVANTAMIENTO" constraintName="FK_CUENTA_L_RELATION__LEVANTAM" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_LEVANTAMIENTO" referencedTableName="LEVANTAMIENTO_TRABA" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-176">
+        <addForeignKeyConstraint baseColumnNames="COD_ESTADO" baseTableName="CUENTA_TRABA" constraintName="FK_CUENTA_T_RELATION__ESTADO_T" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_ESTADO" referencedTableName="ESTADO_TRABA" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-177">
+        <addForeignKeyConstraint baseColumnNames="COD_TRABA" baseTableName="CUENTA_TRABA" constraintName="FK_CUENTA_T_RELATION__TRABAS" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_TRABA" referencedTableName="TRABAS" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-178">
+        <addForeignKeyConstraint baseColumnNames="COD_CONTROL_FICHERO" baseTableName="EMBARGO" constraintName="FK_EMBARGO_RELATION__CONTROL_" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_CONTROL_FICHERO" referencedTableName="CONTROL_FICHERO" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-179">
+        <addForeignKeyConstraint baseColumnNames="COD_ENTIDAD_ORDENANTE" baseTableName="EMBARGO" constraintName="FK_EMBARGO_RELATION__ENTIDADE" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_ENTIDAD_ORDENANTE" referencedTableName="ENTIDADES_ORDENANTES" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-180">
+        <addForeignKeyConstraint baseColumnNames="NIF" baseTableName="EMBARGO" constraintName="FK_EMBARG_RELATION_DATOSCLIENT" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="NIF" referencedTableName="DATOS_CLIENTE" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-181">
+        <addForeignKeyConstraint baseColumnNames="COD_CUENTA_RECAUDACION" baseTableName="ENTIDADES_COMUNICADORAS" constraintName="FK_ENTIDADE_RELATION__CUENTAS_" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_CUENTA_RECAUDACION" referencedTableName="CUENTAS_RECAUDACION" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-182">
+        <addForeignKeyConstraint baseColumnNames="COD_ENTIDAD_PRESENTADORA" baseTableName="ENTIDADES_ORDENANTES" constraintName="FK_ENTIDADE_RELATION__ENTIDADE" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_ENTIDAD_PRESENTADORA" referencedTableName="ENTIDADES_COMUNICADORAS" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-183">
+        <addForeignKeyConstraint baseColumnNames="COD_CONTROL_FICHERO" baseTableName="ERROR_TRABA" constraintName="FK_ERROR_TR_CONTROL_FICHERO" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_CONTROL_FICHERO" referencedTableName="CONTROL_FICHERO" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-184">
+        <addForeignKeyConstraint baseColumnNames="COD_ERROR" baseTableName="ERROR_TRABA" constraintName="FK_ERROR_TR_ERROR_TRA_ERRORES" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_ERROR" referencedTableName="ERRORES" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-185">
+        <addForeignKeyConstraint baseColumnNames="COD_TRABA" baseTableName="ERROR_TRABA" constraintName="FK_ERROR_TR_ERROR_TRA_TRABAS" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_TRABA" referencedTableName="TRABAS" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-186">
+        <addForeignKeyConstraint baseColumnNames="COD_ESTADO_CONTABILIZACION" baseTableName="FICHERO_FINAL" constraintName="FK_FICHFIN_RELATION_ESTADCONT" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_ESTADO" referencedTableName="ESTADO_CONTABILIZACION" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-187">
+        <addForeignKeyConstraint baseColumnNames="COD_ESTADO" baseTableName="HISTORIAL_ESTADO_TRABA" constraintName="FK_HISTORIA_RELATION__ESTADO_T" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_ESTADO" referencedTableName="ESTADO_TRABA" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-188">
+        <addForeignKeyConstraint baseColumnNames="COD_TRABA" baseTableName="HISTORIAL_ESTADO_TRABA" constraintName="FK_HISTORIA_RELATION__TRABAS" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_TRABA" referencedTableName="TRABAS" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-189">
+        <addForeignKeyConstraint baseColumnNames="COD_CONTROL_FICHERO" baseTableName="LEVANTAMIENTO_TRABA" constraintName="FK_LEVANTAM_RELATION__CONTROL_" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_CONTROL_FICHERO" referencedTableName="CONTROL_FICHERO" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-190">
+        <addForeignKeyConstraint baseColumnNames="COD_TRABA" baseTableName="LEVANTAMIENTO_TRABA" constraintName="FK_LEVANTAM_RELATION__TRABAS" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_TRABA" referencedTableName="TRABAS" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-191">
+        <addForeignKeyConstraint baseColumnNames="NIF" baseTableName="LEVANTAMIENTO_TRABA" constraintName="FK_LEVTRA_RELATION_DATOSCLIENT" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="NIF" referencedTableName="DATOS_CLIENTE" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-192">
+        <addForeignKeyConstraint baseColumnNames="COD_ENTIDAD_ORDENANTE" baseTableName="PETICION_INFORMACION" constraintName="FK_PETICION_RELATION_ORDENANTE" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_ENTIDAD_ORDENANTE" referencedTableName="ENTIDADES_ORDENANTES" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-193">
+        <addForeignKeyConstraint baseColumnNames="COD_CONTROL_FICHERO" baseTableName="PETICION_INFORMACION" constraintName="FK_PETICION_RELATION__CONTROL_" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_CONTROL_FICHERO" referencedTableName="CONTROL_FICHERO" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-194">
+        <addForeignKeyConstraint baseColumnNames="NIF" baseTableName="PETICION_INFORMACION" constraintName="FK_PETINF_RELATION_DATOSCLIENT" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="NIF" referencedTableName="DATOS_CLIENTE" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-195">
+        <addForeignKeyConstraint baseColumnNames="COD_ESTADO" baseTableName="TRABAS" constraintName="FK_TRABAS_COD_ESTAD_ESTADO_T" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_ESTADO" referencedTableName="ESTADO_TRABA" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-196">
+        <addForeignKeyConstraint baseColumnNames="COD_EMBARGO" baseTableName="TRABAS" constraintName="FK_TRABAS_RELATION__EMBARGO" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_EMBARGO" referencedTableName="EMBARGO" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-197">
+        <addForeignKeyConstraint baseColumnNames="COD_CUENTA_INMOVILIZACION" baseTableName="TRABAS" constraintName="FK_TRABAS_TRABA_C_I_CUENTAS_" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_CUENTA_INMOVILIZACION" referencedTableName="CUENTAS_INMOVILIZACION" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-198">
+        <addForeignKeyConstraint baseColumnNames="COD_CUENTA_RECAUDACION" baseTableName="TRABAS" constraintName="FK_TRABAS_TRABA_C_R_CUENTAS_" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_CUENTA_RECAUDACION" referencedTableName="CUENTAS_RECAUDACION" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-199">
+        <addForeignKeyConstraint baseColumnNames="ESTADO_LEVANTAMIENTO" baseTableName="LEVANTAMIENTO_TRABA" constraintName="LEVANTAMIENTO_TRABA_FK1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_ESTADO" referencedTableName="ESTADO_LEVANTAMIENTO" validate="true"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-200">
+        <addForeignKeyConstraint baseColumnNames="COD_CONTROL_FICHERO" baseTableName="PETICIONES" constraintName="PETICIONES_CONTROL_FICHERO_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_CONTROL_FICHERO" referencedTableName="CONTROL_FICHERO" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-201">
+        <addForeignKeyConstraint baseColumnNames="COD_ESTADO_INT_PETICION" baseTableName="PETICIONES" constraintName="PETICIONES_ESTADO_INT_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_ESTADO_INT_PETICION" referencedTableName="ESTADO_INT_PETICION" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-202">
+        <addForeignKeyConstraint baseColumnNames="COD_ESTADO_PRIMARIO_PETICION" baseTableName="PETICIONES" constraintName="PETICIONES_ESTADO_PRIM_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_ESTADO_PRIMARIO_PETICION" referencedTableName="ESTADO_PRIMARIO_PETICION" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-203">
+        <addForeignKeyConstraint baseColumnNames="COD_ESTADO_PRIMARIO_RESP" baseTableName="PETICIONES" constraintName="PETICIONES_ESTADO_RESP_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_ESTADO_PRIMARIO_RESP" referencedTableName="ESTADO_PRIMARIO_RESP" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-204">
+        <addForeignKeyConstraint baseColumnNames="COD_ESTADO_SECUNDARIO_RESP" baseTableName="PETICIONES" constraintName="PETICIONES_ESTADO_SEC_RESP_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_ESTADO_SECUNDARIO_RESP" referencedTableName="ESTADO_SECUNDARIO_RESP" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-205">
+        <addForeignKeyConstraint baseColumnNames="COD_PETICION_INFORMACION" baseTableName="PETICION_INFORMACION_CUENTAS" constraintName="PETINFO_CUENTAS_PETINFO_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_PETICION" referencedTableName="PETICION_INFORMACION" validate="true"/>
+    </changeSet>
+    <!--changeSet author="aniol.massana (generated)" id="1611851242566-206">
+        <addForeignKeyConstraint baseColumnNames="SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP" baseTableName="QRTZ_BLOB_TRIGGERS" constraintName="QRTZ_BLOB_TRIG_TO_TRIG_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP" referencedTableName="QRTZ_TRIGGERS" validate="true"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-207">
+        <addForeignKeyConstraint baseColumnNames="SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP" baseTableName="QRTZ_CRON_TRIGGERS" constraintName="QRTZ_CRON_TRIG_TO_TRIG_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP" referencedTableName="QRTZ_TRIGGERS" validate="true"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-208">
+        <addForeignKeyConstraint baseColumnNames="SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP" baseTableName="QRTZ_SIMPLE_TRIGGERS" constraintName="QRTZ_SIMPLE_TRIG_TO_TRIG_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP" referencedTableName="QRTZ_TRIGGERS" validate="true"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-209">
+        <addForeignKeyConstraint baseColumnNames="SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP" baseTableName="QRTZ_SIMPROP_TRIGGERS" constraintName="QRTZ_SIMPROP_TRIG_TO_TRIG_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP" referencedTableName="QRTZ_TRIGGERS" validate="true"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-210">
+        <addForeignKeyConstraint baseColumnNames="SCHED_NAME,JOB_NAME,JOB_GROUP" baseTableName="QRTZ_TRIGGERS" constraintName="QRTZ_TRIGGER_TO_JOBS_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="SCHED_NAME,JOB_NAME,JOB_GROUP" referencedTableName="QRTZ_JOB_DETAILS" validate="true"/>
+    </changeSet-->
+    <changeSet author="aniol.massana (generated)" id="1611851242566-211">
+        <addForeignKeyConstraint baseColumnNames="COD_CONTROL_FICHERO" baseTableName="RESULTADO_EMBARGO" constraintName="RESULTADO_EMBARGO_FK1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_CONTROL_FICHERO" referencedTableName="CONTROL_FICHERO" validate="true"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-212">
+        <addForeignKeyConstraint baseColumnNames="COD_TRABA" baseTableName="RESULTADO_EMBARGO" constraintName="RESULTADO_EMBARGO_TRABAS_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_TRABA" referencedTableName="TRABAS" validate="true"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-213">
+        <addForeignKeyConstraint baseColumnNames="COD_EMBARGO" baseTableName="RESULTADO_EMBARGO" constraintName="RES_EMBARGO__EMBARGO_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_EMBARGO" referencedTableName="EMBARGO" validate="true"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-214">
+        <addForeignKeyConstraint baseColumnNames="COD_ESTADO_RESULTADO_EMBARGO" baseTableName="RESULTADO_EMBARGO" constraintName="RES_EMBARGO__ESTADO_RES_EMB_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_ESTADO_RESULTADO_EMBARGO" referencedTableName="ESTADO_RESULTADO_EMBARGO" validate="true"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-215">
+        <addForeignKeyConstraint baseColumnNames="COD_ESTADO_INT_CANCELACION" baseTableName="SOLICITUDES_CANCELACION" constraintName="SOL_CANCELACION_ESTADO_INT_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_ESTADO_INT_CANCELACION" referencedTableName="ESTADO_INT_CANCELACION" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-216">
+        <addForeignKeyConstraint baseColumnNames="COD_PETICION" baseTableName="SOLICITUDES_CANCELACION" constraintName="SOL_CANCELACION_PETICION_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_PETICION" referencedTableName="PETICIONES" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-217">
+        <addForeignKeyConstraint baseColumnNames="COD_TIPO_DOCUMENTACION" baseTableName="SOLICITUDES_CANCELACION" constraintName="SOL_CANCELACION_TIPO_DOC_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_TIPO_DOCUMENTACION" referencedTableName="TIPO_DOCUMENTACION" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-218">
+        <addForeignKeyConstraint baseColumnNames="COD_ESTADO_INT_EJECUCION" baseTableName="SOLICITUDES_EJECUCION" constraintName="SOL_EJECUCION_ESTADO_INT_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_ESTADO_INT_EJECUCION" referencedTableName="ESTADO_INT_EJECUCION" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-219">
+        <addForeignKeyConstraint baseColumnNames="COD_ESTADO_RESP_EJECUCION" baseTableName="SOLICITUDES_EJECUCION" constraintName="SOL_EJECUCION_ESTADO_RESP_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_ESTADO_RESP_EJECUCION" referencedTableName="ESTADO_RESP_EJECUCION" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-220">
+        <addForeignKeyConstraint baseColumnNames="COD_PETICION" baseTableName="SOLICITUDES_EJECUCION" constraintName="SOL_EJECUCION_PET_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_PETICION" referencedTableName="PETICIONES" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-221">
+        <addForeignKeyConstraint baseColumnNames="COD_TIPO_DOCUMENTACION" baseTableName="SOLICITUDES_EJECUCION" constraintName="SOL_EJECUCION_TIPO_DOC_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_TIPO_DOCUMENTACION" referencedTableName="TIPO_DOCUMENTACION" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-222">
+        <addForeignKeyConstraint baseColumnNames="COD_PETICION" baseTableName="SOLICITUDES_LEVANTAMIENTO" constraintName="SOL_LEVANTAMIENTO_PETICION_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_PETICION" referencedTableName="PETICIONES" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-223">
+        <addForeignKeyConstraint baseColumnNames="COD_ESTADO_INT_LEVANTAMIENTO" baseTableName="SOLICITUDES_LEVANTAMIENTO" constraintName="SOL_LEVANT_ESTADO_INT_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_ESTADO_INT_LEVANTAMIENTO" referencedTableName="ESTADO_INT_LEVANTAMIENTO" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-224">
+        <addForeignKeyConstraint baseColumnNames="COD_ESTADO_RESP_LEVANTAMIENTO" baseTableName="SOLICITUDES_LEVANTAMIENTO" constraintName="SOL_LEVANT_ESTADO_RESP_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_ESTADO_RESP_LEVANTAMIENTO" referencedTableName="ESTADO_RESP_LEVANTAMIENTO" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-225">
+        <addForeignKeyConstraint baseColumnNames="COD_TIPO_DOCUMENTACION" baseTableName="SOLICITUDES_LEVANTAMIENTO" constraintName="SOL_LEVANT_TIPO_DOC_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_TIPO_DOCUMENTACION" referencedTableName="TIPO_DOCUMENTACION" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-226">
+        <addForeignKeyConstraint baseColumnNames="COD_ESTADO_INT_TRABA" baseTableName="SOLICITUDES_TRABA" constraintName="SOL_TRABA_ESTADO_INT_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_ESTADO_INT_TRABA" referencedTableName="ESTADO_INT_TRABA" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-227">
+        <addForeignKeyConstraint baseColumnNames="COD_ESTADO_RESP_TRABA" baseTableName="SOLICITUDES_TRABA" constraintName="SOL_TRABA_ESTADO_RESP_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_ESTADO_RESP_TRABA" referencedTableName="ESTADO_RESP_TRABA" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-228">
+        <addForeignKeyConstraint baseColumnNames="COD_PETICION" baseTableName="SOLICITUDES_TRABA" constraintName="SOL_TRABA_PETICIONES_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_PETICION" referencedTableName="PETICIONES" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-229">
+        <addForeignKeyConstraint baseColumnNames="COD_TIPO_DOCUMENTACION" baseTableName="SOLICITUDES_TRABA" constraintName="SOL_TRABA_TIPO_DOC_FK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_TIPO_DOCUMENTACION" referencedTableName="TIPO_DOCUMENTACION" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-230">
+        <addForeignKeyConstraint baseColumnNames="COD_CONTROL_FICHERO" baseTableName="FICHERO_FINAL" constraintName="SYS_C0024107" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_CONTROL_FICHERO" referencedTableName="CONTROL_FICHERO" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-231">
+        <addForeignKeyConstraint baseColumnNames="COD_CONTROL_FICHERO" baseTableName="TAREAS_PENDIENTES" constraintName="TAREAS_PENDIE_FK31024906156205" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_CONTROL_FICHERO" referencedTableName="CONTROL_FICHERO" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-232">
+        <addForeignKeyConstraint baseColumnNames="COD_CONTROL_FICHERO" baseTableName="TAREAS_REALIZADAS" constraintName="TAREAS_REALIZ_FK31024906174211" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="COD_CONTROL_FICHERO" referencedTableName="CONTROL_FICHERO" validate="false"/>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1611851242566-233">
+        <createView fullDefinition="true" viewName="SOLICITUDES_CGPJ">CREATE OR REPLACE FORCE VIEW "SOLICITUDES_CGPJ" ("COD_CONTROL_FICHERO", "COD_PETICION", "ESTADO_INT_PETICION", "ESTADO_PRIMARIO_PETICION", "RELACION_FRAGMENTOS", "ESTADO_PRIMARIO_RESP", "ESTADO_SECUNDARIO_RESP", "TIPO_SOLICITUD", "ESTADO_INTERNO", "ESTADO_RESPUESTA", "DES_ENTIDAD", "TIPO_DOC", "DOCUMENTACION", "NOMBRE_TITULAR", "COD_SOLICITUD", "IMPORTE_SOLICITUD", "IMPORTE_RESPUESTA", "FECHA_GENERACION") AS SELECT PETICIONES.COD_CONTROL_FICHERO,PETICIONES.COD_PETICION,DES_ESTADO_INT_PETICION,PETICIONES.COD_ESTADO_PRIMARIO_PETICION || '-' || DES_ESTADO_PRIMARIO_PETICION,ESTADO_SECUNDARIO_PETICION,PETICIONES.COD_ESTADO_PRIMARIO_RESP || '-' || DES_ESTADO_PRIMARIO_RESP,PETICIONES.COD_ESTADO_SECUNDARIO_RESP || '-' || DES_ESTADO_SECUNDARIO_RESP,
+    'TRABA' TS,DES_ESTADO_INT_TRABA,ESTADO_RESP_TRABA.COD_ESTADO_RESP_TRABA || '-' || DES_ESTADO_RESP_TRABA,ENTIDADES_ORDENANTES.DES_ENTIDAD,
+    DES_TIPO_DOCUMENTACION,DOCUMENTACION,NOMBRE_COMPLETO_TITULAR,    
+    SOLICITUDES_TRABA.COD_SOLICITUD_TRABA COD_SOLICITUD,    
+    SOLICITUDES_TRABA.IMPORTE_SOLICITUD,
+    SOLICITUDES_TRABA.IMPORTE_RESPUESTA,
+    EMBARGO.FECHA_GENERACION
+  FROM SOLICITUDES_TRABA,
+    PETICIONES,
+    EMBARGO,
+    TRABAS,
+    ENTIDADES_ORDENANTES,
+    ESTADO_INT_TRABA,
+    ESTADO_RESP_TRABA,
+    TIPO_DOCUMENTACION,
+    ESTADO_INT_PETICION,
+    ESTADO_PRIMARIO_PETICION,
+    ESTADO_PRIMARIO_RESP,
+    ESTADO_SECUNDARIO_RESP
+  WHERE PETICIONES.COD_PETICION    =SOLICITUDES_TRABA.COD_PETICION
+  AND EMBARGO.COD_EMBARGO          =TRABAS.COD_EMBARGO
+  AND TRABAS.COD_TRABA             =SOLICITUDES_TRABA.COD_TRABA
+  AND EMBARGO.COD_ENTIDAD_ORDENANTE=ENTIDADES_ORDENANTES.COD_ENTIDAD_ORDENANTE
+  AND SOLICITUDES_TRABA.COD_ESTADO_INT_TRABA=ESTADO_INT_TRABA.COD_ESTADO_INT_TRABA
+  AND SOLICITUDES_TRABA.COD_ESTADO_RESP_TRABA=ESTADO_RESP_TRABA.COD_ESTADO_RESP_TRABA(+)
+  AND SOLICITUDES_TRABA.COD_TIPO_DOCUMENTACION=TIPO_DOCUMENTACION.COD_TIPO_DOCUMENTACION
+  AND PETICIONES.COD_ESTADO_INT_PETICION=ESTADO_INT_PETICION.COD_ESTADO_INT_PETICION
+  AND PETICIONES.COD_ESTADO_PRIMARIO_PETICION=ESTADO_PRIMARIO_PETICION.COD_ESTADO_PRIMARIO_PETICION
+  AND PETICIONES.COD_ESTADO_PRIMARIO_RESP=ESTADO_PRIMARIO_RESP.COD_ESTADO_PRIMARIO_RESP(+)
+  AND PETICIONES.COD_ESTADO_SECUNDARIO_RESP=ESTADO_SECUNDARIO_RESP.COD_ESTADO_SECUNDARIO_RESP(+)
+  UNION
+  SELECT PETICIONES.COD_CONTROL_FICHERO,PETICIONES.COD_PETICION,DES_ESTADO_INT_PETICION,PETICIONES.COD_ESTADO_PRIMARIO_PETICION || '-' || DES_ESTADO_PRIMARIO_PETICION,ESTADO_SECUNDARIO_PETICION,PETICIONES.COD_ESTADO_PRIMARIO_RESP || '-' || DES_ESTADO_PRIMARIO_RESP,PETICIONES.COD_ESTADO_SECUNDARIO_RESP || '-' || DES_ESTADO_SECUNDARIO_RESP,
+    'LEVANTAMIENTO' TS,DES_ESTADO_INT_LEVANTAMIENTO,ESTADO_RESP_LEVANTAMIENTO.COD_ESTADO_RESP_LEVANTAMIENTO || '-' || DES_ESTADO_RESP_LEVANTAMIENTO,ENTIDADES_ORDENANTES.DES_ENTIDAD,
+    DES_TIPO_DOCUMENTACION,DOCUMENTACION,NOMBRE_COMPLETO_TITULAR,
+    SOLICITUDES_LEVANTAMIENTO.COD_SOLICITUD_LEVANTAMIENTO,
+    SOLICITUDES_LEVANTAMIENTO.IMPORTE_SOLICITUD,
+    SOLICITUDES_LEVANTAMIENTO.IMPORTE_RESPUESTA,
+    EMBARGO.FECHA_GENERACION
+  FROM SOLICITUDES_LEVANTAMIENTO ,
+    PETICIONES ,
+    EMBARGO,
+    TRABAS ,
+    ENTIDADES_ORDENANTES,
+    ESTADO_INT_LEVANTAMIENTO,
+    ESTADO_RESP_LEVANTAMIENTO,
+    TIPO_DOCUMENTACION,
+    ESTADO_INT_PETICION,
+    ESTADO_PRIMARIO_PETICION,
+    ESTADO_PRIMARIO_RESP,
+    ESTADO_SECUNDARIO_RESP
+  WHERE PETICIONES.COD_PETICION    =SOLICITUDES_LEVANTAMIENTO.COD_PETICION
+  AND EMBARGO.COD_EMBARGO          =TRABAS.COD_EMBARGO
+  AND TRABAS.COD_TRABA             =SOLICITUDES_LEVANTAMIENTO.COD_TRABA
+  AND EMBARGO.COD_ENTIDAD_ORDENANTE=ENTIDADES_ORDENANTES.COD_ENTIDAD_ORDENANTE
+  AND SOLICITUDES_LEVANTAMIENTO.COD_ESTADO_INT_LEVANTAMIENTO=ESTADO_INT_LEVANTAMIENTO.COD_ESTADO_INT_LEVANTAMIENTO
+  AND SOLICITUDES_LEVANTAMIENTO.COD_ESTADO_RESP_LEVANTAMIENTO=ESTADO_RESP_LEVANTAMIENTO.COD_ESTADO_RESP_LEVANTAMIENTO(+)
+  AND SOLICITUDES_LEVANTAMIENTO.COD_TIPO_DOCUMENTACION=TIPO_DOCUMENTACION.COD_TIPO_DOCUMENTACION
+  AND PETICIONES.COD_ESTADO_INT_PETICION=ESTADO_INT_PETICION.COD_ESTADO_INT_PETICION
+  AND PETICIONES.COD_ESTADO_PRIMARIO_PETICION=ESTADO_PRIMARIO_PETICION.COD_ESTADO_PRIMARIO_PETICION
+  AND PETICIONES.COD_ESTADO_PRIMARIO_RESP=ESTADO_PRIMARIO_RESP.COD_ESTADO_PRIMARIO_RESP(+)
+  AND PETICIONES.COD_ESTADO_SECUNDARIO_RESP=ESTADO_SECUNDARIO_RESP.COD_ESTADO_SECUNDARIO_RESP(+)
+  UNION
+  SELECT PETICIONES.COD_CONTROL_FICHERO,PETICIONES.COD_PETICION,DES_ESTADO_INT_PETICION,PETICIONES.COD_ESTADO_PRIMARIO_PETICION || '-' || DES_ESTADO_PRIMARIO_PETICION,ESTADO_SECUNDARIO_PETICION,PETICIONES.COD_ESTADO_PRIMARIO_RESP || '-' || DES_ESTADO_PRIMARIO_RESP,PETICIONES.COD_ESTADO_SECUNDARIO_RESP || '-' || DES_ESTADO_SECUNDARIO_RESP,
+    'EJECUCION' TS,DES_ESTADO_INT_EJECUCION,ESTADO_RESP_EJECUCION.COD_ESTADO_RESP_EJECUCION || '-' || DES_ESTADO_RESP_EJECUCION,ENTIDADES_ORDENANTES.DES_ENTIDAD,
+    DES_TIPO_DOCUMENTACION,DOCUMENTACION,NOMBRE_COMPLETO_TITULAR,
+    SOLICITUDES_EJECUCION.COD_SOLICITUD_EJECUCION,
+    SOLICITUDES_EJECUCION.IMPORTE_SOLICITUD,
+    SOLICITUDES_EJECUCION.IMPORTE_RESPUESTA,
+    EMBARGO.FECHA_GENERACION
+  FROM SOLICITUDES_EJECUCION,
+    PETICIONES ,
+    EMBARGO,
+    TRABAS ,
+    ENTIDADES_ORDENANTES,
+    ESTADO_INT_EJECUCION,
+    ESTADO_RESP_EJECUCION,
+    TIPO_DOCUMENTACION,
+    ESTADO_INT_PETICION,
+    ESTADO_PRIMARIO_PETICION,
+    ESTADO_PRIMARIO_RESP,
+    ESTADO_SECUNDARIO_RESP
+  WHERE PETICIONES.COD_PETICION    =SOLICITUDES_EJECUCION.COD_PETICION
+  AND EMBARGO.COD_EMBARGO          =TRABAS.COD_EMBARGO
+  AND TRABAS.COD_TRABA             =SOLICITUDES_EJECUCION.COD_TRABA
+  AND EMBARGO.COD_ENTIDAD_ORDENANTE=ENTIDADES_ORDENANTES.COD_ENTIDAD_ORDENANTE
+  AND SOLICITUDES_EJECUCION.COD_ESTADO_INT_EJECUCION=ESTADO_INT_EJECUCION.COD_ESTADO_INT_EJECUCION
+  AND SOLICITUDES_EJECUCION.COD_ESTADO_RESP_EJECUCION=ESTADO_RESP_EJECUCION.COD_ESTADO_RESP_EJECUCION(+)
+  AND SOLICITUDES_EJECUCION.COD_TIPO_DOCUMENTACION=TIPO_DOCUMENTACION.COD_TIPO_DOCUMENTACION
+  AND PETICIONES.COD_ESTADO_INT_PETICION=ESTADO_INT_PETICION.COD_ESTADO_INT_PETICION
+  AND PETICIONES.COD_ESTADO_PRIMARIO_PETICION=ESTADO_PRIMARIO_PETICION.COD_ESTADO_PRIMARIO_PETICION
+  AND PETICIONES.COD_ESTADO_PRIMARIO_RESP=ESTADO_PRIMARIO_RESP.COD_ESTADO_PRIMARIO_RESP(+)
+  AND PETICIONES.COD_ESTADO_SECUNDARIO_RESP=ESTADO_SECUNDARIO_RESP.COD_ESTADO_SECUNDARIO_RESP(+)</createView>
+    </changeSet>
+</databaseChangeLog>
