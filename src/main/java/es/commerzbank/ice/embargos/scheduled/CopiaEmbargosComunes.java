@@ -46,8 +46,10 @@ public class CopiaEmbargosComunes {
 	@Autowired
 	private TaskRepo taskRepo;
 	
+	// TODO
+	// Rehabilitar cuando CGPJ esté reactivado
 	@Async
-	@Scheduled(fixedRate = 3600000)
+	//@Scheduled(fixedRate = 3600000)
 	public void copiaFestivosToEmbargos() {
 		try {
 			List<Festivo> listaFestivos = festiveRepo.findAll();
@@ -59,9 +61,11 @@ public class CopiaEmbargosComunes {
 			logger.error("ERROR - CopiaEmbargosComunes - copiaFestivosToEmbargos() ", e);
 		}
 	}
-	
+
+	// TODO
+	// Rehabilitar cuando CGPJ esté reactivado
 	@Async
-	@Scheduled(fixedRate = 3600000)
+	//@Scheduled(fixedRate = 3600000)
 	public void copiaTareasPendientesToComunes() {
 		try {
 			List<TareasPendiente> listaTareasPendientes = tareasPendienteRepo.findAll();
