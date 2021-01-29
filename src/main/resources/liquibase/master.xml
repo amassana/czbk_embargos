@@ -7,6 +7,8 @@
 
     <include file="initial/initial.xml" relativeToChangelogFile="true" />
 
+    <!--include file="initial/initial_cgpj.xml" relativeToChangelogFile="true" /-->
+
     <changeSet id="tag_initial" author="Aniol">
         <tagDatabase tag="after_initialization_2021"/>
     </changeSet>
