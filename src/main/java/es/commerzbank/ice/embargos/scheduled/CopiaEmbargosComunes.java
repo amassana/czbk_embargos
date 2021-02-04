@@ -45,7 +45,7 @@ public class CopiaEmbargosComunes {
 	
 	@Autowired
 	private TaskRepo taskRepo;
-	
+
 	// TODO
 	// Rehabilitar cuando CGPJ esté reactivado
 	@Async
