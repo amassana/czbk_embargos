@@ -60,8 +60,11 @@ public class PeticionInformacionListener {
 			AutowireEmbHelper.autowire(this, this.clientDataRepository);
 			AutowireEmbHelper.autowire(this, this.informationPetitionBankAccountRepository);
 
+			//if (peticionInformacion.getNumInvocations() > 1)
+			//	return;
+
 			logger.info("Listener "+ peticionInformacion +" "+ peticionInformacion.hashCode() + " "+ peticionInformacion.getCodPeticion() +" "+ peticionInformacion.getNumInvocations());
-			
+
 			if (peticionInformacion.getDatosCliente()!=null) {
 				Optional<DatosCliente> optDatosCliente = clientDataRepository.findById(peticionInformacion.getDatosCliente().getNif());
 				if (optDatosCliente.isPresent()) {

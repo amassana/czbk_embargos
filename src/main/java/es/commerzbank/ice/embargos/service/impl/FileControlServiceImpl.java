@@ -139,6 +139,7 @@ public class FileControlServiceImpl implements FileControlService{
 	}
 
 	@Override
+	@Transactional(transactionManager="transactionManager")
 	public boolean tramitarFicheroInformacion(Long codeFileControl, String usuarioTramitador) throws IOException, ICEException {
 		logger.info("FileControlServiceImpl - tramitarFicheroInformacion - start");
 		//Obtener el codigo del fichero de control:

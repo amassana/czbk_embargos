@@ -203,7 +203,6 @@ public class FileControlController {
 	
 	@PostMapping(value = "/{codeFileControl}/process")
 	@ApiOperation(value = "Tramitacion de un archivo.")
-	@Transactional(transactionManager="transactionManager")
 	public ResponseEntity<FileControlDTO> tramitar (Authentication authentication,
 			 @PathVariable("codeFileControl") Long codeFileControl){
 		logger.info("FileControlController - tramitar - start");

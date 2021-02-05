@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 import es.commerzbank.ice.comun.lib.file.exchange.FileWriterHelper;
@@ -181,7 +183,13 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        beanWriter = factory.createWriter(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE2, writer);
 	        
 	        EntidadesComunicadora entidadComunicadora = null;
-	        
+
+			HashMap<String, PeticionInformacion> peticiones = new HashMap<>();
+			List<PeticionInformacion> listaPeticiones = informationPetitionRepository.findAllByControlFichero(controlFicheroPeticion);
+			for (PeticionInformacion peticion : listaPeticiones) {
+				peticiones.put(peticion.getDatosCliente().getNif()+"-"+peticion.getCodDeudaDeudor(), peticion);
+			}
+
 	        Object record = null;
 	        while ((record = beanReader.read()) != null) {
 	        
@@ -190,11 +198,11 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        		SolicitudInformacionFase1 solicitudInformacion = (SolicitudInformacionFase1) record;
 
 	        		//Se obtiene la peticionInformacion a partir del correspondiente ControlFichero y NIF:
-	        		DatosCliente datosCliente = new DatosCliente();
-	        		datosCliente.setNif(solicitudInformacion.getNifDeudor());
-	        		PeticionInformacion peticionInformacion = 
-	        				informationPetitionRepository.findByControlFicheroAndDatosClienteAndNumeroEmbargo(controlFicheroPeticion,
-	        						datosCliente, solicitudInformacion.getIdentificadorDeuda());		
+//	        		DatosCliente datosCliente = new DatosCliente();
+//	        		datosCliente.setNif(solicitudInformacion.getNifDeudor());
+	        		PeticionInformacion peticionInformacion = peticiones.get(solicitudInformacion.getNifDeudor()+"-"+solicitudInformacion.getIdentificadorDeuda());
+//	        				informationPetitionRepository.findByControlFicheroAndDatosClienteAndNumeroEmbargo(controlFicheroPeticion,
+//	        						datosCliente, solicitudInformacion.getIdentificadorDeuda());
 	        		
 	        		if(peticionInformacion!=null) {
 	        			//Se guardan:

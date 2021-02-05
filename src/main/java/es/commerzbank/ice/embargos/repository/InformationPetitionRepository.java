@@ -15,7 +15,7 @@ public interface InformationPetitionRepository  extends JpaRepository<PeticionIn
 	
 	//public PeticionInformacion findByControlFicheroAndNifAndNumeroEmbargo(ControlFichero controlFichero, String nif, String numeroEmbargo);
 	
-	public PeticionInformacion findByControlFicheroAndDatosClienteAndNumeroEmbargo(ControlFichero controlFichero, DatosCliente datosCliente, String numeroEmbargo);
+	//public PeticionInformacion findByControlFicheroAndDatosClienteAndNumeroEmbargo(ControlFichero controlFichero, DatosCliente datosCliente, String numeroEmbargo);
 	
 	public List<PeticionInformacion> findAllByControlFichero(ControlFichero controlFichero);
 	
