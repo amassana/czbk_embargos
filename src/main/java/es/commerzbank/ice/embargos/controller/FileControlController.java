@@ -114,7 +114,6 @@ public class FileControlController {
 	public ResponseEntity<Page<FileControlDTO>> filter(Authentication authentication,
 													   @RequestBody FileControlFiltersDTO fileControlFilters,
 													   Pageable pageable){
-		logger.info("FileControlController - filter - start");
 		ResponseEntity<Page<FileControlDTO>> response = null;
 		Page<FileControlDTO> result = null;
 		
@@ -132,24 +131,21 @@ public class FileControlController {
 			
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 			
-			logger.error("ERROR in filter: ", e);
+			logger.error("ERROR in filecontrol/filter: ", e);
 		}	
-		
-		logger.info("FileControlController - filter - end");
+
 		return response;
 	}
 	
 	@GetMapping(value = "/filetype")
 	@ApiOperation(value="Devuelve la lista de tipos de ficheros admitidos en TIPO_FICHERO.")
 	public ResponseEntity<List<FileControlTypeDTO>> getFileTypeList(Authentication authentication){
-		logger.info("FileControlController - getFileTypeList - start");
 		ResponseEntity<List<FileControlTypeDTO>> response = null;
 		List<FileControlTypeDTO> result = null;
 		
 		result = fileTypeService.listAllFileType();
 		response = new ResponseEntity<>(result, HttpStatus.OK);
-		
-		logger.info("FileControlController - getFileTypeList - end");
+
 		return response;
 	}
 
@@ -158,7 +154,6 @@ public class FileControlController {
 	@ApiOperation(value="Devuelve la lista de estados para un determinado tipo de archivo de ESTADO_CTRLFICHERO.")
 	public ResponseEntity<List<FileControlStatusDTO>> getFileTypeStatusList(Authentication authentication,
 			@PathVariable("idFileType") Long idFileType){
-		logger.info("FileControlController - getFileTypeStatusList - start");
 		ResponseEntity<List<FileControlStatusDTO>> response = null;
 		List<FileControlStatusDTO> result = null;
 	
@@ -173,8 +168,6 @@ public class FileControlController {
 			
 			logger.error("ERROR in getFileTypeStatusList: ", e);
 		}
-			
-		logger.info("FileControlController - getFileTypeStatusList - end");
 		return response;
 	}
 	

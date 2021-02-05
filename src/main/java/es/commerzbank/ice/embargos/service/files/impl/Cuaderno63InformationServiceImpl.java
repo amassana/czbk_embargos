@@ -188,8 +188,7 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        	if(EmbargosConstants.RECORD_NAME_SOLICITUDINFORMACION.equals(beanReader.getRecordName())) {
 	        		
 	        		SolicitudInformacionFase1 solicitudInformacion = (SolicitudInformacionFase1) record;
-	        		LOG.debug(solicitudInformacion.getNifDeudor());
-	 		               		
+
 	        		//Se obtiene la peticionInformacion a partir del correspondiente ControlFichero y NIF:
 	        		DatosCliente datosCliente = new DatosCliente();
 	        		datosCliente.setNif(solicitudInformacion.getNifDeudor());
@@ -220,10 +219,10 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        		
 	        		beanWriter.write(EmbargosConstants.RECORD_NAME_RESPUESTASOLICITUDINFORMACION, respuesta);
 	        	
-	        	} else if(EmbargosConstants.RECORD_NAME_CABECERAEMISOR.equals(beanReader.getRecordName())) {
+	        	}
+	        	else if(EmbargosConstants.RECORD_NAME_CABECERAEMISOR.equals(beanReader.getRecordName())) {
 	 
 	        		CabeceraEmisorFase1 cabeceraEmisorFase1 = (CabeceraEmisorFase1) record;
-	        		LOG.debug(cabeceraEmisorFase1.getNombreOrganismoEmisor());
 	        		
 	        		String nifOrganismoEmisor = cabeceraEmisorFase1.getNifOrganismoEmisor();
 	        		
@@ -236,17 +235,15 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        		
 	        		beanWriter.write(EmbargosConstants.RECORD_NAME_CABECERAEMISOR, cabeceraEmisorFase2);
 	        		
-	        	} else if(EmbargosConstants.RECORD_NAME_FINFICHERO.equals(beanReader.getRecordName())) {
+	        	}
+	        	else if(EmbargosConstants.RECORD_NAME_FINFICHERO.equals(beanReader.getRecordName())) {
 	        		
 	        		FinFicheroFase1 finFicheroFase1 = (FinFicheroFase1) record;
-	        		LOG.debug(finFicheroFase1.getNombreOrganismoEmisor());
 	        		
 	        		FinFicheroFase2 finFicheroFase2 = cuaderno63Mapper.generateFinFicheroFase2(finFicheroFase1);
 	        		
 	        		beanWriter.write(EmbargosConstants.RECORD_NAME_FINFICHERO, finFicheroFase2);
 	        	}
-	        	
-	        	LOG.debug(record.toString());
 	        	
 	        	beanWriter.flush();
 	        	
