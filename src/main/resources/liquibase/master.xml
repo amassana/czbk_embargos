@@ -13,4 +13,6 @@
         <tagDatabase tag="after_initialization_2021"/>
     </changeSet>
 
+    <!-- Pendent INIT: initial value sequences a 100.000 -->
+
 </databaseChangeLog>
