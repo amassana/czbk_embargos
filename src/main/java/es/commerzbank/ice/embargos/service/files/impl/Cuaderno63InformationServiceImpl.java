@@ -206,7 +206,7 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        			
 	        			peticionInformacion.setUsuarioUltModificacion(usuarioTramitador);
 	        	        peticionInformacion.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
-	        			informationPetitionRepository.saveAndFlush(peticionInformacion);
+	        			informationPetitionRepository.save(peticionInformacion);
 	        			
 	        		} else {
 	        			//Si peticionInformacion es nulo: inicializar el objeto vacio:
