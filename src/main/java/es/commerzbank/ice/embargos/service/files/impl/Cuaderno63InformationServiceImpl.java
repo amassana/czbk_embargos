@@ -187,7 +187,7 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 			HashMap<String, PeticionInformacion> peticiones = new HashMap<>();
 			List<PeticionInformacion> listaPeticiones = informationPetitionRepository.findAllByControlFichero(controlFicheroPeticion);
 			for (PeticionInformacion peticion : listaPeticiones) {
-				peticiones.put(peticion.getDatosCliente().getNif()+"-"+peticion.getCodDeudaDeudor(), peticion);
+				peticiones.put(peticion.getDatosCliente().getNif()+"-"+peticion.getNumeroEmbargo(), peticion);
 			}
 
 	        Object record = null;
