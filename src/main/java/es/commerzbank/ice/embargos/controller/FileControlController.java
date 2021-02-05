@@ -21,6 +21,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -201,6 +203,7 @@ public class FileControlController {
 	
 	@PostMapping(value = "/{codeFileControl}/process")
 	@ApiOperation(value = "Tramitacion de un archivo.")
+	@Transactional(transactionManager="transactionManager")
 	public ResponseEntity<FileControlDTO> tramitar (Authentication authentication,
 			 @PathVariable("codeFileControl") Long codeFileControl){
 		logger.info("FileControlController - tramitar - start");
