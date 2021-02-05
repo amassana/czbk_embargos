@@ -185,9 +185,11 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        EntidadesComunicadora entidadComunicadora = null;
 
 			HashMap<String, PeticionInformacion> peticiones = new HashMap<>();
-			List<PeticionInformacion> listaPeticiones = informationPetitionRepository.findAllByControlFichero(controlFicheroPeticion);
-			for (PeticionInformacion peticion : listaPeticiones) {
-				peticiones.put(peticion.getDatosCliente().getNif()+"-"+peticion.getNumeroEmbargo(), peticion);
+			{ // carga con scope local.
+				List<PeticionInformacion> listaPeticiones = informationPetitionRepository.findAllByControlFichero(controlFicheroPeticion);
+				for (PeticionInformacion peticion : listaPeticiones) {
+					peticiones.put(peticion.getDatosCliente().getNif() + "-" + peticion.getNumeroEmbargo(), peticion);
+				}
 			}
 
 	        Object record = null;
@@ -198,12 +200,8 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        		SolicitudInformacionFase1 solicitudInformacion = (SolicitudInformacionFase1) record;
 
 	        		//Se obtiene la peticionInformacion a partir del correspondiente ControlFichero y NIF:
-//	        		DatosCliente datosCliente = new DatosCliente();
-//	        		datosCliente.setNif(solicitudInformacion.getNifDeudor());
 	        		PeticionInformacion peticionInformacion = peticiones.get(solicitudInformacion.getNifDeudor()+"-"+solicitudInformacion.getIdentificadorDeuda());
-//	        				informationPetitionRepository.findByControlFicheroAndDatosClienteAndNumeroEmbargo(controlFicheroPeticion,
-//	        						datosCliente, solicitudInformacion.getIdentificadorDeuda());
-	        		
+
 	        		if(peticionInformacion!=null) {
 	        			//Se guardan:
 	        			//- El codigo del fichero respuesta:

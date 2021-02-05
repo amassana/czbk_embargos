@@ -102,6 +102,7 @@ public class Norma63FilePoller
     @Async
     public void processFile(String originalName, File processingFile, File processedFile)
     {
+        // TODO: PROTECCIÓN MD5 PARA PROCESAR ÚNICAMENTE UNA VEZ CADA FICHERO
         try {
             String tipoFichero = FilenameUtils.getExtension(processingFile.getCanonicalPath()).toUpperCase();
 
