@@ -20,5 +20,5 @@ public interface FileControlRepository
 	@Query(value = "select * from CONTROL_FICHERO cf where cf.COD_ESTADO = :codEstado and cf.COD_TIPO_FICHERO in (2, 7, 9, 11)", nativeQuery = true)
 	List<ControlFichero> findByCodEstado(@Param("codEstado") long codEstadoControlFicheroGeneradoScheduled);
 
-	Optional<ControlFichero> findByNumCRC(String numCRC);
+	Optional<ControlFichero> findByNumCrc(String numCRC);
 }
