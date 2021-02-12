@@ -41,7 +41,7 @@ public class ChangeStatusFileControl {
 			for (ControlFichero controlFichero : list) {
 				File fileAEAT = new File(folderNameAEATGenerated, controlFichero.getNombreFichero());
 				File fileN63 = new File(folderNameN63Generated, controlFichero.getNombreFichero());
-				if (!fileAEAT.exists() || !fileN63.exists())
+				if (!fileAEAT.exists() && !fileN63.exists())
 				{
 					EstadoCtrlfichero estadoCtrlfichero = null;
 					
