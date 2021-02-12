@@ -3,8 +3,11 @@ package es.commerzbank.ice.embargos.event;
 import es.commerzbank.ice.comun.lib.file.exchange.FileProcessor;
 import es.commerzbank.ice.comun.lib.file.exchange.FolderPoller;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.util.FileUtils;
 import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import es.commerzbank.ice.comun.lib.util.YAMLUtil;
+import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
+import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63LiftingService;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63PetitionService;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63SeizureService;
@@ -24,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Optional;
 
 @Component
 public class Norma63FilePoller
@@ -52,6 +56,9 @@ public class Norma63FilePoller
 
     @Autowired
     private Cuaderno63SeizureService cuaderno63SeizureService;
+
+    @Autowired
+    private FileControlRepository fileControlRepository;
 
     @Bean(name = "n63FolderPoller")
     private FolderPoller folderPoller()
@@ -102,8 +109,12 @@ public class Norma63FilePoller
     @Async
     public void processFile(String originalName, File processingFile, File processedFile)
     {
-        // TODO: PROTECCIÓN MD5 PARA PROCESAR ÚNICAMENTE UNA VEZ CADA FICHERO
         try {
+            String md5 = FileUtils.getMD5(processingFile.getCanonicalPath());
+            Optional<ControlFichero> existingFile = fileControlRepository.findByNumCRC(md5);
+            if (existingFile.isPresent())
+                throw new Exception ("Encontrado un fichero con igual MD5 "+ md5 + " en CONTROL_FICHERO. Se descarta el proceso");
+
             String tipoFichero = FilenameUtils.getExtension(processingFile.getCanonicalPath()).toUpperCase();
 
             switch (tipoFichero) {

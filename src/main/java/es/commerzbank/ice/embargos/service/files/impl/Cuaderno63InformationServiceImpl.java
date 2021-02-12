@@ -256,7 +256,7 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	
 	        //ACTUALIZACIONES DEL FICHERO DE SALIDA (controlFicheroInformacion):
 	        //1.- Se actualiza el CRC:
-	        controlFicheroInformacion.setNumCrc(Long.toString(FileUtils.checksumCRC32(ficheroSalida)));
+	        controlFicheroInformacion.setNumCrc(es.commerzbank.ice.comun.lib.util.FileUtils.getMD5(ficheroSalida.getCanonicalPath()));
 
 			//2.- Se guarda el codigo de la Entidad comunicadora:
 	        controlFicheroInformacion.setEntidadesComunicadora(entidadComunicadora);

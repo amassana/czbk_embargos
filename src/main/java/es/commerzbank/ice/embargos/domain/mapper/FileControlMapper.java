@@ -48,7 +48,7 @@ public abstract class FileControlMapper {
         
         //Calculo del CRC del fichero:
         if (file != null && file.exists()) {
-        	controlFichero.setNumCrc(Long.toString(FileUtils.checksumCRC32(file)));
+        	controlFichero.setNumCrc(es.commerzbank.ice.comun.lib.util.FileUtils.getMD5(file.getCanonicalPath()));
         }
                 
         //Fecha de incorporacion: fecha actual

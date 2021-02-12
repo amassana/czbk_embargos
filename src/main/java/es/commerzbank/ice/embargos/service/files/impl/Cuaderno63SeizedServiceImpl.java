@@ -268,7 +268,7 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	
 	        //ACTUALIZACIONES DEL FICHERO DE SALIDA (controlFicheroTrabas):
 	        //1.- Se actualiza el CRC:
-	        controlFicheroTrabas.setNumCrc(Long.toString(FileUtils.checksumCRC32(ficheroSalida)));
+	        controlFicheroTrabas.setNumCrc(es.commerzbank.ice.comun.lib.util.FileUtils.getMD5(ficheroSalida.getCanonicalPath()));
 
 			//2.- Se guarda el codigo de la Entidad comunicadora:
 	        controlFicheroTrabas.setEntidadesComunicadora(entidadComunicadora);

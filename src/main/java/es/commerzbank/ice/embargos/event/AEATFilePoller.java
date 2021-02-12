@@ -3,8 +3,11 @@ package es.commerzbank.ice.embargos.event;
 import es.commerzbank.ice.comun.lib.file.exchange.FileProcessor;
 import es.commerzbank.ice.comun.lib.file.exchange.FolderPoller;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.util.FileUtils;
 import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import es.commerzbank.ice.comun.lib.util.YAMLUtil;
+import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
+import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.service.files.*;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import org.apache.commons.io.FilenameUtils;
@@ -22,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Optional;
 
 @Component
 public class AEATFilePoller
@@ -50,6 +54,9 @@ public class AEATFilePoller
 
     @Autowired
     private AEATLiftingService aeatLiftingService;
+
+    @Autowired
+    private FileControlRepository fileControlRepository;
 
     @Bean(name = "aeatFolderPoller")
     private FolderPoller folderPoller()
@@ -102,6 +109,11 @@ public class AEATFilePoller
     public void processFile(String originalName, File processingFile, File processedFile)
     {
         try {
+            String md5 = FileUtils.getMD5(processingFile.getCanonicalPath());
+            Optional<ControlFichero> existingFile = fileControlRepository.findByNumCRC(md5);
+            if (existingFile.isPresent())
+                throw new Exception ("Encontrado un fichero con igual MD5 "+ md5 + " en CONTROL_FICHERO. Se descarta el proceso");
+
             String tipoFichero = FilenameUtils.getExtension(processingFile.getCanonicalPath()).toUpperCase();
 
             switch (tipoFichero) {

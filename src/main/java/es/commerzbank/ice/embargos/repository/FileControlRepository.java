@@ -1,6 +1,7 @@
 package es.commerzbank.ice.embargos.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -18,4 +19,6 @@ public interface FileControlRepository
 {
 	@Query(value = "select * from CONTROL_FICHERO cf where cf.COD_ESTADO = :codEstado and cf.COD_TIPO_FICHERO in (2, 7, 9, 11)", nativeQuery = true)
 	List<ControlFichero> findByCodEstado(@Param("codEstado") long codEstadoControlFicheroGeneradoScheduled);
+
+	Optional<ControlFichero> findByNumCRC(String numCRC);
 }
