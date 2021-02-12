@@ -1,4 +1,4 @@
-package es.commerzbank.ice.embargos.job;
+package es.commerzbank.ice.embargos.event;
 
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
