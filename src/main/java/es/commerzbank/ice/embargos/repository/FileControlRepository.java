@@ -13,14 +13,9 @@ import org.springframework.stereotype.Repository;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 
 @Repository
-public interface FileControlRepository extends JpaRepository<ControlFichero, Long>, JpaSpecificationExecutor<ControlFichero>{
-
+public interface FileControlRepository
+	extends JpaRepository<ControlFichero, Long>, JpaSpecificationExecutor<ControlFichero>
+{
 	@Query(value = "select * from CONTROL_FICHERO cf where cf.COD_ESTADO = :codEstado and cf.COD_TIPO_FICHERO in (2, 7, 9, 11)", nativeQuery = true)
 	List<ControlFichero> findByCodEstado(@Param("codEstado") long codEstadoControlFicheroGeneradoScheduled);
-
-	/*@Transactional
-	@Modifying
-	@Query(value = "update CONTROL_FICHERO cf set cf.COD_ESTADO = :codEstado where cf.COD_CONTROL_FICHERO = :codControlFichero", nativeQuery = true)
-	void updateCodEstado(@Param("codControlFichero") long codControlFichero, @Param("codEstado") long codEstado);*/	
-	
 }
