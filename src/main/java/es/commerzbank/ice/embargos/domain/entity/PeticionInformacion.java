@@ -20,13 +20,6 @@ import es.commerzbank.ice.embargos.domain.entity.listener.PeticionInformacionLis
 public class PeticionInformacion implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Transient
-	private int invoked = 0;
-	public int getNumInvocations() {
-		invoked++;
-		return invoked;
-	}
-
 	@Id
 	@SequenceGenerator(name = "peticion_info_seq_gen", sequenceName = "SEC_PETICION_INFORMACION", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "peticion_info_seq_gen")
