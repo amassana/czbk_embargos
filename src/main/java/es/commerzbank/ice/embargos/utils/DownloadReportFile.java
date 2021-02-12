@@ -1,4 +1,4 @@
-package es.commerzbank.ice.utils;
+package es.commerzbank.ice.embargos.utils;
 
 import java.io.File;
 import java.io.FileInputStream;

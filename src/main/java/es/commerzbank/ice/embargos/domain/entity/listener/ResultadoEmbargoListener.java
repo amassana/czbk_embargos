@@ -28,7 +28,7 @@ import es.commerzbank.ice.embargos.domain.entity.ResultadoEmbargo;
 import es.commerzbank.ice.embargos.domain.mapper.FinalResponseMapper;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
 import es.commerzbank.ice.embargos.service.AuditoriaEmbService;
-import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 
 public class ResultadoEmbargoListener {
 

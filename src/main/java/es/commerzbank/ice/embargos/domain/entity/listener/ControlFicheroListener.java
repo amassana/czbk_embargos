@@ -31,7 +31,7 @@ import es.commerzbank.ice.embargos.repository.CommunicatingEntityRepository;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.repository.FileControlStatusRepository;
 import es.commerzbank.ice.embargos.service.AuditoriaEmbService;
-import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 
 public class ControlFicheroListener {
 

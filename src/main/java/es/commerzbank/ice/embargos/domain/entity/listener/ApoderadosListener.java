@@ -25,7 +25,7 @@ import es.commerzbank.ice.embargos.domain.entity.Apoderados;
 import es.commerzbank.ice.embargos.domain.entity.AuditoriaEmb;
 import es.commerzbank.ice.embargos.domain.mapper.RepresentativeMapper;
 import es.commerzbank.ice.embargos.service.AuditoriaEmbService;
-import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 
 public class ApoderadosListener {
 

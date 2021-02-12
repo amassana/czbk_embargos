@@ -17,7 +17,6 @@ import es.commerzbank.ice.comun.lib.util.BankAccountUtils;
 import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
-import es.commerzbank.ice.embargos.domain.dto.ClientDataDTO;
 import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
 import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
@@ -40,8 +39,8 @@ import es.commerzbank.ice.embargos.formats.aeat.trabas.EntidadTransmisoraFase4;
 import es.commerzbank.ice.embargos.formats.aeat.trabas.FinEntidadCreditoFase4;
 import es.commerzbank.ice.embargos.formats.aeat.trabas.FinEntidadTransmisoraFase4;
 import es.commerzbank.ice.embargos.formats.aeat.trabas.TrabaFase4;
-import es.commerzbank.ice.utils.EmbargosConstants;
-import es.commerzbank.ice.utils.ICEDateUtils;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 
 @Mapper(componentModel="spring")
 public abstract class AEATMapper {

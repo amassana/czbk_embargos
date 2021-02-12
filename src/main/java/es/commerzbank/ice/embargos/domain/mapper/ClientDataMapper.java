@@ -8,9 +8,9 @@ import org.mapstruct.Mappings;
 
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.embargos.domain.entity.DatosCliente;
-import es.commerzbank.ice.utils.EmbargosConstants;
-import es.commerzbank.ice.utils.EmbargosUtils;
-import es.commerzbank.ice.utils.ICEDateUtils;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosUtils;
+import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 
 @Mapper(componentModel="spring")
 public abstract class ClientDataMapper {

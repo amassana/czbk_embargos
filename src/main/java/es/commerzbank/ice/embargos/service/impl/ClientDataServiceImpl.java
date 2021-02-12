@@ -10,8 +10,8 @@ import es.commerzbank.ice.embargos.domain.entity.DatosCliente;
 import es.commerzbank.ice.embargos.domain.mapper.ClientDataMapper;
 import es.commerzbank.ice.embargos.repository.ClientDataRepository;
 import es.commerzbank.ice.embargos.service.ClientDataService;
-import es.commerzbank.ice.utils.EmbargosConstants;
-import es.commerzbank.ice.utils.ICEDateUtils;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 
 @Service
 @Transactional(transactionManager="transactionManager")

@@ -14,8 +14,8 @@ import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTrabaActuacion;
 import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
 import es.commerzbank.ice.embargos.domain.entity.Traba;
-import es.commerzbank.ice.utils.EmbargosConstants;
-import es.commerzbank.ice.utils.ICEDateUtils;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 
 @Mapper(componentModel="spring")
 public abstract class  SeizedBankAccountMapper {

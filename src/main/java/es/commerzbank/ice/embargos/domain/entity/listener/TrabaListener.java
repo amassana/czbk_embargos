@@ -33,7 +33,7 @@ import es.commerzbank.ice.embargos.domain.mapper.SeizureMapper;
 import es.commerzbank.ice.embargos.repository.ClientDataRepository;
 import es.commerzbank.ice.embargos.repository.SeizureStatusRepository;
 import es.commerzbank.ice.embargos.service.AuditoriaEmbService;
-import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 
 public class TrabaListener {
 

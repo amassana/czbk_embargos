@@ -26,7 +26,7 @@ import es.commerzbank.ice.embargos.domain.entity.Apoderados_;
 import es.commerzbank.ice.embargos.domain.mapper.RepresentativeMapper;
 import es.commerzbank.ice.embargos.repository.ApoderadosRepository;
 import es.commerzbank.ice.embargos.service.RepresentativeService;
-import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 
 @Service
 public class RepresentativeServiceImpl implements RepresentativeService {

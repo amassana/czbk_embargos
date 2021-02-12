@@ -9,7 +9,7 @@ import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.embargos.job.JobTransferToTax;
-import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 
 import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
 

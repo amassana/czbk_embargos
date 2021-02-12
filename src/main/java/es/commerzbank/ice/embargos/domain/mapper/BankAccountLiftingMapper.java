@@ -1,19 +1,11 @@
 package es.commerzbank.ice.embargos.domain.mapper;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 
 import es.commerzbank.ice.embargos.domain.dto.BankAccountLiftingDTO;
-import es.commerzbank.ice.embargos.domain.dto.Item;
 import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
-import es.commerzbank.ice.utils.EmbargosConstants;
 
 
 @Mapper(componentModel="spring")

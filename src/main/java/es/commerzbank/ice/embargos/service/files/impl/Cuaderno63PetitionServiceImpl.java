@@ -49,8 +49,8 @@ import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.embargos.service.EmailService;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63PetitionService;
-import es.commerzbank.ice.utils.EmbargosConstants;
-import es.commerzbank.ice.utils.ICEDateUtils;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 
 @Service
 @Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)

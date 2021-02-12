@@ -26,7 +26,7 @@ import es.commerzbank.ice.embargos.repository.PetitionRepository;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.InformationPetitionService;
 import es.commerzbank.ice.embargos.service.PetitionService;
-import es.commerzbank.ice.utils.ResourcesUtil;
+import es.commerzbank.ice.embargos.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 @Service

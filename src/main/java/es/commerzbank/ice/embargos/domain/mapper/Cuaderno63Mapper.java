@@ -42,9 +42,9 @@ import es.commerzbank.ice.embargos.formats.cuaderno63.fase4.CabeceraEmisorFase4;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase4.ComunicacionResultadoRetencionFase4;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase4.FinFicheroFase4;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.OrdenLevantamientoRetencionFase5;
-import es.commerzbank.ice.utils.EmbargosConstants;
-import es.commerzbank.ice.utils.EmbargosUtils;
-import es.commerzbank.ice.utils.ICEDateUtils;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosUtils;
+import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 
 @Mapper(componentModel="spring")
 public abstract class Cuaderno63Mapper {

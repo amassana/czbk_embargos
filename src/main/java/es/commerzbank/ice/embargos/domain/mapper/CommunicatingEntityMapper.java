@@ -10,7 +10,7 @@ import org.mapstruct.Mappings;
 
 import es.commerzbank.ice.embargos.domain.dto.CommunicatingEntity;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
-import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 
 @Mapper(componentModel="spring")
 public abstract class CommunicatingEntityMapper {

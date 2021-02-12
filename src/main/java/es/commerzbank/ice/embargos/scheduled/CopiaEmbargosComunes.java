@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +20,7 @@ import es.commerzbank.ice.embargos.domain.mapper.FestivoMapper;
 import es.commerzbank.ice.embargos.domain.mapper.TareasPendienteMapper;
 import es.commerzbank.ice.embargos.repository.FestivoRepo;
 import es.commerzbank.ice.embargos.repository.TareasPendienteRepo;
-import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 
 @Service
 @Transactional(transactionManager="transactionManager")

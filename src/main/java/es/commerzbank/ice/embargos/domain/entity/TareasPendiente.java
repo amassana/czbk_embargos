@@ -4,7 +4,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import es.commerzbank.ice.comun.lib.util.ValueConstants;
-import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 
 import java.math.BigDecimal;
 

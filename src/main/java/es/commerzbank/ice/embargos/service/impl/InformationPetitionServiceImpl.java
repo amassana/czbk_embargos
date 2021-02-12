@@ -20,8 +20,8 @@ import es.commerzbank.ice.embargos.repository.InformationPetitionAuditRepository
 import es.commerzbank.ice.embargos.repository.InformationPetitionRepository;
 import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.embargos.service.InformationPetitionService;
-import es.commerzbank.ice.utils.EmbargosConstants;
-import es.commerzbank.ice.utils.ICEDateUtils;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 
 @Service
 @Transactional(transactionManager="transactionManager")

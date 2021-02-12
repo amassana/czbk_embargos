@@ -48,10 +48,10 @@ import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.FinalFileService;
 import es.commerzbank.ice.embargos.service.LiftingService;
 import es.commerzbank.ice.embargos.service.SeizureService;
-import es.commerzbank.ice.utils.EmbargosConstants;
-import es.commerzbank.ice.utils.EmbargosUtils;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosUtils;
 
-import static es.commerzbank.ice.utils.EmbargosConstants.*;
+import static es.commerzbank.ice.embargos.utils.EmbargosConstants.*;
 
 @Service
 @Transactional(transactionManager="transactionManager")

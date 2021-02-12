@@ -32,7 +32,7 @@ import es.commerzbank.ice.embargos.domain.mapper.InformationPetitionMapper;
 import es.commerzbank.ice.embargos.repository.ClientDataRepository;
 import es.commerzbank.ice.embargos.repository.InformationPetitionBankAccountRepository;
 import es.commerzbank.ice.embargos.service.AuditoriaEmbService;
-import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 
 public class PeticionInformacionListener {
 
@@ -59,7 +59,7 @@ public class PeticionInformacionListener {
 			AutowireEmbHelper.autowire(this, this.informationPetitionMapper);
 			AutowireEmbHelper.autowire(this, this.clientDataRepository);
 			AutowireEmbHelper.autowire(this, this.informationPetitionBankAccountRepository);
-			
+
 			if (peticionInformacion.getDatosCliente()!=null) {
 				Optional<DatosCliente> optDatosCliente = clientDataRepository.findById(peticionInformacion.getDatosCliente().getNif());
 				if (optDatosCliente.isPresent()) {

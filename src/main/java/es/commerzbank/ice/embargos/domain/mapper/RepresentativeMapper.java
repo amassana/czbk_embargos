@@ -7,10 +7,8 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 
 import es.commerzbank.ice.embargos.domain.dto.Representative;
-import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
 import es.commerzbank.ice.embargos.domain.entity.Apoderados;
-import es.commerzbank.ice.embargos.domain.entity.Embargo;
-import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 
 @Mapper(componentModel="spring")
 public abstract class RepresentativeMapper {

@@ -28,7 +28,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import es.commerzbank.ice.comun.lib.config.OracleDataSourceConfig;
-import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import oracle.jdbc.pool.OracleDataSource;
 
 @Configuration

@@ -62,10 +62,10 @@ import es.commerzbank.ice.embargos.repository.SeizureRepository;
 import es.commerzbank.ice.embargos.repository.SeizureStatusRepository;
 import es.commerzbank.ice.embargos.repository.SeizureSummaryBankAccountRepository;
 import es.commerzbank.ice.embargos.service.SeizureService;
-import es.commerzbank.ice.utils.EmbargosConstants;
-import es.commerzbank.ice.utils.EmbargosUtils;
-import es.commerzbank.ice.utils.ICEDateUtils;
-import es.commerzbank.ice.utils.ResourcesUtil;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosUtils;
+import es.commerzbank.ice.embargos.utils.ICEDateUtils;
+import es.commerzbank.ice.embargos.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 @Service

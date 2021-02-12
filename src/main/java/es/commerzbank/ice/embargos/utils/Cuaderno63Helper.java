@@ -1,4 +1,4 @@
-package es.commerzbank.ice.utils;
+package es.commerzbank.ice.embargos.utils;
 
 import java.math.BigDecimal;
 import java.util.Date;

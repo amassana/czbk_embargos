@@ -30,7 +30,7 @@ import es.commerzbank.ice.embargos.domain.mapper.FinalResponseBankAccountMapper;
 import es.commerzbank.ice.embargos.repository.SeizedBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.SeizureBankAccountRepository;
 import es.commerzbank.ice.embargos.service.AuditoriaEmbService;
-import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 
 public class CuentaResultadoEmbargoListener {
 

@@ -8,7 +8,7 @@ import org.mapstruct.Mappings;
 
 import es.commerzbank.ice.embargos.domain.dto.SeizedBankAccountDTO;
 import es.commerzbank.ice.embargos.domain.entity.HCuentaTraba;
-import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 
 @Mapper(componentModel="spring")
 public abstract class HSeizedBankAccountMapper {

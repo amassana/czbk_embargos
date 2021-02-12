@@ -26,7 +26,7 @@ import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora_;
 import es.commerzbank.ice.embargos.domain.mapper.CommunicatingEntityMapper;
 import es.commerzbank.ice.embargos.repository.CommunicatingEntityRepository;
 import es.commerzbank.ice.embargos.service.CommunicatingEntityService;
-import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 
 @Service
 @Transactional("transactionManager")

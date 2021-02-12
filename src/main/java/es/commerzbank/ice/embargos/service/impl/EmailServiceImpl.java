@@ -14,7 +14,7 @@ import es.commerzbank.ice.comun.lib.service.ClientEmailService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.embargos.service.EmailService;
-import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 
 @Service
 public class EmailServiceImpl implements EmailService {

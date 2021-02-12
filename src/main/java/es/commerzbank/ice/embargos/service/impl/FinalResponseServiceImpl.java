@@ -26,7 +26,7 @@ import es.commerzbank.ice.embargos.domain.mapper.FinalResponseMapper;
 import es.commerzbank.ice.embargos.repository.FinalResponseBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.FinalResponseRepository;
 import es.commerzbank.ice.embargos.service.FinalResponseService;
-import es.commerzbank.ice.utils.ResourcesUtil;
+import es.commerzbank.ice.embargos.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 @Service

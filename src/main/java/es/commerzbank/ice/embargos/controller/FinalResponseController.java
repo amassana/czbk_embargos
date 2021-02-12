@@ -29,8 +29,8 @@ import es.commerzbank.ice.embargos.scheduled.Norma63Fase6;
 import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.FinalResponseService;
-import es.commerzbank.ice.utils.DownloadReportFile;
-import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.DownloadReportFile;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import io.swagger.annotations.ApiOperation;
 
 @CrossOrigin("*")

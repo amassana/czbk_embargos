@@ -25,7 +25,7 @@ import es.commerzbank.ice.embargos.domain.entity.AuditoriaEmb;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
 import es.commerzbank.ice.embargos.domain.mapper.CommunicatingEntityMapper;
 import es.commerzbank.ice.embargos.service.AuditoriaEmbService;
-import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 
 public class EntidadesComunicadoraListener {
 

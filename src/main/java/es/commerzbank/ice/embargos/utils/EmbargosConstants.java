@@ -1,4 +1,4 @@
-package es.commerzbank.ice.utils;
+package es.commerzbank.ice.embargos.utils;
 
 public class EmbargosConstants {
 

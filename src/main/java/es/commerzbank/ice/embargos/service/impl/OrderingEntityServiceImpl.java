@@ -26,7 +26,7 @@ import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante_;
 import es.commerzbank.ice.embargos.domain.mapper.OrderingEntityMapper;
 import es.commerzbank.ice.embargos.repository.OrderingEntityRepository;
 import es.commerzbank.ice.embargos.service.OrderingEntityService;
-import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 
 @Service
 @Transactional("transactionManager")

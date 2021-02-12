@@ -41,9 +41,9 @@ import es.commerzbank.ice.embargos.service.InformationPetitionService;
 import es.commerzbank.ice.embargos.service.files.AEATSeizedService;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63InformationService;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63SeizedService;
-import es.commerzbank.ice.utils.EmbargosConstants;
-import es.commerzbank.ice.utils.ICEDateUtils;
-import es.commerzbank.ice.utils.ResourcesUtil;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.ICEDateUtils;
+import es.commerzbank.ice.embargos.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 @Service

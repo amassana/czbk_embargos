@@ -35,8 +35,8 @@ import es.commerzbank.ice.embargos.repository.SeizedErrorRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.files.AEATSeizedResultService;
-import es.commerzbank.ice.utils.EmbargosConstants;
-import es.commerzbank.ice.utils.EmbargosUtils;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosUtils;
 
 @Service
 @Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)

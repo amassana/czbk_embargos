@@ -29,7 +29,7 @@ import es.commerzbank.ice.embargos.domain.mapper.BankAccountLiftingMapper;
 import es.commerzbank.ice.embargos.domain.mapper.LiftingStatusMapper;
 import es.commerzbank.ice.embargos.repository.LiftingStatusRepository;
 import es.commerzbank.ice.embargos.service.AuditoriaEmbService;
-import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 
 public class CuentaLevantamientoListener {
 

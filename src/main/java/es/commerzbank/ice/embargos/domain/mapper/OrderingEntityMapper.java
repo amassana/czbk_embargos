@@ -14,7 +14,7 @@ import es.commerzbank.ice.embargos.domain.dto.OrderingEntity;
 import es.commerzbank.ice.embargos.domain.dto.OrderingEntityCsv;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
-import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 
 @Mapper(componentModel="spring")
 public abstract class OrderingEntityMapper {

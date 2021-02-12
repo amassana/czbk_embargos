@@ -17,7 +17,7 @@ import es.commerzbank.ice.comun.lib.security.Token;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.mapper.UserMapper;
 import es.commerzbank.ice.embargos.service.SeizureService;
-import es.commerzbank.ice.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 
 
 @Component
