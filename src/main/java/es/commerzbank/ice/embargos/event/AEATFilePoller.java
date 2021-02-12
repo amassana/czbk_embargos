@@ -1,4 +1,4 @@
-package es.commerzbank.ice.embargos.filePoller;
+package es.commerzbank.ice.embargos.event;
 
 import es.commerzbank.ice.comun.lib.file.exchange.FileProcessor;
 import es.commerzbank.ice.comun.lib.file.exchange.FolderPoller;
