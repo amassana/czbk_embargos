@@ -111,7 +111,7 @@ public class Norma63FilePoller
     {
         try {
             String md5 = FileUtils.getMD5(processingFile.getCanonicalPath());
-            Optional<ControlFichero> existingFile = fileControlRepository.findByNumCRC(md5);
+            Optional<ControlFichero> existingFile = fileControlRepository.findByNumCrc(md5);
             if (existingFile.isPresent())
                 throw new Exception ("Encontrado un fichero con igual MD5 "+ md5 + " en CONTROL_FICHERO. Se descarta el proceso");
 
