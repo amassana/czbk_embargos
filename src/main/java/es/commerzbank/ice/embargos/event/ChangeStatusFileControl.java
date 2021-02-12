@@ -43,38 +43,39 @@ public class ChangeStatusFileControl {
 				File fileN63 = new File(folderNameN63Generated, controlFichero.getNombreFichero());
 				if (!fileAEAT.exists() || !fileN63.exists())
 				{
-					controlFichero.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
-					controlFichero.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+					EstadoCtrlfichero estadoCtrlfichero = null;
 					
 					if (controlFichero.getTipoFichero().getCodTipoFichero() == EmbargosConstants.COD_TIPO_FICHERO_TRABAS_AEAT)
 					{
-						EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
+						estadoCtrlfichero = new EstadoCtrlfichero(
 			                    EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_AEAT_SENT,
 			                    EmbargosConstants.COD_TIPO_FICHERO_TRABAS_AEAT);
-						controlFichero.setEstadoCtrlfichero(estadoCtrlfichero);
-						fileControlRepository.save(controlFichero);
 					}
 					else if (controlFichero.getTipoFichero().getCodTipoFichero() == EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63)
 					{
-						EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
+						estadoCtrlfichero = new EstadoCtrlfichero(
 			                    EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_INFORMACION_NORMA63_SENT,
 			                    EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63);
-						controlFichero.setEstadoCtrlfichero(estadoCtrlfichero);
-						fileControlRepository.save(controlFichero);
 					}
 					else if (controlFichero.getTipoFichero().getCodTipoFichero() == EmbargosConstants.COD_TIPO_FICHERO_TRABAS_NORMA63)
 					{
-						EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
+						estadoCtrlfichero = new EstadoCtrlfichero(
 			                    EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_NORMA63_SENT,
 			                    EmbargosConstants.COD_TIPO_FICHERO_TRABAS_NORMA63);
-						controlFichero.setEstadoCtrlfichero(estadoCtrlfichero);
-						fileControlRepository.save(controlFichero);
 					}
 					else if (controlFichero.getTipoFichero().getCodTipoFichero() == EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63)
 					{
-						EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
+						estadoCtrlfichero = new EstadoCtrlfichero(
 			                    EmbargosConstants.COD_ESTADO_CTRLFICHERO_FINAL_ENVIADO,
 			                    EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63);
+					}
+
+					if (estadoCtrlfichero != null)
+					{
+						logger.info("El fichero "+ controlFichero.getCodControlFichero() +" ha sido leído de la carpeta outbox. Cambiando de estado a enviado");
+
+						controlFichero.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+						controlFichero.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 						controlFichero.setEstadoCtrlfichero(estadoCtrlfichero);
 						fileControlRepository.save(controlFichero);
 					}
