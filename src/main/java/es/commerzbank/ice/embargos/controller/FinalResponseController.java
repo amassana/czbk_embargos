@@ -25,7 +25,7 @@ import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
 import es.commerzbank.ice.embargos.domain.dto.FinalResponseDTO;
 import es.commerzbank.ice.embargos.domain.dto.OrderingEntity;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
-import es.commerzbank.ice.embargos.scheduled.Norma63Fase6;
+import es.commerzbank.ice.embargos.event.Norma63Fase6;
 import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.FinalResponseService;

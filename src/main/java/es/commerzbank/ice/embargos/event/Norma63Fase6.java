@@ -1,4 +1,4 @@
-package es.commerzbank.ice.embargos.scheduled;
+package es.commerzbank.ice.embargos.event;
 
 import es.commerzbank.ice.comun.lib.file.exchange.FileWriterHelper;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;

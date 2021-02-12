@@ -1,4 +1,4 @@
-package es.commerzbank.ice.embargos.scheduled;
+package es.commerzbank.ice.embargos.event;
 
 import java.io.File;
 import java.util.List;
