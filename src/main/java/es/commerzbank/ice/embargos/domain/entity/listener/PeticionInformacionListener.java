@@ -25,11 +25,9 @@ import com.google.gson.JsonSerializer;
 import es.commerzbank.ice.embargos.config.AutowireEmbHelper;
 import es.commerzbank.ice.embargos.domain.dto.PetitionCaseDTO;
 import es.commerzbank.ice.embargos.domain.entity.AuditoriaEmb;
-import es.commerzbank.ice.embargos.domain.entity.DatosCliente;
 import es.commerzbank.ice.embargos.domain.entity.PeticionInformacion;
 import es.commerzbank.ice.embargos.domain.entity.PeticionInformacionCuenta;
 import es.commerzbank.ice.embargos.domain.mapper.InformationPetitionMapper;
-import es.commerzbank.ice.embargos.repository.ClientDataRepository;
 import es.commerzbank.ice.embargos.repository.InformationPetitionBankAccountRepository;
 import es.commerzbank.ice.embargos.service.AuditoriaEmbService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
@@ -40,9 +38,6 @@ public class PeticionInformacionListener {
 	
 	@Autowired
 	private InformationPetitionMapper informationPetitionMapper;
-	
-	@Autowired
-	private ClientDataRepository clientDataRepository;
 	
 	@Autowired
 	private InformationPetitionBankAccountRepository informationPetitionBankAccountRepository; 
@@ -57,15 +52,7 @@ public class PeticionInformacionListener {
 		try {
 			AutowireEmbHelper.autowire(this, this.auditoriaEmbService);
 			AutowireEmbHelper.autowire(this, this.informationPetitionMapper);
-			AutowireEmbHelper.autowire(this, this.clientDataRepository);
 			AutowireEmbHelper.autowire(this, this.informationPetitionBankAccountRepository);
-
-			if (peticionInformacion.getDatosCliente()!=null) {
-				Optional<DatosCliente> optDatosCliente = clientDataRepository.findById(peticionInformacion.getDatosCliente().getNif());
-				if (optDatosCliente.isPresent()) {
-					peticionInformacion.setDatosCliente(optDatosCliente.get());
-				}
-			}
 			
 			if (peticionInformacion.getPeticionInformacionCuentas()!=null) {
 				List<PeticionInformacionCuenta> peticionList = new ArrayList<PeticionInformacionCuenta>();

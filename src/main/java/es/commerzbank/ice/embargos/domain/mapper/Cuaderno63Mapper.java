@@ -81,15 +81,18 @@ public abstract class Cuaderno63Mapper {
 //	}
 
 	@Mappings({
-		@Mapping(source = "solicitudInfo.nifDeudor", target = "datosCliente.nif"),
+		@Mapping(source = "solicitudInfo.nifDeudor", target = "nif"),
 		@Mapping(source = "solicitudInfo.nombreDeudor", target = "razonSocial"),
+		@Mapping(source = "razonSocialInterna", target = "razonSocialInterna"),
 		@Mapping(source = "solicitudInfo.domicilioDeudor", target = "domicilio"),
 		@Mapping(source = "solicitudInfo.identificadorDeuda", target = "numeroEmbargo"),
 		@Mapping(source = "solicitudInfo.codigoDeuda", target = "codDeudaDeudor"),
 		@Mapping(source = "codControlFicheroPeticion", target = "controlFichero.codControlFichero")
 	})
-	public abstract PeticionInformacion generatePeticionInformacion(SolicitudInformacionFase1 solicitudInfo, 
-			Long codControlFicheroPeticion, List<AccountDTO> listBankAccount, EntidadesComunicadora entidadComunicadora) throws ICEException;
+	public abstract PeticionInformacion generatePeticionInformacion(
+			SolicitudInformacionFase1 solicitudInfo, Long codControlFicheroPeticion,
+			List<AccountDTO> listBankAccount, EntidadesComunicadora entidadComunicadora, String razonSocialInterna)
+		throws ICEException;
 	
 	@AfterMapping
 	protected void setPeticionInformacionAfterMapping(@MappingTarget PeticionInformacion peticionInformacion, 
@@ -198,7 +201,7 @@ public abstract class Cuaderno63Mapper {
 	public abstract FinFicheroFase2 generateFinFicheroFase2(FinFicheroFase1 finFicheroFase1); 
 	
 	@Mappings({
-		@Mapping(source = "ordenEjecucionEmbargo.nifDeudor", target = "datosCliente.nif"),
+		@Mapping(source = "ordenEjecucionEmbargo.nifDeudor", target = "nif"),
 		@Mapping(source = "ordenEjecucionEmbargo.nombreDeudor", target = "nombre"),
 		@Mapping(source = "ordenEjecucionEmbargo.domicilioDeudor", target = "domicilio"),
 		@Mapping(source = "ordenEjecucionEmbargo.municipio", target = "municipio"),
@@ -208,10 +211,11 @@ public abstract class Cuaderno63Mapper {
 		@Mapping(source = "ordenEjecucionEmbargo.codigoDeuda", target = "codDeudaDeudor"),
 		@Mapping(source = "codControlFicheroEmbargo", target = "controlFichero.codControlFichero"),
 		@Mapping(source = "entidadOrdenante", target = "entidadesOrdenante"),
+		@Mapping(source = "razonSocialInterna", target = "razonSocialInterna"),
 		@Mapping(source = "fechaLimiteTraba", target = "fechaLimiteTraba")
 	})
 	public abstract Embargo generateEmbargo(OrdenEjecucionEmbargoFase3 ordenEjecucionEmbargo, 
-			OrdenEjecucionEmbargoComplementarioFase3 ordenEjecucionEmbargoComp, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante, BigDecimal fechaLimiteTraba,  Map<String, AccountDTO> customerAccountsMap);
+			OrdenEjecucionEmbargoComplementarioFase3 ordenEjecucionEmbargoComp, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante, String razonSocialInterna, BigDecimal fechaLimiteTraba,  Map<String, AccountDTO> customerAccountsMap);
 	
 	@AfterMapping
 	public void generateEmbargoAfterMapping(@MappingTarget Embargo embargo, OrdenEjecucionEmbargoFase3 ordenEjecucionEmbargo, 
@@ -540,7 +544,7 @@ public abstract class Cuaderno63Mapper {
 	}
 	
 	@Mappings({
-		@Mapping(source = "embargo.datosCliente.nif", target = "nifDeudor"),
+		@Mapping(source = "embargo.nif", target = "nifDeudor"),
 		@Mapping(source = "embargo.nombre", target = "nombreDeudor"),
 		@Mapping(source = "embargo.domicilio", target = "domicilioDeudor"),
 		@Mapping(source = "embargo.municipio", target = "municipio"),
@@ -635,7 +639,6 @@ public abstract class Cuaderno63Mapper {
 
 	
 	@Mappings({ @Mapping(source = "codControlFichero", target = "controlFichero.codControlFichero"),
-				@Mapping(source = "ordenLevantamientoRetencionFase5.nifDeudor", target = "datosCliente.nif"),	
 	})
 	public abstract LevantamientoTraba generateLevantamiento(Long codControlFichero,
 			OrdenLevantamientoRetencionFase5 ordenLevantamientoRetencionFase5, Traba traba, CustomerDTO DWHCustomer);

@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import es.commerzbank.ice.embargos.utils.EmbargosUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
@@ -52,7 +53,6 @@ import es.commerzbank.ice.embargos.repository.SeizedBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.SeizedRepository;
 import es.commerzbank.ice.embargos.repository.SeizureBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
-import es.commerzbank.ice.embargos.service.ClientDataService;
 import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.embargos.service.EmailService;
 import es.commerzbank.ice.embargos.service.FileControlService;
@@ -86,9 +86,6 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 
 	@Autowired
 	private FileControlService fileControlService;
-	
-	@Autowired
-	private ClientDataService clientDataService;
 	
 	@Autowired
 	private FileControlRepository fileControlRepository;
@@ -211,12 +208,11 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 			        			customerAccountsMap.put(accountDTO.getIban(), accountDTO);
 			        		}
 		        		}
+
+						String razonSocialInterna = EmbargosUtils.determineRazonSocialInternaFromCustomer(customerDTO);
 		        		
-		        		//- Se guardan los datos del cliente:
-		        		clientDataService.createUpdateClientDataTransaction(customerDTO, diligenciaFase3.getNifDeudor());
-		        				        				        		
-		        		//Generacion de las instancias de Embargo y de Traba:	        			
-		        		embargo = aeatMapper.generateEmbargo(diligenciaFase3, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, entidadCreditoFase3, customerAccountsMap);
+		        		//Generacion de las instancias de Embargo y de Traba:
+		        		embargo = aeatMapper.generateEmbargo(diligenciaFase3, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, razonSocialInterna, entidadCreditoFase3, customerAccountsMap);
 		        			
 		        		traba =  aeatMapper.generateTraba(diligenciaFase3, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, customerAccountsMap);        			
 		        		traba.setEmbargo(embargo);

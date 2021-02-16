@@ -47,7 +47,7 @@ public abstract class AEATMapper {
 	LevantamientoHelperMapper levantamientoHelperMapper = new LevantamientoHelperMapper();
 	
 	@Mappings({
-		@Mapping(source = "diligenciaFase3.nifDeudor", target = "datosCliente.nif"),
+		@Mapping(source = "diligenciaFase3.nifDeudor", target = "nif"),
 		@Mapping(source = "diligenciaFase3.nombreDeudor", target = "nombre"),
 		@Mapping(source = "diligenciaFase3.siglasViaPublica", target = "siglasVp"),
 		@Mapping(source = "diligenciaFase3.nombreViaPublica", target = "nombreVp"),
@@ -61,10 +61,13 @@ public abstract class AEATMapper {
 		@Mapping(source = "diligenciaFase3.numeroDiligenciaEmbargo", target = "numeroEmbargo"),
 		@Mapping(source = "diligenciaFase3.importeTotalAEmbargar", target = "importe"),
 		@Mapping(source = "codControlFicheroEmbargo", target = "controlFichero.codControlFichero"),
-		@Mapping(source = "entidadOrdenante", target = "entidadesOrdenante")
+		@Mapping(source = "entidadOrdenante", target = "entidadesOrdenante"),
+		@Mapping(source = "razonSocialInterna", target = "razonSocialInterna"),
 	})
-	public abstract Embargo generateEmbargo(DiligenciaFase3 diligenciaFase3, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante, 
-			EntidadCreditoFase3 entidadCreditoFase3, Map<String, AccountDTO> customerAccountsMap) throws ICEException;
+	public abstract Embargo generateEmbargo(
+			DiligenciaFase3 diligenciaFase3, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante,
+			String razonSocialInterna, EntidadCreditoFase3 entidadCreditoFase3, Map<String, AccountDTO> customerAccountsMap)
+		throws ICEException;
 	
 	@AfterMapping
 	public void generateEmbargoAfterMapping(@MappingTarget Embargo embargo, DiligenciaFase3 diligenciaFase3, EntidadesOrdenante entidadOrdenante, 
@@ -349,7 +352,7 @@ public abstract class AEATMapper {
 	
 	@Mappings({
 		@Mapping(constant = EmbargosConstants.CODIGO_REGISTRO_AEAT_TRABA_FASE4, target = "indicadorRegistro"),
-		@Mapping(source = "embargo.datosCliente.nif", target = "nifDeudor"),
+		@Mapping(source = "embargo.nif", target = "nifDeudor"),
 		@Mapping(source = "embargo.nombre", target = "nombreDeudor"),
 		@Mapping(source = "embargo.siglasVp", target = "siglasViaPublica"),
 		@Mapping(source = "embargo.nombreVp", target = "nombreViaPublica"),
@@ -394,8 +397,7 @@ public abstract class AEATMapper {
 	public abstract FinEntidadTransmisoraFase4 generateFinEntidadTransmisoraFase4(FinEntidadTransmisoraFase3 finEntidadTransmisoraFase3);
 
 	@Mappings({
-			@Mapping(source = "codControlFichero", target = "controlFichero.codControlFichero"),
-			@Mapping(source = "levantamientoAEAT.nifDeudor", target = "datosCliente.nif"),
+			@Mapping(source = "codControlFichero", target = "controlFichero.codControlFichero")
 	})
 	public abstract LevantamientoTraba generateLevantamiento(Long codControlFichero, Levantamiento levantamientoAEAT, Traba traba, CustomerDTO DWHCustomer)
 			throws ICEException;

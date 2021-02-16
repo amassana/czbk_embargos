@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import es.commerzbank.ice.embargos.utils.EmbargosUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
@@ -52,7 +53,6 @@ import es.commerzbank.ice.embargos.repository.SeizedBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.SeizedRepository;
 import es.commerzbank.ice.embargos.repository.SeizureBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
-import es.commerzbank.ice.embargos.service.ClientDataService;
 import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.embargos.service.EmailService;
 import es.commerzbank.ice.embargos.service.FileControlService;
@@ -86,9 +86,6 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 	
 	@Autowired
 	private TaskService taskService;
-	
-	@Autowired
-	private ClientDataService clientDataService;
 
 	//Agregar repositories de DWH ...
 	@Autowired
@@ -213,21 +210,20 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 	        			Date fechaLimiteTrabaDate = DateUtils.convertToDate(DateUtils.convertToLocalDate(fechaObtencionFicheroOrganismo).plusDays(diasRespuestaFase3.longValue()));
 	        			fechaLimiteTraba = ICEDateUtils.dateToBigDecimal(fechaLimiteTrabaDate, ICEDateUtils.FORMAT_yyyyMMdd);
 	        		}
-	        		
-                    //Se guardan los datos del cliente:
-	        		clientDataService.createUpdateClientDataTransaction(customerDTO, ordenEjecucionEmbargo.getNifDeudor());
+
+					String razonSocialInterna = EmbargosUtils.determineRazonSocialInternaFromCustomer(customerDTO);
 	        		        		
 	        		//Generacion de las instancias de Embargo y de Traba:
 	        		if (ordenEjecucionEmbargoComp!=null 
 	        				&& ordenEjecucionEmbargo.getNifDeudor().equals(ordenEjecucionEmbargoComp.getNifDeudor())) {
 	        			
-	        			embargo = cuaderno63Mapper.generateEmbargo(ordenEjecucionEmbargo, ordenEjecucionEmbargoComp, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, fechaLimiteTraba, customerAccountsMap);
+	        			embargo = cuaderno63Mapper.generateEmbargo(ordenEjecucionEmbargo, ordenEjecucionEmbargoComp, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, razonSocialInterna, fechaLimiteTraba, customerAccountsMap);
 	        			
 	        			traba =  cuaderno63Mapper.generateTraba(ordenEjecucionEmbargo, ordenEjecucionEmbargoComp, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, fechaLimiteTraba, customerAccountsMap);        			
 	        			traba.setEmbargo(embargo);
 	        			
 	        		} else {
-	        			embargo = cuaderno63Mapper.generateEmbargo(ordenEjecucionEmbargo, new OrdenEjecucionEmbargoComplementarioFase3(), controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, fechaLimiteTraba, customerAccountsMap);
+	        			embargo = cuaderno63Mapper.generateEmbargo(ordenEjecucionEmbargo, new OrdenEjecucionEmbargoComplementarioFase3(), controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, razonSocialInterna, fechaLimiteTraba, customerAccountsMap);
 
 	        			traba =  cuaderno63Mapper.generateTraba(ordenEjecucionEmbargo, ordenEjecucionEmbargoComp, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, fechaLimiteTraba, customerAccountsMap);        			
 	        			traba.setEmbargo(embargo);

@@ -25,12 +25,10 @@ import com.google.gson.JsonSerializer;
 import es.commerzbank.ice.embargos.config.AutowireEmbHelper;
 import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
 import es.commerzbank.ice.embargos.domain.entity.AuditoriaEmb;
-import es.commerzbank.ice.embargos.domain.entity.DatosCliente;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
 import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
 import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.embargos.domain.mapper.SeizureMapper;
-import es.commerzbank.ice.embargos.repository.ClientDataRepository;
 import es.commerzbank.ice.embargos.repository.SeizureStatusRepository;
 import es.commerzbank.ice.embargos.service.AuditoriaEmbService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
@@ -43,10 +41,7 @@ public class TrabaListener {
 	private AuditoriaEmbService auditoriaEmbService; 
 	
 	@Autowired
-	private SeizureMapper seizureMapper; 
-	
-	@Autowired
-	private ClientDataRepository clientDataRepository;
+	private SeizureMapper seizureMapper;
 	
 	@Autowired
 	private SeizureStatusRepository seizureStatusRepository;
@@ -58,7 +53,6 @@ public class TrabaListener {
 		try {
 			AutowireEmbHelper.autowire(this, this.auditoriaEmbService);
 			AutowireEmbHelper.autowire(this, this.seizureMapper);
-			AutowireEmbHelper.autowire(this, this.clientDataRepository);
 			AutowireEmbHelper.autowire(this, this.seizureStatusRepository);
 			
 			Embargo embargo = traba.getEmbargo();
@@ -69,13 +63,6 @@ public class TrabaListener {
 					Optional<EstadoTraba> optEstadoTraba = seizureStatusRepository.findById(traba.getEstadoTraba().getCodEstado());
 					if (optEstadoTraba.isPresent()) {
 						traba.setEstadoTraba(optEstadoTraba.get());
-					}
-				}
-				
-				if (embargo.getDatosCliente()!=null) {
-					Optional<DatosCliente> optDatosCliente = clientDataRepository.findById(embargo.getDatosCliente().getNif());
-					if (optDatosCliente.isPresent()) {
-						embargo.setDatosCliente(optDatosCliente.get());
 					}
 				}
 				

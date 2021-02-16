@@ -49,7 +49,6 @@ import es.commerzbank.ice.embargos.repository.OrderingEntityRepository;
 import es.commerzbank.ice.embargos.repository.SeizedRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
 import es.commerzbank.ice.embargos.service.AccountingService;
-import es.commerzbank.ice.embargos.service.ClientDataService;
 import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.embargos.service.LiftingService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
@@ -104,9 +103,6 @@ public class LiftingServiceImpl implements LiftingService {
     
     @Autowired
     private CustomerService customerService;
-    
-    @Autowired
-    private ClientDataService clientDataService;
     
     @Autowired
     private AccountingService accountingService;
@@ -452,9 +448,6 @@ public class LiftingServiceImpl implements LiftingService {
                     // estado contable?
                     // estado ejecutado?
                     CustomerDTO customerDTO = customerService.findCustomerByNif(ordenLev.getNifDeudor(), false);
-
-                    //Se guardan los datos del cliente:
-	        		clientDataService.createUpdateClientDataTransaction(customerDTO, ordenLev.getNifDeudor());
                     
                     LevantamientoTraba levantamiento = cuaderno63Mapper.generateLevantamiento(controlFicheroLevantamiento.getCodControlFichero(), ordenLev, traba, customerDTO);
 

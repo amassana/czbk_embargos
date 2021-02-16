@@ -595,7 +595,7 @@ public class SeizureServiceImpl implements SeizureService {
 		}
 		
 		String message = "{\"user\": \"" + user + "\", \"nombre\": \"" + embargo.getNombre() + "\", \"cuenta\": \"" + cuenta 
-				+ "\", \"nif\": \"" + embargo.getDatosCliente().getNif() + "\", \"sucursal\": \"" + embargo.getCodSucursal() 
+				+ "\", \"nif\": \"" + embargo.getNif() + "\", \"sucursal\": \"" + embargo.getCodSucursal()
 				+ "\", \"importe\": \"" + importe + "\", \"numEmbargo\": \"" + embargo.getNumeroEmbargo() + "\"}";
 		
 		request.setEntity(new StringEntity(message, ContentType.create(MimeTypeUtils.TEXT_XML_VALUE, Charsets.UTF_8)));

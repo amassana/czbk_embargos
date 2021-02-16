@@ -65,6 +65,9 @@ public class Embargo implements Serializable {
 	@Column(length=12)
 	private String municipio;
 
+	@Column(length=9)
+	private String nif;
+
 	@Column(length=100)
 	private String nombre;
 
@@ -109,10 +112,8 @@ public class Embargo implements Serializable {
 	@OneToMany(mappedBy="embargo")
 	private List<Traba> trabas;
 
-	//bi-directional many-to-one association to DatosCliente
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="NIF")
-	private DatosCliente datosCliente;
+	@Column(name="RAZON_SOCIAL_INTERNA", length=100)
+	private String razonSocialInterna;
 
 	
 	public Embargo() {
@@ -370,12 +371,19 @@ public class Embargo implements Serializable {
 		return traba;
 	}
 
-	public DatosCliente getDatosCliente() {
-		return this.datosCliente;
+	public String getNif() {
+		return nif;
 	}
 
-	public void setDatosCliente(DatosCliente datosCliente) {
-		this.datosCliente = datosCliente;
+	public void setNif(String nif) {
+		this.nif = nif;
 	}
 
+	public String getRazonSocialInterna() {
+		return razonSocialInterna;
+	}
+
+	public void setRazonSocialInterna(String razonSocialInterna) {
+		this.razonSocialInterna = razonSocialInterna;
+	}
 }

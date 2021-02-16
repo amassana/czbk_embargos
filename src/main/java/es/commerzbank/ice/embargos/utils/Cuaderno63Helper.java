@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.Map;
 
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
-import es.commerzbank.ice.embargos.domain.entity.DatosCliente;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
 import es.commerzbank.ice.embargos.domain.entity.PeticionInformacion;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase1.CabeceraEmisorFase1;
@@ -31,10 +30,8 @@ public class Cuaderno63Helper {
 		pendienteCambiarEntidadesOrdenante.setCodEntidadOrdenante(Long.valueOf(1));
 		
 		PeticionInformacion peticionInformacion = new PeticionInformacion();
-		
-		DatosCliente datosCliente = new DatosCliente();
-		datosCliente.setNif(solicitudInfo.getNifDeudor());
-		peticionInformacion.setDatosCliente(datosCliente);
+
+		peticionInformacion.setNif(solicitudInfo.getNifDeudor());
 		peticionInformacion.setRazonSocial(solicitudInfo.getNombreDeudor());
 		peticionInformacion.setDomicilio(solicitudInfo.getDomicilioDeudor());
 		peticionInformacion.setMunicipio(solicitudInfo.getMunicipio());

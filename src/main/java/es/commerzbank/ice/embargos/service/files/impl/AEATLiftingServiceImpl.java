@@ -36,7 +36,6 @@ import es.commerzbank.ice.embargos.repository.LiftingRepository;
 import es.commerzbank.ice.embargos.repository.SeizedRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
 import es.commerzbank.ice.embargos.service.AccountingService;
-import es.commerzbank.ice.embargos.service.ClientDataService;
 import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.embargos.service.files.AEATLiftingService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
@@ -60,9 +59,6 @@ public class AEATLiftingServiceImpl
     @Autowired
     private FileControlMapper fileControlMapper;
 
-	@Autowired
-	private ClientDataService clientDataService;
-	   
     @Autowired
     private FileControlRepository fileControlRepository;
     
@@ -164,9 +160,6 @@ public class AEATLiftingServiceImpl
                     // estado ejecutado?
                     CustomerDTO customerDTO = customerService.findCustomerByNif(levantamientoAEAT.getNifDeudor(), true);
 
-                    //Se guardan los datos del cliente:
-	        		clientDataService.createUpdateClientDataTransaction(customerDTO, levantamientoAEAT.getNifDeudor());
-                    
                     LevantamientoTraba levantamiento = aeatMapper.generateLevantamiento(controlFicheroLevantamiento.getCodControlFichero(), levantamientoAEAT, traba, customerDTO);
 
                     liftingRepository.save(levantamiento);

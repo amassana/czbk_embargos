@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import es.commerzbank.ice.embargos.utils.EmbargosUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
@@ -44,7 +45,6 @@ import es.commerzbank.ice.embargos.repository.CommunicatingEntityRepository;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.repository.InformationPetitionBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.InformationPetitionRepository;
-import es.commerzbank.ice.embargos.service.ClientDataService;
 import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.embargos.service.EmailService;
 import es.commerzbank.ice.embargos.service.FileControlService;
@@ -78,9 +78,6 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 
 	@Autowired
 	private TaskService taskService;
-	
-	@Autowired
-	private ClientDataService clientDataService;
 
 	//Agregar repositories de DWH ...
 	@Autowired
@@ -168,13 +165,11 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 
 			        		//Tratar solamente los clientes en los que se han encontrado cuentas:
 			        		if(accountList != null && !accountList.isEmpty()) {
-
-			                    //Se guardan los datos del cliente:
-				        		clientDataService.createUpdateClientDataTransaction(customerDTO, solicitudInformacion.getNifDeudor());
+								String razonSocialInterna = EmbargosUtils.determineRazonSocialInternaFromCustomer(customerDTO);
 
 				        		//Se guarda la PeticionInformacion en bbdd:
 				        		PeticionInformacion peticionInformacion = cuaderno63Mapper.generatePeticionInformacion(solicitudInformacion,
-				        				controlFicheroPeticion.getCodControlFichero(), accountList, entidadComunicadora);
+				        				controlFicheroPeticion.getCodControlFichero(), accountList, entidadComunicadora, razonSocialInterna);
 
 				        		informationPetitionRepository.save(peticionInformacion);
 

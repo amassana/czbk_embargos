@@ -107,6 +107,9 @@ public class PeticionInformacion implements Serializable {
 	@Column(length=12)
 	private String municipio;
 
+	@Column(length=9)
+	private String nif;
+
 	@Column(name="NUMERO_EMBARGO", length=13)
 	private String numeroEmbargo;
 
@@ -128,6 +131,9 @@ public class PeticionInformacion implements Serializable {
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="COD_ENTIDAD_ORDENANTE", nullable=false)
 	private EntidadesOrdenante entidadesOrdenante;
+
+	@Column(name="RAZON_SOCIAL_INTERNA", length=100)
+	private String razonSocialInterna;
 	
 	@Column(name="IND_CASO_REVISADO", length=1)
 	private String indCasoRevisado;
@@ -136,11 +142,6 @@ public class PeticionInformacion implements Serializable {
 	@OneToMany(mappedBy="peticionInformacion")
 	private List<PeticionInformacionCuenta> peticionInformacionCuentas;
 
-	//bi-directional many-to-one association to DatosCliente
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="NIF")
-	private DatosCliente datosCliente;
-	
 	public PeticionInformacion() {
 	}
 
@@ -445,13 +446,20 @@ public class PeticionInformacion implements Serializable {
 
 		return peticionInformacionCuenta;
 	}
-	
-	public DatosCliente getDatosCliente() {
-		return this.datosCliente;
+
+	public String getNif() {
+		return nif;
 	}
 
-	public void setDatosCliente(DatosCliente datosCliente) {
-		this.datosCliente = datosCliente;
+	public void setNif(String nif) {
+		this.nif = nif;
 	}
-	
+
+	public String getRazonSocialInterna() {
+		return razonSocialInterna;
+	}
+
+	public void setRazonSocialInterna(String razonSocialInterna) {
+		this.razonSocialInterna = razonSocialInterna;
+	}
 }

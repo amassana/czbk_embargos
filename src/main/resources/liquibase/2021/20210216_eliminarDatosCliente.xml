@@ -1,0 +1,36 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="aniol.massana" id="20210216_eliminarDatosCliente_Fase1">
+        <dropForeignKeyConstraint baseTableName="LEVANTAMIENTO_TRABA" constraintName="FK_LEVTRA_RELATION_RAZONSOCINT" />
+        <dropForeignKeyConstraint baseTableName="EMBARGO" constraintName="FK_EMBARG_RELATION_RAZONSOCINT" />
+        <dropForeignKeyConstraint baseTableName="PETICION_INFORMACION" constraintName="FK_PETINF_RELATION_RAZONSOCINT" />
+        <addColumn tableName="PETICION_INFORMACION">
+            <column name="RAZON_SOCIAL_INTERNA" type="VARCHAR(100)"></column>
+        </addColumn>
+        <addColumn tableName="EMBARGO">
+            <column name="RAZON_SOCIAL_INTERNA" type="VARCHAR(100)"></column>
+        </addColumn>
+        <rollback>
+            <addForeignKeyConstraint baseColumnNames="NIF" baseTableName="EMBARGO" constraintName="FK_EMBARG_RELATION_DATOSCLIENT" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="NIF" referencedTableName="DATOS_CLIENTE" validate="false"/>
+            <addForeignKeyConstraint baseColumnNames="NIF" baseTableName="LEVANTAMIENTO_TRABA" constraintName="FK_LEVTRA_RELATION_DATOSCLIENT" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="NIF" referencedTableName="DATOS_CLIENTE" validate="false"/>
+            <addForeignKeyConstraint baseColumnNames="NIF" baseTableName="PETICION_INFORMACION" constraintName="FK_PETINF_RELATION_DATOSCLIENT" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="NIF" referencedTableName="DATOS_CLIENTE" validate="false"/>
+        </rollback>
+    </changeSet>
+    <changeSet author="aniol.massana" id="20210216_eliminarDatosCliente_Fase2">
+        <dropTable tableName="DATOS_CLIENTE" />
+        <rollback>
+            <createTable tableName="DATOS_CLIENTE">
+                <column name="NIF" type="VARCHAR2(9 CHAR)">
+                    <constraints nullable="false" primaryKey="true" primaryKeyName="DATOS_CLIENTE_PK"/>
+                </column>
+                <column name="NOMBRE" type="VARCHAR2(100 CHAR)"/>
+                <column name="DOMICILIO" type="VARCHAR2(100 CHAR)"/>
+                <column name="MUNICIPIO" type="VARCHAR2(50 CHAR)"/>
+                <column name="CODIGO_POSTAL" type="VARCHAR2(5 CHAR)"/>
+                <column defaultValue="N" name="IND_PENDIENTE_DWH" type="VARCHAR2(1 BYTE)"/>
+                <column name="F_ULTIMA_MODIFICACION" type="NUMBER(14, 0)"/>
+                <column name="USUARIO_ULT_MODIFICACION" type="VARCHAR2(10 CHAR)"/>
+            </createTable>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

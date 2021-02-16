@@ -7,14 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
-import es.commerzbank.ice.embargos.domain.entity.DatosCliente;
 import es.commerzbank.ice.embargos.domain.entity.PeticionInformacion;
 
 public interface InformationPetitionRepository  extends JpaRepository<PeticionInformacion, Long>{
 
 	
 	//public PeticionInformacion findByControlFicheroAndNifAndNumeroEmbargo(ControlFichero controlFichero, String nif, String numeroEmbargo);
-	
+
+	// method below should be: public PeticionInformacion findByControlFicheroAndNif(ControlFichero controlFichero, String nif);
 	//public PeticionInformacion findByControlFicheroAndDatosClienteAndNumeroEmbargo(ControlFichero controlFichero, DatosCliente datosCliente, String numeroEmbargo);
 	
 	public List<PeticionInformacion> findAllByControlFichero(ControlFichero controlFichero);
