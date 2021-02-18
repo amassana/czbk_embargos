@@ -1,0 +1,23 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="aniol.massana" id="20210218_fihceroControl_NRC.xml">
+        <delete tableName="ESTADO_CTRLFICHERO">
+            <where>
+                (COD_TIPO_FICHERO=1 AND COD_ESTADO=1) OR
+                (COD_TIPO_FICHERO=2 AND COD_ESTADO=1) OR
+                (COD_TIPO_FICHERO=3 AND COD_ESTADO=1) OR
+                (COD_TIPO_FICHERO=6 AND COD_ESTADO=1) OR
+                (COD_TIPO_FICHERO=6 AND COD_ESTADO=3) OR
+                (COD_TIPO_FICHERO=7 AND COD_ESTADO=1) OR
+                (COD_TIPO_FICHERO=8 AND COD_ESTADO=1) OR
+                (COD_TIPO_FICHERO=9 AND COD_ESTADO=1) OR
+                (COD_TIPO_FICHERO=10 AND COD_ESTADO=1) OR
+                (COD_TIPO_FICHERO=11 AND COD_ESTADO=1) OR
+                (COD_TIPO_FICHERO=14 AND COD_ESTADO=1)</where>
+        </delete>
+        <rollback>
+            <!-- no rollback atm ... -->
+            <sql>select count(*) from dual</sql>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

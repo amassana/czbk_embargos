@@ -127,10 +127,12 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        }     
 	        
 	        //Se actualiza el estado de controlFicheroPeticion a TRAMITANDO:
+			/*
 	        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
 	        		EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_PROCESSING,
 	        		EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63);
 	        controlFicheroPeticion.setEstadoCtrlfichero(estadoCtrlfichero);
+	        */
 	        
 	        //Actualizacion del flag IND_PROCESADO al iniciar la tramitacion:
 	        controlFicheroPeticion.setIndProcesado(EmbargosConstants.IND_FLAG_SI);
@@ -262,7 +264,7 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        controlFicheroInformacion.setEntidadesComunicadora(entidadComunicadora);
 	        
 	        //3.- Se actualiza el estado de controlFicheroInformacion a GENERADO:
-	        estadoCtrlfichero = new EstadoCtrlfichero(
+			EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
 	        		EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_INFORMACION_NORMA63_GENERATED,
 	        		EmbargosConstants.COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63);
 	        controlFicheroInformacion.setEstadoCtrlfichero(estadoCtrlfichero);

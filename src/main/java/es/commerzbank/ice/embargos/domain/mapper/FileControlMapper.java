@@ -65,8 +65,8 @@ public abstract class FileControlMapper {
         controlFichero.setIsoMoneda(EmbargosConstants.ISO_MONEDA_EUR);
         
         //ESTADO DEL FICHERO: calcular el estado inicial del fichero dependiendo del tipo de fichero:
-        EstadoCtrlfichero estadoCtrlfichero = determineInitialEstadoCtrlFicheroByCodTipoFichero(codTipoFichero);
-        controlFichero.setEstadoCtrlfichero(estadoCtrlfichero);
+        //EstadoCtrlfichero estadoCtrlfichero = determineInitialEstadoCtrlFicheroByCodTipoFichero(codTipoFichero);
+        //controlFichero.setEstadoCtrlfichero(estadoCtrlfichero);
         
         //Usuario y fecha ultima modificacion:
         controlFichero.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
@@ -84,7 +84,7 @@ public abstract class FileControlMapper {
 	private EstadoCtrlfichero determineInitialEstadoCtrlFicheroByCodTipoFichero(long codTipoFichero) {
 			
 		long codEstado = 0;
-		
+		/*
 		if (codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_PETICION_INFORMACION_NORMA63) {
 
 			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_LOADING;
@@ -129,6 +129,8 @@ public abstract class FileControlMapper {
 			//Estado inicial por defecto:
 			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_INITIAL_STATUS_DEFAULT;
 		}
+		 */
+		codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_INITIAL_STATUS_DEFAULT;
 		
         EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero();
         EstadoCtrlficheroPK estadoCtrlficheroPK = new EstadoCtrlficheroPK();

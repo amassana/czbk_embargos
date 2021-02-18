@@ -14,8 +14,8 @@
     </changeSet>
 
     <include file="2021/20210216_eliminarDatosCliente.xml" relativeToChangelogFile="true" />
-
     <include file="2021/20210218_ficheroControl_CRC_length.xml" relativeToChangelogFile="true" />
+    <include file="2021/20210218_eliminacionEstadosTransitorios.xml" relativeToChangelogFile="true" />
 
     <!-- Pendent INIT: initial value sequences a 100.000 -->
     <!-- Pendent INIT: initial value sequences a 100.000 -->
