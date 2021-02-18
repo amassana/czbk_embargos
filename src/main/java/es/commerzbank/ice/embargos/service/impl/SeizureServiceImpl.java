@@ -328,7 +328,6 @@ public class SeizureServiceImpl implements SeizureService {
 	}
 	
 	@Override
-	@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
 	public boolean updateSeizedBankStatusTransaction(CuentaTraba cuentaTraba, Long codEstado, String userModif) {
 		
 		return updateSeizedBankStatus(cuentaTraba, codEstado, userModif);
@@ -377,7 +376,6 @@ public class SeizureServiceImpl implements SeizureService {
 	}
 	
 	@Override
-	@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
 	public boolean updateSeizureStatusTransaction(Long idSeized, SeizureStatusDTO seizureStatusDTO,
 			String userModif) {
 		

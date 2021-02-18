@@ -160,8 +160,8 @@ public class CommunicatingEntityController {
 	        response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
 	                "attachment; filename=\"" + "communicatingEntity.csv" + "\"");
 
+
 			response.getWriter().println("sep=,");
-	
 	        //create a csv writer
 	        StatefulBeanToCsv<CommunicatingEntity> writer = new StatefulBeanToCsvBuilder<CommunicatingEntity>(response.getWriter())
 					.withApplyQuotesToAll(true)

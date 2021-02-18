@@ -98,8 +98,6 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	private GeneralParametersService generalParametersService;
 	
 	@Override
-	//Se comenta '@transactional' ya que se utilizara a nivel de clase:
-	//@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
 	@Transactional(transactionManager = "transactionManager", rollbackFor = Exception.class)
 	public void cargarFicheroPeticion(File processingFile, String originalName, File processedFile) throws IOException, ICEException {
 

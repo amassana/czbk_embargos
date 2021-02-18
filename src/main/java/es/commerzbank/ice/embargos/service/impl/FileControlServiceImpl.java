@@ -341,7 +341,7 @@ public class FileControlServiceImpl implements FileControlService{
 	}
 	
 	/*@Override
-	@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
+	@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NE W)
 	public void updateFileControlStatusTransaction(ControlFichero controlFichero, Long codEstado) {
 		
 		if (controlFichero!=null && controlFichero.getFUltimaModificacion()!=null) {
@@ -357,7 +357,6 @@ public class FileControlServiceImpl implements FileControlService{
 	}*/
 
 	@Override
-	@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
 	public void updateFileControlStatusTransaction(ControlFichero controlFichero, Long codEstado, String userModif) {
 					
 		if (controlFichero!=null && controlFichero.getFUltimaModificacion()!=null) {
@@ -381,7 +380,6 @@ public class FileControlServiceImpl implements FileControlService{
 	}
 	
 	@Override
-	@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
 	public void saveFileControlTransaction(ControlFichero controlFichero) {
 		logger.info("FileControlServiceImpl - saveFileControlTransaction - start");
 		fileControlRepository.save(controlFichero);
