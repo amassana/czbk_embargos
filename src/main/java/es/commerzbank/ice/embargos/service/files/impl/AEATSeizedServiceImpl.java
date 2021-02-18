@@ -59,7 +59,6 @@ import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 
 @Service
-@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
 public class AEATSeizedServiceImpl implements AEATSeizedService{
 
 	private static final Logger logger = LoggerFactory.getLogger(AEATSeizedServiceImpl.class);
@@ -101,6 +100,7 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	private FileWriterHelper fileWriterHelper;
 	
 	@Override
+	@Transactional(transactionManager = "transactionManager", rollbackFor = Exception.class)
 	public void tramitarTrabas(Long codControlFicheroEmbargo, String usuarioTramitador) throws IOException, ICEException {
 		logger.info("AEATSeizureServiceImpl - tramitarTrabas - start");
 		

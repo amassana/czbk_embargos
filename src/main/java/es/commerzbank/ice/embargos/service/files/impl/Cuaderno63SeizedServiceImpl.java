@@ -54,7 +54,6 @@ import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 
 @Service
-@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
 public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 
 	private static final Logger LOG = LoggerFactory.getLogger(Cuaderno63SeizedServiceImpl.class);
@@ -97,6 +96,7 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	private FileWriterHelper fileWriterHelper;
 
 	@Override
+	@Transactional(transactionManager = "transactionManager", rollbackFor = Exception.class)
 	public void tramitarTrabas(Long codControlFicheroEmbargo, String usuarioTramitador) throws IOException, ICEException {
 
 		BeanReader beanReader = null;
