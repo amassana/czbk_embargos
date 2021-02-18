@@ -53,7 +53,6 @@ import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 
 @Service
-@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
 public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 
 	private static final Logger LOG = LoggerFactory.getLogger(Cuaderno63PetitionServiceImpl.class);
@@ -101,6 +100,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	@Override
 	//Se comenta '@transactional' ya que se utilizara a nivel de clase:
 	//@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
+	@Transactional(transactionManager = "transactionManager", rollbackFor = Exception.class)
 	public void cargarFicheroPeticion(File processingFile, String originalName, File processedFile) throws IOException, ICEException {
 
 		BeanReader beanReader = null;

@@ -54,7 +54,6 @@ import es.commerzbank.ice.embargos.utils.EmbargosUtils;
 import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 
 @Service
-@Transactional(transactionManager="transactionManager", propagation = Propagation.REQUIRES_NEW)
 public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationService{
 
 	private static final Logger LOG = LoggerFactory.getLogger(Cuaderno63InformationServiceImpl.class);
@@ -91,6 +90,7 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	private FileWriterHelper fileWriterHelper;
 
 	@Override
+	@Transactional(transactionManager = "transactionManager", rollbackFor = Exception.class)
 	public void tramitarFicheroInformacion(Long codControlFicheroPeticion, String usuarioTramitador) throws IOException, ICEException {
 			
 		
