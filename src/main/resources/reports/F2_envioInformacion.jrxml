@@ -97,7 +97,7 @@ WHERE
 		<band height="90" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<subreport>
-				<reportElement x="210" y="0" width="570" height="90" uuid="befc3bba-b2ea-4658-a870-1549923da357">
+				<reportElement x="171" y="-10" width="570" height="90" uuid="befc3bba-b2ea-4658-a870-1549923da357">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<subreportParameter name="sub_img_param">
@@ -236,7 +236,7 @@ WHERE
 				<text><![CDATA[CUENTA 5]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="704" y="47" width="98" height="13" uuid="f12aaf25-bfec-497a-8879-61d9d4430ad9">
+				<reportElement x="703" y="47" width="98" height="13" uuid="f12aaf25-bfec-497a-8879-61d9d4430ad9">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ffff8303-2ce5-4843-b132-428ad5597b6e"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -302,7 +302,7 @@ WHERE
 				<textFieldExpression><![CDATA[$F{RAZON_SOCIAL_INTERNA}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="704" y="0" width="95" height="13" uuid="8d0a5413-08cc-46eb-b2a9-c446568e9a37">
+				<reportElement x="703" y="0" width="95" height="13" uuid="8d0a5413-08cc-46eb-b2a9-c446568e9a37">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="1d84535f-b5b5-4469-814e-c968fceba5fa"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -319,7 +319,7 @@ WHERE
 				<textFieldExpression><![CDATA[$F{IBAN6}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="704" y="13" width="95" height="13" uuid="ee25c02c-473b-4f59-8b62-d3126d624e25">
+				<reportElement x="703" y="13" width="95" height="13" uuid="ee25c02c-473b-4f59-8b62-d3126d624e25">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="1d84535f-b5b5-4469-814e-c968fceba5fa"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
