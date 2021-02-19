@@ -31,6 +31,8 @@ import org.springframework.util.MimeTypeUtils;
 
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
+import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
+import es.commerzbank.ice.datawarehouse.service.AccountService;
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
 import es.commerzbank.ice.embargos.domain.dto.SeizedBankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureActionDTO;
@@ -125,7 +127,9 @@ public class SeizureServiceImpl implements SeizureService {
 	@Autowired
 	private SeizureSummaryBankAccountRepository seizureSummaryBankAccountRepository;
 
-	
+	@Autowired
+	AccountService accountService;
+
 	@Override
 	public List<SeizureDTO> getSeizureListByCodeFileControl(Long codeFileControl) {
 		logger.info("SeizureServiceImpl - getSeizureListByCodeFileControl - start");
@@ -442,6 +446,23 @@ public class SeizureServiceImpl implements SeizureService {
 
 			// InputStream templateStyleStream =
 			// getClass().getResourceAsStream("/jasper/CommerzBankStyle.jrtx");
+
+			/*
+			TODO ver cómo se transforma esto en un batch y si entonces se tienen datos para ir al DWH
+
+			CustomerDTO customer = accountService.getCustomerAccountNumber(impuesto.get().getCuenta());
+
+			if (customer != null) {
+				parameters.put("nombre_titular", customer.getName());
+				parameters.put("addres_titular", customer.getAddress());
+				parameters.put("codigo_postal_titular", customer.getPostalCode());
+				parameters.put("ciudad_titular", customer.getCity());
+			}
+			*/
+			parameters.put("nombre_titular", "nombre");
+			parameters.put("addres_titular", "dirección");
+			parameters.put("codigo_postal_titular", "01234");
+			parameters.put("ciudad_titular", "ciudad");
 
 			parameters.put("COD_TRABA", idSeizure);
 			parameters.put("IMAGE_PARAM", image.toString());

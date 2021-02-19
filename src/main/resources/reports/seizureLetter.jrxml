@@ -16,11 +16,26 @@
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="724"/>
 	<parameter name="COD_TRABA" class="java.lang.Integer"/>
 	<parameter name="IMAGE_PARAM" class="java.lang.String"/>
+	<parameter name="nombre_titular" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="addres_titular" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="codigo_postal_titular" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="ciudad_titular" class="java.lang.String" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[select
 	ct.cuenta
 ,	ct.importe AS importeTraba
-,	t.fecha_traba, e.COD_EMBARGO, dc.nombre, dc.domicilio, dc.codigo_postal, dc.municipio, e.numero_embargo, e.nif
+,	t.fecha_traba
+,	e.COD_EMBARGO
+,	$P{nombre_titular} AS NOMBRE
+,	$P{addres_titular} AS DOMICILIO
+,	$P{ciudad_titular} AS MUNICIPIO
+,	$P{codigo_postal_titular} AS CODIGO_POSTAL
+,	dc.nombre
+,	dc.domicilio
+,	dc.codigo_postal
+,	dc.municipio
+,	e.numero_embargo
+,	e.nif
 ,	e.importe AS importeEmbargo
 ,	e.datregcomdet
 from TRABAS t inner join CUENTA_TRABA ct on t.cod_traba = ct.cod_traba

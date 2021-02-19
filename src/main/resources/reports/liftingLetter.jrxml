@@ -16,33 +16,31 @@
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="724"/>
 	<parameter name="IMAGE_PARAM" class="java.lang.String"/>
 	<parameter name="COD_LEVANTAMIENTO" class="java.lang.Integer"/>
+	<parameter name="nombre_titular" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="addres_titular" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="codigo_postal_titular" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="ciudad_titular" class="java.lang.String" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[SELECT
-    dc.nombre,
-    dc.domicilio,
-    dc.municipio,
-    dc.codigo_postal,
-l.F_ULTIMA_MODIFICACION,
-    e.numero_embargo,
-    t.fecha_traba,
-    eo.DES_ENTIDAD,
-    e.nif ,
-    e.importe AS importeEmbargo ,
-    cl.IBAN,
-    cl.IMPORTE  AS importeLevantamiento,
-    l.F_ULTIMA_MODIFICACION
+    $P{nombre_titular} AS NOMBRE
+,	$P{addres_titular} AS DOMICILIO
+,	$P{ciudad_titular} AS MUNICIPIO
+,	$P{codigo_postal_titular} AS CODIGO_POSTAL
+,	l.F_ULTIMA_MODIFICACION
+,	e.numero_embargo
+,	t.fecha_traba
+,	eo.DES_ENTIDAD
+,	e.nif
+,	e.importe AS importeEmbargo
+,	cl.IBAN
+,	cl.IMPORTE  AS importeLevantamiento
+,	l.F_ULTIMA_MODIFICACION
 FROM
-LEVANTAMIENTO_TRABA l
-INNER JOIN
-    TRABAS t ON t.COD_TRABA = l.COD_TRABA
-INNER JOIN CUENTA_LEVANTAMIENTO cl ON
-    l.COD_LEVANTAMIENTO = cl.COD_LEVANTAMIENTO
-INNER JOIN EMBARGO e ON
-    e.cod_embargo = t.cod_embargo
-INNER JOIN ENTIDADES_ORDENANTES eo ON
-    eo.COD_ENTIDAD_ORDENANTE = e.COD_ENTIDAD_ORDENANTE
-inner join DATOS_CLIENTE dc ON
-    dc.nif = l.nif
+	LEVANTAMIENTO_TRABA l
+	INNER JOIN TRABAS t ON t.COD_TRABA = l.COD_TRABA
+	INNER JOIN CUENTA_LEVANTAMIENTO cl ON l.COD_LEVANTAMIENTO = cl.COD_LEVANTAMIENTO
+	INNER JOIN EMBARGO e ON e.cod_embargo = t.cod_embargo
+	INNER JOIN ENTIDADES_ORDENANTES eo ON eo.COD_ENTIDAD_ORDENANTE = e.COD_ENTIDAD_ORDENANTE
 WHERE
     l.COD_LEVANTAMIENTO = $P{COD_LEVANTAMIENTO}]]>
 	</queryString>
