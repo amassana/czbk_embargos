@@ -136,7 +136,7 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	        }
 	        
 	        //Comprobar que el CRC del fichero de Embargos sea el mismo que el guardado en ControlFichero:
-	        if (!controlFicheroEmbargo.getNumCrc().equals(Long.toString(FileUtils.checksumCRC32(ficheroEmbargo)))){
+	        if (!controlFicheroEmbargo.getNumCrc().equals(es.commerzbank.ice.comun.lib.util.FileUtils.getMD5(ficheroEmbargo.getCanonicalPath()))){
 	        	throw new ICEException("ERROR: el CRC del fichero de Embargos no coincide con el guardado en ControlFichero.");
 	        }
 	        

@@ -122,7 +122,7 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        }
 	        
 	        //Comprobar que el CRC del fichero de Peticiones sea el mismo que el guardado en ControlFichero:
-	        if (!controlFicheroPeticion.getNumCrc().equals(Long.toString(FileUtils.checksumCRC32(ficheroEntrada)))){
+	        if (!controlFicheroPeticion.getNumCrc().equals(es.commerzbank.ice.comun.lib.util.FileUtils.getMD5(ficheroEntrada.getCanonicalPath()))) {
 	        	throw new ICEException("ERROR: el CRC del fichero de Embargos no coincide con el guardado en ControlFichero.");
 	        }     
 	        
