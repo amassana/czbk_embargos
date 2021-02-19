@@ -82,7 +82,7 @@ public class PetitionServiceImpl implements PetitionService{
 	
 			try (Connection connEmbargos = oracleDataSourceEmbargosConfig.getEmbargosConnection()) {
 	
-				Resource jrxmlResource = ResourcesUtil.getFromJasperFolder("f1_pettitionRequest.jasper");
+				Resource jrxmlResource = ResourcesUtil.getFromJasperFolder("F1_peticionInformacion.jasper");
 				Resource subReportResource = ResourcesUtil.getReportHeaderResource();
 				Resource imageReport = ResourcesUtil.getImageLogoCommerceResource();
 	
@@ -120,7 +120,7 @@ public class PetitionServiceImpl implements PetitionService{
 		try (
 				Connection connEmbargos = oracleDataSourceEmbargosConfig.getEmbargosConnection()) {
 
-			Resource jrxmlResource = ResourcesUtil.getFromJasperFolder("f2_pettitionResponse.jasper");
+			Resource jrxmlResource = ResourcesUtil.getFromJasperFolder("F2_envioInformacion.jasper");
 			Resource subReportResource = ResourcesUtil.getReportHeaderResource();
 			Resource imageReport = ResourcesUtil.getImageLogoCommerceResource();
 
