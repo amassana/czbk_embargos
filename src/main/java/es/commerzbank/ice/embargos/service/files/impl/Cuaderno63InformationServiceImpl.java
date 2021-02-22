@@ -202,8 +202,9 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 
 	        		//Se obtiene la peticionInformacion a partir del correspondiente ControlFichero y NIF:
 	        		PeticionInformacion peticionInformacion = peticiones.get(solicitudInformacion.getNifDeudor()+"-"+solicitudInformacion.getIdentificadorDeuda());
+					RespuestaSolicitudInformacionFase2 respuesta = null;
 
-	        		if(peticionInformacion!=null) {
+					if(peticionInformacion!=null) {
 	        			//Se guardan:
 	        			//- El codigo del fichero respuesta:
 	        			peticionInformacion.setCodFicheroRespuesta(BigDecimal.valueOf(controlFicheroInformacion.getCodControlFichero()));
@@ -214,15 +215,19 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        			peticionInformacion.setUsuarioUltModificacion(usuarioTramitador);
 	        	        peticionInformacion.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 	        			informationPetitionRepository.save(peticionInformacion);
+
+						//Se genera la respuesta
+						RespuestaSolicitudInformacionFase2 respuesta =
+								cuaderno63Mapper.generateRespuestaSolicitudInformacionFase2_cliente(solicitudInformacion, peticionInformacion);
 	        			
 	        		} else {
 	        			//Si peticionInformacion es nulo: inicializar el objeto vacio:
 	        			peticionInformacion = new PeticionInformacion();
+
+						//Se genera la respuesta
+						RespuestaSolicitudInformacionFase2 respuesta =
+								cuaderno63Mapper.generateRespuestaSolicitudInformacionFase2_noCliente(solicitudInformacion, peticionInformacion);
 	        		}
-	        		
-	        		//Se genera la respuesta
-	        		RespuestaSolicitudInformacionFase2 respuesta = 
-	        				cuaderno63Mapper.generateRespuestaSolicitudInformacionFase2(solicitudInformacion, peticionInformacion);
 	        		
 	        		beanWriter.write(EmbargosConstants.RECORD_NAME_RESPUESTASOLICITUDINFORMACION, respuesta);
 	        	

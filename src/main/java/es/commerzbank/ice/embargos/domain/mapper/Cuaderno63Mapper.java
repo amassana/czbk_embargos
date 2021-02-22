@@ -178,29 +178,54 @@ public abstract class Cuaderno63Mapper {
 	// para no afectar a las cuentas de fase 1-2 que no son del banco - deben permanecer como espacios en blanco
 
 	@Mappings({
-		@Mapping(source = "solicitudInformacionFase1.codigoRegistro", target = "codigoRegistro"),
-		@Mapping(source = "solicitudInformacionFase1.nifDeudor", target = "nifDeudor"),
-		@Mapping(source = "solicitudInformacionFase1.nombreDeudor", target = "nombreDeudor"),
-		@Mapping(source = "solicitudInformacionFase1.domicilioDeudor", target = "domicilioDeudor"),
-		@Mapping(source = "solicitudInformacionFase1.municipio", target = "municipio"),
-		@Mapping(source = "solicitudInformacionFase1.codigoPostal", target = "codigoPostal"),
-		@Mapping(source = "solicitudInformacionFase1.identificadorDeuda", target = "identificadorDeuda"),
-		@Mapping(source = "solicitudInformacionFase1.codigoDeuda", target = "codigoDeuda"),
-		@Mapping(source = "peticionInformacion.iban1", target = "ibanCuenta1", defaultValue = "000000000000000000000000"),
-		@Mapping(source = "peticionInformacion.iban2", target = "ibanCuenta2", defaultValue = "000000000000000000000000"),
-		@Mapping(source = "peticionInformacion.iban3", target = "ibanCuenta3", defaultValue = "000000000000000000000000"),
-		@Mapping(source = "peticionInformacion.iban4", target = "ibanCuenta4", defaultValue = "000000000000000000000000"),
-		@Mapping(source = "peticionInformacion.iban5", target = "ibanCuenta5", defaultValue = "000000000000000000000000"),
-		@Mapping(source = "peticionInformacion.iban6", target = "ibanCuenta6", defaultValue = "000000000000000000000000"),
-		@Mapping(source = "peticionInformacion.claveSeguridad1", target = "claveSeguridadIban1", defaultValue = "000000000000"),
-		@Mapping(source = "peticionInformacion.claveSeguridad2", target = "claveSeguridadIban2", defaultValue = "000000000000"),
-		@Mapping(source = "peticionInformacion.claveSeguridad3", target = "claveSeguridadIban3", defaultValue = "000000000000"),
-		@Mapping(source = "peticionInformacion.claveSeguridad4", target = "claveSeguridadIban4", defaultValue = "000000000000"),
-		@Mapping(source = "peticionInformacion.claveSeguridad5", target = "claveSeguridadIban5", defaultValue = "000000000000"),
-		@Mapping(source = "peticionInformacion.claveSeguridad6", target = "claveSeguridadIban6", defaultValue = "000000000000")
+			@Mapping(source = "solicitudInformacionFase1.codigoRegistro", target = "codigoRegistro"),
+			@Mapping(source = "solicitudInformacionFase1.nifDeudor", target = "nifDeudor"),
+			@Mapping(source = "solicitudInformacionFase1.nombreDeudor", target = "nombreDeudor"),
+			@Mapping(source = "solicitudInformacionFase1.domicilioDeudor", target = "domicilioDeudor"),
+			@Mapping(source = "solicitudInformacionFase1.municipio", target = "municipio"),
+			@Mapping(source = "solicitudInformacionFase1.codigoPostal", target = "codigoPostal"),
+			@Mapping(source = "solicitudInformacionFase1.identificadorDeuda", target = "identificadorDeuda"),
+			@Mapping(source = "solicitudInformacionFase1.codigoDeuda", target = "codigoDeuda"),
+			@Mapping(source = "peticionInformacion.iban1", target = "ibanCuenta1", defaultValue = "000000000000000000000000"),
+			@Mapping(source = "peticionInformacion.iban2", target = "ibanCuenta2", defaultValue = "000000000000000000000000"),
+			@Mapping(source = "peticionInformacion.iban3", target = "ibanCuenta3", defaultValue = "000000000000000000000000"),
+			@Mapping(source = "peticionInformacion.iban4", target = "ibanCuenta4", defaultValue = "000000000000000000000000"),
+			@Mapping(source = "peticionInformacion.iban5", target = "ibanCuenta5", defaultValue = "000000000000000000000000"),
+			@Mapping(source = "peticionInformacion.iban6", target = "ibanCuenta6", defaultValue = "000000000000000000000000"),
+			@Mapping(source = "peticionInformacion.claveSeguridad1", target = "claveSeguridadIban1", defaultValue = "000000000000"),
+			@Mapping(source = "peticionInformacion.claveSeguridad2", target = "claveSeguridadIban2", defaultValue = "000000000000"),
+			@Mapping(source = "peticionInformacion.claveSeguridad3", target = "claveSeguridadIban3", defaultValue = "000000000000"),
+			@Mapping(source = "peticionInformacion.claveSeguridad4", target = "claveSeguridadIban4", defaultValue = "000000000000"),
+			@Mapping(source = "peticionInformacion.claveSeguridad5", target = "claveSeguridadIban5", defaultValue = "000000000000"),
+			@Mapping(source = "peticionInformacion.claveSeguridad6", target = "claveSeguridadIban6", defaultValue = "000000000000")
 	})
-	public abstract RespuestaSolicitudInformacionFase2 generateRespuestaSolicitudInformacionFase2(SolicitudInformacionFase1 solicitudInformacionFase1,
-			PeticionInformacion peticionInformacion);
+	public abstract RespuestaSolicitudInformacionFase2 generateRespuestaSolicitudInformacionFase2_cliente(SolicitudInformacionFase1 solicitudInformacionFase1,
+																								  PeticionInformacion peticionInformacion);
+
+	@Mappings({
+			@Mapping(source = "solicitudInformacionFase1.codigoRegistro", target = "codigoRegistro"),
+			@Mapping(source = "solicitudInformacionFase1.nifDeudor", target = "nifDeudor"),
+			@Mapping(source = "solicitudInformacionFase1.nombreDeudor", target = "nombreDeudor"),
+			@Mapping(source = "solicitudInformacionFase1.domicilioDeudor", target = "domicilioDeudor"),
+			@Mapping(source = "solicitudInformacionFase1.municipio", target = "municipio"),
+			@Mapping(source = "solicitudInformacionFase1.codigoPostal", target = "codigoPostal"),
+			@Mapping(source = "solicitudInformacionFase1.identificadorDeuda", target = "identificadorDeuda"),
+			@Mapping(source = "solicitudInformacionFase1.codigoDeuda", target = "codigoDeuda"),
+			@Mapping(source = "peticionInformacion.iban1", target = "ibanCuenta1"),
+			@Mapping(source = "peticionInformacion.iban2", target = "ibanCuenta2"),
+			@Mapping(source = "peticionInformacion.iban3", target = "ibanCuenta3"),
+			@Mapping(source = "peticionInformacion.iban4", target = "ibanCuenta4"),
+			@Mapping(source = "peticionInformacion.iban5", target = "ibanCuenta5"),
+			@Mapping(source = "peticionInformacion.iban6", target = "ibanCuenta6"),
+			@Mapping(source = "peticionInformacion.claveSeguridad1", target = "claveSeguridadIban1"),
+			@Mapping(source = "peticionInformacion.claveSeguridad2", target = "claveSeguridadIban2"),
+			@Mapping(source = "peticionInformacion.claveSeguridad3", target = "claveSeguridadIban3"),
+			@Mapping(source = "peticionInformacion.claveSeguridad4", target = "claveSeguridadIban4"),
+			@Mapping(source = "peticionInformacion.claveSeguridad5", target = "claveSeguridadIban5"),
+			@Mapping(source = "peticionInformacion.claveSeguridad6", target = "claveSeguridadIban6")
+	})
+	public abstract RespuestaSolicitudInformacionFase2 generateRespuestaSolicitudInformacionFase2_noCliente(SolicitudInformacionFase1 solicitudInformacionFase1,
+																								  PeticionInformacion peticionInformacion);
 	
 	public abstract FinFicheroFase2 generateFinFicheroFase2(FinFicheroFase1 finFicheroFase1); 
 	
