@@ -7,12 +7,6 @@ public class FileControlFiltersDTO {
 	private Long [] fileType;
 	private FileControlStatusDTO status;
 	private Boolean isPending;
-	public Boolean getIsPending() {
-		return isPending;
-	}
-	public void setIsPending(Boolean isPending) {
-		this.isPending = isPending;
-	}
 	private Date startDate;
 	private Date endDate;
 	
@@ -40,6 +34,12 @@ public class FileControlFiltersDTO {
 	}
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+	public Boolean getIsPending() {
+		return isPending;
+	}
+	public void setIsPending(Boolean isPending) {
+		this.isPending = isPending;
 	}
 	
 

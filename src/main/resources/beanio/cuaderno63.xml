@@ -315,7 +315,7 @@
 			<field name="importeTotalAEmbargar" typeHandler="importe15Digits" length="15" />
 			<field name="importeTotalRetenido" typeHandler="importe15Digits" length="15" />
 			<field name="nifOrganismoEmisor" length="9" />
-			<field name="codigoINEOrganismoEmisor" />
+			<field name="codigoINEOrganismoEmisor" length="6" />
 			<field name="nombreOrganismoEmisor" length="40" />
 			<field name="libre" ignore="true" length="542" />
 		</record>
