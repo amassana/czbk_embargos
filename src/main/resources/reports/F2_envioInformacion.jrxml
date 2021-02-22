@@ -27,15 +27,15 @@
 	peti.CUENTA5,
 	peti.CUENTA6,
 	peti.RAZON_SOCIAL_INTERNA AS RAZON_SOCIAL_INTERNA,
-	cf.COD_ENTIDAD_PRESENTADORA,
-	cf.FECHA_CREACION,
+	cf_peticion.COD_ENTIDAD_PRESENTADORA,
+	cf_peticion.FECHA_CREACION,
 	ec.DES_ENTIDAD
 FROM
 	PETICION_INFORMACION peti
-	INNER JOIN CONTROL_FICHERO cf ON peti.COD_CONTROL_FICHERO = cf.COD_CONTROL_FICHERO
-	INNER JOIN ENTIDADES_COMUNICADORAS ec ON cf.COD_ENTIDAD_PRESENTADORA = ec.COD_ENTIDAD_PRESENTADORA
+	INNER JOIN CONTROL_FICHERO cf_peticion ON peti.COD_CONTROL_FICHERO = cf_peticion.COD_CONTROL_FICHERO
+	INNER JOIN ENTIDADES_COMUNICADORAS ec ON cf_peticion.COD_ENTIDAD_PRESENTADORA = ec.COD_ENTIDAD_PRESENTADORA
 WHERE
-	cf.COD_CONTROL_FICHERO = $P{cod_control_fichero}]]>
+	cf_peticion.COD_CONTROL_FICHERO IN (SELECT cf_respuesta.cod_control_fichero_origen FROM CONTROL_FICHERO cf_respuesta WHERE cf_respuesta.cod_control_fichero = $P{cod_control_fichero})]]>
 	</queryString>
 	<field name="NIF" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="NIF"/>
