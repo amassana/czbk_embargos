@@ -26,7 +26,7 @@
 			class="es.commerzbank.ice.embargos.formats.aeat.diligencias.EntidadCreditoFase3">
 			<field name="indicadorRegistro" rid="true" literal="1" />
 			<field name="delegacionAgenciaEmisora" length="2" />
-			<field name="codigoEntidadCredito" type="int" length="4" />
+			<field name="codigoEntidadCredito" length="4" />
 			<field name="numeroEnvio" type="int" length="8" />
 			<field name="fechaCreacionFicheroTransmision" type="date" length="8"
 				format="yyyyMMdd" />
@@ -45,7 +45,7 @@
 			<field name="nombreDeudor" length="40" />
 			<field name="siglasViaPublica" length="2" />
 			<field name="nombreViaPublica" length="25" />
-			<field name="numeroPortal" type="int" length="5" />
+			<field name="numeroPortal" length="5" />
 			<field name="letraPortal" length="1" />
 			<field name="escalera" length="2" />
 			<field name="piso" length="2" />
@@ -70,7 +70,7 @@
 			class="es.commerzbank.ice.embargos.formats.aeat.diligencias.FinEntidadCreditoFase3">
 			<field name="indicadorRegistro" rid="true" literal="3" />
 			<field name="delegacionAgenciaEmisora" length="2" />
-			<field name="codigoEntidadCredito" type="int" length="4" />
+			<field name="codigoEntidadCredito" length="4" />
 			<field name="numeroDiligenciasIncluidasEnvio" type="int" length="6" />
 			<field name="importeTotalAEmbargar" typeHandler="importe" length="15" />
 			<field name="codigoEntidadTransmisora" length="4" />
@@ -120,8 +120,8 @@
 		<record name="entidadCredito"
 			class="es.commerzbank.ice.embargos.formats.aeat.trabas.EntidadCreditoFase4">
 			<field name="indicadorRegistro" rid="true" literal="1" />
-			<field name="delegacionAgenciaReceptora" type="int" length="2" justify="right" padding="0" />
-			<field name="codigoEntidadCredito" type="int" length="4" justify="right" padding="0"  />
+			<field name="delegacionAgenciaReceptora" />
+			<field name="codigoEntidadCredito"   />
 			<field name="numeroEnvio" type="int" length="8" />
 			<field name="fechaCreacionFicheroTrabas" type="date" length="8"
 				format="yyyyMMdd" />
@@ -137,7 +137,7 @@
 			<field name="nombreDeudor" length="40" />
 			<field name="siglasViaPublica" length="2" />
 			<field name="nombreViaPublica" length="25" />
-			<field name="numeroPortal" type="int" length="5" />
+			<field name="numeroPortal" length="5" />
 			<field name="letraPortal" length="1" />
 			<field name="escalera" length="2" />
 			<field name="piso" length="2" />
@@ -174,8 +174,8 @@
 		<record name="finEntidadCredito"
 			class="es.commerzbank.ice.embargos.formats.aeat.trabas.FinEntidadCreditoFase4">
 			<field name="indicadorRegistro" rid="true" literal="3" />
-			<field name="delegacionAgenciaReceptora" type="int" length="2" justify="right" padding="0" />
-			<field name="codigoEntidadCredito" type="int" length="4" justify="right" padding="0" />
+			<field name="delegacionAgenciaReceptora" />
+			<field name="codigoEntidadCredito"  />
 			<field name="numeroDiligenciasIncluidasEnvio" type="int" length="6" justify="right" padding="0" />
 			<field name="importeTotalAEmbargar" typeHandler="importe" length="15" />
 			<field name="importeTotalTrabado" typeHandler="importe" length="15" />
@@ -248,7 +248,7 @@
 			class="es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.EntidadCreditoValidacionFase4">
 			<field name="indicadorRegistro" rid="true" literal="1" />
 			<field name="delegacionAgenciaEmisora" length="2" />
-			<field name="codigoEntidadCredito" type="int" length="4" />
+			<field name="codigoEntidadCredito" length="4" />
 			<field name="numeroEnvio" type="int" length="8" />
 			<field name="fechaProcesoValidacion" type="date" length="8"
 				format="yyyyMMdd" />
@@ -374,7 +374,7 @@
 			class="es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.FinEntidadCreditoValidacionFase4">
 			<field name="indicadorRegistro" rid="true" literal="3" />
 			<field name="delegacionAgenciaEmisora" length="2" />
-			<field name="codigoEntidadCredito" type="int" length="4" />
+			<field name="codigoEntidadCredito" length="4" />
 			<field name="numeroDiligenciasIncluidasEnvio" type="int" length="6" />
 			<field name="importeTotalAEmbargar" typeHandler="importe" length="15" />
 			<field name="importeTotalTrabado" typeHandler="importe" length="15" />
@@ -494,7 +494,7 @@
 		<record name="entidadTransmisora"
 			class="es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.EntidadTransmisora">
 			<field name="indicadorRegistro" rid="true" literal="0" />
-			<field name="delegacionAgenciaReceptora" type="int" length="2" />
+			<field name="delegacionAgenciaReceptora" length="2" />
 			<field name="codigoEntidadTransmisora" length="4" />
 			<field name="fechaInicioCiclo" type="date" length="8" format="yyyyMMdd" />
 			<field name="fechaCreacionFicheroTrabas" type="date" length="8"
@@ -505,8 +505,8 @@
 		<record name="entidadCredito"
 			class="es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.EntidadCredito">
 			<field name="indicadorRegistro" rid="true" literal="1" />
-			<field name="delegacionAgenciaReceptora" type="int" length="2" />
-			<field name="codigoEntidadCredito" type="int" length="4" />
+			<field name="delegacionAgenciaReceptora" length="2" />
+			<field name="codigoEntidadCredito" length="4" />
 			<field name="numeroEnvio" type="int" length="8" />
 			<field name="fechaCreacionFicheroLevantamientoTrabas" type="date" length="8"
 				format="yyyyMMdd" />
@@ -551,8 +551,8 @@
 		<record name="finEntidadCredito"
 			class="es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.FinEntidadCredito">
 			<field name="indicadorRegistro" rid="true" literal="3" />
-			<field name="delegacionAgenciaReceptora" type="int" length="2" />
-			<field name="codigoEntidadCredito" type="int" length="4" />
+			<field name="delegacionAgenciaReceptora" length="2" />
+			<field name="codigoEntidadCredito" length="4" />
 			<field name="numeroDiligenciasIncluidasEnvio" type="int" length="6" />
 			<field name="importeTotalAEmbargar" typeHandler="importe" length="15" />
 			<field name="importeTotalTrabado" typeHandler="importe" length="15" />
@@ -570,7 +570,7 @@
 		<record name="registroControlEntidadTransmisora" minOccurs="1" maxOccurs="1"
 			class="es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.RegistroControlEntidadTransmisora">
 			<field name="indicadorRegistro" rid="true" literal="9" />
-			<field name="delegacionAgenciaReceptora" type="int" length="2" />
+			<field name="delegacionAgenciaReceptora" length="2" />
 			<field name="codigoEntidadTransmisora" length="4" />
 			<field name="fechaInicioCiclo" type="date" length="8" format="yyyyMMdd" />
 			<field name="posicionesLibres" length="9" ignore="true" />

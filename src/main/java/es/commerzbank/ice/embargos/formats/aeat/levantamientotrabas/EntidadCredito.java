@@ -5,8 +5,8 @@ import java.util.Date;
 public class EntidadCredito {
 
 	private String indicadorRegistro;
-	private Integer delegacionAgenciaReceptora;
-	private Integer codigoEntidadCredito;
+	private String delegacionAgenciaReceptora;
+	private String codigoEntidadCredito;
 	private Integer numeroEnvio;
 	private Date fechaCreacionFicheroLevantamientoTrabas;
 	private String indicadorTipoFichero;
@@ -19,16 +19,16 @@ public class EntidadCredito {
 	public void setIndicadorRegistro(String indicadorRegistro) {
 		this.indicadorRegistro = indicadorRegistro;
 	}
-	public Integer getDelegacionAgenciaReceptora() {
+	public String getDelegacionAgenciaReceptora() {
 		return delegacionAgenciaReceptora;
 	}
-	public void setDelegacionAgenciaReceptora(Integer delegacionAgenciaReceptora) {
+	public void setDelegacionAgenciaReceptora(String delegacionAgenciaReceptora) {
 		this.delegacionAgenciaReceptora = delegacionAgenciaReceptora;
 	}
-	public Integer getCodigoEntidadCredito() {
+	public String getCodigoEntidadCredito() {
 		return codigoEntidadCredito;
 	}
-	public void setCodigoEntidadCredito(Integer codigoEntidadCredito) {
+	public void setCodigoEntidadCredito(String codigoEntidadCredito) {
 		this.codigoEntidadCredito = codigoEntidadCredito;
 	}
 	public Integer getNumeroEnvio() {

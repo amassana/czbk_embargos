@@ -10,7 +10,7 @@ public class FinFicheroFase4 {
 	private BigDecimal importeTotalAEmbargar;
 	private BigDecimal importeTotalRetenido;
 	private String nifOrganismoEmisor;
-	private Integer codigoINEOrganismoEmisor;
+	private String codigoINEOrganismoEmisor;
 	private String nombreOrganismoEmisor;
 	
 	public Integer getCodigoRegistro() {
@@ -49,10 +49,10 @@ public class FinFicheroFase4 {
 	public void setNifOrganismoEmisor(String nifOrganismoEmisor) {
 		this.nifOrganismoEmisor = nifOrganismoEmisor;
 	}
-	public Integer getCodigoINEOrganismoEmisor() {
+	public String getCodigoINEOrganismoEmisor() {
 		return codigoINEOrganismoEmisor;
 	}
-	public void setCodigoINEOrganismoEmisor(Integer codigoINEOrganismoEmisor) {
+	public void setCodigoINEOrganismoEmisor(String codigoINEOrganismoEmisor) {
 		this.codigoINEOrganismoEmisor = codigoINEOrganismoEmisor;
 	}
 	public String getNombreOrganismoEmisor() {

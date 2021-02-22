@@ -6,7 +6,7 @@ public class EntidadCreditoFase3 {
 
 	private String indicadorRegistro;
 	private String delegacionAgenciaEmisora;
-	private Integer codigoEntidadCredito;
+	private String codigoEntidadCredito;
 	private Integer numeroEnvio;
 	private Date fechaCreacionFicheroTransmision;
 	private String indicadorTipoFichero;
@@ -27,10 +27,10 @@ public class EntidadCreditoFase3 {
 	public void setDelegacionAgenciaEmisora(String delegacionAgenciaEmisora) {
 		this.delegacionAgenciaEmisora = delegacionAgenciaEmisora;
 	}
-	public Integer getCodigoEntidadCredito() {
+	public String getCodigoEntidadCredito() {
 		return codigoEntidadCredito;
 	}
-	public void setCodigoEntidadCredito(Integer codigoEntidadCredito) {
+	public void setCodigoEntidadCredito(String codigoEntidadCredito) {
 		this.codigoEntidadCredito = codigoEntidadCredito;
 	}
 	public Integer getNumeroEnvio() {

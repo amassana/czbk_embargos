@@ -5,12 +5,12 @@ import java.util.Date;
 public class CabeceraEmisorFase2 {
 
 	private Integer codigoRegistro;
-	private Integer codigoNRBE;
+	private String codigoNRBE;
 	private Integer fase;
 	private Date fechaObtencionFicheroOrganismo;
 	private Date fechaObtencionFicheroEntidadDeDeposito;
 	private String nifOrganismoEmisor;
-	private Integer codigoINEOrganismoEmisor;
+	private String codigoINEOrganismoEmisor;
 	private String nombreOrganismoEmisor;
 	private Integer versionCuaderno;
 	
@@ -20,10 +20,10 @@ public class CabeceraEmisorFase2 {
 	public void setCodigoRegistro(Integer codigoRegistro) {
 		this.codigoRegistro = codigoRegistro;
 	}
-	public Integer getCodigoNRBE() {
+	public String getCodigoNRBE() {
 		return codigoNRBE;
 	}
-	public void setCodigoNRBE(Integer codigoNRBE) {
+	public void setCodigoNRBE(String codigoNRBE) {
 		this.codigoNRBE = codigoNRBE;
 	}
 	public Integer getFase() {
@@ -50,10 +50,10 @@ public class CabeceraEmisorFase2 {
 	public void setNifOrganismoEmisor(String nifOrganismoEmisor) {
 		this.nifOrganismoEmisor = nifOrganismoEmisor;
 	}
-	public Integer getCodigoINEOrganismoEmisor() {
+	public String getCodigoINEOrganismoEmisor() {
 		return codigoINEOrganismoEmisor;
 	}
-	public void setCodigoINEOrganismoEmisor(Integer codigoINEOrganismoEmisor) {
+	public void setCodigoINEOrganismoEmisor(String codigoINEOrganismoEmisor) {
 		this.codigoINEOrganismoEmisor = codigoINEOrganismoEmisor;
 	}
 	public String getNombreOrganismoEmisor() {

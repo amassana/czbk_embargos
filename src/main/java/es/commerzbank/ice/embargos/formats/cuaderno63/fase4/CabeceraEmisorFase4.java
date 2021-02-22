@@ -10,7 +10,7 @@ public class CabeceraEmisorFase4 {
 	private Date fechaObtencionFicheroOrganismo;
 	private Date fechaObtencionFicheroEntidadDeDeposito;
 	private String nifOrganismoEmisor;
-	private Integer codigoINEOrganismoEmisor;
+	private String codigoINEOrganismoEmisor;
 	private String nombreOrganismoEmisor;
 	private Integer versionCuaderno;
 	
@@ -50,10 +50,10 @@ public class CabeceraEmisorFase4 {
 	public void setNifOrganismoEmisor(String nifOrganismoEmisor) {
 		this.nifOrganismoEmisor = nifOrganismoEmisor;
 	}
-	public Integer getCodigoINEOrganismoEmisor() {
+	public String getCodigoINEOrganismoEmisor() {
 		return codigoINEOrganismoEmisor;
 	}
-	public void setCodigoINEOrganismoEmisor(Integer codigoINEOrganismoEmisor) {
+	public void setCodigoINEOrganismoEmisor(String codigoINEOrganismoEmisor) {
 		this.codigoINEOrganismoEmisor = codigoINEOrganismoEmisor;
 	}
 	public String getNombreOrganismoEmisor() {

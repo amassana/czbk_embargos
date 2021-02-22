@@ -5,12 +5,12 @@ import java.math.BigDecimal;
 public class FinFicheroFase6 {
 
 	private Integer codigoRegistro;
-	private Integer codigoNRBE;
+	private String codigoNRBE;
 	private Integer numeroRegistrosFichero;
 	private BigDecimal importeTotalALevantar;
 	private BigDecimal importeNuevoTotalRetenido;
 	private String nifOrganismoEmisor;
-	private Integer codigoINEOrganismoEmisor;
+	private String codigoINEOrganismoEmisor;
 	private String nombreOrganismoEmisor;
 	
 	public Integer getCodigoRegistro() {
@@ -19,10 +19,10 @@ public class FinFicheroFase6 {
 	public void setCodigoRegistro(Integer codigoRegistro) {
 		this.codigoRegistro = codigoRegistro;
 	}
-	public Integer getCodigoNRBE() {
+	public String getCodigoNRBE() {
 		return codigoNRBE;
 	}
-	public void setCodigoNRBE(Integer codigoNRBE) {
+	public void setCodigoNRBE(String codigoNRBE) {
 		this.codigoNRBE = codigoNRBE;
 	}
 	public Integer getNumeroRegistrosFichero() {
@@ -49,10 +49,10 @@ public class FinFicheroFase6 {
 	public void setNifOrganismoEmisor(String nifOrganismoEmisor) {
 		this.nifOrganismoEmisor = nifOrganismoEmisor;
 	}
-	public Integer getCodigoINEOrganismoEmisor() {
+	public String getCodigoINEOrganismoEmisor() {
 		return codigoINEOrganismoEmisor;
 	}
-	public void setCodigoINEOrganismoEmisor(Integer codigoINEOrganismoEmisor) {
+	public void setCodigoINEOrganismoEmisor(String codigoINEOrganismoEmisor) {
 		this.codigoINEOrganismoEmisor = codigoINEOrganismoEmisor;
 	}
 	public String getNombreOrganismoEmisor() {

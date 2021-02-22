@@ -10,7 +10,7 @@ public class TrabaFase4 {
 	private String nombreDeudor;
 	private String siglasViaPublica;
 	private String nombreViaPublica;
-	private Integer numeroPortal;
+	private String numeroPortal;
 	private String letraPortal;
 	private String escalera;
 	private String piso;
@@ -74,10 +74,10 @@ public class TrabaFase4 {
 	public void setNombreViaPublica(String nombreViaPublica) {
 		this.nombreViaPublica = nombreViaPublica;
 	}
-	public Integer getNumeroPortal() {
+	public String getNumeroPortal() {
 		return numeroPortal;
 	}
-	public void setNumeroPortal(Integer numeroPortal) {
+	public void setNumeroPortal(String numeroPortal) {
 		this.numeroPortal = numeroPortal;
 	}
 	public String getLetraPortal() {

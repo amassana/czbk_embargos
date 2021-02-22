@@ -18,7 +18,7 @@
 			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase1.CabeceraEmisorFase1">
 			<field name="codigoRegistro" type="int" rid="true" literal="4" />
 			<field name="libre" ignore="true" length="2" />
-			<field name="codigoNRBE" type="int" length="4" />
+			<field name="codigoNRBE" length="4" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="fase" type="int" length="1" />
@@ -28,7 +28,7 @@
 			<field name="libre" ignore="true" length="14" />
 			<field name="libre" ignore="true" length="2" />
 			<field name="nifOrganismoEmisor" length="9" />
-			<field name="codigoINEOrganismoEmisor" type="int" length="6" />
+			<field name="codigoINEOrganismoEmisor" length="6" />
 			<field name="nombreOrganismoEmisor" length="40" />
 			<field name="versionCuaderno" type="int" length="5" />
 			<field name="libre" ignore="true" length="534" />
@@ -57,13 +57,13 @@
 			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase1.FinFicheroFase1">
 			<field name="codigoRegistro" type="int" rid="true" literal="8" />
 			<field name="libre" ignore="true" length="2" />
-			<field name="codigoNRBE" type="int" length="4" />
+			<field name="codigoNRBE" length="4" />
 			<field name="numeroRegistrosFichero" type="int" length="8" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="importeACeros" ignore="true" length="15" />
 			<field name="importeACeros" ignore="true" length="15" />
 			<field name="nifOrganismoEmisor" length="9" />
-			<field name="codigoINEOrganismoEmisor" type="int" length="6" />	
+			<field name="codigoINEOrganismoEmisor" length="6" />
 			<field name="nombreOrganismoEmisor" length="40" />
 			<field name="libre" ignore="true" length="542" />
 		</record>	
@@ -74,7 +74,7 @@
 			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase2.CabeceraEmisorFase2">
 			<field name="codigoRegistro" type="int" rid="true" literal="4" />
 			<field name="libre" ignore="true" length="2" />
-			<field name="codigoNRBE" type="int" length="4" />
+			<field name="codigoNRBE" length="4" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="fase" type="int" length="1" />
@@ -85,7 +85,7 @@
 			<field name="libre" ignore="true" length="14" />
 			<field name="libre" ignore="true" length="2" />
 			<field name="nifOrganismoEmisor" length="9" />
-			<field name="codigoINEOrganismoEmisor" type="int" length="6" />
+			<field name="codigoINEOrganismoEmisor" length="6" />
 			<field name="nombreOrganismoEmisor" length="40" />
 			<field name="versionCuaderno" type="int" length="5" />
 			<field name="libre" ignore="true" length="534" />			
@@ -136,13 +136,13 @@
 			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase2.FinFicheroFase2">
 			<field name="codigoRegistro" type="int" rid="true" literal="8" />
 			<field name="libre" ignore="true" length="2" />
-			<field name="codigoNRBE" type="int" length="4" />
+			<field name="codigoNRBE" length="4" />
 			<field name="numeroRegistrosFichero" type="int" length="8" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="importeACeros" ignore="true" length="15" />
 			<field name="importeACeros" ignore="true" length="15" />
 			<field name="nifOrganismoEmisor" length="9" />
-			<field name="codigoINEOrganismoEmisor" type="int" length="6" />	
+			<field name="codigoINEOrganismoEmisor" length="6" />
 			<field name="nombreOrganismoEmisor" length="40" />
 			<field name="libre" ignore="true" length="542" />
 		</record>
@@ -163,7 +163,7 @@
 			<field name="libre" ignore="true" length="14" />
 			<field name="libre" ignore="true" length="2" />
 			<field name="nifOrganismoEmisor" length="9" />
-			<field name="codigoINEOrganismoEmisor" type="int" length="6" />
+			<field name="codigoINEOrganismoEmisor" length="6" />
 			<field name="nombreOrganismoEmisor" length="40" />
 			<field name="versionCuaderno" type="int" length="5" />
 			<field name="libre" ignore="true" length="534" />	
@@ -235,7 +235,7 @@
 			<field name="importeTotalAEmbargar" typeHandler="importe15Digits" length="15" />
 			<field name="importeACeros" ignore="true" length="15" />
 			<field name="nifOrganismoEmisor" length="9" />
-			<field name="codigoINEOrganismoEmisor" type="int" length="6" />	
+			<field name="codigoINEOrganismoEmisor" length="6" />
 			<field name="nombreOrganismoEmisor" length="40" />
 			<field name="libre" ignore="true" length="542" />
 		</record>
@@ -257,7 +257,7 @@
 			<field name="libre" ignore="true" length="14" />
 			<field name="libre" ignore="true" length="2" />
 			<field name="nifOrganismoEmisor" length="9" />
-			<field name="codigoINEOrganismoEmisor" type="int" length="6" />
+			<field name="codigoINEOrganismoEmisor" length="6" />
 			<field name="nombreOrganismoEmisor" length="40" />
 			<field name="versionCuaderno" type="int" length="5" />
 			<field name="libre" ignore="true" length="534" />	
@@ -326,7 +326,7 @@
 			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase5.CabeceraEmisorFase5">
 			<field name="codigoRegistro" rid="true" type="int" literal="4" />
 			<field name="libre" ignore="true" length="2" />
-			<field name="codigoNRBE" type="int" length="4" />
+			<field name="codigoNRBE" length="4" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="fase" type="int" length="1" />
@@ -336,7 +336,7 @@
 			<field name="libre" ignore="true" length="14" />
 			<field name="libre" ignore="true" length="2" />
 			<field name="nifOrganismoEmisor" length="9" />
-			<field name="codigoINEOrganismoEmisor" type="int" length="6" />
+			<field name="codigoINEOrganismoEmisor" length="6" />
 			<field name="nombreOrganismoEmisor" length="40" />
 			<field name="versionCuaderno" type="int" length="5" />
 			<field name="libre" ignore="true" length="534" />
@@ -402,13 +402,13 @@
 			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase5.FinFicheroFase5">
 			<field name="codigoRegistro" type="int" rid="true" literal="8" />
 			<field name="libre" ignore="true" length="2" />
-			<field name="codigoNRBE" type="int" length="4" />
+			<field name="codigoNRBE" length="4" />
 			<field name="numeroRegistrosFichero" type="int" length="8" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="importeTotalALevantar" typeHandler="importe15Digits" length="15" />
 			<field name="importeACeros" ignore="true" length="15" />
 			<field name="nifOrganismoEmisor" length="9" />
-			<field name="codigoINEOrganismoEmisor" type="int" length="6" />	
+			<field name="codigoINEOrganismoEmisor" length="6" />
 			<field name="nombreOrganismoEmisor" length="40" />
 			<field name="libre" ignore="true" length="542" />
 		</record>
@@ -419,7 +419,7 @@
 			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase6.CabeceraEmisorFase6">
 			<field name="codigoRegistro" type="int" rid="true" literal="4" />
 			<field name="libre" ignore="true" length="2" />
-			<field name="codigoNRBE" type="int" length="4" />
+			<field name="codigoNRBE" length="4" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="fase" type="int" length="1" />
@@ -430,7 +430,7 @@
 			<field name="libre" ignore="true" length="14" />
 			<field name="libre" ignore="true" length="2" />
 			<field name="nifOrganismoEmisor" length="9" />
-			<field name="codigoINEOrganismoEmisor" type="int" length="6" />
+			<field name="codigoINEOrganismoEmisor" length="6" />
 			<field name="nombreOrganismoEmisor" length="40" />
 			<field name="versionCuaderno" type="int" length="5" />
 			<field name="libre" ignore="true" length="534" />	
@@ -497,13 +497,13 @@
 			class="es.commerzbank.ice.embargos.formats.cuaderno63.fase6.FinFicheroFase6">
 			<field name="codigoRegistro" type="int" rid="true" literal="8" />
 			<field name="libre" ignore="true" length="2" />
-			<field name="codigoNRBE" type="int" length="4" />
+			<field name="codigoNRBE" length="4" />
 			<field name="numeroRegistrosFichero" type="int" length="8" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="importeTotalALevantar" typeHandler="importe15Digits" length="15" />
 			<field name="importeNuevoTotalRetenido" typeHandler="importe15Digits" length="15" />
 			<field name="nifOrganismoEmisor" length="9" />
-			<field name="codigoINEOrganismoEmisor" type="int" length="6" />	
+			<field name="codigoINEOrganismoEmisor" length="6" />
 			<field name="nombreOrganismoEmisor" length="40" />
 			<field name="libre" ignore="true" length="542" />
 		</record>
