@@ -217,7 +217,7 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        			informationPetitionRepository.save(peticionInformacion);
 
 						//Se genera la respuesta
-						RespuestaSolicitudInformacionFase2 respuesta =
+						respuesta =
 								cuaderno63Mapper.generateRespuestaSolicitudInformacionFase2_cliente(solicitudInformacion, peticionInformacion);
 	        			
 	        		} else {
@@ -225,7 +225,7 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        			peticionInformacion = new PeticionInformacion();
 
 						//Se genera la respuesta
-						RespuestaSolicitudInformacionFase2 respuesta =
+						respuesta =
 								cuaderno63Mapper.generateRespuestaSolicitudInformacionFase2_noCliente(solicitudInformacion, peticionInformacion);
 	        		}
 	        		
