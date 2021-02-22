@@ -124,12 +124,12 @@
 			<field name="libre" ignore="true" length="2" />
 			<field name="libre" ignore="true" length="15" />
 			<field name="libre" ignore="true" length="6" />
-			<field name="claveSeguridadIban1" length="12" />
-			<field name="claveSeguridadIban2" length="12" />
-			<field name="claveSeguridadIban3" length="12" />
-			<field name="claveSeguridadIban4" length="12" />
-			<field name="claveSeguridadIban5" length="12" />
-			<field name="claveSeguridadIban6" length="12" />
+			<field name="claveSeguridadIban1" length="12" default="000000000000" />
+			<field name="claveSeguridadIban2" length="12" default="000000000000" />
+			<field name="claveSeguridadIban3" length="12" default="000000000000" />
+			<field name="claveSeguridadIban4" length="12" default="000000000000" />
+			<field name="claveSeguridadIban5" length="12" default="000000000000" />
+			<field name="claveSeguridadIban6" length="12" default="000000000000" />
 			<field name="libre" ignore="true" length="152" />
 		</record>
 		<record name="finFichero"
@@ -137,7 +137,7 @@
 			<field name="codigoRegistro" type="int" rid="true" literal="8" />
 			<field name="libre" ignore="true" length="2" />
 			<field name="codigoNRBE" length="4" />
-			<field name="numeroRegistrosFichero" type="int" length="8" />
+			<field name="numeroRegistrosFichero" type="int" length="8" justify="right" padding="0" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="importeACeros" ignore="true" length="15" />
 			<field name="importeACeros" ignore="true" length="15" />
@@ -202,12 +202,12 @@
 			<field name="libre" ignore="true" length="2" />
 			<field name="libre" ignore="true" length="15" />
 			<field name="libre" ignore="true" length="6" />
-			<field name="claveSeguridadIban1" length="12" />
-			<field name="claveSeguridadIban2" length="12" />
-			<field name="claveSeguridadIban3" length="12" />
-			<field name="claveSeguridadIban4" length="12" />
-			<field name="claveSeguridadIban5" length="12" />
-			<field name="claveSeguridadIban6" length="12" />
+			<field name="claveSeguridadIban1" length="12" default="000000000000" />
+			<field name="claveSeguridadIban2" length="12" default="000000000000" />
+			<field name="claveSeguridadIban3" length="12" default="000000000000" />
+			<field name="claveSeguridadIban4" length="12" default="000000000000" />
+			<field name="claveSeguridadIban5" length="12" default="000000000000" />
+			<field name="claveSeguridadIban6" length="12" default="000000000000" />
 			<field name="libre" ignore="true" length="152" />
 		</record>
 		<record name="ordenEjecucionEmbargoComplementario"
@@ -230,7 +230,7 @@
 			<field name="codigoRegistro" type="int" rid="true" literal="8" />
 			<field name="libre" ignore="true" length="2" />
 			<field name="codigoNRBE" length="4" />
-			<field name="numeroRegistrosFichero" type="int" length="8" />
+			<field name="numeroRegistrosFichero" type="int" length="8" justify="right" padding="0"/>
 			<field name="libre" ignore="true" length="8" />
 			<field name="importeTotalAEmbargar" typeHandler="importe15Digits" length="15" />
 			<field name="importeACeros" ignore="true" length="15" />
@@ -297,12 +297,12 @@
 			<field name="codigoResultadoRetencionCuenta6" length="2" />
 			<field name="importeRetenidoCuenta6" typeHandler="importe15Digits" length="15" />
 			<field name="libre" ignore="true" length="6" />
-			<field name="claveSeguridadIban1" length="12" />
-			<field name="claveSeguridadIban2" length="12" />
-			<field name="claveSeguridadIban3" length="12" />
-			<field name="claveSeguridadIban4" length="12" />
-			<field name="claveSeguridadIban5" length="12" />
-			<field name="claveSeguridadIban6" length="12" />
+			<field name="claveSeguridadIban1" length="12" default="000000000000" />
+			<field name="claveSeguridadIban2" length="12" default="000000000000" />
+			<field name="claveSeguridadIban3" length="12" default="000000000000" />
+			<field name="claveSeguridadIban4" length="12" default="000000000000" />
+			<field name="claveSeguridadIban5" length="12" default="000000000000" />
+			<field name="claveSeguridadIban6" length="12" default="000000000000" />
 			<field name="libre" ignore="true" length="152" />		
 		</record>
 		<record name="finFichero"
@@ -315,7 +315,7 @@
 			<field name="importeTotalAEmbargar" typeHandler="importe15Digits" length="15" />
 			<field name="importeTotalRetenido" typeHandler="importe15Digits" length="15" />
 			<field name="nifOrganismoEmisor" length="9" />
-			<field name="codigoINEOrganismoEmisor" type="int" length="6" justify="right" padding="0" />	
+			<field name="codigoINEOrganismoEmisor" />
 			<field name="nombreOrganismoEmisor" length="40" />
 			<field name="libre" ignore="true" length="542" />
 		</record>
@@ -376,12 +376,12 @@
 			<field name="codigoResultadoRetencionIban6" type="int" length="2" />
 			<field name="importeRetenidoIban6" typeHandler="importe15Digits" length="15" />
 			<field name="libre" ignore="true" length="6" />
-			<field name="claveSeguridadIban1" length="12" />
-			<field name="claveSeguridadIban2" length="12" />
-			<field name="claveSeguridadIban3" length="12" />
-			<field name="claveSeguridadIban4" length="12" />
-			<field name="claveSeguridadIban5" length="12" />
-			<field name="claveSeguridadIban6" length="12" />
+			<field name="claveSeguridadIban1" length="12" default="000000000000" />
+			<field name="claveSeguridadIban2" length="12" default="000000000000" />
+			<field name="claveSeguridadIban3" length="12" default="000000000000" />
+			<field name="claveSeguridadIban4" length="12" default="000000000000" />
+			<field name="claveSeguridadIban5" length="12" default="000000000000" />
+			<field name="claveSeguridadIban6" length="12" default="000000000000" />
 			<field name="totalImporteALevantar" typeHandler="importe12Digits" length="12"/>
 			<field name="codigoTipoLevantamientoARealizar" type="int" length="1"/>
 			<field name="importeALevantarIban1" typeHandler="importe12Digits" length="12"/>
@@ -403,7 +403,7 @@
 			<field name="codigoRegistro" type="int" rid="true" literal="8" />
 			<field name="libre" ignore="true" length="2" />
 			<field name="codigoNRBE" length="4" />
-			<field name="numeroRegistrosFichero" type="int" length="8" />
+			<field name="numeroRegistrosFichero" type="int" length="8" justify="right" padding="0" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="importeTotalALevantar" typeHandler="importe15Digits" length="15" />
 			<field name="importeACeros" ignore="true" length="15" />
@@ -470,12 +470,12 @@
 			<field name="codigoResultadoRetencionIban6" type="int" length="2" />
 			<field name="importeRetenidoIban6" typeHandler="importe15Digits" length="15" />
 			<field name="libre" ignore="true" length="6" />
-			<field name="claveSeguridadIban1" length="12" />
-			<field name="claveSeguridadIban2" length="12" />
-			<field name="claveSeguridadIban3" length="12" />
-			<field name="claveSeguridadIban4" length="12" />
-			<field name="claveSeguridadIban5" length="12" />
-			<field name="claveSeguridadIban6" length="12" />
+			<field name="claveSeguridadIban1" length="12" default="000000000000" />
+			<field name="claveSeguridadIban2" length="12" default="000000000000" />
+			<field name="claveSeguridadIban3" length="12" default="000000000000" />
+			<field name="claveSeguridadIban4" length="12" default="000000000000" />
+			<field name="claveSeguridadIban5" length="12" default="000000000000" />
+			<field name="claveSeguridadIban6" length="12" default="000000000000" />
 			<field name="totalImporteALevantar" typeHandler="importe12Digits" length="12"/>
 			<field name="codigoResultadoLevantamiento" type="int" length="1"/>
 			<field name="importeNetoEmbargadoIban1" typeHandler="importe12Digits" length="12"/>
@@ -498,7 +498,7 @@
 			<field name="codigoRegistro" type="int" rid="true" literal="8" />
 			<field name="libre" ignore="true" length="2" />
 			<field name="codigoNRBE" length="4" />
-			<field name="numeroRegistrosFichero" type="int" length="8" />
+			<field name="numeroRegistrosFichero" type="int" length="8" justify="right" padding="0" />
 			<field name="libre" ignore="true" length="8" />
 			<field name="importeTotalALevantar" typeHandler="importe15Digits" length="15" />
 			<field name="importeNuevoTotalRetenido" typeHandler="importe15Digits" length="15" />
