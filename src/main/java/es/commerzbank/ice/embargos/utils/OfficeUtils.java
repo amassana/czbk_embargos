@@ -8,6 +8,8 @@ import java.util.List;
 
 import es.commerzbank.ice.comun.lib.service.LocationService;
 import es.commerzbank.ice.comun.lib.service.OfficeCService;
+import es.commerzbank.ice.comun.lib.domain.dto.Location;
+import es.commerzbank.ice.comun.lib.domain.entity.Sucursal;
 
 @Component
 public class OfficeUtils {
