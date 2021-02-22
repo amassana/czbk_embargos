@@ -2,6 +2,7 @@ package es.commerzbank.ice.embargos.controller;
 
 import java.util.List;
 
+import es.commerzbank.ice.embargos.utils.OfficeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,9 @@ public class PetitionController {
 
 	@Autowired
 	private GeneralParametersService generalParametersService;
+
+	@Autowired
+	private OfficeUtils officeUtils;
 
 	@GetMapping(value = "/{codeFileControl}")
 	@ApiOperation(value = "Devuelve la lista de casos para una peticion de informacion.")
@@ -165,7 +169,7 @@ public class PetitionController {
 
 	@GetMapping("/{codeFileControl}/report") // f1
 	@ApiOperation(value = "Devuelve report PettitionRequest Fase1")
-	public ResponseEntity<InputStreamResource> f1PettitionRequest(
+	public ResponseEntity<InputStreamResource> f1PettitionRequest(Authentication authentication,
 			@PathVariable("codeFileControl") Integer codeFileControl) {
 		logger.info("PetitionController - f1PettitionRequest - start");
 		
@@ -174,7 +178,11 @@ public class PetitionController {
 
 			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
-			DownloadReportFile.writeFile(petitionService.generateF1PettitionRequest(codeFileControl));
+			String oficina = officeUtils.getLocalidadUsuario(authentication);
+
+			byte[] data = petitionService.generateF1PettitionRequest(codeFileControl, oficina);
+
+			DownloadReportFile.writeFile(data);
 
 			logger.info("PetitionController - f1PettitionRequest - end");
 			return DownloadReportFile.returnToDownloadFile();
@@ -189,7 +197,7 @@ public class PetitionController {
 
 	@GetMapping("/response/{codeFileControl}/report") // f2
 	@ApiOperation(value = "Devuelve report PettitionResponse Fase2")
-	public ResponseEntity<InputStreamResource> f2PettitionResponse(
+	public ResponseEntity<InputStreamResource> f2PettitionResponse(Authentication authentication,
 			@PathVariable("codeFileControl") Integer codeFileControl) {
 		logger.info("PetitionController - f2PettitionResponse - start");
 
@@ -198,7 +206,11 @@ public class PetitionController {
 
 			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
-			DownloadReportFile.writeFile(petitionService.generateF2PettitionResponse(codeFileControl));
+			String oficina = officeUtils.getLocalidadUsuario(authentication);
+
+			byte[] data = petitionService.generateF2PettitionResponse(codeFileControl, oficina);
+
+			DownloadReportFile.writeFile(data);
 
 			logger.info("PetitionController - f2PettitionResponse - end");
 			return DownloadReportFile.returnToDownloadFile();

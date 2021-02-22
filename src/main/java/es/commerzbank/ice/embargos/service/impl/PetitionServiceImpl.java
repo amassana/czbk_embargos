@@ -77,23 +77,26 @@ public class PetitionServiceImpl implements PetitionService{
 	}
 	
 	@Override
-		public byte[] generateF1PettitionRequest(Integer codeFileControl) throws Exception {
+		public byte[] generateF1PettitionRequest(Integer codeFileControl, String oficina) throws Exception {
 			HashMap<String, Object> parameters = new HashMap<String, Object>();
 	
 			try (Connection connEmbargos = oracleDataSourceEmbargosConfig.getEmbargosConnection()) {
 	
 				Resource jrxmlResource = ResourcesUtil.getFromJasperFolder("F1_peticionInformacion.jasper");
-				Resource subReportResource = ResourcesUtil.getReportHeaderResource();
-				Resource imageReport = ResourcesUtil.getImageLogoCommerceResource();
+				Resource logoRes = ResourcesUtil.getImageLogoCommerceResource();
+				//Resource subReportResource = ResourcesUtil.getReportHeaderResource();
+				//Resource imageReport = ResourcesUtil.getImageLogoCommerceResource();
 	
-				File image = imageReport.getFile();
-				InputStream subResourceInputStream = subReportResource.getInputStream();
+				//File image = imageReport.getFile();
+				//InputStream subResourceInputStream = subReportResource.getInputStream();
 	
-				JasperReport subReport = (JasperReport) JRLoader.loadObject(subResourceInputStream);
+				//JasperReport subReport = (JasperReport) JRLoader.loadObject(subResourceInputStream);
 	
-				parameters.put("img_param", image.toString());
-				parameters.put("COD_CONTROL_FICHERO", codeFileControl);
-				parameters.put("file_param", subReport);
+				//parameters.put("img_param", image.toString());
+				parameters.put("img_param", logoRes.getFile().toString());
+				parameters.put("cod_control_fichero", codeFileControl);
+				parameters.put("NOMBRE_SUCURSAL", oficina);
+				//parameters.put("file_param", subReport);
 
 				parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 	
@@ -113,25 +116,28 @@ public class PetitionServiceImpl implements PetitionService{
 		}
 
 	@Override
-	public byte[] generateF2PettitionResponse(Integer codeFileControl) throws Exception {
+	public byte[] generateF2PettitionResponse(Integer codeFileControl, String oficina) throws Exception {
 
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
-		try (
-				Connection connEmbargos = oracleDataSourceEmbargosConfig.getEmbargosConnection()) {
+		try (Connection connEmbargos = oracleDataSourceEmbargosConfig.getEmbargosConnection()) {
 
 			Resource jrxmlResource = ResourcesUtil.getFromJasperFolder("F2_envioInformacion.jasper");
-			Resource subReportResource = ResourcesUtil.getReportHeaderResource();
-			Resource imageReport = ResourcesUtil.getImageLogoCommerceResource();
+			Resource logoRes = ResourcesUtil.getImageLogoCommerceResource();
 
-			File image = imageReport.getFile();
-			InputStream subResourceInputStream = subReportResource.getInputStream();
+			//Resource subReportResource = ResourcesUtil.getReportHeaderResource();
+			//Resource imageReport = ResourcesUtil.getImageLogoCommerceResource();
 
-			JasperReport subReport = (JasperReport) JRLoader.loadObject(subResourceInputStream);
+			//File image = imageReport.getFile();
+			//InputStream subResourceInputStream = subReportResource.getInputStream();
 
-			parameters.put("img_param", image.toString());
+			//JasperReport subReport = (JasperReport) JRLoader.loadObject(subResourceInputStream);
+
+			//parameters.put("img_param", image.toString());
+			parameters.put("img_param", logoRes.getFile().toString());
 			parameters.put("cod_control_fichero", codeFileControl);
-			parameters.put("file_param", subReport);
+			parameters.put("NOMBRE_SUCURSAL", oficina);
+			//parameters.put("file_param", subReport);
 
 			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 

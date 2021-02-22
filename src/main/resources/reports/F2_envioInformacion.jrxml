@@ -9,6 +9,7 @@
 	<parameter name="img_param" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="file_param" class="java.lang.Object"/>
 	<parameter name="conn_param" class="java.sql.Connection"/>
+	<parameter name="NOMBRE_SUCURSAL" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT
 	peti.NIF,
@@ -90,21 +91,25 @@ WHERE
 	<field name="DES_ENTIDAD" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="DES_ENTIDAD"/>
 	</field>
+	<variable name="TodayDayHeader" class="java.lang.String">
+		<variableExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new Date())]]></variableExpression>
+		<initialValueExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new Date())]]></initialValueExpression>
+	</variable>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="90" splitType="Stretch">
+		<band height="60" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-			<subreport>
-				<reportElement x="171" y="-10" width="570" height="90" uuid="befc3bba-b2ea-4658-a870-1549923da357">
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<subreportParameter name="sub_img_param">
-					<subreportParameterExpression><![CDATA[$P{img_param}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportExpression><![CDATA[$P{file_param}]]></subreportExpression>
-			</subreport>
+			<image>
+				<reportElement x="570" y="10" width="200" height="29" uuid="86cb994f-941d-4659-ad1f-0db702e8968e"/>
+				<imageExpression><![CDATA[$P{img_param}]]></imageExpression>
+			</image>
+			<textField isBlankWhenNull="true">
+				<reportElement x="519" y="39" width="251" height="21" uuid="69f6968d-6d46-4e1b-a495-cb4b37aceb61"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{NOMBRE_SUCURSAL}.toUpperCase() +" "+ $V{TodayDayHeader}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
