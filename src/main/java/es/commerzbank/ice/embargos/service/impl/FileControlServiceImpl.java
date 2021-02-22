@@ -454,7 +454,7 @@ public class FileControlServiceImpl implements FileControlService{
 		}
 
 
-		if (codEstado == null && codTipoFichero.length >= 1) {
+		if (codEstado == null) {
 
 			if (isPending) {
 				query = query + " c.IND_PROCESADO <> 'S'";
