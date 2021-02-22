@@ -401,7 +401,9 @@ public class FileControlController {
 			@RequestParam(name = "codTipoFichero", required = false) Integer[] codTipoFichero,
 			@RequestParam(name = "codEstado", required = false) Integer codEstado,
 			@RequestParam(name = "isPending", required = false) boolean isPending,
-			@RequestBody ReportParamsDTO reportParams) throws Exception {
+			//@RequestBody ReportParamsDTO reportParams,
+			@RequestBody FileControlFiltersDTO fileControlFilters
+	) throws Exception {
 
 		logger.info("FileControlController - generateFileControlReport - start");
 		try {
@@ -410,7 +412,7 @@ public class FileControlController {
 			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			DownloadReportFile.writeFile(fileControlService.generateFileControl(codTipoFichero, codEstado, isPending,
-					reportParams.getFechaInicio(), reportParams.getFechaFin(), Integer.parseInt(authentication.getDetails().toString())));
+					fileControlFilters.getStartDate(), fileControlFilters.getEndDate(), Integer.parseInt(authentication.getDetails().toString())));
 
 			logger.info("FileControlController - generateFileControlReport - end");
 			return DownloadReportFile.returnToDownloadFile();
