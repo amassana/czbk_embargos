@@ -45,7 +45,7 @@ public class EmbargosUtils {
 	
 		String actualLocalDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 		
-		result.append(actualLocalDate).append(iban.substring(0, 4));
+		result.append(actualLocalDate).append(iban.substring(14, 18));
 		
 		return result.toString();
 		
