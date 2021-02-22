@@ -165,7 +165,7 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 	        String fechaNombreFichero = localDate.format(formatter);
 	        String fileNameTrabas = prefijoFichero + EmbargosConstants.SEPARADOR_GUION_BAJO + fechaNombreFichero 
-	            	+ EmbargosConstants.SEPARADOR_PUNTO + EmbargosConstants.TIPO_FICHERO_TRABAS.toLowerCase();
+	            	+ EmbargosConstants.SEPARADOR_PUNTO + EmbargosConstants.TIPO_FICHERO_TRABAS;
 	        
 	        
 	        String pathGenerated = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_GENERATED);

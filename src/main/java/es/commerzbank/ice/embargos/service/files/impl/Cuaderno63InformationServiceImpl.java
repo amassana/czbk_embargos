@@ -157,7 +157,7 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 	        String fechaNombreFichero = localDate.format(formatter);
 	        String fileNameInformacion = prefijoFichero + EmbargosConstants.SEPARADOR_GUION_BAJO + fechaNombreFichero 
-	            	+ EmbargosConstants.SEPARADOR_PUNTO + EmbargosConstants.TIPO_FICHERO_INFORMACION.toLowerCase();
+	            	+ EmbargosConstants.SEPARADOR_PUNTO + EmbargosConstants.TIPO_FICHERO_INFORMACION;
 	        
 	        String pathGenerated = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_GENERATED);
 	        
