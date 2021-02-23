@@ -1,23 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="control_ficheros" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="847831ee-2e52-4a67-bcb6-888b478b5de8">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="EMBARGOS DES"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Embargos"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="530"/>
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="456"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="478"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="517"/>
-	<parameter name="cod_user" class="java.lang.Integer"/>
-	<parameter name="file_param" class="java.lang.Object"/>
-	<parameter name="conn_param" class="java.sql.Connection"/>
 	<parameter name="img_param" class="java.lang.String"/>
-	<parameter name="query_param" class="java.lang.String"/>
-	<parameter name="sucursal" class="java.lang.String"/>
+	<parameter name="NOMBRE_SUCURSAL" class="java.lang.String"/>
+	<parameter name="tipos_fichero" class="java.util.Collection" nestedType="java.lang.Long"/>
+	<parameter name="status" class="java.util.Collection" nestedType="java.lang.Long"/>
+	<parameter name="procesado" class="java.lang.String"/>
+	<parameter name="procesado_query" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{procesado} == null ? "" : " AND IND_PROCESADO = '"+ $P{procesado} +"' "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_desde" class="java.util.Date"/>
+	<parameter name="fecha_hasta" class="java.util.Date"/>
+	<parameter name="fecha_query" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{fecha_desde} != null && $P{fecha_hasta} != null  ?
+			"AND "+ (new java.text.SimpleDateFormat("yyyyMMdd").format($P{fecha_desde})) +" <= ROUND(FECHA_INCORPORACION / 1000000) AND ROUND(FECHA_INCORPORACION / 1000000) <= "+ (new java.text.SimpleDateFormat("yyyyMMdd").format($P{fecha_hasta})) +" "
+		:  $P{fecha_desde} != null ?
+			"AND "+ (new java.text.SimpleDateFormat("yyyyMMdd").format($P{fecha_desde})) +" <= ROUND(FECHA_INCORPORACION / 1000000) "
+		: $P{fecha_hasta} != null ?
+			"AND ROUND(FECHA_INCORPORACION / 1000000) <= "+ (new java.text.SimpleDateFormat("yyyyMMdd").format($P{fecha_hasta})) +" "
+		: ""]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[SELECT c.NOMBRE_FICHERO, t.DES_TIPO_FICHERO, s.DESCRIPCION, c.FECHA_INCORPORACION, c.FECHA_GENERACION_RESPUESTA, c.IND_PROCESADO
-FROM CONTROL_FICHERO c 
-LEFT OUTER JOIN tipo_fichero t ON c.COD_TIPO_FICHERO = t.COD_TIPO_FICHERO 
-LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TIPO_FICHERO = s.COD_TIPO_FICHERO $P!{query_param}]]>
+FROM CONTROL_FICHERO c
+LEFT OUTER JOIN tipo_fichero t ON c.COD_TIPO_FICHERO = t.COD_TIPO_FICHERO
+LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TIPO_FICHERO = s.COD_TIPO_FICHERO
+WHERE
+	1 = 1
+AND $X{IN, c.COD_TIPO_FICHERO, tipos_fichero}
+AND $X{IN, c.COD_ESTADO, status}
+$P!{fecha_query}
+$P!{procesado_query}
+ORDER BY FECHA_INCORPORACION DESC]]>
 	</queryString>
 	<field name="NOMBRE_FICHERO" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="NOMBRE_FICHERO"/>
@@ -37,28 +57,25 @@ LEFT OUTER JOIN estado_ctrlfichero s ON s.COD_ESTADO = c.COD_ESTADO AND c.COD_TI
 	<field name="IND_PROCESADO" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="IND_PROCESADO"/>
 	</field>
+	<variable name="TodayDayHeader" class="java.lang.String">
+		<variableExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new Date())]]></variableExpression>
+		<initialValueExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new Date())]]></initialValueExpression>
+	</variable>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="92" splitType="Stretch">
+		<band height="60" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-			<subreport>
-				<reportElement x="170" y="1" width="642" height="90" uuid="dd8d646f-3f0e-4331-808c-37c7394c6a46">
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<subreportParameter name="sub_cod_user">
-					<subreportParameterExpression><![CDATA[$P{cod_user}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="sub_img_param">
-					<subreportParameterExpression><![CDATA[$P{img_param}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="sub_sucursal">
-					<subreportParameterExpression><![CDATA[$P{sucursal}]]></subreportParameterExpression>
-				</subreportParameter>
-				<connectionExpression><![CDATA[$P{conn_param}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{file_param}]]></subreportExpression>
-			</subreport>
+			<image>
+				<reportElement x="570" y="10" width="200" height="29" uuid="e54fb1dd-70c1-4975-87fc-0ce69e1d20be"/>
+				<imageExpression><![CDATA[$P{img_param}]]></imageExpression>
+			</image>
+			<textField isBlankWhenNull="true">
+				<reportElement x="519" y="39" width="251" height="21" uuid="b5357cb8-8fcc-4581-b0a5-b147222ecccc"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{NOMBRE_SUCURSAL}.toUpperCase() +" "+ $V{TodayDayHeader}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>

@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import es.commerzbank.ice.embargos.utils.OfficeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +71,9 @@ public class FileControlController {
 
 	@Autowired
 	private FileControlMapper fileControlMapper;
+
+	@Autowired
+	private OfficeUtils officeUtils;
 	
 	@PostMapping(value = "/export")
 	public void exportCSV(Authentication authentication, @RequestBody FileControlFiltersDTO fileControlFilters, HttpServletResponse response) throws Exception {
@@ -398,9 +402,9 @@ public class FileControlController {
 	
 	@PostMapping("/reports/files")
 	public ResponseEntity<InputStreamResource> generateFileControlReport(Authentication authentication,
-			@RequestParam(name = "codTipoFichero", required = false) Integer[] codTipoFichero,
-			@RequestParam(name = "codEstado", required = false) Integer codEstado,
-			@RequestParam(name = "isPending", required = false) boolean isPending,
+			//@RequestParam(name = "codTipoFichero", required = false) Integer[] codTipoFichero,
+			//@RequestParam(name = "codEstado", required = false) Integer codEstado,
+			//@RequestParam(name = "isPending", required = false) boolean isPending,
 			//@RequestBody ReportParamsDTO reportParams,
 			@RequestBody FileControlFiltersDTO fileControlFilters
 	) throws Exception {
@@ -411,8 +415,11 @@ public class FileControlController {
 
 			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
-			DownloadReportFile.writeFile(fileControlService.generateFileControl(codTipoFichero, codEstado, isPending,
-					fileControlFilters.getStartDate(), fileControlFilters.getEndDate(), Integer.parseInt(authentication.getDetails().toString())));
+			String oficina = officeUtils.getLocalidadUsuario(authentication);
+
+			byte[] data = fileControlService.generateFileControl(fileControlFilters, oficina);
+
+			DownloadReportFile.writeFile(data);
 
 			logger.info("FileControlController - generateFileControlReport - end");
 			return DownloadReportFile.returnToDownloadFile();

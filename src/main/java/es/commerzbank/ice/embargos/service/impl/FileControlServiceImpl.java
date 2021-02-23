@@ -426,64 +426,37 @@ public class FileControlServiceImpl implements FileControlService{
 	}
 
 	@Override
-	public byte[] generateFileControl(Integer[] codTipoFichero, Integer codEstado, boolean isPending,
-			Date fechaInicio, Date fechaFin, Integer codSucursal) throws Exception {
+	public byte[] generateFileControl(FileControlFiltersDTO fileControlFilters, String oficina) throws Exception {
 
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
-		String query = "WHERE";
-
-		if (codTipoFichero != null) {
-			String fileTypes = String.join(", ",
-					Arrays.asList(codTipoFichero).stream().map(i -> String.valueOf(i)).collect(Collectors.toList()));
-			query = query + " c.COD_TIPO_FICHERO IN (" + fileTypes + ") AND";
-
-			if (codEstado != null) {
-				query = query + " c.COD_ESTADO= " + codEstado.toString() + " AND";
-			}
-		}
-
-		if (fechaInicio != null) {
-			query = query + " c.FECHA_INCORPORACION>="
-					+ ICEDateUtils.dateToBigDecimal(fechaInicio, ICEDateUtils.FORMAT_yyyyMMddHHmmss) + " AND";
-		}
-
-		if (fechaFin != null) {
-			query = query + " c.FECHA_GENERACION_RESPUESTA<="
-					+ ICEDateUtils.dateToBigDecimal(fechaFin, ICEDateUtils.FORMAT_yyyyMMddHHmmss) + " AND";
-		}
-
-
-		if (codEstado == null) {
-
-			if (isPending) {
-				query = query + " c.IND_PROCESADO <> 'S'";
-			} else {
-				query = query + " c.IND_PROCESADO = 'S'";
-			}
-		} else {
-			query = query.substring(0, query.length() - 4); // quitamos el AND de la query
-		}
-		
-		parameters.put("query_param", query);
-
 		try (Connection connEmbargos = oracleDataSourceEmbargosConfig.getEmbargosConnection();) {
+			Resource logoRes = ResourcesUtil.getImageLogoCommerceResource();
+			parameters.put("img_param", logoRes.getFile().toString());
 
-			Resource imageReport = ResourcesUtil.getImageLogoCommerceResource();
-			File image = imageReport.getFile();
-			parameters.put("img_param", image.toString());
-
-			Resource subResource = ResourcesUtil.getReportHeaderResource();
-			InputStream subResourceInputStream = subResource.getInputStream();
-
-			JasperReport subReport = (JasperReport) JRLoader.loadObject(subResourceInputStream);
-			parameters.put("file_param", subReport);
-
-			parameters.put("sucursal", officeCService.findById(Long.valueOf(codSucursal)).getNombre());
+			parameters.put("NOMBRE_SUCURSAL", oficina);
 
 			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 
-			Resource resource = ResourcesUtil.getFromJasperFolder("file_control.jasper");
+			/*
+				<parameter name="tipos_fichero" class="java.util.Collection" nestedType="java.lang.Long"/>
+	<parameter name="status" class="java.util.Collection" nestedType="java.lang.Long"/>
+	<parameter name="procesado" class="java.lang.String"/>
+	<parameter name="procesado_query" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{procesado} == null ? "" : " AND IND_PROCESADO = '"+ $P{procesado} +"' "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_desde" class="java.util.Date"/>
+	<parameter name="fecha_hasta" class="java.util.Date"/>
+			 */
+
+			parameters.put("tipos_fichero", fileControlFilters.getFileType());
+			parameters.put("status", Arrays.asList(fileControlFilters.getStatus().getCode()));
+			if (fileControlFilters.getIsPending() != null && fileControlFilters.getIsPending().booleanValue())
+				parameters.put("procesado", "N");
+			parameters.put("fecha_desde", fileControlFilters.getStartDate());
+			parameters.put("fecha_hasta", fileControlFilters.getEndDate());
+
+			Resource resource = ResourcesUtil.getFromJasperFolder("ficheros.jasper");
 			InputStream resourceInputStream = resource.getInputStream();
 
 			JasperPrint reporteLleno = JasperFillManager.fillReport(resourceInputStream, parameters, connEmbargos);
