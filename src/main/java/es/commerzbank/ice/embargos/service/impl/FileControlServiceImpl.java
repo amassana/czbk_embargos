@@ -450,7 +450,8 @@ public class FileControlServiceImpl implements FileControlService{
 			 */
 
 			parameters.put("tipos_fichero", fileControlFilters.getFileType());
-			parameters.put("status", Arrays.asList(fileControlFilters.getStatus().getCode()));
+			if (fileControlFilters.getStatus() != null)
+				parameters.put("status", Arrays.asList(fileControlFilters.getStatus().getCode()));
 			if (fileControlFilters.getIsPending() != null && fileControlFilters.getIsPending().booleanValue())
 				parameters.put("procesado", "N");
 			parameters.put("fecha_desde", fileControlFilters.getStartDate());
