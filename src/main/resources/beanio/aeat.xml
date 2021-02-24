@@ -120,7 +120,7 @@
 		<record name="entidadCredito"
 			class="es.commerzbank.ice.embargos.formats.aeat.trabas.EntidadCreditoFase4">
 			<field name="indicadorRegistro" rid="true" literal="1" />
-			<field name="delegacionAgenciaReceptora" />
+			<field name="delegacionAgenciaReceptora" length="2" />
 			<field name="codigoEntidadCredito"   />
 			<field name="numeroEnvio" type="int" length="8" />
 			<field name="fechaCreacionFicheroTrabas" type="date" length="8"
@@ -174,7 +174,7 @@
 		<record name="finEntidadCredito"
 			class="es.commerzbank.ice.embargos.formats.aeat.trabas.FinEntidadCreditoFase4">
 			<field name="indicadorRegistro" rid="true" literal="3" />
-			<field name="delegacionAgenciaReceptora" />
+			<field name="delegacionAgenciaReceptora" length="2" />
 			<field name="codigoEntidadCredito"  />
 			<field name="numeroDiligenciasIncluidasEnvio" type="int" length="6" justify="right" padding="0" />
 			<field name="importeTotalAEmbargar" typeHandler="importe" length="15" />
