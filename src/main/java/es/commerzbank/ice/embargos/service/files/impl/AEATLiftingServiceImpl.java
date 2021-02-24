@@ -8,6 +8,7 @@ import java.io.Reader;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
@@ -37,6 +39,7 @@ import es.commerzbank.ice.embargos.repository.SeizedRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
 import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.CustomerService;
+import es.commerzbank.ice.embargos.service.EmailService;
 import es.commerzbank.ice.embargos.service.files.AEATLiftingService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.EmbargosUtils;
@@ -89,13 +92,20 @@ public class AEATLiftingServiceImpl
     @Autowired
 	private AccountingNoteService accountingNoteService;
     
+    @Autowired
+	private EmailService emailService;
+    
     @Override
-    public void tratarFicheroLevantamientos(File processingFile, String originalName, File processedFile) throws IOException {
+    public void tratarFicheroLevantamientos(File processingFile, String originalName, File processedFile) throws Exception {
     	BeanReader beanReader = null;
         Reader reader = null;
         es.commerzbank.ice.comun.lib.domain.entity.ControlFichero controlFichero = null;
         
+        String levFileName = null;
+        
         try {
+        	levFileName = FilenameUtils.getName(processingFile.getCanonicalPath());
+        	
             BigDecimal importeMaximoAutomaticoDivisa =
                     generalParametersService.loadBigDecimalParameter(EmbargosConstants.PARAMETRO_EMBARGOS_LEVANTAMIENTO_IMPORTE_MAXIMO_AUTOMATICO_DIVISA);
 
@@ -247,6 +257,10 @@ public class AEATLiftingServiceImpl
         {
             LOG.error("Error while treating AEAT LEV file", e);
             // TODO error treatment
+            
+            // - Se envia correo del error del parseo del fichero de embargo:
+	        emailService.sendEmailFileParserError(levFileName, e.getMessage()); 
+	        throw e;
         }
         finally
         {

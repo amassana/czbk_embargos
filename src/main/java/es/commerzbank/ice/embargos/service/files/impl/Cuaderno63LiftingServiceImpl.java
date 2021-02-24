@@ -2,12 +2,12 @@ package es.commerzbank.ice.embargos.service.files.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
 import org.slf4j.Logger;
@@ -37,6 +37,7 @@ import es.commerzbank.ice.embargos.repository.SeizedRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
 import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.CustomerService;
+import es.commerzbank.ice.embargos.service.EmailService;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63LiftingService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.EmbargosUtils;
@@ -91,15 +92,22 @@ public class Cuaderno63LiftingServiceImpl
     @Autowired
 	private AccountingNoteService accountingNoteService;
     
+    @Autowired
+	private EmailService emailService;
+    
     @Override
     public void tratarFicheroLevantamientos(File processingFile, String originalName, File processedFile)
-        throws IOException
+    		throws Exception
     {
         BeanReader beanReader = null;
         Reader reader = null;
         es.commerzbank.ice.comun.lib.domain.entity.ControlFichero controlFichero = null;
 
+        String levFileName = null;
+        
         try {
+        	levFileName = FilenameUtils.getName(processingFile.getCanonicalPath());
+        	
             BigDecimal importeMaximoAutomaticoDivisa =
                     generalParametersService.loadBigDecimalParameter(EmbargosConstants.PARAMETRO_EMBARGOS_LEVANTAMIENTO_IMPORTE_MAXIMO_AUTOMATICO_DIVISA);
 
@@ -246,6 +254,11 @@ public class Cuaderno63LiftingServiceImpl
         {
             LOG.error("Error while treating NORMA63 LEV file", e);
             // TODO error treatment
+            
+	        // - Se envia correo del error del parseo del fichero de embargo:
+	        emailService.sendEmailFileParserError(levFileName, e.getMessage()); 
+	        throw e;
+            
         }
         finally
         {
