@@ -212,6 +212,8 @@ public abstract class AEATMapper {
 		BigDecimal fechaLimiteTraba = determineFechaLimiteTraba(entidadOrdenante, fechaGeneracionDiligencia);
 		traba.setFechaLimite(fechaLimiteTraba);
 		
+		traba.setFechaTraba(ICEDateUtils.dateToBigDecimal(new Date(), ICEDateUtils.FORMAT_yyyyMMdd););
+		
 		//CUENTAS TRABAS:
 		
 		List<CuentaTraba> cuentaTrabasList = new ArrayList<>();
