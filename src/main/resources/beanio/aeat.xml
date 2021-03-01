@@ -171,6 +171,7 @@
 			<field name="codigoCuentaCliente6" length="20" padding="0" default="0" />
 			<field name="codigoResultadoTrabaCC6" length="2" padding="0" default="0" />
 			<field name="importeTrabadoCC6" typeHandler="importe" length="15" default="0"/>
+			<field name="posicionesLibres" length="4" ignore="true" />
 		</record>
 		<record name="finEntidadCredito"
 			class="es.commerzbank.ice.embargos.formats.aeat.trabas.FinEntidadCreditoFase4">
