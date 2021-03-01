@@ -8,6 +8,7 @@ import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
+import es.commerzbank.ice.embargos.event.JobImportacionApuntesContables;
 import es.commerzbank.ice.embargos.event.JobTransferToTax;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 
@@ -56,4 +57,24 @@ public class JobConfig {
 
     /***********/
 
+    @Bean
+    public JobDetailFactoryBean jobDetailImportacionApuntesContables() {
+      JobDetailFactoryBean jobDetailFactory = new JobDetailFactoryBean();
+      jobDetailFactory.setJobClass(JobImportacionApuntesContables.class);
+      jobDetailFactory.setName(JobImportacionApuntesContables.class.getSimpleName());
+      jobDetailFactory.setDescription("Job de importación de apuntes contables");
+      jobDetailFactory.setDurability(true);
+      return jobDetailFactory;
+    }
+    
+    @Bean
+    public CronTriggerFactoryBean triggerJobImportacionApuntesContables(JobDetail jobDetailImportacionApuntesContables) {
+      String cronExpression = "0/10 * * * * ?";
+
+      CronTriggerFactoryBean trigger = new CronTriggerFactoryBean();
+      trigger.setName(jobDetailImportacionApuntesContables.getKey().getName() + "Trigger");
+      trigger.setJobDetail(jobDetailImportacionApuntesContables);
+      trigger.setCronExpression(cronExpression);
+      return trigger;
+    }
 }

@@ -570,6 +570,7 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setNif(nif);
 			accountingNote.setDetailPayment(detailPayment);
 			accountingNote.setRecaudAccount(debitAccount);
+			accountingNote.setExtraInfo1(EmbargosConstants.APUNTES_CONTABLES_TIPO_TRABA);
 			
 			result = accountingNoteService.contabilizar(accountingNote);
 			
@@ -654,6 +655,20 @@ public class AccountingServiceImpl implements AccountingService{
 		return referencesMap;
 	}
 
+	@Override
+	public boolean manageAccountingNoteSeizureCallbackId(String nif, String debitAccount, BigDecimal amount,
+			String reference1, String reference2) throws Exception {
+		
+		AccountingNote accountingNote = new AccountingNote(); 
+		accountingNote.setNif(nif);
+		accountingNote.setDebitAccount(debitAccount);
+		accountingNote.setAmount(amount.doubleValue());
+		accountingNote.setReference1(reference1);
+		accountingNote.setReference2(reference2);
+		
+		return manageAccountingNoteSeizureCallback(accountingNote, null);
+	}
+	
 	@Override
 	public boolean manageAccountingNoteSeizureCallback(AccountingNote accountingNote, String userName) throws Exception {
 		
@@ -802,6 +817,20 @@ public class AccountingServiceImpl implements AccountingService{
 	}
 
 
+	@Override
+	public boolean manageAccountingNoteLiftingCallbackId(String nif, String creditAccount, BigDecimal amount,
+			String reference1, String reference2) throws Exception {
+		
+		AccountingNote accountingNote = new AccountingNote(); 
+		accountingNote.setNif(nif);
+		accountingNote.setCreditAccount(creditAccount);
+		accountingNote.setAmount(amount.doubleValue());
+		accountingNote.setReference1(reference1);
+		accountingNote.setReference2(reference2);
+		
+		return manageAccountingNoteLiftingCallback(accountingNote, null);
+	}
+	
 	@Override
 	public boolean manageAccountingNoteLiftingCallback(AccountingNote accountingNote, String userName) throws Exception
 	{
@@ -1111,7 +1140,8 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setDetailPayment(detailPayment);
 			
 			accountingNote.setCreditAccount(getCuenta(embargo.getNif(), cuentaLevantamiento.getCuenta()));
- 	
+			accountingNote.setExtraInfo1(EmbargosConstants.APUNTES_CONTABLES_TIPO_LEVANTAMIENTO);
+			
 			resultado = accountingNoteService.contabilizar(accountingNote);
 		} else {
 			liftingService.updateLiftingBankAccountingStatus(cuentaLevantamiento, EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_CONTABILIZADO, userName);
@@ -1218,7 +1248,8 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setName(name);
 			accountingNote.setNif(nif);	
 			accountingNote.setDetailPayment(detailPayment);
-	
+			accountingNote.setExtraInfo1(EmbargosConstants.APUNTES_CONTABLES_TIPO_TESORERIA);
+			
 			int resultContabilizar = accountingNoteService.contabilizar(accountingNote);
 			
 			if(resultContabilizar == 1) {
@@ -1244,6 +1275,17 @@ public class AccountingServiceImpl implements AccountingService{
 		logger.info("sendAccountingFinalFile - end");
 		
 		return true;
+	}
+	
+	
+	
+	@Override
+	public boolean manageAccountingNoteFinalFileCallbackId(String reference1) throws ICEException {
+		
+		AccountingNote accountingNote = new AccountingNote(); 
+		accountingNote.setReference1(reference1);
+		
+		return manageAccountingNoteFinalFileCallback(accountingNote, null);
 	}
 	
 	/**
