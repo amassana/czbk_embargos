@@ -19,7 +19,7 @@ public class TrabaFase4 {
 	private String codigoPostal;
 	private String numeroDiligenciaEmbargo;
 	private BigDecimal importeTotalAEmbargar;
-	private String fechaGeneracionDiligencia;
+	private Date fechaGeneracionDiligencia;
 	private BigDecimal importeTotalTrabado;
 	private String indicadorExisteMasCuentas;
 	private Date fechaTraba;
@@ -128,10 +128,10 @@ public class TrabaFase4 {
 	public void setImporteTotalAEmbargar(BigDecimal importeTotalAEmbargar) {
 		this.importeTotalAEmbargar = importeTotalAEmbargar;
 	}
-	public String getFechaGeneracionDiligencia() {
+	public Date getFechaGeneracionDiligencia() {
 		return fechaGeneracionDiligencia;
 	}
-	public void setFechaGeneracionDiligencia(String fechaGeneracionDiligencia) {
+	public void setFechaGeneracionDiligencia(Date fechaGeneracionDiligencia) {
 		this.fechaGeneracionDiligencia = fechaGeneracionDiligencia;
 	}
 	public BigDecimal getImporteTotalTrabado() {

@@ -347,6 +347,7 @@ public abstract class AEATMapper {
 	
 	@Mappings({
 		@Mapping(source = "delegacionAgenciaEmisora", target = "delegacionAgenciaReceptora"),
+		@Mapping(expression = "java(new java.util.Date())", target="fechaCreacionFicheroTrabas")
 	})
 	public abstract EntidadCreditoFase4 generateEntidadCreditoFase4(EntidadCreditoFase3 entidadCreditoFase3);
 	
@@ -366,7 +367,7 @@ public abstract class AEATMapper {
 		@Mapping(source = "embargo.numeroEmbargo", target = "numeroDiligenciaEmbargo"),
 		@Mapping(source = "embargo.importe", target = "importeTotalAEmbargar"),
 		@Mapping(source = "traba.importeTrabado", target = "importeTotalTrabado"),
-		@Mapping(target = "fechaTraba", ignore=true),
+		@Mapping(target = "fechaTraba", ignore=true)
 	})
 	public abstract TrabaFase4 generateTrabaFase4(Embargo embargo, Traba traba, List<CuentaTraba> cuentaTrabaOrderedList);
 	
@@ -378,10 +379,68 @@ public abstract class AEATMapper {
 			trabaFase4.setFechaTraba(ICEDateUtils.bigDecimalToDate(traba.getFechaTraba(), ICEDateUtils.FORMAT_yyyyMMdd));
 		}
 		
-//		private String fechaGeneracionDiligencia;
-//		private String indicadorExisteMasCuentas;
-//		private Date fechaLimiteIngresoImporteTrabado;
-
+		if (traba.getFechaLimite()!=null) {
+			trabaFase4.setFechaLimiteIngresoImporteTrabado(ICEDateUtils.bigDecimalToDate(traba.getFechaLimite(), ICEDateUtils.FORMAT_yyyyMMdd));
+		}
+		
+		if (embargo.getFechaGeneracion()!=null) {
+			trabaFase4.setFechaGeneracionDiligencia(ICEDateUtils.bigDecimalToDate(embargo.getFechaGeneracion(), ICEDateUtils.FORMAT_yyyyMMdd));
+		}
+		
+		if (cuentaTrabaOrderedList!=null && cuentaTrabaOrderedList.size()>0) {
+			int i=1;
+			for (CuentaTraba cuentaTraba : cuentaTrabaOrderedList) {
+				if (i==1) {
+					if (cuentaTraba.getIban()!=null && cuentaTraba.getIban().length()>4)
+						trabaFase4.setCodigoCuentaCliente1(cuentaTraba.getIban().substring(4));
+					if (cuentaTraba.getCuentaTrabaActuacion()!=null)
+						trabaFase4.setCodigoResultadoTrabaCC1(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
+					if (cuentaTraba.getImporte()!=null)
+						trabaFase4.setImporteTrabadoCC1(cuentaTraba.getImporte());
+				}
+				if (i==2) {
+					if (cuentaTraba.getIban()!=null && cuentaTraba.getIban().length()>4)
+						trabaFase4.setCodigoCuentaCliente2(cuentaTraba.getIban().substring(4));
+					if (cuentaTraba.getCuentaTrabaActuacion()!=null)
+						trabaFase4.setCodigoResultadoTrabaCC2(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
+					if (cuentaTraba.getImporte()!=null)
+						trabaFase4.setImporteTrabadoCC2(cuentaTraba.getImporte());
+				}
+				if (i==3) {
+					if (cuentaTraba.getIban()!=null && cuentaTraba.getIban().length()>4)
+						trabaFase4.setCodigoCuentaCliente3(cuentaTraba.getIban().substring(4));
+					if (cuentaTraba.getCuentaTrabaActuacion()!=null)
+						trabaFase4.setCodigoResultadoTrabaCC3(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
+					if (cuentaTraba.getImporte()!=null)
+						trabaFase4.setImporteTrabadoCC3(cuentaTraba.getImporte());
+				}
+				if (i==4) {
+					if (cuentaTraba.getIban()!=null && cuentaTraba.getIban().length()>4)
+						trabaFase4.setCodigoCuentaCliente4(cuentaTraba.getIban().substring(4));
+					if (cuentaTraba.getCuentaTrabaActuacion()!=null)
+						trabaFase4.setCodigoResultadoTrabaCC4(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
+					if (cuentaTraba.getImporte()!=null)
+						trabaFase4.setImporteTrabadoCC4(cuentaTraba.getImporte());
+				}
+				if (i==5) {
+					if (cuentaTraba.getIban()!=null && cuentaTraba.getIban().length()>4)
+						trabaFase4.setCodigoCuentaCliente5(cuentaTraba.getIban().substring(4));
+					if (cuentaTraba.getCuentaTrabaActuacion()!=null)
+						trabaFase4.setCodigoResultadoTrabaCC5(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
+					if (cuentaTraba.getImporte()!=null)
+						trabaFase4.setImporteTrabadoCC5(cuentaTraba.getImporte());
+				}
+				if (i==6) {
+					if (cuentaTraba.getIban()!=null && cuentaTraba.getIban().length()>4)
+						trabaFase4.setCodigoCuentaCliente6(cuentaTraba.getIban().substring(4));
+					if (cuentaTraba.getCuentaTrabaActuacion()!=null)
+						trabaFase4.setCodigoResultadoTrabaCC6(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
+					if (cuentaTraba.getImporte()!=null)
+						trabaFase4.setImporteTrabadoCC6(cuentaTraba.getImporte());
+				}
+				i++;
+			}	
+		}
 		
 	}
 	

@@ -137,7 +137,7 @@
 			<field name="nombreDeudor" length="40" />
 			<field name="siglasViaPublica" length="2" />
 			<field name="nombreViaPublica" length="25" />
-			<field name="numeroPortal" length="5" />
+			<field name="numeroPortal" length="5" padding="0"/>
 			<field name="letraPortal" length="1" />
 			<field name="escalera" length="2" />
 			<field name="piso" length="2" />
@@ -146,29 +146,30 @@
 			<field name="codigoPostal" length="5" />
 			<field name="numeroDiligenciaEmbargo" length="13" />
 			<field name="importeTotalAEmbargar" typeHandler="importe" length="15" />
-			<field name="fechaGeneracionDiligencia" length="8" />
+			<field name="fechaGeneracionDiligencia" type="date" length="8"
+				format="yyyyMMdd" />
 			<field name="importeTotalTrabado" typeHandler="importe" length="15" />
-			<field name="indicadorExisteMasCuentas" length="1" />
+			<field name="indicadorExisteMasCuentas" length="1" padding="0" />
 			<field name="fechaTraba" type="date" length="8" format="yyyyMMdd" />
 			<field name="fechaLimiteIngresoImporteTrabado" type="date" length="8"
 				format="yyyyMMdd" />
-			<field name="codigoCuentaCliente1" length="20" />
-			<field name="codigoResultadoTrabaCC1" length="2" />
+			<field name="codigoCuentaCliente1" length="20" padding="0" />
+			<field name="codigoResultadoTrabaCC1" length="2" padding="0" />
 			<field name="importeTrabadoCC1" typeHandler="importe" length="15"/>
-			<field name="codigoCuentaCliente2" length="20" />
-			<field name="codigoResultadoTrabaCC2" length="2" />
+			<field name="codigoCuentaCliente2" length="20" padding="0" />
+			<field name="codigoResultadoTrabaCC2" length="2" padding="0" />
 			<field name="importeTrabadoCC2" typeHandler="importe" length="15"/>
-			<field name="codigoCuentaCliente3" length="20" />
-			<field name="codigoResultadoTrabaCC3" length="2" />
+			<field name="codigoCuentaCliente3" length="20" padding="0" />
+			<field name="codigoResultadoTrabaCC3" length="2" padding="0" />
 			<field name="importeTrabadoCC3" typeHandler="importe" length="15"/>
-			<field name="codigoCuentaCliente4" length="20" />
-			<field name="codigoResultadoTrabaCC4" length="2" />
+			<field name="codigoCuentaCliente4" length="20" padding="0" />
+			<field name="codigoResultadoTrabaCC4" length="2" padding="0" />
 			<field name="importeTrabadoCC4" typeHandler="importe" length="15"/>
-			<field name="codigoCuentaCliente5" length="20" />
-			<field name="codigoResultadoTrabaCC5" length="2" />
+			<field name="codigoCuentaCliente5" length="20" padding="0" />
+			<field name="codigoResultadoTrabaCC5" length="2" padding="0" />
 			<field name="importeTrabadoCC5" typeHandler="importe" length="15"/>
-			<field name="codigoCuentaCliente6" length="20" />
-			<field name="codigoResultadoTrabaCC6" length="2" />
+			<field name="codigoCuentaCliente6" length="20" padding="0" />
+			<field name="codigoResultadoTrabaCC6" length="2" padding="0" />
 			<field name="importeTrabadoCC6" typeHandler="importe" length="15"/>
 		</record>
 		<record name="finEntidadCredito"
