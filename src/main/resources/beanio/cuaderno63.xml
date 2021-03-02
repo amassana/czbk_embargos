@@ -278,24 +278,24 @@
 			<field name="fechaEjecucionRetenciones" type="date" length="8"
 				format="yyyyMMdd" />
 			<field name="libre" ignore="true" length="8" />
-			<field name="ibanCuenta1" length="24" />
-			<field name="codigoResultadoRetencionCuenta1" length="2" />
-			<field name="importeRetenidoCuenta1" typeHandler="importe15Digits" length="15" />
-			<field name="ibanCuenta2" length="24" />
-			<field name="codigoResultadoRetencionCuenta2" length="2" />
-			<field name="importeRetenidoCuenta2" typeHandler="importe15Digits" length="15" />
-			<field name="ibanCuenta3" length="24" />
-			<field name="codigoResultadoRetencionCuenta3" length="2" />
-			<field name="importeRetenidoCuenta3" typeHandler="importe15Digits" length="15" />
-			<field name="ibanCuenta4" length="24" />
-			<field name="codigoResultadoRetencionCuenta4" length="2" />
-			<field name="importeRetenidoCuenta4" typeHandler="importe15Digits" length="15" />
-			<field name="ibanCuenta5" length="24" />
-			<field name="codigoResultadoRetencionCuenta5" length="2" />
-			<field name="importeRetenidoCuenta5" typeHandler="importe15Digits" length="15" />
-			<field name="ibanCuenta6" length="24" />
-			<field name="codigoResultadoRetencionCuenta6" length="2" />
-			<field name="importeRetenidoCuenta6" typeHandler="importe15Digits" length="15" />
+			<field name="ibanCuenta1" length="24" padding="0" default="0" />
+			<field name="codigoResultadoRetencionCuenta1" length="2" padding="0" default="0" />
+			<field name="importeRetenidoCuenta1" typeHandler="importe15Digits" length="15" default="0" />
+			<field name="ibanCuenta2" length="24" padding="0" default="0" />
+			<field name="codigoResultadoRetencionCuenta2" length="2" padding="0" default="0" />
+			<field name="importeRetenidoCuenta2" typeHandler="importe15Digits" length="15" default="0" />
+			<field name="ibanCuenta3" length="24" padding="0" default="0" />
+			<field name="codigoResultadoRetencionCuenta3" length="2" padding="0" default="0" />
+			<field name="importeRetenidoCuenta3" typeHandler="importe15Digits" length="15" default="0" />
+			<field name="ibanCuenta4" length="24" padding="0" default="0" />
+			<field name="codigoResultadoRetencionCuenta4" length="2" padding="0" default="0" />
+			<field name="importeRetenidoCuenta4" typeHandler="importe15Digits" length="15" default="0" />
+			<field name="ibanCuenta5" length="24" padding="0" default="0" />
+			<field name="codigoResultadoRetencionCuenta5" length="2" padding="0" default="0" />
+			<field name="importeRetenidoCuenta5" typeHandler="importe15Digits" length="15" default="0" />
+			<field name="ibanCuenta6" length="24" padding="0" default="0" />
+			<field name="codigoResultadoRetencionCuenta6" length="2" padding="0" default="0" />
+			<field name="importeRetenidoCuenta6" typeHandler="importe15Digits" length="15" default="0" />
 			<field name="libre" ignore="true" length="6" />
 			<field name="claveSeguridadIban1" length="12" />
 			<field name="claveSeguridadIban2" length="12" />

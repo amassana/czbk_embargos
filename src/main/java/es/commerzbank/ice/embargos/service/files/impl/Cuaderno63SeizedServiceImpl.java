@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -236,6 +237,8 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 			
 	        List<Embargo> embargoList = seizureRepository.findAllByControlFichero(controlFichero);
 	        
+	        BigDecimal importeTotalTrabado = new BigDecimal(0);
+	        
 	        for (Embargo embargo : embargoList) {
 	        	
 	    		Traba traba = null;
@@ -255,13 +258,15 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 		        beanWriter.write(EmbargosConstants.RECORD_NAME_COMUNICACIONRESULTADORETENCION, comunicacionResultadoRetencionFase4);
 		        numeroRegistrosFichero++;
 	        	
+		        importeTotalTrabado = importeTotalTrabado.add(traba.getImporteTrabado()!=null ? traba.getImporteTrabado() : BigDecimal.valueOf(0));
+		        
 		        beanWriter.flush();
 	        } 
 
 	        
 	        // 4.- Generar FIN de fichero indicando el numero de registros:
 	        numeroRegistrosFichero++;
-	        FinFicheroFase4 finFicheroFase4 = cuaderno63Mapper.generateFinFicheroFase4(finFicheroFase3, numeroRegistrosFichero);
+	        FinFicheroFase4 finFicheroFase4 = cuaderno63Mapper.generateFinFicheroFase4(finFicheroFase3, numeroRegistrosFichero, importeTotalTrabado);
 	        beanWriter.write(EmbargosConstants.RECORD_NAME_FINFICHERO, finFicheroFase4);
 
 	        beanWriter.flush();

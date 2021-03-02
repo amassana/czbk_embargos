@@ -402,6 +402,8 @@ public abstract class Cuaderno63Mapper {
 		BigDecimal fechaUltmaModif = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
 		String usuarioModif = EmbargosConstants.USER_AUTOMATICO;
 
+		traba.setFechaTraba(ICEDateUtils.dateToBigDecimal(new Date(), ICEDateUtils.FORMAT_yyyyMMdd));
+		
 		/*
 		MAPEO ELIMINADO
 		CuentasRecaudacion cuentaRecaudacion = entidadOrdenante.getEntidadesComunicadora().getCuentasRecaudacion();	
@@ -570,6 +572,7 @@ public abstract class Cuaderno63Mapper {
 	public void setCabeceraEmisorFase4AfterMapping(@MappingTarget CabeceraEmisorFase4 cabeceraEmisorFase4) {
 	
 		cabeceraEmisorFase4.setFase(EmbargosConstants.COD_FASE_4);
+		cabeceraEmisorFase4.setFechaObtencionFicheroEntidadDeDeposito(cabeceraEmisorFase4.getFechaObtencionFicheroOrganismo());
 	}
 	
 	@Mappings({
@@ -589,6 +592,8 @@ public abstract class Cuaderno63Mapper {
 	public void setComunicacionResultadoRetencionFase4AfterMapping(@MappingTarget ComunicacionResultadoRetencionFase4 comunicacionResultadoRetencionFase4,
 			Embargo embargo, Traba traba, List<CuentaTraba> cuentaTrabaOrderedList) {
 		
+		comunicacionResultadoRetencionFase4.setFechaEjecucionRetenciones(ICEDateUtils.bigDecimalToDate(traba.getFechaTraba(), ICEDateUtils.FORMAT_yyyyMMdd));
+		
 		//Obligatorio setear el 'codigo de registro' en el registro de Comunicacion del Resultado de la Retencion:
 		comunicacionResultadoRetencionFase4.setCodigoRegistro(EmbargosConstants.CODIGO_REGISTRO_CUADERNO63_COMUNICACION_RESULTADO_RETENCION_FASE4);
 		
@@ -600,9 +605,8 @@ public abstract class Cuaderno63Mapper {
 		
 		for (CuentaTraba cuentaTraba : cuentaTrabaOrderedList) {
 			
-			boolean agregarATraba = cuentaTraba.getAgregarATraba() != null && EmbargosConstants.IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba());
-			
-			if (agregarATraba) {
+			//boolean agregarATraba = cuentaTraba.getAgregarATraba() != null && EmbargosConstants.IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba());
+			//if (agregarATraba) {
 			
 				String claveSeguridad = EmbargosUtils.generateClaveSeguridad(cuentaTraba.getIban());
 				
@@ -649,7 +653,7 @@ public abstract class Cuaderno63Mapper {
 						break;
 					default:
 					
-				}
+				//}
 				cont++;
 			}
 		}
@@ -657,8 +661,9 @@ public abstract class Cuaderno63Mapper {
 	
 	@Mappings({
 		@Mapping(source = "numeroRegistrosFichero", target = "numeroRegistrosFichero"),
+		@Mapping(source = "importeTotalTrabado", target = "importeTotalRetenido")
 	})
-	public abstract FinFicheroFase4 generateFinFicheroFase4(FinFicheroFase3 finFicheroFase3, Integer numeroRegistrosFichero);
+	public abstract FinFicheroFase4 generateFinFicheroFase4(FinFicheroFase3 finFicheroFase3, Integer numeroRegistrosFichero, BigDecimal importeTotalTrabado);
 	
 	@AfterMapping
 	public void setFinFicheroFase4AfterMapping(@MappingTarget FinFicheroFase4 finFicheroFase4) {
