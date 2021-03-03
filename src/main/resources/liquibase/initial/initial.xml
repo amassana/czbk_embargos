@@ -4,46 +4,46 @@
         <createSequence sequenceName="AUDITORIA_SEQ" startValue="1013561"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-2">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_APODERADOS" startValue="100013"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_APODERADOS" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-3">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_CONTROL_FICHERO" startValue="100791"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_CONTROL_FICHERO" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-4">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_CUENTA_EMBARGO" startValue="100454"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_CUENTA_EMBARGO" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-5">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="0" sequenceName="SEC_CUENTA_LEVANTAMIENTO" startValue="100125"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="0" sequenceName="SEC_CUENTA_LEVANTAMIENTO" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-6">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="0" sequenceName="SEC_CUENTA_RESULTADO_EMBARGO" startValue="100024"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="0" sequenceName="SEC_CUENTA_RESULTADO_EMBARGO" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-7">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_CUENTA_TRABA" startValue="101421"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_CUENTA_TRABA" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-8">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_EMBARGO" startValue="100653"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_EMBARGO" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-9">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_ENTIDADES_ORDENANTES" startValue="100019"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_ENTIDADES_ORDENANTES" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-10">
         <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_ERROR_TRABA" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-11">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_FICHERO_FINAL" startValue="100020"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_FICHERO_FINAL" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-12">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="0" sequenceName="SEC_LEVANTAMIENTO_TRABA" startValue="100110"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="0" sequenceName="SEC_LEVANTAMIENTO_TRABA" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-13">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_PETICION_INFORMACION" startValue="198649"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_PETICION_INFORMACION" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-14">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="0" sequenceName="SEC_RESULTADO_EMBARGO" startValue="100053"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="0" sequenceName="SEC_RESULTADO_EMBARGO" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-16">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_TRABAS" startValue="100653"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_TRABAS" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-17">
         <createTable tableName="APODERADOS">
@@ -847,6 +847,17 @@
         </loadData>
         <rollback>
             <delete tableName="CUENTAS_INMOVILIZACION"></delete>
+        </rollback>
+    </changeSet>
+    <changeSet author="aniol.massana (generated)" id="1614163776015-actuaciones">
+        <loadData commentLineStartsWith="#" encoding="UTF-8" file="data2/cuenta_traba_actuacion.csv" quotchar="&quot;" separator="," tableName="CUENTA_TRABA_ACTUACION">
+            <column header="COD_ACTUACION" name="COD_ACTUACION" type="STRING"/>
+            <column header="DESCRIPCION" name="DESCRIPCION" type="STRING"/>
+            <column header="TIPO_ENTIDAD" name="TIPO_ENTIDAD" type="STRING"/>
+            <column header="COD_EXTERNO_ACTUACION" name="COD_EXTERNO_ACTUACION" type="STRING"/>
+        </loadData>
+        <rollback>
+            <delete tableName="CUENTA_TRABA_ACTUACION"></delete>
         </rollback>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-84">
