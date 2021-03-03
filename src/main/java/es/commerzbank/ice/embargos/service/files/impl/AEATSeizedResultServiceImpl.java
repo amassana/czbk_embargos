@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import es.commerzbank.ice.comun.lib.util.ICEException;
@@ -16,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
@@ -33,6 +33,7 @@ import es.commerzbank.ice.embargos.repository.ErrorRepository;
 import es.commerzbank.ice.embargos.repository.OrderingEntityRepository;
 import es.commerzbank.ice.embargos.repository.SeizedErrorRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
+import es.commerzbank.ice.embargos.service.EmailService;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.files.AEATSeizedResultService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
@@ -67,6 +68,9 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 	@Autowired
 	private GeneralParametersService generalParametersService;	
 	
+	@Autowired
+	private EmailService emailService;
+	
 	@Override
 	@Transactional(transactionManager = "transactionManager", rollbackFor = Exception.class)
 	public void tratarFicheroErrores(File processingFile, String originalName, File processedFile)  throws IOException {
@@ -77,6 +81,8 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 		Reader reader = null;
 		
 		ControlFichero controlFicheroErrores = null;
+		
+		List <ErrorTraba> listaErrores = new ArrayList <ErrorTraba>();
 		
 		try {
 		
@@ -107,7 +113,7 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 	        
 	        EntidadesOrdenante entidadOrdenante = null;
 	        //Date fechaObtencionFicheroOrganismo = null;
-
+	        
 	        while ((record = beanReader.read()) != null) {
 	        	
 	        	if(EmbargosConstants.RECORD_NAME_AEAT_ENTIDADTRANSMISORA.equals(beanReader.getRecordName())) {      	
@@ -119,9 +125,10 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 	        				&& entidadTransmisoraValidacionFase4.getCodigoEntidadTransmisora().equals(EmbargosConstants.CODIGO_NRBE_COMMERZBANK)) {   			
 	        			
 	        			isEntidadTransmisoraCommerzbank = true;
-	        			
+	        			logger.info("La entidad transmisora SI es Commerzbank");
 	        		} else {	
 	        			isEntidadTransmisoraCommerzbank = false;
+	        			logger.info("La entidad transmisora NO es Commerzbank");
 	        		}
 	        	}
 	        	
@@ -138,6 +145,7 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 		        		entidadOrdenante = orderingEntityRepository.findByIdentificadorEntidad(identificadorEntidad);
 		        		
 		        		if (entidadOrdenante == null) {
+		        			logger.info("La entidad ordenante NO se encuentra definida en la BD");
 		        			throw new ICEException("No se puede procesar el fichero '" + processingFile.getName() +
 		        					"': Entidad Ordenante con identificadorEntidad " + identificadorEntidad + " no encontrada.");
 		        		}
@@ -165,7 +173,9 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 		        					erroresTrabaValidacionFase4);
 		        		
 		        			if (errorTraba!=null) {
+		        				listaErrores.add(errorTraba);
 		        				seizedErrorRepository.save(errorTraba);
+		        				if (errorTraba.getError()!=null) logger.info("Error de traba " + errorTraba.getError().getCodError() + " guardado en la BD");
 		        			}
 		        			
 		        		}
@@ -188,6 +198,12 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 			}
 		}
 	
+		try {
+			emailService.sendEmailFileError(listaErrores, originalName, processingFile.getAbsolutePath());
+		} catch (ICEException e) {
+			logger.error("Error while sending email for .ERR file " + originalName, e);
+		} 
+		
 		logger.info("AEATSeizureServiceImpl - tratarFicheroErrores - end");
 	}
 
@@ -296,6 +312,7 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 				errorTraba.setTraba(traba);
 			} else {
 				//TODO lanzar excepcion si numero de error no se ha encontrado en bbdd en la tabla de ERRORES.
+				logger.info("El código de error de traba no se ha encontrado en la BD");
 			}
 		}
 		
