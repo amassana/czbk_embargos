@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import es.commerzbank.ice.comun.lib.util.ICEException;
+
+import org.apache.commons.io.FilenameUtils;
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
 import org.slf4j.Logger;
@@ -198,11 +200,27 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 			}
 		}
 	
-		try {
-			emailService.sendEmailFileError(listaErrores, originalName, processingFile.getAbsolutePath());
-		} catch (ICEException e) {
-			logger.error("Error while sending email for .ERR file " + originalName, e);
-		} 
+		String tipoFichero = FilenameUtils.getExtension(processingFile.getCanonicalPath()).toUpperCase();
+		switch (tipoFichero) {
+	        case EmbargosConstants.TIPO_FICHERO_ERRORES:
+	    		try {
+	    			emailService.sendEmailFileError(listaErrores, originalName, processingFile.getAbsolutePath());
+	    		} catch (ICEException e) {
+	    			logger.error("Error while sending email for .ERR file " + originalName, e);
+	    		}
+	            break;
+	        case EmbargosConstants.TIPO_FICHERO_RESULTADO:
+	        	try {
+	        		if (listaErrores!=null && listaErrores.size()>0)
+	        			emailService.sendEmailFileError(listaErrores, originalName, processingFile.getAbsolutePath());
+	        		else 
+	        			emailService.sendEmailFileResult(originalName);
+	    		} catch (ICEException e) {
+	    			logger.error("Error while sending email for .RES file " + originalName, e);
+	    		}
+	            break;
+	        default:
+	    }
 		
 		logger.info("AEATSeizureServiceImpl - tratarFicheroErrores - end");
 	}

@@ -69,6 +69,7 @@ public class AEATFilePoller
             folderPoller.addAcceptedExtension(YAMLUtil.getValue(ValueConstants.APPLICATION_YAML_LOCAL_PATH, "commerzbank.embargos.files.suffix-file-filter-emb"));
             folderPoller.addAcceptedExtension(YAMLUtil.getValue(ValueConstants.APPLICATION_YAML_LOCAL_PATH, "commerzbank.embargos.files.suffix-file-filter-lev"));
             folderPoller.addAcceptedExtension(YAMLUtil.getValue(ValueConstants.APPLICATION_YAML_LOCAL_PATH, "commerzbank.embargos.files.suffix-file-filter-err"));
+            folderPoller.addAcceptedExtension(YAMLUtil.getValue(ValueConstants.APPLICATION_YAML_LOCAL_PATH, "commerzbank.embargos.files.suffix-file-filter-res"));
         }
         catch (IOException ioe) {LOG.error(pollerName +": accepted extensions can't be fully configured", ioe);}
 
@@ -124,6 +125,9 @@ public class AEATFilePoller
                     aeatLiftingService.tratarFicheroLevantamientos(processingFile, originalName, processedFile);
                     break;
                 case EmbargosConstants.TIPO_FICHERO_ERRORES:
+                    aeatSeizedResultService.tratarFicheroErrores(processingFile, originalName, processedFile);
+                    break;
+                case EmbargosConstants.TIPO_FICHERO_RESULTADO:
                     aeatSeizedResultService.tratarFicheroErrores(processingFile, originalName, processedFile);
                     break;
                 default:

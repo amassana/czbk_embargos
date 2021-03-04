@@ -145,4 +145,42 @@ public class EmailServiceImpl implements EmailService {
 			logger.error("ERROR al enviar el email de 'Fichero de peticiones recibido: " + fileName + "'", e);
 		}
 	}
+
+	@Override
+	public void sendEmailFileResult(String nombreFichero) throws ICEException {
+		
+		logger.info("EmailServiceImpl - sendEmailFileResult - start");
+
+		if (!generalParametersService.loadBooleanParameter(ValueConstants.EMAIL_SMTP_ENABLED, true))
+			return;
+
+		ICEEmail iceEmail = new ICEEmail();
+
+		List<String> recipientsTo = new ArrayList<>(); 
+		
+		String emailAddressesTo = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_EMAIL_TO);		
+		recipientsTo.add(emailAddressesTo);
+		iceEmail.setRecipientsTo(recipientsTo);
+		
+		String emailAddressFrom = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_EMAIL_FROM);
+		iceEmail.setEmailAddressFrom(emailAddressFrom);
+
+		iceEmail.setSubject("Incoming result file " + nombreFichero);
+
+		List<String> paragraphTextList = new ArrayList<>();
+
+		paragraphTextList.add("Received result file ("+ nombreFichero +").");
+			
+		iceEmail.setParagraphTextList(paragraphTextList);
+
+		iceEmail.setFooterText(EmbargosConstants.EMAIL_DEFAULT_FOOTER_TEXT);
+
+		try {
+			clientEmailService.sendEmailWithAttachment(iceEmail);
+		} catch (Exception e) {
+			logger.error("ERROR al enviar el email de 'Fichero de resultado recibido AEAT'", e);
+		}
+
+		logger.info("EmailServiceImpl - sendEmailFileResult - end");
+	}
 }
