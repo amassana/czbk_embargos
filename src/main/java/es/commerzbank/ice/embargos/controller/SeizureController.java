@@ -1,6 +1,5 @@
 package es.commerzbank.ice.embargos.controller;
 
-import es.commerzbank.ice.comun.lib.domain.dto.AccountingNote;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.embargos.domain.dto.*;
@@ -348,17 +347,10 @@ public class SeizureController {
 
 			String userName = authentication.getName();
 		
-			result = accountingService.sendAccountingSeizure(codeFileControl, userName);
+			accountingService.sendAccountingSeizure(codeFileControl, userName);
 			
 			//Se obtiene el fileControl que se va a retornar:
 			resultFileControlDTO = fileControlService.getByCodeFileControl(codeFileControl);
-			
-			if (result) {
-				response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.OK);
-			} else {
-				response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.BAD_REQUEST);
-			}
-
 		} catch (Exception e) {
 
 			response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.INTERNAL_SERVER_ERROR);
@@ -371,7 +363,7 @@ public class SeizureController {
     	
     }
 	
-    
+    /*
     @PostMapping(value = "/{codeFileControl}/case/{idSeizure}/undoaccounting")
     @ApiOperation(value="Retroceder la contabilidad de una cuenta.")
     public ResponseEntity<String> undoAccounting(Authentication authentication,
@@ -386,15 +378,7 @@ public class SeizureController {
 
 			String userName = authentication.getName();
 		
-			result = accountingService.undoAccounting(codeFileControl, idSeizure, bankAccount.getCodeBankAccount(), userName);
-			
-			
-			if (result) {
-				response = new ResponseEntity<>(HttpStatus.OK);
-			} else {
-				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			}
-
+			accountingService.undoAccounting(codeFileControl, idSeizure, bankAccount.getCodeBankAccount(), userName);
 		} catch (Exception e) {
 
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -406,42 +390,8 @@ public class SeizureController {
 		return response;
     	
     }
-    
+    */
 
-    @PostMapping(value = "/accountingNote")
-    @ApiOperation(value="Tratamiento de la respuesta de Contabilidad (nota contable).")
-    public ResponseEntity<String> manageAccountingNoteSeizureCallback(Authentication authentication,
-    										  @RequestBody AccountingNote accountingNote){
-    	logger.info("SeizureController - manageAccountingNoteCallback - start");
-    	ResponseEntity<String> response = null;
-		boolean result = false;
-
-		try {
-
-			String userName = authentication.getName();
-		
-			result = accountingService.manageAccountingNoteSeizureCallback(accountingNote, userName);
-			
-			
-			if (result) {
-				response = new ResponseEntity<>(HttpStatus.OK);
-			} else {
-				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			}
-
-		} catch (Exception e) {
-
-			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-			logger.error("ERROR in doAccounting: ", e);
-		}
-		
-    	logger.info("SeizureController - manageAccountingNoteCallback - end");
-		return response;
-    	
-    }
-    
-    
 	@GetMapping("/notification/{idSeizure}/report")
 	@ApiOperation(value = "Devuelve un justificante de embargo")
 	public ResponseEntity<InputStreamResource> generateSeizureLetter(

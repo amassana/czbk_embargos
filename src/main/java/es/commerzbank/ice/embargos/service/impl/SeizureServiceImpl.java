@@ -1,16 +1,21 @@
 package es.commerzbank.ice.embargos.service.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.net.SocketTimeoutException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.*;
-
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.comun.lib.util.ValueConstants;
+import es.commerzbank.ice.datawarehouse.service.AccountService;
+import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
+import es.commerzbank.ice.embargos.domain.dto.*;
+import es.commerzbank.ice.embargos.domain.entity.*;
+import es.commerzbank.ice.embargos.domain.mapper.*;
+import es.commerzbank.ice.embargos.repository.*;
+import es.commerzbank.ice.embargos.service.SeizureService;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosUtils;
+import es.commerzbank.ice.embargos.utils.ICEDateUtils;
+import es.commerzbank.ice.embargos.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.util.JRLoader;
 import org.apache.commons.codec.Charsets;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -25,50 +30,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MimeTypeUtils;
 
-import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
-import es.commerzbank.ice.comun.lib.util.ICEException;
-import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
-import es.commerzbank.ice.datawarehouse.service.AccountService;
-import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
-import es.commerzbank.ice.embargos.domain.dto.SeizedBankAccountDTO;
-import es.commerzbank.ice.embargos.domain.dto.SeizureActionDTO;
-import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
-import es.commerzbank.ice.embargos.domain.dto.SeizureSaveDTO;
-import es.commerzbank.ice.embargos.domain.dto.SeizureStatusDTO;
-import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
-import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
-import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
-import es.commerzbank.ice.embargos.domain.entity.CuentaTrabaActuacion;
-import es.commerzbank.ice.embargos.domain.entity.Embargo;
-import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
-import es.commerzbank.ice.embargos.domain.entity.HCuentaTraba;
-import es.commerzbank.ice.embargos.domain.entity.HTraba;
-import es.commerzbank.ice.embargos.domain.entity.Traba;
-import es.commerzbank.ice.embargos.domain.mapper.HSeizedBankAccountMapper;
-import es.commerzbank.ice.embargos.domain.mapper.HSeizureMapper;
-import es.commerzbank.ice.embargos.domain.mapper.SeizedBankAccountActionMapper;
-import es.commerzbank.ice.embargos.domain.mapper.SeizedBankAccountMapper;
-import es.commerzbank.ice.embargos.domain.mapper.SeizureMapper;
-import es.commerzbank.ice.embargos.domain.mapper.SeizureStatusMapper;
-import es.commerzbank.ice.embargos.repository.FileControlRepository;
-import es.commerzbank.ice.embargos.repository.HSeizedBankAccountRepository;
-import es.commerzbank.ice.embargos.repository.HSeizedRepository;
-import es.commerzbank.ice.embargos.repository.SeizedBankAccountActionRepository;
-import es.commerzbank.ice.embargos.repository.SeizedBankAccountRepository;
-import es.commerzbank.ice.embargos.repository.SeizedRepository;
-import es.commerzbank.ice.embargos.repository.SeizureRepository;
-import es.commerzbank.ice.embargos.repository.SeizureStatusRepository;
-import es.commerzbank.ice.embargos.repository.SeizureSummaryBankAccountRepository;
-import es.commerzbank.ice.embargos.service.SeizureService;
-import es.commerzbank.ice.embargos.utils.EmbargosConstants;
-import es.commerzbank.ice.embargos.utils.EmbargosUtils;
-import es.commerzbank.ice.embargos.utils.ICEDateUtils;
-import es.commerzbank.ice.embargos.utils.ResourcesUtil;
-import net.sf.jasperreports.engine.util.JRLoader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.net.SocketTimeoutException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.*;
 
 @Service
 @Transactional(transactionManager = "transactionManager")
@@ -301,8 +273,6 @@ public class SeizureServiceImpl implements SeizureService {
 	
 	@Override
 	public boolean updateSeizedBankStatus(CuentaTraba cuentaTraba, Long codEstado, String userModif) {
-
-		logger.info("SeizureServiceImpl - updateSeizedBankStatus - start");
 		Traba traba = cuentaTraba.getTraba();
 		
 		BigDecimal fechaActualBigDec = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
@@ -326,8 +296,7 @@ public class SeizureServiceImpl implements SeizureService {
 		cuentaTraba.setFUltimaModificacion(fechaActualBigDec);
 								
 		seizedBankAccountRepository.save(cuentaTraba);	
-		
-		logger.info("SeizureServiceImpl - updateSeizedBankStatus - end");
+
 		return true;
 	}
 	
@@ -341,7 +310,6 @@ public class SeizureServiceImpl implements SeizureService {
 	@Override
 	public boolean updateSeizureStatus(Long idSeized, SeizureStatusDTO seizureStatusDTO,
 			String userModif) {
-		logger.info("SeizureServiceImpl - updateSeizureStatus - start");
 		Optional<Traba> trabaOpt = seizedRepository.findById(idSeized);
 
 		if (!trabaOpt.isPresent()) {
@@ -374,8 +342,7 @@ public class SeizureServiceImpl implements SeizureService {
 		} else {
 			return false;
 		}
-		
-		logger.info("SeizureServiceImpl - updateSeizureStatus - end");
+
 		return true;
 	}
 	

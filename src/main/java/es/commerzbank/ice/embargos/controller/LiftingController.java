@@ -1,25 +1,6 @@
 package es.commerzbank.ice.embargos.controller;
 
-import java.util.List;
-
-import es.commerzbank.ice.comun.lib.domain.dto.AccountingNote;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
-import es.commerzbank.ice.embargos.utils.EmbargosConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import es.commerzbank.ice.embargos.domain.dto.LiftingAuditDTO;
 import es.commerzbank.ice.embargos.domain.dto.LiftingDTO;
 import es.commerzbank.ice.embargos.domain.dto.LiftingManualDTO;
@@ -28,7 +9,18 @@ import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.LiftingService;
 import es.commerzbank.ice.embargos.utils.DownloadReportFile;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @CrossOrigin("*")
@@ -232,15 +224,7 @@ public class LiftingController {
 
 			String userName = authentication.getName();
 		
-			result = accountingService.sendAccountingLifting(codeFileControl, userName);
-			
-			
-			if (result) {
-				response = new ResponseEntity<>(HttpStatus.OK);
-			} else {
-				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			}
-
+			accountingService.sendAccountingLifting(codeFileControl, userName);
 		} catch (Exception e) {
 
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -296,39 +280,6 @@ public class LiftingController {
 
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-	}
-
-	@PostMapping(value = "/accountingNote")
-	@ApiOperation(value="Tratamiento de la respuesta de Contabilidad (nota contable).")
-	public ResponseEntity<String> manageAccountingNoteLiftingCallback(Authentication authentication,
-																	  @RequestBody AccountingNote accountingNote){
-		logger.info("SeizureController - manageAccountingNoteLiftingCallback - start");
-		ResponseEntity<String> response = null;
-		boolean result = false;
-
-		try {
-
-			String userName = authentication.getName();
-
-			result = accountingService.manageAccountingNoteLiftingCallback(accountingNote, userName);
-
-
-			if (result) {
-				response = new ResponseEntity<>(HttpStatus.OK);
-			} else {
-				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			}
-
-		} catch (Exception e) {
-
-			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-			logger.error("ERROR in doAccounting: ", e);
-		}
-
-		logger.info("SeizureController - manageAccountingNoteLiftingCallback - end");
-		return response;
-
 	}
 	
 	@PostMapping(value = "/manual")

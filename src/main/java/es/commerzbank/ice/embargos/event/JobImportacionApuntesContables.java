@@ -37,16 +37,16 @@ public class JobImportacionApuntesContables implements Job
 			{
 				try
 				{
-					logger.info("Detectado nuevo apunte contable "+ apunteContable.getExtraInfo1() +"-"+ apunteContable.getExtraInfo3());
+					logger.info("Detectado nuevo apunte contable "+ apunteContable.getExtraInfo1() +"-"+ apunteContable.getExtraInfo2());
 
 					if (EmbargosConstants.APUNTES_CONTABLES_TIPO_TRABA.equals(apunteContable.getExtraInfo1()))
-						accountingService.manageAccountingNoteSeizureCallbackId(apunteContable.getNif(), apunteContable.getCuentaDebito(), apunteContable.getImporte(), apunteContable.getReferencia1(), apunteContable.getReferencia2());
+						accountingService.seizureCallback(Long.valueOf(apunteContable.getExtraInfo2()));
 					else if (EmbargosConstants.APUNTES_CONTABLES_TIPO_LEVANTAMIENTO.equals(apunteContable.getExtraInfo1()))
-						accountingService.manageAccountingNoteLiftingCallbackId(apunteContable.getNif(), apunteContable.getCuentaCredito(), apunteContable.getImporte(), apunteContable.getReferencia1(), apunteContable.getReferencia2());
+						accountingService.liftingCallback((Long.valueOf(apunteContable.getExtraInfo2())));
 					else if (EmbargosConstants.APUNTES_CONTABLES_TIPO_TESORERIA.equals(apunteContable.getExtraInfo1()))
-						accountingService.manageAccountingNoteFinalFileCallbackId(apunteContable.getReferencia1());
+						accountingService.transferenciaFinalOrganismoCallback((Long.valueOf(apunteContable.getExtraInfo2())));
 				}
-				catch (ICEException e)
+				catch (Exception e)
 				{
 					logger.error("Error procesando un apunte contable", e);
 				}

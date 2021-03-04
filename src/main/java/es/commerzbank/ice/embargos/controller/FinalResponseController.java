@@ -1,24 +1,5 @@
 package es.commerzbank.ice.embargos.controller;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import es.commerzbank.ice.comun.lib.domain.dto.AccountingNote;
 import es.commerzbank.ice.comun.lib.security.Permissions;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
@@ -32,6 +13,17 @@ import es.commerzbank.ice.embargos.service.FinalResponseService;
 import es.commerzbank.ice.embargos.utils.DownloadReportFile;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 @CrossOrigin("*")
 @RestController
@@ -254,17 +246,10 @@ public class FinalResponseController {
 
 			String userName = authentication.getName();
 		
-			result = accountingService.sendAccountingFinalFile(codeFileControl, userName);
+			accountingService.sendAccountingFinalFile(codeFileControl, userName);
 			
 			//Se obtiene el fileControl que se va a retornar del Fichero Final:
 			resultFileControlDTO = fileControlService.getByCodeFileControl(codeFileControl);
-			
-			if (result) {
-				response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.OK);
-			} else {
-				response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.BAD_REQUEST);
-			}
-
 		} catch (Exception e) {
 
 			response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.BAD_REQUEST);
@@ -276,41 +261,4 @@ public class FinalResponseController {
 		return response;
     	
     }
-
-	
-    @PostMapping(value = "/accountingNote")
-    @ApiOperation(value="Tratamiento de la respuesta de Contabilidad (nota contable) de un Fichero Final.")
-    public ResponseEntity<String> manageAccountingNoteFinalResponseCallback(Authentication authentication,
-    										  @RequestBody AccountingNote accountingNote){
-		
-		
-    	logger.info("SeizureController - manageAccountingNoteFinalResponseCallback - start");
-    	ResponseEntity<String> response = null;
-		boolean result = false;
-
-		try {
-
-			String userName = authentication.getName();
-		
-			result = accountingService.manageAccountingNoteFinalFileCallback(accountingNote, userName);
-			
-			
-			if (result) {
-				response = new ResponseEntity<>(HttpStatus.OK);
-			} else {
-				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			}
-
-		} catch (Exception e) {
-
-			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-			logger.error("ERROR in manageAccountingNoteFinalResponseCallback: ", e);
-		}
-		
-    	logger.info("SeizureController - manageAccountingNoteFinalResponseCallback - end");
-		return response;
-		
-
-	}
 }
