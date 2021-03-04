@@ -28,6 +28,7 @@ commerzbank:
       configuration-poll-time-in-seconds: 60
       monitoring-interval-in-milliseconds: 10000
       suffix-file-filter-pet: pet
+      suffix-file-filter-res: res
       suffix-file-filter-inf: inf
       suffix-file-filter-emb: emb
       suffix-file-filter-tra: tra
