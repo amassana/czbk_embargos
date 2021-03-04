@@ -77,7 +77,7 @@ public class AccountingServiceImpl implements AccountingService{
 	@Override
 	public boolean sendAccountingSeizure(Long codeFileControl, String userName) throws ICEException, Exception {
 	
-		logger.info("sendAccountingSeizure - start");	
+		logger.info("sendAccountingSeizure - start "+ codeFileControl);
 		
 		//Se obtiene el fichero de control:
 		Optional<ControlFichero> fileControlOpt = fileControlRepository.findById(codeFileControl);
@@ -147,7 +147,8 @@ public class AccountingServiceImpl implements AccountingService{
 		}
 		
 		logger.info("sendAccountingSeizure - end");
-		return isAccountingSent;
+
+		return true;
 	}
 
 	

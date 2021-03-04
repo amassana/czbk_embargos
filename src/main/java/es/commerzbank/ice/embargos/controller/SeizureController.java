@@ -1,8 +1,15 @@
 package es.commerzbank.ice.embargos.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import es.commerzbank.ice.comun.lib.domain.dto.AccountingNote;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.util.ICEException;
+import es.commerzbank.ice.embargos.domain.dto.*;
+import es.commerzbank.ice.embargos.service.AccountingService;
+import es.commerzbank.ice.embargos.service.FileControlService;
+import es.commerzbank.ice.embargos.service.SeizureService;
+import es.commerzbank.ice.embargos.utils.DownloadReportFile;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,30 +17,10 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import es.commerzbank.ice.comun.lib.domain.dto.AccountingNote;
-import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
-import es.commerzbank.ice.comun.lib.util.ICEException;
-import es.commerzbank.ice.embargos.domain.dto.BankAccountDTO;
-import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
-import es.commerzbank.ice.embargos.domain.dto.SeizedBankAccountDTO;
-import es.commerzbank.ice.embargos.domain.dto.SeizureActionDTO;
-import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
-import es.commerzbank.ice.embargos.domain.dto.SeizureSaveDTO;
-import es.commerzbank.ice.embargos.domain.dto.SeizureStatusDTO;
-import es.commerzbank.ice.embargos.service.AccountingService;
-import es.commerzbank.ice.embargos.service.FileControlService;
-import es.commerzbank.ice.embargos.service.SeizureService;
-import es.commerzbank.ice.embargos.utils.DownloadReportFile;
-import es.commerzbank.ice.embargos.utils.EmbargosConstants;
-import io.swagger.annotations.ApiOperation;
+import java.util.ArrayList;
+import java.util.List;
 
 @CrossOrigin("*")
 @RestController
@@ -374,7 +361,7 @@ public class SeizureController {
 
 		} catch (Exception e) {
 
-			response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.INTERNAL_SERVER_ERROR);
 
 			logger.error("ERROR in doAccounting: ", e);
 		}
