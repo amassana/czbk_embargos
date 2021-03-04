@@ -126,6 +126,9 @@ public class AEATFilePoller
                 case EmbargosConstants.TIPO_FICHERO_ERRORES:
                     aeatSeizedResultService.tratarFicheroErrores(processingFile, originalName, processedFile);
                     break;
+                case EmbargosConstants.TIPO_FICHERO_RESULTADO:
+                    aeatSeizedResultService.tratarFicheroErrores(processingFile, originalName, processedFile);
+                    break;
                 default:
             }
 
