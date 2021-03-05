@@ -164,17 +164,8 @@ public class AccountingServiceImpl implements AccountingService{
 
 		String oficinaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA);
 		String cuentaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);
-		
-		Long sucursal = null;
-		try {
-			Optional<Sucursal> sucursalOpt = officeCRepo.findByNumeroSucursal(new BigDecimal(cuentaRecaudacion));
-			if (sucursalOpt.isPresent()) {
-				sucursal = sucursalOpt.get().getCodSucursal();
-			}
-		} catch (Exception e) {
-			logger.error("sendAccountingAEATCuaderno63 - error obteniendo código de oficina", e);	
-		}
-		
+		Long sucursal = getCodSucursal(oficinaRecaudacion);
+
 		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = null;
 
 		//Se obtienen la trabas asociadas al fichero:
@@ -212,16 +203,7 @@ public class AccountingServiceImpl implements AccountingService{
 	private void sendSeizureCGPJ(ControlFichero controlFichero, String userName) throws ICEException, Exception {
 		String oficinaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA);
 		String cuentaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);
-		
-		Long sucursal = null;
-		try {
-			Optional<Sucursal> sucursalOpt = officeCRepo.findByNumeroSucursal(new BigDecimal(oficinaRecaudacion));
-			if (sucursalOpt.isPresent()) {
-				sucursal = sucursalOpt.get().getCodSucursal();
-			}
-		} catch (Exception e) {
-			logger.error("sendAccountingAEATCuaderno63 - error obteniendo código de oficina", e);	
-		}
+		Long sucursal = getCodSucursal(oficinaRecaudacion);
 		
 		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = null;
 
@@ -663,18 +645,8 @@ public class AccountingServiceImpl implements AccountingService{
 		//Obtencion de datos para setear:
 		String oficinaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA);
 		String cuentaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);
-
+		Long sucursal = getCodSucursal(oficinaRecaudacion);
 		String cuentaEntidadComunicadora = entidadComunicadora.getCuenta();
-		
-		Long sucursal = null;
-		try {
-			Optional<Sucursal> sucursalOpt = officeCRepo.findByNumeroSucursal(new BigDecimal(oficinaRecaudacion));
-			if (sucursalOpt.isPresent()) {
-				sucursal = sucursalOpt.get().getCodSucursal();
-			}
-		} catch (Exception e) {
-			logger.error("sendAccountingAEATCuaderno63 - error obteniendo código de oficina", e);	
-		}
 		
 		String divisa = EmbargosConstants.ISO_MONEDA_EUR;
 		BigDecimal cambio = null;
