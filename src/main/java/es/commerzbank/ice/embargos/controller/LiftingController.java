@@ -1,12 +1,10 @@
 package es.commerzbank.ice.embargos.controller;
 
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
-import es.commerzbank.ice.embargos.domain.dto.LiftingAuditDTO;
-import es.commerzbank.ice.embargos.domain.dto.LiftingDTO;
-import es.commerzbank.ice.embargos.domain.dto.LiftingManualDTO;
-import es.commerzbank.ice.embargos.domain.dto.LiftingStatusDTO;
+import es.commerzbank.ice.embargos.domain.dto.*;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.service.AccountingService;
+import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.LiftingService;
 import es.commerzbank.ice.embargos.utils.DownloadReportFile;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
@@ -38,6 +36,9 @@ public class LiftingController {
 
 	@Autowired
 	private GeneralParametersService generalParametersService;
+
+	@Autowired
+	private FileControlService fileControlService;
 
 	@GetMapping(value = "/{codeFileControl}")
 	@ApiOperation(value = "Devuelve la lista de casos de levamtamientos")
@@ -214,17 +215,24 @@ public class LiftingController {
 	
 	@GetMapping(value = "/{codeFileControl}/accounting")
     @ApiOperation(value="Envio de datos a contabilidad.")
-    public ResponseEntity<String> sendAccounting(Authentication authentication,
-    										  @PathVariable("codeFileControl") Long codeFileControl){
+    public ResponseEntity<FileControlDTO> sendAccounting(Authentication authentication,
+														 @PathVariable("codeFileControl") Long codeFileControl){
     	logger.info("SeizureController - sendAccounting - start");
-    	ResponseEntity<String> response = null;
+    	ResponseEntity<FileControlDTO> response = null;
 		boolean result = false;
+		
+		FileControlDTO resultFileControlDTO = null;
 
 		try {
 
 			String userName = authentication.getName();
 		
 			accountingService.sendAccountingLifting(codeFileControl, userName);
+
+			//Se obtiene el fileControl que se va a retornar del Fichero Final:
+			resultFileControlDTO = fileControlService.getByCodeFileControl(codeFileControl);
+
+			response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.OK);
 		} catch (Exception e) {
 
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);

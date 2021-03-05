@@ -250,6 +250,8 @@ public class FinalResponseController {
 			
 			//Se obtiene el fileControl que se va a retornar del Fichero Final:
 			resultFileControlDTO = fileControlService.getByCodeFileControl(codeFileControl);
+
+			response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.OK);
 		} catch (Exception e) {
 
 			response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.BAD_REQUEST);

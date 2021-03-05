@@ -360,6 +360,8 @@ public class SeizureController {
 			
 			//Se obtiene el fileControl que se va a retornar:
 			resultFileControlDTO = fileControlService.getByCodeFileControl(codeFileControl);
+
+			response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.OK);
 		} catch (Exception e) {
 
 			response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.INTERNAL_SERVER_ERROR);
