@@ -43,8 +43,8 @@ public class SeizureController {
     @GetMapping(value = "/{codeFileControl}")
     @ApiOperation(value="Devuelve la lista de embargos para una petición de embargo.")
     public ResponseEntity<List<SeizureDTO>> getSeizureListByCodeFileControl(Authentication authentication,
-                                                                                 @PathVariable("codeFileControl") Long codeFileControl){
-		logger.info("SeizureController - getSeizureListByCodeFileControl - start");
+                                                                                 @PathVariable("codeFileControl") Long codeFileControl)
+	{
     	ResponseEntity<List<SeizureDTO>> response = null;
     	List<SeizureDTO> result = new ArrayList<SeizureDTO>();
     	
@@ -59,16 +59,15 @@ public class SeizureController {
 			
 			logger.error("ERROR in getSeizureListByCodeFileControl: ", e);
 		}	
-		
-    	logger.info("SeizureController - getSeizureListByCodeFileControl - end");
+
 		return response;
 
     }
     
     @GetMapping(value = "/{codeFileControl}/case/{idSeizure}")
     @ApiOperation(value="Devuelve el embargo a partir de su identificador.")
-    public ResponseEntity<SeizureDTO> getSeizureById(Authentication authentication, @PathVariable("idSeizure") Long idSeizure){
-    	logger.info("SeizureController - getSeizureById - start");
+    public ResponseEntity<SeizureDTO> getSeizureById(Authentication authentication, @PathVariable("idSeizure") Long idSeizure)
+	{
     	ResponseEntity<SeizureDTO> response = null;
     	SeizureDTO result = null;
     	
@@ -84,9 +83,7 @@ public class SeizureController {
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 			
 			logger.error("ERROR in getSeizureListByCodeFileControl: ", e);
-		}	
-		
-    	logger.info("SeizureController - getSeizureById - end");
+		}
 		return response;
     	
     }
@@ -96,7 +93,6 @@ public class SeizureController {
     public ResponseEntity<List<SeizedBankAccountDTO>> getBankAccountListBySeizure(Authentication authentication,
                                                                          		@PathVariable("codeFileControl") Long codeFileControl,
                                                                          		@PathVariable("idSeizure") Long idSeizure){
-    	logger.info("SeizureController - getBankAccountListBySeizure - start");
     	ResponseEntity<List<SeizedBankAccountDTO>> response = null;
     	List<SeizedBankAccountDTO> result = new ArrayList<>();
     	
@@ -110,9 +106,8 @@ public class SeizureController {
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 			
 			logger.error("ERROR in getBankAccountListByCodeFileControlAndPetitionCase: ", e);
-		}	
-    	
-    	logger.info("SeizureController - getBankAccountListBySeizure - end");
+		}
+
         return response;
     }
 
@@ -121,7 +116,6 @@ public class SeizureController {
     public ResponseEntity<List<SeizureActionDTO>> getSeizureActions(Authentication authentication,
     																@PathVariable("codeFileControl") Long codeFileControl)
     {
-    	logger.info("SeizureController - getSeizureActions - start");
         ResponseEntity<List<SeizureActionDTO>> response = null;
     	List<SeizureActionDTO> result = new ArrayList<>();
     	
@@ -135,9 +129,8 @@ public class SeizureController {
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 			
 			logger.error("ERROR in getSeizureActions: ", e);
-		}	
+		}
 
-    	logger.info("SeizureController - getSeizureActions - end");
         return response;
     	
     }
@@ -146,8 +139,6 @@ public class SeizureController {
     @ApiOperation(value="Devuelve el listado de estados posibles de las trabas.")
     public ResponseEntity<List<SeizureStatusDTO>> getSeizureStatusList(Authentication authentication)
     {
-
-    	logger.info("SeizureController - getSeizureStatusList - start");
         ResponseEntity<List<SeizureStatusDTO>> response = null;
 
         List<SeizureStatusDTO> result = new ArrayList<>();
@@ -164,8 +155,7 @@ public class SeizureController {
 			
 			logger.error("ERROR in getSeizureStatusList: ", e);
 		}	
-        
-    	logger.info("SeizureController - getSeizureStatusList - end");
+
         return response;
         
     }
@@ -175,8 +165,9 @@ public class SeizureController {
     public ResponseEntity<String> updateSeizedBankAccountList(Authentication authentication,
     														  @PathVariable("codeFileControl") Long codeFileControl,
     														  @PathVariable("idSeizure") Long idSeizure,
-    														  @RequestBody SeizureSaveDTO seizureSave){
-    	logger.info("SeizureController - updateSeizedBankAccountList - start");
+    														  @RequestBody SeizureSaveDTO seizureSave)
+	{
+		logger.info("SeizureController - Actualizando embargo "+ codeFileControl +"-"+ idSeizure);
 		ResponseEntity<String> response = null;
 		boolean result = false;
 
@@ -199,7 +190,6 @@ public class SeizureController {
 			logger.error("ERROR in updateSeizedBankAccountList: ", e);
 		}
 
-		logger.info("SeizureController - updateSeizedBankAccountList - end");
 		return response;
 
     }
@@ -210,8 +200,9 @@ public class SeizureController {
     public ResponseEntity<String> updateSeizureStatus(Authentication authentication,
     												  @PathVariable("codeFileControl") Long codeFileControl,
     												  @PathVariable("idSeizure") Long idSeizure,
-    												  @RequestBody SeizureStatusDTO seizureStatus){
-    	logger.info("SeizureController - updateSeizureStatus - start");
+    												  @RequestBody SeizureStatusDTO seizureStatus)
+	{
+		logger.info("SeizureController - Actualizando embargo "+ codeFileControl +"-"+ idSeizure +" cambio de estado");
 		ResponseEntity<String> response = null;
 		boolean result = false;
 
@@ -234,7 +225,6 @@ public class SeizureController {
 			logger.error("ERROR in updateSeizureStatus: ", e);
 		}
 
-		logger.info("SeizureController - updateSeizureStatus - end");
 		return response;
 
     }
@@ -245,7 +235,9 @@ public class SeizureController {
 													  @PathVariable("codeFileControl") Long codeFileControl,
 													  @PathVariable("idSeizure") Long idSeizure,
 													  @PathVariable("idSeizure") Long idAccount,
-													  @RequestBody SeizureStatusDTO seizureStatus) {
+													  @RequestBody SeizureStatusDTO seizureStatus)
+	{
+		logger.info("SeizureController - Actualizando embargo "+ codeFileControl +"-"+ idSeizure +" cambiando de estado la cuenta "+ idAccount);
     	return new ResponseEntity<>(HttpStatus.OK);
 	}
     
@@ -289,8 +281,8 @@ public class SeizureController {
     @ApiOperation(value="Devuelve el histórico de cambios")
     public ResponseEntity<List<SeizureDTO>> getAuditSeizure(Authentication authentication,
     												  @PathVariable("codeFileControl") Long codeFileControl,
-    												  @PathVariable("idSeizure") Long idSeizure){
-    	logger.info("SeizureController - getAuditSeizure - start");
+    												  @PathVariable("idSeizure") Long idSeizure)
+	{
 		ResponseEntity<List<SeizureDTO>> response = null;
 		List<SeizureDTO> result = new ArrayList<>();
 
@@ -305,9 +297,8 @@ public class SeizureController {
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 			
 			logger.error("ERROR in getAudit: ", e);
-		}	
-        
-		logger.info("SeizureController - getAuditSeizure - end");
+		}
+
         return response;
 
     }
@@ -317,8 +308,8 @@ public class SeizureController {
     public ResponseEntity<List<SeizedBankAccountDTO>> getAudit(Authentication authentication,
     												  @PathVariable("codeFileControl") Long codeFileControl,
     												  @PathVariable("idSeizure") Long idSeizure,
-    												  @PathVariable("codAudit") Long codAudit) {
-    	logger.info("SeizureController - getAudit - start");
+    												  @PathVariable("codAudit") Long codAudit)
+	{
 		ResponseEntity<List<SeizedBankAccountDTO>> response = null;
 		List<SeizedBankAccountDTO> result = new ArrayList<>();
 
@@ -335,7 +326,6 @@ public class SeizureController {
 			logger.error("ERROR in getAudit: ", e);
 		}
 
-		logger.info("SeizureController - getAudit - end");
 		return response;
 	}
 
@@ -343,10 +333,9 @@ public class SeizureController {
     @PostMapping(value = "/{codeFileControl}/accounting")
     @ApiOperation(value="Envio de datos a contabilidad.")
     public ResponseEntity<FileControlDTO> sendAccounting(Authentication authentication,
-    										  @PathVariable("codeFileControl") Long codeFileControl){
-    	
-    	logger.info("SeizureController - sendAccounting - start");
-    	
+    										  @PathVariable("codeFileControl") Long codeFileControl)
+	{
+		logger.info("SeizureController - Se contabilizan las trabas de "+ codeFileControl);
     	ResponseEntity<FileControlDTO> response = null;
 		boolean result = false;
 
@@ -369,7 +358,6 @@ public class SeizureController {
 			logger.error("ERROR in doAccounting: ", e);
 		}
 
-		logger.info("SeizureController - sendAccounting - end");
 		return response;
     	
     }
@@ -406,9 +394,8 @@ public class SeizureController {
 	@GetMapping("/notification/{idSeizure}/report")
 	@ApiOperation(value = "Devuelve un justificante de embargo")
 	public ResponseEntity<InputStreamResource> generateSeizureLetter(
-			@PathVariable("idSeizure") Integer idSeizure) {
-    	logger.info("SeizureController - generateSeizureLetter - start");
-
+			@PathVariable("idSeizure") Integer idSeizure)
+	{
     	try {
 			DownloadReportFile.setTempFileName("seizure-letter");
 
@@ -416,8 +403,7 @@ public class SeizureController {
 
 			// seizure service falta
 			DownloadReportFile.writeFile(seizureService.generateSeizureLetter(idSeizure));
-			
-			logger.info("SeizureController - generateSeizureLetter - end");
+
 			return DownloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
@@ -429,9 +415,8 @@ public class SeizureController {
 	
 	@GetMapping("/{codeFileControl}/report")
 	@ApiOperation(value = "Devuelve un fichero de resumen trabas fase 3")
-	public ResponseEntity<InputStreamResource> generateSeizureRequestF3(@PathVariable("codeFileControl") Integer codControlFichero) {
-		logger.info("SeizureController - generateSeizureRequestF3 - start");
-
+	public ResponseEntity<InputStreamResource> generateSeizureRequestF3(@PathVariable("codeFileControl") Integer codControlFichero)
+	{
 		try {
 			DownloadReportFile.setTempFileName("seizure-request");
 
@@ -440,7 +425,6 @@ public class SeizureController {
 			// seizure service falta
 			DownloadReportFile.writeFile(seizureService.generateSeizureRequestF3(codControlFichero));
 
-			logger.info("SeizureController - generateSeizureRequestF3 - end");
 			return DownloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
@@ -453,9 +437,8 @@ public class SeizureController {
 	@GetMapping("/response/{fileControl}/report")
 	@ApiOperation(value = "Devuelve un fichero de resumen trabas fase 4")
 	public ResponseEntity<InputStreamResource> generateSeizureResponseF4(
-			@PathVariable("fileControl") Integer codControlFichero) {
-		logger.info("SeizureController - generateSeizureResponseF4 - start");
-
+			@PathVariable("fileControl") Integer codControlFichero)
+	{
 		try {
 			DownloadReportFile.setTempFileName("seizure-response");
 
@@ -464,7 +447,6 @@ public class SeizureController {
 			// seizure service falta
 			DownloadReportFile.writeFile(seizureService.generateSeizureResponseF4(codControlFichero));
 
-			logger.info("SeizureController - generateSeizureResponseF4 - end");
 			return DownloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {

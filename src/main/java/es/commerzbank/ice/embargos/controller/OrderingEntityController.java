@@ -1,9 +1,12 @@
 package es.commerzbank.ice.embargos.controller;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import es.commerzbank.ice.comun.lib.security.Permissions;
+import es.commerzbank.ice.embargos.domain.dto.OrderingEntity;
+import es.commerzbank.ice.embargos.domain.dto.OrderingEntityCsv;
+import es.commerzbank.ice.embargos.domain.mapper.OrderingEntityMapper;
+import es.commerzbank.ice.embargos.service.OrderingEntityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,25 +16,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.opencsv.CSVWriter;
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
-
-import es.commerzbank.ice.comun.lib.security.Permissions;
-import es.commerzbank.ice.embargos.domain.dto.OrderingEntity;
-import es.commerzbank.ice.embargos.domain.dto.OrderingEntityCsv;
-import es.commerzbank.ice.embargos.domain.mapper.OrderingEntityMapper;
-import es.commerzbank.ice.embargos.service.OrderingEntityService;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @CrossOrigin("*")
 @RestController
@@ -70,7 +58,7 @@ public class OrderingEntityController {
 		} else {
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		
+
 		logger.info("OrderingEntityController - create - end");
 		return response;
 	}
@@ -99,7 +87,7 @@ public class OrderingEntityController {
 		} else {
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		
+
 		logger.info("OrderingEntityController - update - end");
 		return response;
 	}
@@ -127,7 +115,7 @@ public class OrderingEntityController {
 		} else {
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		
+
 		logger.info("OrderingEntityController - delete - end");
 		return response;
 	}
@@ -135,7 +123,6 @@ public class OrderingEntityController {
 	@GetMapping(value = "/{idOrderingEntity}",
 	        produces = { "application/json" })
 	public ResponseEntity<OrderingEntity> view(Authentication authentication, @PathVariable("idOrderingEntity") Long idOrderingEntity) {
-		logger.info("OrderingEntityController - view - start");
 		ResponseEntity<OrderingEntity> response = null;
 		OrderingEntity result = null;
 		
@@ -151,15 +138,12 @@ public class OrderingEntityController {
 		} else {
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 		}
-		
-		logger.info("OrderingEntityController - view - end");
+
 		return response;
 	}
 	
 	@PostMapping(value = "/export")
 	public void exportCSV(Authentication authentication, HttpServletResponse response) throws Exception {
-
-		logger.info("OrderingEntityController - export - start");
 		try {
 	        //set file name and content type
 	        response.setContentType("text/csv");
@@ -189,13 +173,11 @@ public class OrderingEntityController {
 		} catch(Exception e) {
 			logger.error("Error - OrderingEntityController - export", e);
 		}
-        logger.info("OrderingEntityController - export - end");
 	}
 	
 	@PostMapping(value = "/filter",
 			produces = {"application/json"})
 	public ResponseEntity<Page<OrderingEntity>> filter(Authentication authentication, Pageable dataPage) {
-		logger.info("OrderingEntityController - filter - start");
 		ResponseEntity<Page<OrderingEntity>> response = null;
 		Page<OrderingEntity> list = null;
 		
@@ -210,15 +192,13 @@ public class OrderingEntityController {
 		} else {
 			response = new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
 		}
-		
-		logger.info("OrderingEntityController - filter - end");
+
 		return response;
 	}
 	
 	@GetMapping(value = "/listAll",
 			produces = {"application/json"})
 	public ResponseEntity<List<OrderingEntity>> listAll(Authentication authentication) {
-		logger.info("OrderingEntityController - listAll - start");
 		ResponseEntity<List<OrderingEntity>> response = null;
 		List<OrderingEntity> list = null;
 		
@@ -233,8 +213,7 @@ public class OrderingEntityController {
 		} else {
 			response = new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
 		}
-		
-		logger.info("OrderingEntityController - listAll - end");
+
 		return response;
 	}
 }

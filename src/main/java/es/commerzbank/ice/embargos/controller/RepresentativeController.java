@@ -1,10 +1,10 @@
 package es.commerzbank.ice.embargos.controller;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
-
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import es.commerzbank.ice.comun.lib.security.Permissions;
+import es.commerzbank.ice.embargos.domain.dto.Representative;
+import es.commerzbank.ice.embargos.service.RepresentativeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,22 +14,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.opencsv.CSVWriter;
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
-
-import es.commerzbank.ice.comun.lib.security.Permissions;
-import es.commerzbank.ice.embargos.domain.dto.Representative;
-import es.commerzbank.ice.embargos.service.RepresentativeService;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -129,7 +118,6 @@ public class RepresentativeController {
 	@GetMapping(value = "/representative/{idRepresentative}",
 	        produces = { "application/json" })
 	public ResponseEntity<Representative> view(Authentication authentication, @PathVariable("idRepresentative") Long idRepresentative) {
-		logger.info("RepresentativeController - view - start");
 		ResponseEntity<Representative> response = null;
 		Representative result = null;
 		
@@ -145,15 +133,13 @@ public class RepresentativeController {
 		} else {
 			response = new ResponseEntity<Representative>(result, HttpStatus.BAD_REQUEST);
 		}
-		
-		logger.info("RepresentativeController - view - end");
+
 		return response;
 	}
 	
 	@PostMapping(value = "/representative/export")
 	public void exportCSV(Authentication authentication, @RequestBody Map<String, Object> parametros, HttpServletResponse response) throws Exception {
 
-		logger.info("RepresentativeController - export - start");
 		try {
 	        //set file name and content type
 	        response.setContentType("text/csv");
@@ -179,7 +165,6 @@ public class RepresentativeController {
 		} catch(Exception e) {
 			logger.error("Error - RepresentativeController - export", e);
 		}
-        logger.info("RepresentativeController - export - end");
 	}
 	
 	@PostMapping(value = "/representative/filter",
@@ -208,7 +193,6 @@ public class RepresentativeController {
 	@GetMapping(value = "/representative/listAll",
 			produces = {"application/json"})
 	public ResponseEntity<List<Representative>> listAll(Authentication authentication) {
-		logger.info("RepresentativeController - listAll - start");
 		ResponseEntity<List<Representative>> response = null;
 		List<Representative> list = null;
 		
@@ -223,8 +207,7 @@ public class RepresentativeController {
 		} else {
 			response = new ResponseEntity<List<Representative>>(list, HttpStatus.BAD_REQUEST);
 		}
-		
-		logger.info("RepresentativeController - listAll - end");
+
 		return response;
 	}
 }

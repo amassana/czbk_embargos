@@ -1,14 +1,18 @@
 package es.commerzbank.ice.embargos.controller;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import es.commerzbank.ice.comun.lib.security.Permissions;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.embargos.domain.dto.*;
+import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
+import es.commerzbank.ice.embargos.service.FileControlService;
+import es.commerzbank.ice.embargos.service.FileControlStatusService;
+import es.commerzbank.ice.embargos.service.FileTypeService;
+import es.commerzbank.ice.embargos.utils.DownloadReportFile;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.OfficeUtils;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,33 +26,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
-
-import es.commerzbank.ice.comun.lib.security.Permissions;
-import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
-import es.commerzbank.ice.embargos.domain.dto.FileControlCsvDTO;
-import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
-import es.commerzbank.ice.embargos.domain.dto.FileControlFiltersDTO;
-import es.commerzbank.ice.embargos.domain.dto.FileControlStatusDTO;
-import es.commerzbank.ice.embargos.domain.dto.FileControlTypeDTO;
-import es.commerzbank.ice.embargos.domain.dto.ReportParamsDTO;
-import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
-import es.commerzbank.ice.embargos.service.FileControlService;
-import es.commerzbank.ice.embargos.service.FileControlStatusService;
-import es.commerzbank.ice.embargos.service.FileTypeService;
-import es.commerzbank.ice.embargos.utils.DownloadReportFile;
-import es.commerzbank.ice.embargos.utils.EmbargosConstants;
-import io.swagger.annotations.ApiOperation;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 @CrossOrigin("*")
 @RestController
@@ -76,9 +61,9 @@ public class FileControlController {
 	private OfficeUtils officeUtils;
 	
 	@PostMapping(value = "/export")
-	public void exportCSV(Authentication authentication, @RequestBody FileControlFiltersDTO fileControlFilters, HttpServletResponse response) throws Exception {
-
-		logger.info("FileControlController - export - start");
+	public void exportCSV(Authentication authentication, @RequestBody FileControlFiltersDTO fileControlFilters, HttpServletResponse response)
+			throws Exception
+	{
 		try {
 	        //set file name and content type
 	        response.setContentType("text/csv");
@@ -107,7 +92,6 @@ public class FileControlController {
 		} catch(Exception e) {
 			logger.error("Error - FileControlController - export", e);
 		}
-        logger.info("FileControlController - export - end");
 	}
 	
 	@PostMapping(value = "/filter",
@@ -181,7 +165,6 @@ public class FileControlController {
 	//		consumes = { "application/json" })
 	public ResponseEntity<List<FileControlDTO>> getAuditByFileControl(Authentication authentication,
 			@PathVariable("codeFileControl") Long codeFileControl){
-		logger.info("FileControlController - getAuditByFileControl - start");
 		ResponseEntity<List<FileControlDTO>> response = null;
 		List<FileControlDTO> result = null;
 	
@@ -197,8 +180,7 @@ public class FileControlController {
 			
 			logger.error("ERROR in getAuditByFileControl: ", e);
 		}
-		
-		logger.info("FileControlController - getAuditByFileControl - end");
+
 		return response;
 	}
 	
@@ -206,7 +188,7 @@ public class FileControlController {
 	@ApiOperation(value = "Tramitacion de un archivo.")
 	public ResponseEntity<FileControlDTO> tramitar (Authentication authentication,
 			 @PathVariable("codeFileControl") Long codeFileControl){
-		logger.info("FileControlController - tramitar - start");
+		logger.info("FileControlController - tramitar "+ codeFileControl);
 		ResponseEntity<FileControlDTO> response = null;
 		Boolean result = false;
 		
@@ -243,7 +225,9 @@ public class FileControlController {
 				response = new ResponseEntity<>(resultFileControlDTO, HttpStatus.OK);
 			} else {
 				response = new ResponseEntity<>(resultFileControlDTO, HttpStatus.BAD_REQUEST);
-			}	
+			}
+
+			logger.info("FileControlController - tramitar "+ codeFileControl +" "+ result);
 		
 		} catch (Exception e) {
 			
@@ -251,10 +235,8 @@ public class FileControlController {
 			
 			logger.error("ERROR in tramitar: ", e);
 		}
-		
-		logger.info("FileControlController - tramitar - end");
+
 		return response;
-		
 	}
 	
 	//TODO: pendiente de ser deprecada (se utilizara updateFileControlStatus)
@@ -263,7 +245,7 @@ public class FileControlController {
 	public ResponseEntity<String> updateFileControl(Authentication authentication,
 																  @PathVariable("codeFileControl") Long codeFileControl,
 																  @RequestBody FileControlDTO fileControl){
-		logger.info("FileControlController - updateFileControl - start");
+		logger.info("FileControlController - updateFileControl "+ codeFileControl);
 		ResponseEntity<String> response = null;
 		boolean result = true;
 		
@@ -289,14 +271,13 @@ public class FileControlController {
 		logger.info("FileControlController - updateFileControl - end");
 		return response;
 	}
-	
-	
+
 	@PostMapping(value = "/{codeFileControl}/status")
 	@ApiOperation(value = "Cambia el estado de CONTROL_FICHERO.")
 	public ResponseEntity<String> updateFileControlStatus(Authentication authentication,
 	  		@PathVariable("codeFileControl") Long codeFileControl,
 	  		@RequestBody FileControlStatusDTO fileControlStatus){
-		logger.info("FileControlController - updateFileControlStatus - start");
+		logger.info("FileControlController - updateFileControlStatus - "+ codeFileControl +" "+ fileControlStatus.getCode());
 		ResponseEntity<String> response = null;
 		boolean result = false;
 
@@ -322,18 +303,15 @@ public class FileControlController {
 
 			logger.error("ERROR in updateFileControlStatus: ", e);
 		}
-		
-		logger.info("FileControlController - updateFileControlStatus - end");
+
 		return response;
 	}
-	
-	
-		
+
 	@GetMapping(value = "/{codeFileControl}")
 	@ApiOperation(value="Devuelve el detalle de un CONTROL_FICHERO.")
 	public ResponseEntity<FileControlDTO> getByCodeFileControl(Authentication authentication,
-			 @PathVariable("codeFileControl") Long codeFileControl){
-		logger.info("FileControlController - getByCodeFileControl - start");
+			 @PathVariable("codeFileControl") Long codeFileControl)
+	{
 		ResponseEntity<FileControlDTO> response = null;
 		FileControlDTO result = null;
 		
@@ -348,15 +326,14 @@ public class FileControlController {
 			
 			logger.error("ERROR in getByCodeFileControl: ", e);
 		}	
-			
-		logger.info("FileControlController - getByCodeFileControl - end");
+
 		return response;
 	}
 
 	@GetMapping(value = "/{codeFileControl}/download")
 	public ResponseEntity<Resource> download(Authentication authentication,
-			 @PathVariable("codeFileControl") Long codeFileControl){
-		logger.info("FileControlController - download - start");
+			 @PathVariable("codeFileControl") Long codeFileControl)
+	{
 		ResponseEntity<Resource> response = null;
 		FileControlDTO result = null;
 		
@@ -394,9 +371,8 @@ public class FileControlController {
 			response = new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 			
 			logger.error("ERROR in download: ", e);
-		}	
-			
-		logger.info("FileControlController - download - end");
+		}
+
 		return response;
 	}
 	
@@ -407,9 +383,8 @@ public class FileControlController {
 			//@RequestParam(name = "isPending", required = false) boolean isPending,
 			//@RequestBody ReportParamsDTO reportParams,
 			@RequestBody FileControlFiltersDTO fileControlFilters
-	) throws Exception {
-
-		logger.info("FileControlController - generateFileControlReport - start");
+	) throws Exception
+	{
 		try {
 			DownloadReportFile.setTempFileName("file-control");
 
@@ -421,7 +396,6 @@ public class FileControlController {
 
 			DownloadReportFile.writeFile(data);
 
-			logger.info("FileControlController - generateFileControlReport - end");
 			return DownloadReportFile.returnToDownloadFile();
 		} catch (Exception e) {
 			logger.error("Error in generarReportLista", e);

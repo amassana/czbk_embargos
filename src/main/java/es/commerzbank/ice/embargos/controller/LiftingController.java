@@ -43,8 +43,8 @@ public class LiftingController {
 	@GetMapping(value = "/{codeFileControl}")
 	@ApiOperation(value = "Devuelve la lista de casos de levamtamientos")
 	public ResponseEntity<List<LiftingDTO>> getLiftingListByCodeFileControl(Authentication authentication,
-			@PathVariable("codeFileControl") Long codeFileControl) {
-		logger.info("LiftingController - getLiftingListByCodeFileControl - start");
+			@PathVariable("codeFileControl") Long codeFileControl)
+	{
 		ResponseEntity<List<LiftingDTO>> response = null;
 		List<LiftingDTO> result = null;
 
@@ -64,7 +64,6 @@ public class LiftingController {
 			logger.error("ERROR in getLiftingListByCodeFileControl: ", e);
 		}
 
-		logger.info("LiftingController - getLiftingListByCodeFileControl - end");
 		return response;
 	}
 	
@@ -72,8 +71,8 @@ public class LiftingController {
 	@ApiOperation(value = "Devuelve la lista de cuentas disponibles para el caso indicado de levantamiento.")
 	public ResponseEntity<LiftingDTO> getBankAccountListByCodeFileControlAndLifting(
 			Authentication authentication, @PathVariable("codeFileControl") Long codeFileControl,
-			@PathVariable("codeLifting") Long codeLifting) {
-		logger.info("LiftingController - getBankAccountListByCodeFileControlAndLifting - start");
+			@PathVariable("codeLifting") Long codeLifting)
+	{
 		ResponseEntity<LiftingDTO> response = null;
 		LiftingDTO result = null;
 
@@ -91,7 +90,6 @@ public class LiftingController {
 			logger.error("ERROR in getBankAccountListByCodeFileControlAndLifting: ", e);
 		}
 
-		logger.info("LiftingController - getBankAccountListByCodeFileControlAndLifting - end");
 		return response;
 	}
 	
@@ -101,8 +99,10 @@ public class LiftingController {
 	@ApiOperation(value = "Actualiza el caso de levantamiento indicado, guardando los datos que se traspasen")
 	public ResponseEntity<String> saveLifting(Authentication authentication,
 			@PathVariable("codeFileControl") Long codeFileControl,
-			@PathVariable("codeLifting") Long codeLifting, @RequestBody LiftingDTO lifting) {
-		logger.info("LiftingController - saveLifting - start");
+			@PathVariable("codeLifting") Long codeLifting, @RequestBody LiftingDTO lifting)
+	{
+		logger.info("LiftingController - "+ codeFileControl +"-"+ codeLifting +" actualización");
+
 		ResponseEntity<String> response = null;
 		boolean result = true;
 		
@@ -124,16 +124,15 @@ public class LiftingController {
 		
 			logger.error("ERROR in saveLifting: ", e);
 		}
-		
-		logger.info("LiftingController - saveLifting - end");
+
 		return response;
 
 	}
 	
 	@GetMapping(value = "/{codeFileControl}/liftingcase/{codeLiftingCase}/audit")
 	public ResponseEntity<List<LiftingAuditDTO>> getAuditLiftingCase(Authentication authentication,
-			@PathVariable("codeLiftingCase") Long codeLiftingCase) {
-		logger.info("LiftingController - getAuditPetitionCase - start");
+			@PathVariable("codeLiftingCase") Long codeLiftingCase)
+	{
 		ResponseEntity<List<LiftingAuditDTO>> response = null;
 		List<LiftingAuditDTO> result = null;
 
@@ -150,14 +149,13 @@ public class LiftingController {
 			logger.error("ERROR in getAuditLiftingCase: ", e);
 		}
 
-		logger.info("LiftingController - getAuditPetitionCase - end");
 		return response;
 
 	}
 	
 	@GetMapping(value = "/liftingStatus")
-	public ResponseEntity<List<LiftingStatusDTO>> getListStatus(Authentication authentication) {
-		logger.info("LiftingController - getListStatus - start");
+	public ResponseEntity<List<LiftingStatusDTO>> getListStatus(Authentication authentication)
+	{
 		ResponseEntity<List<LiftingStatusDTO>> response = null;
 		List<LiftingStatusDTO> result = null;
 
@@ -174,7 +172,6 @@ public class LiftingController {
 			logger.error("ERROR in getListStatus: ", e);
 		}
 
-		logger.info("LiftingController - getListStatus - end");
 		return response;
 
 	}
@@ -185,8 +182,10 @@ public class LiftingController {
 	@ApiOperation(value = "Actualiza el estado de un levantamiento seleccionado")
 	public ResponseEntity<Void> changeStatus(Authentication authentication,
 			@PathVariable("codeFileControl") Long codeFileControl,
-			@PathVariable("codeLifting") Long codeLifting, @PathVariable("status") Long status) {
-		logger.info("LiftingController - changeStatus - start");
+			@PathVariable("codeLifting") Long codeLifting, @PathVariable("status") Long status)
+	{
+		logger.info("LiftingController - "+ codeFileControl +"-"+ codeLifting +" cambio de estado "+ status);
+
 		ResponseEntity<Void> response = null;
 		boolean result = true;
 		
@@ -208,19 +207,20 @@ public class LiftingController {
 		
 			logger.error("ERROR in changeStatus: ", e);
 		}
-		
-		logger.info("LiftingController - changeStatus - end");
+
 		return response;
 	}
 	
 	@GetMapping(value = "/{codeFileControl}/accounting")
     @ApiOperation(value="Envio de datos a contabilidad.")
     public ResponseEntity<FileControlDTO> sendAccounting(Authentication authentication,
-														 @PathVariable("codeFileControl") Long codeFileControl){
-    	logger.info("SeizureController - sendAccounting - start");
+														 @PathVariable("codeFileControl") Long codeFileControl)
+	{
+    	logger.info("SeizureController - se contabilizan los levantamientos de "+ codeFileControl);
+
     	ResponseEntity<FileControlDTO> response = null;
 		boolean result = false;
-		
+
 		FileControlDTO resultFileControlDTO = null;
 
 		try {
@@ -240,7 +240,6 @@ public class LiftingController {
 			logger.error("ERROR in doAccounting: ", e);
 		}
 
-		logger.info("SeizureController - sendAccounting - end");
 		return response;
 
 	}
@@ -269,7 +268,6 @@ public class LiftingController {
 	@ApiOperation(value = "Devuelve un levantamiento de embargo")
 	public ResponseEntity<InputStreamResource> generateLiftingLetter(
 			@PathVariable("idLifting") Integer idLifting) {
-		logger.info("SeizureController - generateLiftingLetter - start");
 
 		try {
 			DownloadReportFile.setTempFileName("lifting-letter");
@@ -279,7 +277,6 @@ public class LiftingController {
 			// seizure service falta
 			DownloadReportFile.writeFile(liftingService.generateLiftingLetter(idLifting));
 
-			logger.info("SeizureController - generateLiftingLetter - end");
 			return DownloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
@@ -294,7 +291,7 @@ public class LiftingController {
     @ApiOperation(value="Realiza un levantamiento de forma manual.")
     public ResponseEntity<String> manualLifting(Authentication authentication,
     											@RequestBody LiftingManualDTO liftingManualDTO) {
-    	logger.info("LiftingController - manualLifting - start");
+    	logger.info("LiftingController - levantamiento manual "+ liftingManualDTO.getSender() +" "+ liftingManualDTO.getClients().size());
 		ResponseEntity<String> response = null;
 		boolean result = false;
 
@@ -314,7 +311,6 @@ public class LiftingController {
 			logger.error("ERROR in manualLifting: ", e);
 		}
 
-		logger.info("LiftingController - manualLifting - end");
 		return response;
     }
 

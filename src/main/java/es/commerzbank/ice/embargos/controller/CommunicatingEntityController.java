@@ -1,9 +1,10 @@
 package es.commerzbank.ice.embargos.controller;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import es.commerzbank.ice.comun.lib.security.Permissions;
+import es.commerzbank.ice.embargos.domain.dto.CommunicatingEntity;
+import es.commerzbank.ice.embargos.service.CommunicatingEntityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,23 +14,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.opencsv.CSVWriter;
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
-
-import es.commerzbank.ice.comun.lib.security.Permissions;
-import es.commerzbank.ice.embargos.domain.dto.CommunicatingEntity;
-import es.commerzbank.ice.embargos.service.CommunicatingEntityService;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @CrossOrigin("*")
 @RestController
@@ -129,7 +117,6 @@ public class CommunicatingEntityController {
 	@GetMapping(value = "/{idCommunicatingEntity}",
 	        produces = { "application/json" })
 	public ResponseEntity<CommunicatingEntity> view(Authentication authentication, @PathVariable("idCommunicatingEntity") Long idCommunicatingEntity) {
-		logger.info("CommunicatingEntityController - view - start");
 		ResponseEntity<CommunicatingEntity> response = null;
 		CommunicatingEntity result = null;
 		
@@ -145,15 +132,12 @@ public class CommunicatingEntityController {
 		} else {
 			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 		}
-		
-		logger.info("CommunicatingEntityController - view - end");
+
 		return response;
 	}
 	
 	@PostMapping(value = "/export")
 	public void exportCSV(Authentication authentication, HttpServletResponse response) throws Exception {
-
-		logger.info("CommunicatingEntityController - export - start");
 		try {
 	        //set file name and content type
 	        response.setContentType("text/csv");
@@ -179,13 +163,11 @@ public class CommunicatingEntityController {
 		} catch(Exception e) {
 			logger.error("Error - CommunicatingEntityController - export", e);
 		}
-        logger.info("CommunicatingEntityController - export - end");
 	}
 	
 	@PostMapping(value = "/filter",
 			produces = {"application/json"})
 	public ResponseEntity<Page<CommunicatingEntity>> filter(Authentication authentication, Pageable dataPage) {
-		logger.info("CommunicatingEntityController - filter - start");
 		ResponseEntity<Page<CommunicatingEntity>> response = null;
 		Page<CommunicatingEntity> list = null;
 		
@@ -200,15 +182,13 @@ public class CommunicatingEntityController {
 		} else {
 			response = new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
 		}
-		
-		logger.info("CommunicatingEntityController - filter - end");
+
 		return response;
 	}
 	
 	@GetMapping(value = "/listAll",
 			produces = {"application/json"})
 	public ResponseEntity<List<CommunicatingEntity>> listAll(Authentication authentication) {
-		logger.info("CommunicatingEntityController - listAll - start");
 		ResponseEntity<List<CommunicatingEntity>> response = null;
 		List<CommunicatingEntity> list = null;
 		
@@ -223,8 +203,7 @@ public class CommunicatingEntityController {
 		} else {
 			response = new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
 		}
-		
-		logger.info("CommunicatingEntityController - listAll - end");
+
 		return response;
 	}
 }

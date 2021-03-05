@@ -50,7 +50,6 @@ public class FinalResponseController {
 	@ApiOperation(value = "Devuelve la lista de casos de levamtamientos")
 	public ResponseEntity<List<FinalResponseDTO>> getFinalResponseListByCodeFileControl(Authentication authentication,
 			@PathVariable("codeFileControl") Long codeFileControl) {
-		logger.info("LiftingController - getFinalResponseListByCodeFileControl - start");
 		ResponseEntity<List<FinalResponseDTO>> response = null;
 		List<FinalResponseDTO> result = null;
 
@@ -70,7 +69,6 @@ public class FinalResponseController {
 			logger.error("ERROR in getFinalResponseListByCodeFileControl: ", e);
 		}
 
-		logger.info("LiftingController - getFinalResponseListByCodeFileControl - end");
 		return response;
 	}
 
@@ -79,7 +77,6 @@ public class FinalResponseController {
 	public ResponseEntity<FinalResponseDTO> getBankAccountListByCodeFileControlAndFinalResponse(
 			Authentication authentication, @PathVariable("codeFileControl") Long codeFileControl,
 			@PathVariable("codeFinalResponse") Long codeFinalResponse) {
-		logger.info("LiftingController - getBankAccountListByCodeFileControlAndFinalResponse - start");
 		ResponseEntity<FinalResponseDTO> response = null;
 		FinalResponseDTO result = null;
 
@@ -96,28 +93,16 @@ public class FinalResponseController {
 			logger.error("ERROR in getBankAccountListByCodeFileControlAndFinalResponse: ", e);
 		}
 
-		logger.info("LiftingController - getBankAccountListByCodeFileControlAndFinalResponse - end");
 		return response;
 	}
 
-	// mover a otro controller
 	@GetMapping("/anexo/{cod_usuario}/{cod_traba}/{num_anexo}/report")
 	public ResponseEntity<InputStreamResource> generarAnexo(@PathVariable("cod_usuario") BigDecimal cod_usuario,
 			@PathVariable("cod_traba") BigDecimal cod_traba, @PathVariable("num_anexo") Integer num_anexo)
 			throws Exception {
-		logger.info("SeizureController - generarAnexo - start");
 
-		ResponseEntity<InputStreamResource> response = downloadAnexo(cod_usuario, cod_traba, num_anexo);
+		ResponseEntity<InputStreamResource> response = null;
 
-		logger.info("SeizureController - generarAnexo - end");
-
-		return response;
-	}
-
-	private ResponseEntity<InputStreamResource> downloadAnexo(BigDecimal cod_usuario, BigDecimal cod_traba,
-			Integer num_anexo) {
-		logger.info("SeizureController - downloadAnexo - start");
-		
 		try {
 			DownloadReportFile.setTempFileName("TGSSAnexo" + num_anexo);
 
@@ -125,14 +110,15 @@ public class FinalResponseController {
 
 			DownloadReportFile.writeFile(finalResponseService.generarAnexo(cod_usuario, cod_traba, num_anexo));
 
-			logger.info("SeizureController - downloadAnexo - end");
-			return DownloadReportFile.returnToDownloadFile();
+			response = DownloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
 			logger.error("Error in downloadAnexo", e);
 
-			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+			response = new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+
+		return response;
 	}
 	
 	@GetMapping("/{fileControl}/report")
@@ -202,7 +188,7 @@ public class FinalResponseController {
 	@PostMapping(value = "/{codeFileControl}/generateFinalResponse", produces = { "application/json" })
 	public ResponseEntity<Void> createNorma63(Authentication authentication,
 											  @PathVariable("codeFileControl") Long codeFileControl) {
-		logger.info("SeizureSummaryController - createNorma63 - start");
+		logger.info("SeizureSummaryController - createNorma63 - start "+ codeFileControl);
 		ResponseEntity<Void> response = null;
 		OrderingEntity result = null;
 
@@ -235,7 +221,7 @@ public class FinalResponseController {
     public ResponseEntity<FileControlDTO> sendAccountingFinalFile(Authentication authentication,
     										  @PathVariable("codeFileControl") Long codeFileControl){
     	
-    	logger.info("sendAccountingFinalFile - start");
+    	logger.info("sendAccountingFinalFile - contabilización "+ codeFileControl);
     	
     	ResponseEntity<FileControlDTO> response = null;
 		boolean result = false;
