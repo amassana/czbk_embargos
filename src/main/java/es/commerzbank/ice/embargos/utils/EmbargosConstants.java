@@ -225,6 +225,7 @@ public class EmbargosConstants {
 	/** Entradas de la tabla PARAMETROS de Comunes **/
 	public static final String PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA = "embargos.cuentaRecaudacion.cuenta";
 	public static final String PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA = "embargos.cuentaRecaudacion.oficina";
+	public static final String PARAMETRO_EMBARGOS_CUENTA_INTERCAMBIO_DIVISAS = "embargos.embargos.cuentaIntercambioDivisas";
 	public static final String PARAMETRO_EMBARGOS_CONTABILIZACION_FASE3_CALLBACK = "embargos.contabilizacion.fase3.callback";
 	public static final String PARAMETRO_EMBARGOS_CONTABILIZACION_FASE5_CALLBACK = "embargos.contabilizacion.fase5.callback";
 	public static final String PARAMETRO_EMBARGOS_CONTABILIZACION_FASE6_CALLBACK = "embargos.contabilizacion.fase6.callback";
