@@ -26,12 +26,14 @@ import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
 import es.commerzbank.ice.embargos.domain.entity.ErrorTraba;
+import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
 import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
 import es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.EntidadCreditoValidacionFase4;
 import es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.EntidadTransmisoraValidacionFase4;
 import es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.ErroresTrabaValidacionFase4;
 import es.commerzbank.ice.embargos.repository.ErrorRepository;
+import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.repository.OrderingEntityRepository;
 import es.commerzbank.ice.embargos.repository.SeizedErrorRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
@@ -40,6 +42,7 @@ import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.files.AEATSeizedResultService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.EmbargosUtils;
+import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 
 @Service
 public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
@@ -49,6 +52,9 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 	@Value("${commerzbank.embargos.beanio.config-path.aeat}")
 	String pathFileConfigAEAT;
 			
+	@Autowired
+	private FileControlRepository fileControlRepository;
+	
 	@Autowired
 	private FileControlMapper fileControlMapper;
 
@@ -86,6 +92,8 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 		
 		List <ErrorTraba> listaErrores = new ArrayList <ErrorTraba>();
 		
+		EntidadTransmisoraValidacionFase4 entidadTransmisoraValidacionFase4 = null;
+		
 		try {
 		
 	        // create a StreamFactory
@@ -109,7 +117,6 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 	        Object record = null;
 	        boolean isEntidadTransmisoraCommerzbank = false;
 	        
-	        EntidadTransmisoraValidacionFase4 entidadTransmisoraValidacionFase4 = null;
 	        EntidadCreditoValidacionFase4 entidadCreditoValidacionFase4 = null;
 	        ErroresTrabaValidacionFase4 erroresTrabaValidacionFase4 = null;
 	        
@@ -213,8 +220,28 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 	        	try {
 	        		if (listaErrores!=null && listaErrores.size()>0)
 	        			emailService.sendEmailFileError(listaErrores, originalName, processingFile.getAbsolutePath());
-	        		else 
+	        		else {
+	        			//Se obtiene el ControlFichero de Embargos
+	        			
+	        			List<ControlFichero> listControlFicheroEmbargo = fileControlRepository.findEmbargoProcesadoByFechas(ICEDateUtils.dateToBigDecimal(entidadTransmisoraValidacionFase4.getFechaInicioCiclo(), ICEDateUtils.FORMAT_yyyyMMdd), ICEDateUtils.dateToBigDecimal(entidadTransmisoraValidacionFase4.getFechaCreacionFicheroTrabas(), ICEDateUtils.FORMAT_yyyyMMdd));
+	        			if (listControlFicheroEmbargo!=null && listControlFicheroEmbargo.size()>0) {
+	        				logger.info("Se han encontrado ficheros de embargo asociados al de resultado " + originalName);
+	        				ControlFichero controlFicheroEmbargo = listControlFicheroEmbargo.get(0);
+	        				
+	        				EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
+	        		        		EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_CONFIRMED,
+	        		        		EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT);
+	        		        controlFicheroEmbargo.setEstadoCtrlfichero(estadoCtrlfichero);
+	        		        
+	        		        controlFicheroEmbargo.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+	        		        controlFicheroEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+	        				fileControlRepository.save(controlFicheroEmbargo);
+	        				
+	        				logger.info("Se ha actualizado a Confirmado el estado del embargo en control fichero " +  controlFicheroEmbargo.getNombreFichero());
+	        			}
+	        			
 	        			emailService.sendEmailFileResult(originalName);
+	        		}
 	    		} catch (ICEException e) {
 	    			logger.error("Error while sending email for .RES file " + originalName, e);
 	    		}
