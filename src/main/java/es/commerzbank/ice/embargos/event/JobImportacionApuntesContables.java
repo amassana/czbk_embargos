@@ -35,16 +35,18 @@ public class JobImportacionApuntesContables implements Job
 			{
 				try
 				{
-					logger.info("Detectado nuevo apunte contable "+ apunteContable.getExtraInfo1() +"-"+ apunteContable.getExtraInfo2());
+					if (apunteContable.getExtraInfo1() != null) {
+						logger.info("Detectado nuevo apunte contable " + apunteContable.getExtraInfo1() + "-" + apunteContable.getExtraInfo2());
 
-					if (EmbargosConstants.APUNTES_CONTABLES_TIPO_TRABA.equals(apunteContable.getExtraInfo1()))
-						accountingService.seizureCallback(Long.valueOf(apunteContable.getExtraInfo2()));
-					else if (EmbargosConstants.APUNTES_CONTABLES_TIPO_LEVANTAMIENTO.equals(apunteContable.getExtraInfo1()))
-						accountingService.liftingCallback((Long.valueOf(apunteContable.getExtraInfo2())));
-					else if (EmbargosConstants.APUNTES_CONTABLES_TIPO_TESORERIA.equals(apunteContable.getExtraInfo1()))
-						accountingService.transferenciaFinalOrganismoCallback((Long.valueOf(apunteContable.getExtraInfo2())));
-					else
-						logger.error("No se ha tratado el apunte contable");
+						if (EmbargosConstants.APUNTES_CONTABLES_TIPO_TRABA.equals(apunteContable.getExtraInfo1()))
+							accountingService.seizureCallback(Long.valueOf(apunteContable.getExtraInfo2()));
+						else if (EmbargosConstants.APUNTES_CONTABLES_TIPO_LEVANTAMIENTO.equals(apunteContable.getExtraInfo1()))
+							accountingService.liftingCallback((Long.valueOf(apunteContable.getExtraInfo2())));
+						else if (EmbargosConstants.APUNTES_CONTABLES_TIPO_TESORERIA.equals(apunteContable.getExtraInfo1()))
+							accountingService.transferenciaFinalOrganismoCallback((Long.valueOf(apunteContable.getExtraInfo2())));
+						else
+							logger.error("No se ha tratado el apunte contable");
+					}
 				}
 				catch (Exception e)
 				{
