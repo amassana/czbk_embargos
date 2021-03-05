@@ -302,6 +302,8 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	        		EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT);
 	        controlFicheroEmbargo.setEstadoCtrlfichero(estadoCtrlfichero);
 			
+	        if (entidadCreditoFase3!=null && entidadCreditoFase3.getNumeroEnvio()!=null) controlFicheroEmbargo.setNumEnvio(entidadCreditoFase3.getNumeroEnvio().toString());
+	        
 	        //CALENDARIO:
 	        // - Se agrega la tarea al calendario:
 	        TaskAndEvent task = new TaskAndEvent();
