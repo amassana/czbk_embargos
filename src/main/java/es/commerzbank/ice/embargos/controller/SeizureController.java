@@ -238,7 +238,16 @@ public class SeizureController {
 		return response;
 
     }
-    
+
+	@PostMapping(value = "/{codeFileControl}/case/{idSeizure}/{idAccount}/status")
+	@ApiOperation(value="Guarda una actualizacion de estado para el caso indicado")
+	public ResponseEntity<String> updateSeizureStatus(Authentication authentication,
+													  @PathVariable("codeFileControl") Long codeFileControl,
+													  @PathVariable("idSeizure") Long idSeizure,
+													  @PathVariable("idSeizure") Long idAccount,
+													  @RequestBody SeizureStatusDTO seizureStatus) {
+    	return new ResponseEntity<>(HttpStatus.OK);
+	}
     
 //    @PostMapping(value = "/{codeFileControl}/status")
 //    @ApiOperation(value="Guarda una actualizacion de estado para el caso indicado")
