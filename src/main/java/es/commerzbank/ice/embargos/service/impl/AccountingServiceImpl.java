@@ -192,7 +192,7 @@ public class AccountingServiceImpl implements AccountingService{
 						embargo,
 						traba,
 						userName, sucursal, controlFichero.getDescripcion(),
-						cuentaRecaudacion, cuentaRecaudacion, reference1, reference2, detailPayment);
+						cuentaRecaudacion, oficinaRecaudacion, reference1, reference2, detailPayment);
 			} else {
 				//La traba se encuentra en un estado donde ya ha sido enviada a Contabilidad.
 
