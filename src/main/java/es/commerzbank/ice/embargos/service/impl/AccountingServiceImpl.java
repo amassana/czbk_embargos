@@ -326,9 +326,9 @@ public class AccountingServiceImpl implements AccountingService{
 		String codigoEstadoTraba = null;
 
 		if (algunaCuentaContabilizada)
-			Long.toString(EmbargosConstants.COD_ESTADO_TRABA_ENVIADA_A_CONTABILIDAD);
+			codigoEstadoTraba = Long.toString(EmbargosConstants.COD_ESTADO_TRABA_ENVIADA_A_CONTABILIDAD);
 		else
-			Long.toString(COD_ESTADO_TRABA_FINALIZADA);
+			codigoEstadoTraba = Long.toString(COD_ESTADO_TRABA_FINALIZADA);
 
 		SeizureStatusDTO seizureStatusDTO = new SeizureStatusDTO();
 		seizureStatusDTO.setCode(codigoEstadoTraba);
