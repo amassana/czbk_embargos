@@ -24,5 +24,8 @@ public interface FileControlRepository
 	@Query(value = "select * from CONTROL_FICHERO cf where cf.COD_ESTADO = 6 and cf.COD_TIPO_FICHERO = 1 and cf.FECHA_COMIENZO_CICLO = :fechaComienzoCiclo and cf.FECHA_CREACION = :fechaCreacion ", nativeQuery = true)
 	List<ControlFichero> findEmbargoProcesadoByFechas(@Param("fechaComienzoCiclo") BigDecimal fechaComienzoCiclo, @Param("fechaCreacion") BigDecimal fechaCreacion);
 	
+	@Query(value = "select * from CONTROL_FICHERO cf where cf.COD_ESTADO = 6 and cf.COD_TIPO_FICHERO = 1 and cf.NUM_ENVIO = :numEnvio ", nativeQuery = true)
+	List<ControlFichero> findEmbargoProcesadoByNumEnvio(@Param("numEnvio") String numEnvio);
+	
 	Optional<ControlFichero> findByNumCrc(String numCRC);
 }

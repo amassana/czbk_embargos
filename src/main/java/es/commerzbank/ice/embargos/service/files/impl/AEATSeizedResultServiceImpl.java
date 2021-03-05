@@ -93,6 +93,7 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 		List <ErrorTraba> listaErrores = new ArrayList <ErrorTraba>();
 		
 		EntidadTransmisoraValidacionFase4 entidadTransmisoraValidacionFase4 = null;
+		EntidadCreditoValidacionFase4 entidadCreditoValidacionFase4 = null;
 		
 		try {
 		
@@ -117,7 +118,6 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 	        Object record = null;
 	        boolean isEntidadTransmisoraCommerzbank = false;
 	        
-	        EntidadCreditoValidacionFase4 entidadCreditoValidacionFase4 = null;
 	        ErroresTrabaValidacionFase4 erroresTrabaValidacionFase4 = null;
 	        
 	        EntidadesOrdenante entidadOrdenante = null;
@@ -222,22 +222,28 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 	        			emailService.sendEmailFileError(listaErrores, originalName, processingFile.getAbsolutePath());
 	        		else {
 	        			//Se obtiene el ControlFichero de Embargos
+	        			List<ControlFichero> listControlFicheroEmbargo = null;
+	        			if (entidadCreditoValidacionFase4!=null && entidadCreditoValidacionFase4.getNumeroEnvio()!=null) {
+		        			listControlFicheroEmbargo = fileControlRepository.findEmbargoProcesadoByNumEnvio(entidadCreditoValidacionFase4.getNumeroEnvio().toString());
+	        			}
+	        			else if (entidadTransmisoraValidacionFase4!=null && entidadTransmisoraValidacionFase4.getFechaInicioCiclo()!=null && entidadTransmisoraValidacionFase4.getFechaCreacionFicheroTrabas()!=null) {
+	        				listControlFicheroEmbargo = fileControlRepository.findEmbargoProcesadoByFechas(ICEDateUtils.dateToBigDecimal(entidadTransmisoraValidacionFase4.getFechaInicioCiclo(), ICEDateUtils.FORMAT_yyyyMMdd), ICEDateUtils.dateToBigDecimal(entidadTransmisoraValidacionFase4.getFechaCreacionFicheroTrabas(), ICEDateUtils.FORMAT_yyyyMMdd));
+	        			}
 	        			
-	        			List<ControlFichero> listControlFicheroEmbargo = fileControlRepository.findEmbargoProcesadoByFechas(ICEDateUtils.dateToBigDecimal(entidadTransmisoraValidacionFase4.getFechaInicioCiclo(), ICEDateUtils.FORMAT_yyyyMMdd), ICEDateUtils.dateToBigDecimal(entidadTransmisoraValidacionFase4.getFechaCreacionFicheroTrabas(), ICEDateUtils.FORMAT_yyyyMMdd));
-	        			if (listControlFicheroEmbargo!=null && listControlFicheroEmbargo.size()>0) {
-	        				logger.info("Se han encontrado ficheros de embargo asociados al de resultado " + originalName);
-	        				ControlFichero controlFicheroEmbargo = listControlFicheroEmbargo.get(0);
-	        				
-	        				EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
-	        		        		EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_CONFIRMED,
-	        		        		EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT);
-	        		        controlFicheroEmbargo.setEstadoCtrlfichero(estadoCtrlfichero);
-	        		        
-	        		        controlFicheroEmbargo.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
-	        		        controlFicheroEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
-	        				fileControlRepository.save(controlFicheroEmbargo);
-	        				
-	        				logger.info("Se ha actualizado a Confirmado el estado del embargo en control fichero " +  controlFicheroEmbargo.getNombreFichero());
+		        		if (listControlFicheroEmbargo!=null && listControlFicheroEmbargo.size()>0) {
+		        			logger.info("Se han encontrado ficheros de embargo asociados al de resultado " + originalName);
+		        			ControlFichero controlFicheroEmbargo = listControlFicheroEmbargo.get(0);
+		        				
+		        			EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
+		        		       		EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_CONFIRMED,
+		        		       		EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT);
+		        		    controlFicheroEmbargo.setEstadoCtrlfichero(estadoCtrlfichero);
+		        		        
+		        		    controlFicheroEmbargo.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+		        		    controlFicheroEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+		        			fileControlRepository.save(controlFicheroEmbargo);
+		        				
+		        			logger.info("Se ha actualizado a Confirmado el estado del embargo en control fichero " +  controlFicheroEmbargo.getNombreFichero());
 	        			}
 	        			
 	        			emailService.sendEmailFileResult(originalName);
