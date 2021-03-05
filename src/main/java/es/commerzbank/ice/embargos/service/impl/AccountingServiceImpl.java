@@ -73,6 +73,7 @@ public class AccountingServiceImpl implements AccountingService{
 	private OfficeCRepo officeCRepo;
 
 	@Override
+	@Transactional(transactionManager="transactionManager")
 	public void sendSeizure(Long codeFileControl, String userName) throws ICEException, Exception {
 	
 		logger.info("sendAccountingSeizure - start "+ codeFileControl);
@@ -519,6 +520,7 @@ public class AccountingServiceImpl implements AccountingService{
 		liftingService.updateLiftingBankAccountingStatus(cuentaLevantamiento, EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION, userName);
 */
 	@Override
+	@Transactional(transactionManager="transactionManager")
 	public void sendLifting(Long codeFileControl, String userName)
 		throws Exception
 	{
@@ -584,6 +586,7 @@ public class AccountingServiceImpl implements AccountingService{
 	}
 
 	@Override
+	@Transactional(transactionManager="transactionManager")
 	public es.commerzbank.ice.comun.lib.domain.entity.ControlFichero sendAccountingLiftingBankAccount(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, String userName)
 			throws Exception
 	{
@@ -621,6 +624,7 @@ public class AccountingServiceImpl implements AccountingService{
 	}
 
 	@Override
+	@Transactional(transactionManager="transactionManager")
 	public void sendFinalFile(Long codeFileControl, String userName) throws ICEException, Exception {
 		
 		//Para las Entidades Comunicadoras que tengan cuenta en Commerzbank, la transferencia
@@ -728,6 +732,7 @@ public class AccountingServiceImpl implements AccountingService{
 	}
 
 	@Override
+	@Transactional(transactionManager="transactionManager")
 	public void seizureCallback(Long codCuentaTraba) {
 		Optional<CuentaTraba> opt = seizedBankAccountRepository.findById(codCuentaTraba);
 
@@ -759,6 +764,8 @@ public class AccountingServiceImpl implements AccountingService{
 		if (!isAllCuentaTrabasContabilizadas)
 			return;
 
+		logger.info("Todas las cuentas de la traba "+ traba.getCodTraba() +" se han tratado. Cambiando el estado a contabilizada");
+
 		SeizureStatusDTO seizureStatusDTO = new SeizureStatusDTO();
 		seizureStatusDTO.setCode(String.valueOf(EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA));
 
@@ -782,7 +789,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 		if (isAllTrabasContabilizadas)
 		{
-			Log.info("ControlFichero con id " + controlFichero.getCodControlFichero() + " cambia a estado 'Pendiente de envio");
+			logger.info("ControlFichero con id " + controlFichero.getCodControlFichero() + " cambia a estado 'Pendiente de envio");
 
 			//Dependiendo del tipo de fichero:
 			String fileFormat = EmbargosUtils.determineFileFormatByTipoFichero(controlFichero.getTipoFichero().getCodTipoFichero());
@@ -809,6 +816,7 @@ public class AccountingServiceImpl implements AccountingService{
 	}
 
 	@Override
+	@Transactional(transactionManager="transactionManager")
 	public void transferenciaFinalOrganismoCallback(Long codControlFicheroFinal) {
 		
 		ControlFichero controlFicheroFinal = new ControlFichero();
@@ -824,6 +832,7 @@ public class AccountingServiceImpl implements AccountingService{
 	}
 
 	@Override
+	@Transactional(transactionManager="transactionManager")
 	public void liftingCallback(Long codCuentaLevantamiento)
 	{
 		Optional<CuentaLevantamiento> opt = liftingBankAccountRepository.findById(codCuentaLevantamiento);
