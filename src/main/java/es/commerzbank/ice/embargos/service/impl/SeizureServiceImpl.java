@@ -104,7 +104,6 @@ public class SeizureServiceImpl implements SeizureService {
 
 	@Override
 	public List<SeizureDTO> getSeizureListByCodeFileControl(Long codeFileControl) {
-		logger.info("SeizureServiceImpl - getSeizureListByCodeFileControl - start");
 		
 		List<SeizureDTO> seizureDTOList = new ArrayList<>();
 
@@ -118,14 +117,12 @@ public class SeizureServiceImpl implements SeizureService {
 			SeizureDTO seizureDTO = seizureMapper.toSeizureDTO(embargo);
 			seizureDTOList.add(seizureDTO);
 		}
-		
-		logger.info("SeizureServiceImpl - getSeizureListByCodeFileControl - end");
+
 		return seizureDTOList;
 	}
 
 	@Override
 	public SeizureDTO getSeizureById(Long idSeizure) {
-		logger.info("SeizureServiceImpl - getSeizureById - start");
 		SeizureDTO seizureDTO = null;
 
 		// Optional<Embargo> embargoOpt = seizureRepository.findById(idSeizure);
@@ -141,15 +138,13 @@ public class SeizureServiceImpl implements SeizureService {
 
 			seizureDTO = seizureMapper.toSeizureDTO(trabaOpt.get().getEmbargo());
 		}
-		
-		logger.info("SeizureServiceImpl - getSeizureById - end");
+
 		return seizureDTO;
 	}
 
 	@Override
 	public List<SeizedBankAccountDTO> getBankAccountListBySeizure(Long codeFileControl,
 			Long idSeizure) {
-		logger.info("SeizureServiceImpl - getBankAccountListBySeizure - start");
 		
 		List<SeizedBankAccountDTO> seizedBankAccountDTOList = new ArrayList<>();
 
@@ -163,15 +158,12 @@ public class SeizureServiceImpl implements SeizureService {
 			SeizedBankAccountDTO seizedBankAccountDTO = seizedBankAccountMapper.toSeizedBankAccountDTO(cuentaTraba);
 			seizedBankAccountDTOList.add(seizedBankAccountDTO);
 		}
-		
-		logger.info("SeizureServiceImpl - getBankAccountListBySeizure - end");
+
 		return seizedBankAccountDTOList;
 	}
 
 	@Override
-	public List<SeizureActionDTO> getSeizureActions(Long codeFileControl) {		
-		
-		logger.info("SeizureServiceImpl - getSeizureActions - start");
+	public List<SeizureActionDTO> getSeizureActions(Long codeFileControl) {
 		List<SeizureActionDTO> seizureActionDTOList = new ArrayList<>();
 		
 		Optional<ControlFichero> controlFicheroOpt = fileControlRepository.findById(codeFileControl);
@@ -191,14 +183,12 @@ public class SeizureServiceImpl implements SeizureService {
 			SeizureActionDTO seizedBankAccountDTO = seizedBankAccountActionMapper.toSeizureActionDTO(cuentaTrabaActuacion);
 			seizureActionDTOList.add(seizedBankAccountDTO);
 		}
-		
-		logger.info("SeizureServiceImpl - getSeizureActions - end");
+
 		return seizureActionDTOList;
 	}
 
 	@Override
 	public List<SeizureStatusDTO> getSeizureStatusList() {
-		logger.info("SeizureServiceImpl - getSeizureStatusList - start");
 		List<SeizureStatusDTO> seizureStatusDTOList = new ArrayList<>();
 
 		List<EstadoTraba> estadoTrabaList = seizureStatusRepository.findAllVisibleToUser();
@@ -208,8 +198,7 @@ public class SeizureServiceImpl implements SeizureService {
 			SeizureStatusDTO seizureStatusDTO = seizureStatusMapper.toSeizureStatusDTO(estadoTraba);
 			seizureStatusDTOList.add(seizureStatusDTO);
 		}
-		
-		logger.info("SeizureServiceImpl - getSeizureStatusList - end");
+
 		
 		return seizureStatusDTOList;
 
@@ -218,7 +207,7 @@ public class SeizureServiceImpl implements SeizureService {
 	@Override
 	public boolean updateSeizedBankAccountList(Long codeFileControl, Long idSeizure,
 			SeizureSaveDTO seizureSave, String userModif) throws Exception {
-		logger.info("SeizureServiceImpl - updateSeizedBankAccountList - start");
+		logger.info("SeizureServiceImpl - updateSeizedBankAccountList - start "+ codeFileControl +" "+ idSeizure);
 
 		Optional<Traba> trabaOpt = seizedRepository.findById(idSeizure);
 
@@ -265,8 +254,7 @@ public class SeizureServiceImpl implements SeizureService {
 
 			}
 		}
-		
-		logger.info("SeizureServiceImpl - updateSeizedBankAccountList - end");
+
 		return true;
 	}
 	
@@ -356,7 +344,6 @@ public class SeizureServiceImpl implements SeizureService {
 	
 	@Override
 	public List<SeizureDTO> getAuditSeizure(Long codFileControl, Long idSeizure) {
-		logger.info("SeizureServiceImpl - getAuditSeizure - start");
 		
 		List<SeizureDTO> seizureDTOList = new ArrayList<>();
 
@@ -368,14 +355,12 @@ public class SeizureServiceImpl implements SeizureService {
 
 			seizureDTOList.add(seizureDTO);
 		}
-		
-		logger.info("SeizureServiceImpl - getAuditSeizure - end");
+
 		return seizureDTOList;
 	}
 
 	@Override
 	public List<SeizedBankAccountDTO> getAuditSeizedBankAccounts(Long codFileControl, Long idSeizure, Long codAudit) {
-		logger.info("SeizureServiceImpl - getAuditSeizedBankAccounts - start");
 		List<SeizedBankAccountDTO> seizureDTOList = new ArrayList<>();
 
 		// Traba traba = new Traba();
@@ -393,14 +378,11 @@ public class SeizureServiceImpl implements SeizureService {
 			seizureDTOList.add(seizedBankAccountDTO);
 		}
 		
-		logger.info("SeizureServiceImpl - getAuditSeizedBankAccounts - end");
-		
 		return seizureDTOList;
 	}
 
 	@Override
 	public byte[] generateSeizureLetter(Integer idSeizure) throws Exception {
-		logger.info("SeizureServiceImpl - generateJustificanteEmbargo - start");
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
 		try (Connection conn = oracleDataSourceEmbargos.getEmbargosConnection()) {
@@ -445,8 +427,6 @@ public class SeizureServiceImpl implements SeizureService {
 
 			if (pages.size() == 0)
 				return null;
-
-			logger.info("SeizureServiceImpl - generateJustificanteEmbargo - end");
 			
 			return JasperExportManager.exportReportToPdf(fillReport);
 
@@ -458,7 +438,6 @@ public class SeizureServiceImpl implements SeizureService {
 
 	@Override
 	public byte[] generateSeizureResponseF4(Integer codControlFichero) throws Exception {
-		logger.info("SeizureServiceImpl - generarResumenTrabasF4 - start");
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
 		try (Connection conn = oracleDataSourceEmbargos.getEmbargosConnection()) {
@@ -482,8 +461,6 @@ public class SeizureServiceImpl implements SeizureService {
 
 			if (pages.size() == 0)
 				return null;
-
-			logger.info("SeizureServiceImpl - generarResumenTrabasF4 - end");
 			
 			return JasperExportManager.exportReportToPdf(fillReport);
 
@@ -494,7 +471,6 @@ public class SeizureServiceImpl implements SeizureService {
 
 	@Override
 	public byte[] generateSeizureRequestF3(Integer codControlFichero) throws Exception {
-		logger.info("SeizureServiceImpl - generarResumenTrabasF3 - start");
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
 		try (Connection conn = oracleDataSourceEmbargos.getEmbargosConnection()) {
@@ -525,8 +501,6 @@ public class SeizureServiceImpl implements SeizureService {
 
 			if (pages.size() == 0)
 				return null;
-
-			logger.info("SeizureServiceImpl - generarResumenTrabasF3 - end");
 			
 			return JasperExportManager.exportReportToPdf(fillReport);
 
