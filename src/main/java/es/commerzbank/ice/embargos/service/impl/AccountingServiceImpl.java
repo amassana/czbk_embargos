@@ -13,6 +13,7 @@ import es.commerzbank.ice.embargos.repository.*;
 import es.commerzbank.ice.embargos.service.*;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.EmbargosUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +73,7 @@ public class AccountingServiceImpl implements AccountingService{
 	private OfficeCRepo officeCRepo;
 
 	@Override
-	public void sendAccountingSeizure(Long codeFileControl, String userName) throws ICEException, Exception {
+	public void sendSeizure(Long codeFileControl, String userName) throws ICEException, Exception {
 	
 		logger.info("sendAccountingSeizure - start "+ codeFileControl);
 		
@@ -104,7 +105,7 @@ public class AccountingServiceImpl implements AccountingService{
 				return;
 			}
 
-			sendAccountingCGPJ(controlFichero, userName);
+			sendSeizureCGPJ(controlFichero, userName);
 			fileControlService.updateFileControlStatusTransaction(controlFichero,
 					EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_ACCOUNTING_RESPONSE, userName);
 		} else if (isAEAT){
@@ -117,7 +118,7 @@ public class AccountingServiceImpl implements AccountingService{
 				return;
 			}
 			
-			sendAccountingAEATCuaderno63(controlFichero, userName);
+			sendSeizureAEATCuaderno63(controlFichero, userName);
 
 			fileControlService.updateFileControlStatusTransaction(controlFichero,
 					EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_ACCOUNTING_RESPONSE, userName);
@@ -133,7 +134,7 @@ public class AccountingServiceImpl implements AccountingService{
 				return;
 			}
 						
-			sendAccountingAEATCuaderno63(controlFichero, userName);
+			sendSeizureAEATCuaderno63(controlFichero, userName);
 
 			fileControlService.updateFileControlStatusTransaction(controlFichero,
 					EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_ACCOUNTING_RESPONSE, userName);
@@ -158,7 +159,7 @@ public class AccountingServiceImpl implements AccountingService{
 		return stb.toString();
 	}
 
-	private void sendAccountingAEATCuaderno63(ControlFichero controlFichero, String userName) throws Exception {
+	private void sendSeizureAEATCuaderno63(ControlFichero controlFichero, String userName) throws Exception {
 
 		String oficinaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA);
 		String cuentaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);
@@ -207,6 +208,67 @@ public class AccountingServiceImpl implements AccountingService{
 		}
 	}
 
+	private void sendSeizureCGPJ(ControlFichero controlFichero, String userName) throws ICEException, Exception {
+		String oficinaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA);
+		String cuentaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);
+		
+		Long sucursal = null;
+		try {
+			Optional<Sucursal> sucursalOpt = officeCRepo.findByNumeroSucursal(new BigDecimal(oficinaRecaudacion));
+			if (sucursalOpt.isPresent()) {
+				sucursal = sucursalOpt.get().getCodSucursal();
+			}
+		} catch (Exception e) {
+			logger.error("sendAccountingAEATCuaderno63 - error obteniendo código de oficina", e);	
+		}
+		
+		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = null;
+
+		//Se obtienen las peticiones asociadas al fichero:
+		for (Peticion peticion : controlFichero.getPeticiones()) {
+			
+			for(SolicitudesEjecucion solicitudEjecucion : peticion.getSolicitudesEjecucions()) {
+				
+				Optional<Traba> trabaOpt = null;
+				
+				if (solicitudEjecucion.getCodTraba()!=null) {
+					trabaOpt = seizedRepository.findById(solicitudEjecucion.getCodTraba().longValue());		
+				}
+					
+				if(trabaOpt!=null && trabaOpt.isPresent()) {
+					
+					Traba traba = trabaOpt.get();
+					Embargo embargo = traba.getEmbargo();
+
+					//Para contabilizar la traba tiene que estar en estado anterior a "Enviada a Contabilidad":
+					if (traba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE) {
+
+						//- Generacion de las references para CGPJ:
+						Pair<String,String> references = generateReferencesForCGPJ(embargo.getNumeroEmbargo());
+						String detailPayment = "";//embargo.getDatregcomdet();
+
+						// TODO no existe detalle para el CPGJ??
+						fileControlFicheroComunes = contabilizarTraba(fileControlFicheroComunes, embargo, traba,
+								userName, sucursal, "", cuentaRecaudacion, oficinaRecaudacion,
+								references.getLeft(), references.getRight(), detailPayment);
+					} else {
+
+						//La traba se encuentra en un estado donde ya ha sido enviada a Contabilidad.
+
+						logger.debug("La traba con id " + traba.getCodTraba()
+						+ " no se puede contabilizar ya que se encuentra en estado : [codEstado=" + traba.getEstadoTraba().getCodEstado()
+						+"; descEstado=" + traba.getEstadoTraba().getDesEstado() + "]");
+					}
+				}
+
+			}
+		}
+		
+		if (fileControlFicheroComunes != null) {
+			accountingNoteService.generacionFicheroContabilidad(fileControlFicheroComunes);
+		}
+	}
+
 	private es.commerzbank.ice.comun.lib.domain.entity.ControlFichero contabilizarTraba(
 			es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes,
 			Embargo embargo,
@@ -222,8 +284,8 @@ public class AccountingServiceImpl implements AccountingService{
 
 		for(CuentaTraba cuentaTraba : cuentaTrabasList) {
 			String logMessage = "Embargo "+ embargo.getCodEmbargo() +" "+ embargo.getNumeroEmbargo() +
-				" traba "+ traba.getCodTraba() +
-				" cuenta "+ cuentaTraba.getCodCuentaTraba() +" "+ cuentaTraba.getCuenta() +" ";
+					" traba "+ traba.getCodTraba() +
+					" cuenta "+ cuentaTraba.getCodCuentaTraba() +" "+ cuentaTraba.getCuenta() +" ";
 
 			//Para contabilizar la cuentaTraba, se tienen que cumplir todos los casos siguientes:
 			// 1.- Estar en estado anterior a "Enviada a Contabilidad" -> corresponde al estado "Pendiente".
@@ -273,71 +335,6 @@ public class AccountingServiceImpl implements AccountingService{
 		return fileControlFicheroComunes;
 	}
 
-	private void sendAccountingCGPJ(ControlFichero controlFichero, String userName) throws ICEException, Exception {
-		String oficinaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA);
-		String cuentaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);
-		
-		Long sucursal = null;
-		try {
-			Optional<Sucursal> sucursalOpt = officeCRepo.findByNumeroSucursal(new BigDecimal(oficinaRecaudacion));
-			if (sucursalOpt.isPresent()) {
-				sucursal = sucursalOpt.get().getCodSucursal();
-			}
-		} catch (Exception e) {
-			logger.error("sendAccountingAEATCuaderno63 - error obteniendo código de oficina", e);	
-		}
-		
-		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = null;
-
-		//Se obtienen las peticiones asociadas al fichero:
-		for (Peticion peticion : controlFichero.getPeticiones()) {
-			
-			for(SolicitudesEjecucion solicitudEjecucion : peticion.getSolicitudesEjecucions()) {
-				
-				Optional<Traba> trabaOpt = null;
-				
-				if (solicitudEjecucion.getCodTraba()!=null) {
-					trabaOpt = seizedRepository.findById(solicitudEjecucion.getCodTraba().longValue());		
-				}
-					
-				if(trabaOpt!=null && trabaOpt.isPresent()) {
-					
-					Traba traba = trabaOpt.get();
-					Embargo embargo = traba.getEmbargo();
-
-					//Para contabilizar la traba tiene que estar en estado anterior a "Enviada a Contabilidad":
-					if (traba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE) {
-
-						//- Generacion de las references para CGPJ:
-						Map<String,String> referencesMap = generateReferencesForCGPJ(embargo.getNumeroEmbargo());
-						
-						String reference1 = referencesMap.get(EmbargosConstants.IBS_REFERENCE_1);
-						String reference2 = referencesMap.get(EmbargosConstants.IBS_REFERENCE_2);
-
-						String detailPayment = "";//embargo.getDatregcomdet();
-
-						// TODO no existe detalle para el CPGJ??
-						fileControlFicheroComunes = contabilizarTraba(fileControlFicheroComunes, embargo, traba,
-								userName, sucursal, "", cuentaRecaudacion, oficinaRecaudacion,
-								reference1, reference2, detailPayment);
-					} else {
-
-						//La traba se encuentra en un estado donde ya ha sido enviada a Contabilidad.
-
-						logger.debug("La traba con id " + traba.getCodTraba()
-						+ " no se puede contabilizar ya que se encuentra en estado : [codEstado=" + traba.getEstadoTraba().getCodEstado()
-						+"; descEstado=" + traba.getEstadoTraba().getDesEstado() + "]");
-					}
-				}
-
-			}
-		}
-		
-		if (fileControlFicheroComunes != null) {
-			accountingNoteService.generacionFicheroContabilidad(fileControlFicheroComunes);
-		}
-	}
-
 	private void apunteContableTraba(
 			CuentaTraba cuentaTraba, String debitAccount, String creditAccount,
 			String oficinaCuentaRecaudacion, String reference1, String reference2, String detailPayment,
@@ -378,16 +375,27 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNoteService.contabilizar(accountingNote);
 		}
 	}
+
+	private boolean esContabilizable (CuentaTraba cuentaTraba) {
+		if (cuentaTraba.getEstadoTraba().getCodEstado() != EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE)
+			return false;
+		else if (cuentaTraba.getAgregarATraba()==null || !(EmbargosConstants.IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba())
+				|| EmbargosConstants.IND_FLAG_SI.equals(cuentaTraba.getAgregarATraba())))
+			return false;
+		else if (cuentaTraba.getEstadoCuenta()==null || !EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE.equals(cuentaTraba.getEstadoCuenta()))
+			return false;
+		else if (cuentaTraba.getImporte() != null && cuentaTraba.getImporte().compareTo(BigDecimal.ZERO) <= 0)
+			return false;
+		return true;
+	}
 	
-	private Map<String,String> generateReferencesForCGPJ(String numeroEmbargo){
+	private Pair<String,String> generateReferencesForCGPJ(String numeroEmbargo){
 		
 		//- Seteo de las references:
 		//En el caso del CGPJ el número de embargo tiene 19 caracteres entonces: 1:16 va al primer campo (IBS_REFERENCE_1) y
 		//del 17-19 pasa al inicio del siguiente campo (IBS_REFERENCE_2) seguido de los literales: Levant./Embarg y las cuatro
 		//letras que identifican el organismo emisor AEAT/CGPJ etc
-		
-		Map<String,String> referencesMap = new HashMap<>();
-		
+
 		StringBuilder sb1 = new StringBuilder();
 		StringBuilder sb2 = new StringBuilder();
 
@@ -409,11 +417,8 @@ public class AccountingServiceImpl implements AccountingService{
 		String reference1 = sb1.toString() ;
 		String reference2 = sb2.append(EmbargosConstants.SEPARADOR_ESPACIO).append(EmbargosConstants.LITERAL_EMBARG_IBS_REFERENCE2)
 				.append(EmbargosConstants.SEPARADOR_ESPACIO).append(organismoEmisor).toString();
-		
-		referencesMap.put(EmbargosConstants.IBS_REFERENCE_1, reference1);
-		referencesMap.put(EmbargosConstants.IBS_REFERENCE_2, reference2);
-		
-		return referencesMap;
+
+		return Pair.of(reference1, reference2);
 	}
 /*
 	@Override
@@ -514,7 +519,7 @@ public class AccountingServiceImpl implements AccountingService{
 		liftingService.updateLiftingBankAccountingStatus(cuentaLevantamiento, EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION, userName);
 */
 	@Override
-	public void sendAccountingLifting(Long codeFileControl, String userName)
+	public void sendLifting(Long codeFileControl, String userName)
 		throws Exception
 	{
 		Optional<ControlFichero> fileControlOpt = fileControlRepository.findById(codeFileControl);
@@ -583,7 +588,8 @@ public class AccountingServiceImpl implements AccountingService{
 			throws Exception
 	{
 		return null;
-		/* TODO ELIMINAR
+		/* TODO ELIMINAR - el levantamiento se hace en sendAccountingLifting con todo el fichero en bloque
+		TODO A eliminar cuando se pase por F5.
 		String oficinaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA);
 		String cuentaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);
 		
@@ -615,7 +621,7 @@ public class AccountingServiceImpl implements AccountingService{
 	}
 
 	@Override
-	public void sendAccountingFinalFile(Long codeFileControl, String userName) throws ICEException, Exception {
+	public void sendFinalFile(Long codeFileControl, String userName) throws ICEException, Exception {
 		
 		//Para las Entidades Comunicadoras que tengan cuenta en Commerzbank, la transferencia
 		//de la Fase 6 (cierre) se hara internamente llamando a contabilizar():
@@ -742,7 +748,10 @@ public class AccountingServiceImpl implements AccountingService{
 
 		boolean isAllCuentaTrabasContabilizadas = true;
 		for(CuentaTraba cuentaTr : traba.getCuentaTrabas()) {
-			if (cuentaTr.getEstadoTraba().getCodEstado() != EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA) {
+			if (cuentaTr.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA || !esContabilizable(cuentaTr)) {
+				; // está contabilizada o no es contabilizada. ok
+			}
+			else {
 				isAllCuentaTrabasContabilizadas = false;
 			}
 		}

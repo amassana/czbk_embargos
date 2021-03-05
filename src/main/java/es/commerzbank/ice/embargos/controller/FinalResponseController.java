@@ -232,7 +232,7 @@ public class FinalResponseController {
 
 			String userName = authentication.getName();
 		
-			accountingService.sendAccountingFinalFile(codeFileControl, userName);
+			accountingService.sendFinalFile(codeFileControl, userName);
 			
 			//Se obtiene el fileControl que se va a retornar del Fichero Final:
 			resultFileControlDTO = fileControlService.getByCodeFileControl(codeFileControl);

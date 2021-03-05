@@ -6,9 +6,9 @@ import es.commerzbank.ice.embargos.domain.entity.Embargo;
 
 public interface AccountingService {
 
-	void sendAccountingSeizure(Long codeFileControl, String userName) throws Exception;
-	void sendAccountingLifting(Long codeFileControl, String userName) throws Exception;
-	void sendAccountingFinalFile(Long codeFileControl, String userName) throws Exception;
+	void sendSeizure(Long codeFileControl, String userName) throws Exception;
+	void sendLifting(Long codeFileControl, String userName) throws Exception;
+	void sendFinalFile(Long codeFileControl, String userName) throws Exception;
 	es.commerzbank.ice.comun.lib.domain.entity.ControlFichero sendAccountingLiftingBankAccount(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, String userName) throws ICEException, Exception;
 
 	void seizureCallback(Long codCuentaTraba);

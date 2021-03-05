@@ -2,10 +2,8 @@ package es.commerzbank.ice.embargos.event;
 
 import es.commerzbank.ice.comun.lib.domain.entity.ApunteContable;
 import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
-import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
-
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +43,8 @@ public class JobImportacionApuntesContables implements Job
 						accountingService.liftingCallback((Long.valueOf(apunteContable.getExtraInfo2())));
 					else if (EmbargosConstants.APUNTES_CONTABLES_TIPO_TESORERIA.equals(apunteContable.getExtraInfo1()))
 						accountingService.transferenciaFinalOrganismoCallback((Long.valueOf(apunteContable.getExtraInfo2())));
+					else
+						logger.error("No se ha tratado el apunte contable");
 				}
 				catch (Exception e)
 				{

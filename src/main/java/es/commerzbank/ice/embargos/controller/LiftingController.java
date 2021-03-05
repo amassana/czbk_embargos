@@ -227,7 +227,7 @@ public class LiftingController {
 
 			String userName = authentication.getName();
 		
-			accountingService.sendAccountingLifting(codeFileControl, userName);
+			accountingService.sendLifting(codeFileControl, userName);
 
 			//Se obtiene el fileControl que se va a retornar del Fichero Final:
 			resultFileControlDTO = fileControlService.getByCodeFileControl(codeFileControl);
