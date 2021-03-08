@@ -112,8 +112,8 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	@Autowired
 	private EmailService emailService;
 
-	//@Autowired
-	private GeneralParametersService generalParametersService;
+	@Autowired
+	private GeneralParametersService generalParametersService;	
 	
 	@Autowired
 	private EventService eventService;
