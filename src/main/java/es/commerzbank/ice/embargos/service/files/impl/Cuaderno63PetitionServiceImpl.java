@@ -20,11 +20,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.comun.lib.domain.dto.Element;
 import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
+import es.commerzbank.ice.comun.lib.service.EventService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
@@ -60,6 +60,9 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	@Value("${commerzbank.embargos.beanio.config-path.cuaderno63}")
 	String pathFileConfigCuaderno63;
 
+    @Autowired
+	private EventService eventService;
+    
 	@Autowired
 	private Cuaderno63Mapper cuaderno63Mapper;
 
@@ -253,6 +256,19 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	        task.setIndActive(true);
 	        task.setApplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
 	        Long codTarea = taskService.addCalendarTask(task);
+	        
+	        // Se crea el evento
+	        TaskAndEvent event = new TaskAndEvent();
+	        event.setDescription("Petición de información recibido " + controlFicheroPeticion.getNombreFichero());
+	        event.setDate(DateUtils.convertToDate(LocalDate.now()));
+	        event.setCodCalendar(1L);
+	        event.setType("E");
+	        event.setAction("0");
+	        event.setIndActive(true);
+	        event.setIndVisualizarCalendario(true);
+	        event.setApplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
+	        eventService.createOrUpdateEvent(event, EmbargosConstants.USER_AUTOMATICO);
+	        LOG.info("Evento de recepción creado");
 	        
 	        // - Se guarda el codigo de tarea del calendario:
 	        controlFicheroPeticion.setCodTarea(BigDecimal.valueOf(codTarea));

@@ -22,12 +22,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.comun.lib.domain.dto.Element;
 import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
-import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.service.EventService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
 import es.commerzbank.ice.comun.lib.util.ICEException;
@@ -107,8 +106,11 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	@Autowired
 	private EmailService emailService;
 
+	//@Autowired
+	//private GeneralParametersService generalParametersService;
+	
 	@Autowired
-	private GeneralParametersService generalParametersService;
+	private EventService eventService;
 	
 	@Override
 	@Transactional(transactionManager = "transactionManager", rollbackFor = Exception.class)
@@ -140,7 +142,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	
 	        
 	        // use a StreamFactory to create a BeanReader
-	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT);
+	        //String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT);
 			
 	        reader = new InputStreamReader(new FileInputStream(processingFile)); 
 	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_DILIGENCIAS, reader);
@@ -321,6 +323,19 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	        task.setApplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
 	        Long codTarea = taskService.addCalendarTask(task);
 	        
+	        // Se crea el evento
+	        TaskAndEvent event = new TaskAndEvent();
+	        event.setDescription("Embargo recibido " + controlFicheroEmbargo.getNombreFichero());
+	        event.setDate(DateUtils.convertToDate(LocalDate.now()));
+	        event.setCodCalendar(1L);
+	        event.setType("E");
+	        event.setAction("0");
+	        event.setIndActive(true);
+	        event.setIndVisualizarCalendario(true);
+	        event.setApplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
+            eventService.createOrUpdateEvent(event, EmbargosConstants.USER_AUTOMATICO);
+	        logger.info("Evento de recepción creado");
+            
 	        // - Se guarda el codigo de tarea del calendario:
 	        controlFicheroEmbargo.setCodTarea(BigDecimal.valueOf(codTarea));
 	        	        

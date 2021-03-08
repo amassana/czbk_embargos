@@ -2,10 +2,10 @@ package es.commerzbank.ice.embargos.service.files.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
@@ -18,9 +18,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
 import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
+import es.commerzbank.ice.comun.lib.service.EventService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
-import es.commerzbank.ice.comun.lib.util.ICEException;
+import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
@@ -58,6 +60,9 @@ public class AEATLiftingServiceImpl
     //@Value("${commerzbank.embargos.beanio.config-path.aeat}")
     // TODO
     BigDecimal limiteAutomatico = new BigDecimal(50000);
+    
+    @Autowired
+	private EventService eventService;
     
     @Autowired
     private FileControlMapper fileControlMapper;
@@ -252,6 +257,19 @@ public class AEATLiftingServiceImpl
             }
 
             controlFicheroLevantamiento.setEstadoCtrlfichero(estadoCtrlfichero);
+            
+            // Se crea el evento
+	        TaskAndEvent event = new TaskAndEvent();
+	        event.setDescription("Levantamiento recibido " + controlFicheroLevantamiento.getNombreFichero());
+	        event.setDate(DateUtils.convertToDate(LocalDate.now()));
+	        event.setCodCalendar(1L);
+	        event.setType("E");
+	        event.setAction("0");
+	        event.setIndActive(true);
+	        event.setIndVisualizarCalendario(true);
+	        event.setApplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
+	        eventService.createOrUpdateEvent(event, EmbargosConstants.USER_AUTOMATICO);
+	        LOG.info("Evento de recepción creado");
         }
         catch (Exception e)
         {
