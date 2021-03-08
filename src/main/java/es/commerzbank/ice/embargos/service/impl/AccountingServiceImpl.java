@@ -343,7 +343,7 @@ public class AccountingServiceImpl implements AccountingService{
 			Long codFileControlFicheroComunes, String nombre, String nif, String cuentaIntercambioDivisas)
 			throws Exception
 	{
-		if (BigDecimal.ZERO.compareTo(cuentaTraba.getImporte()) < 0)
+		if (cuentaTraba.getImporte()!=null && BigDecimal.ZERO.compareTo(cuentaTraba.getImporte()) < 0)
 		{
 			AccountingNote accountingNote = new AccountingNote();
 
@@ -538,7 +538,7 @@ public class AccountingServiceImpl implements AccountingService{
 			CuentaLevantamiento cuentaLevantamiento, Embargo embargo, Long codFileControlFicheroComunes,
 			String oficinaCuentaRecaudacion, String cuentaRecaudacion, String cuentaIntercambioDivisas)
 			throws Exception {
-		if (BigDecimal.ZERO.compareTo(cuentaLevantamiento.getImporte()) < 0)
+		if (cuentaLevantamiento.getImporte()!=null && BigDecimal.ZERO.compareTo(cuentaLevantamiento.getImporte()) < 0)
 		{
 			String reference1 = embargo.getNumeroEmbargo();
 			String reference2 = "";
