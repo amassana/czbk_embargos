@@ -29,6 +29,7 @@ import es.commerzbank.ice.comun.lib.domain.dto.Element;
 import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
 import es.commerzbank.ice.comun.lib.service.EventService;
 import es.commerzbank.ice.comun.lib.service.FestiveService;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
 import es.commerzbank.ice.comun.lib.util.ICEException;
@@ -112,7 +113,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	private EmailService emailService;
 
 	//@Autowired
-	//private GeneralParametersService generalParametersService;
+	private GeneralParametersService generalParametersService;
 	
 	@Autowired
 	private EventService eventService;
@@ -147,9 +148,9 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	
 	        
 	        // use a StreamFactory to create a BeanReader
-	        //String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT);
+	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT);
 			
-	        reader = new InputStreamReader(new FileInputStream(processingFile)); 
+	        reader = new InputStreamReader(new FileInputStream(processingFile), encoding); 
 	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_DILIGENCIAS, reader);
 	        
 	        Object record = null;
