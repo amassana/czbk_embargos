@@ -216,7 +216,7 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 	    			logger.error("Error while sending email for .ERR file " + originalName, e);
 	    		}
 	            break;
-	        case EmbargosConstants.TIPO_FICHERO_RESULTADO:
+	        case EmbargosConstants.TIPO_FICHERO_EMBARGOS:
 	        	try {
 	        		if (listaErrores!=null && listaErrores.size()>0)
 	        			emailService.sendEmailFileError(listaErrores, originalName, processingFile.getAbsolutePath());
