@@ -131,14 +131,17 @@ public class AEATFilePoller
                 	
                 	boolean isEmbargo = false;
                 	
+                	Reader reader = null;
+                	BeanReader beanReader = null;
+                	
                 	try {
 	        	        // create a StreamFactory
 	        	        StreamFactory factory = StreamFactory.newInstance();
 	        	        // load the mapping file
 	        	        factory.loadResource(pathFileConfigAEAT);
 	        	        
-	        	        Reader reader = new InputStreamReader(new FileInputStream(processingFile)); 
-	        	        BeanReader beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_DILIGENCIAS, reader);
+	        	        reader = new InputStreamReader(new FileInputStream(processingFile)); 
+	        	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_DILIGENCIAS, reader);
 	        	        
 	        	        Object record = null;
 	
@@ -150,6 +153,13 @@ public class AEATFilePoller
 	        	        }
                 	} catch (Exception e) {
                 		LOG.error("No es tracta d'un arxiu de embargos, per tant serà un arxiu de resposta: " + originalName);
+            		} finally {
+            			if(reader!=null) {
+            				reader.close();
+            			}
+            			if (beanReader!=null) {
+            				beanReader.close();
+            			}
             		}
                 	
                 	if (isEmbargo) {
