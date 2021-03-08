@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import es.commerzbank.ice.comun.lib.domain.dto.Element;
 import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
 import es.commerzbank.ice.comun.lib.service.EventService;
+import es.commerzbank.ice.comun.lib.service.FestiveService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
 import es.commerzbank.ice.comun.lib.util.ICEException;
@@ -69,6 +71,9 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 			
 	@Autowired
 	private AEATMapper aeatMapper;
+	
+	@Autowired
+	private FestiveService festiveService;
 	
 	@Autowired
 	private FileControlMapper fileControlMapper;
@@ -293,8 +298,15 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 			controlFicheroEmbargo.setFechaComienzoCiclo(fechaInicioCicloBigDec);
 	       
 			//- Se guarda la fecha maxima de respuesta (now + dias de margen)
-			long diasRespuestaF3 = entidadComunicadora.getDiasRespuestaF3()!=null ? entidadComunicadora.getDiasRespuestaF3().longValue() : 0;
-			Date lastDateResponse = DateUtils.convertToDate(LocalDate.now().plusDays(diasRespuestaF3));
+			int diasRespuestaF3 = entidadComunicadora.getDiasRespuestaF3()!=null ? entidadComunicadora.getDiasRespuestaF3().intValue() : 0;
+			FestiveService.ValueDateCalculationParameters parameters = new FestiveService.ValueDateCalculationParameters();
+			parameters.numBusinessDays = diasRespuestaF3;
+			parameters.location = 1L;
+			parameters.fromDate = LocalDate.now();
+			LocalDate finalDate = festiveService.dateCalculation(parameters);
+			Date lastDateResponse = Date.from(finalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+			
+			//Date lastDateResponse = DateUtils.convertToDate(LocalDate.now().plusDays(diasRespuestaF3));
 			BigDecimal limitResponseDate = ICEDateUtils.dateToBigDecimal(lastDateResponse, ICEDateUtils.FORMAT_yyyyMMdd);
 			controlFicheroEmbargo.setFechaMaximaRespuesta(limitResponseDate);
 			
