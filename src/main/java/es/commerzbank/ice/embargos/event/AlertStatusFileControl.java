@@ -58,7 +58,7 @@ public class AlertStatusFileControl {
 			
 			logger.info("Número de archivos encontrado sin leer de outbox: " + listaEnvio.size());
 			
-			emailService.sendEmailUnreadFiles(listaEnvio);
+			if (listaEnvio.size()>0) emailService.sendEmailUnreadFiles(listaEnvio);
 		}
 		catch (Exception e) {
 			logger.error("ERROR - AlertStatusFileControl - alertStatusFileControl() ", e);
