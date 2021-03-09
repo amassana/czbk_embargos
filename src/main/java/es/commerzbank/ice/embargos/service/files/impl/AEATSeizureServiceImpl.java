@@ -126,6 +126,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 		
 		BeanReader beanReader = null;
 		Reader reader = null;
+		FileInputStream fileInputStream = null;
 		
 		ControlFichero controlFicheroEmbargo = null;
 		
@@ -150,7 +151,8 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	        // use a StreamFactory to create a BeanReader
 	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT);
 			
-	        reader = new InputStreamReader(new FileInputStream(processingFile), encoding); 
+	        fileInputStream = new FileInputStream(processingFile);
+	        reader = new InputStreamReader(fileInputStream, encoding); 
 	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_DILIGENCIAS, reader);
 	        
 	        Object record = null;
@@ -381,6 +383,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 			if (beanReader!=null) {
 				beanReader.close();
 			}
+			if (fileInputStream!=null) fileInputStream.close();
 		}
 	
 		logger.info("AEATSeizureServiceImpl - tratarFicheroDiligenciasEmbargo - end");

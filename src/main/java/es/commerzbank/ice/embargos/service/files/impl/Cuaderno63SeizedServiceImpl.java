@@ -110,6 +110,7 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 
 		BeanReader beanReader = null;
 		BeanWriter beanWriter = null;
+		FileInputStream fileInputStream = null;
 		
 		Reader reader = null;
 		Writer writer = null;
@@ -204,7 +205,8 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	        CabeceraEmisorFase3 cabeceraEmisorFase3 = null;
 	        FinFicheroFase3 finFicheroFase3 = null;
 	        
-	        reader = new InputStreamReader(new FileInputStream(ficheroEmbargo), encoding);
+	        fileInputStream = new FileInputStream(ficheroEmbargo);
+	        reader = new InputStreamReader(fileInputStream, encoding);
 	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE3, reader);	
 	        
 	        Object record = null; 
@@ -394,6 +396,8 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 			if (beanWriter != null) {
 				beanWriter.close();
 			}
+			
+			if (fileInputStream!=null) fileInputStream.close();
 		}
 		
 	}

@@ -133,6 +133,7 @@ public class AEATFilePoller
                 	
                 	Reader reader = null;
                 	BeanReader beanReader = null;
+                	FileInputStream fileInputStream = null;
                 	
                 	try {
 	        	        // create a StreamFactory
@@ -140,7 +141,8 @@ public class AEATFilePoller
 	        	        // load the mapping file
 	        	        factory.loadResource(pathFileConfigAEAT);
 	        	        
-	        	        reader = new InputStreamReader(new FileInputStream(processingFile)); 
+	        	        fileInputStream = new FileInputStream(processingFile);
+	        	        reader = new InputStreamReader(fileInputStream); 
 	        	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_DILIGENCIAS, reader);
 	        	        
 	        	        Object record = null;
@@ -160,6 +162,7 @@ public class AEATFilePoller
             			if (beanReader!=null) {
             				beanReader.close();
             			}
+            			if (fileInputStream!=null) fileInputStream.close();
             		}
                 	
                 	if (isEmbargo) {

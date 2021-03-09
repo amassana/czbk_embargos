@@ -96,6 +96,7 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 		
 		BeanReader beanReader = null;
 		BeanWriter beanWriter = null;
+		FileInputStream fileInputStream = null;
 		
 		Reader reader = null;
 		Writer writer = null;
@@ -177,7 +178,8 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        // use a StreamFactory to create a BeanReader
 	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_NORMA63);
 			
-	        reader = new InputStreamReader(new FileInputStream(ficheroEntrada), encoding);
+	        fileInputStream = new FileInputStream(ficheroEntrada);
+	        reader = new InputStreamReader(fileInputStream, encoding);
 	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE1, reader);
 	        
 	        writer = new OutputStreamWriter(new FileOutputStream(ficheroSalida), encoding);
@@ -346,6 +348,7 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 			if (beanWriter != null) {
 				beanWriter.close();
 			}
+			if (fileInputStream!=null) fileInputStream.close();
 		}
 	}
 

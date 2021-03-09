@@ -108,6 +108,7 @@ public class Cuaderno63LiftingServiceImpl
     {
         BeanReader beanReader = null;
         Reader reader = null;
+        FileInputStream fileInputStream = null;
         es.commerzbank.ice.comun.lib.domain.entity.ControlFichero controlFichero = null;
 
         String levFileName = null;
@@ -132,7 +133,8 @@ public class Cuaderno63LiftingServiceImpl
             
 	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_NORMA63);
 			
-	        reader = new InputStreamReader(new FileInputStream(processingFile), encoding);
+	        fileInputStream = new FileInputStream(processingFile);
+	        reader = new InputStreamReader(fileInputStream, encoding);
             beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE5, reader);
 
             Object currentRecord = null;
@@ -288,6 +290,8 @@ public class Cuaderno63LiftingServiceImpl
         	
         	if (beanReader != null)
                 beanReader.close();
+        	
+        	if (fileInputStream!=null) fileInputStream.close();
         }
     }
 }

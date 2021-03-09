@@ -125,6 +125,7 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 		
 		BeanReader beanReader = null;
 		Reader reader = null;
+		FileInputStream fileInputStream = null;
 		
 		ControlFichero controlFicheroEmbargo = null;
 		
@@ -148,7 +149,8 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 	        // use a StreamFactory to create a BeanReader
 	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_NORMA63);
 	        
-			reader = new InputStreamReader(new FileInputStream(processingFile), encoding);
+	        fileInputStream = new FileInputStream(processingFile);
+			reader = new InputStreamReader(fileInputStream, encoding);
 	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE3, reader);
 	        
 	        Object record = null;
@@ -388,6 +390,7 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 			if (beanReader != null) {
 				beanReader.close();
 			}
+			if (fileInputStream!=null) fileInputStream.close();
 		}
 
 	}

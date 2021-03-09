@@ -94,6 +94,7 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 		
 		BeanReader beanReader = null;
 		Reader reader = null;
+		FileInputStream fileInputStream = null;
 		
 		ControlFichero controlFicheroErrores = null;
 		
@@ -119,7 +120,8 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 	        // use a StreamFactory to create a BeanReader
 	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT);
 	        
-			reader = new InputStreamReader(new FileInputStream(processingFile), encoding);
+	        fileInputStream = new FileInputStream(processingFile);
+			reader = new InputStreamReader(fileInputStream, encoding);
 	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_RESULTADOVALIDACIONTRABAS, reader);
 	        
 	        Object record = null;
@@ -224,6 +226,7 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 			if (beanReader!=null) {
 				beanReader.close();
 			}
+			if (fileInputStream!=null) fileInputStream.close();
 		}
 	
 		String tipoFichero = FilenameUtils.getExtension(processingFile.getCanonicalPath()).toUpperCase();

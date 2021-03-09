@@ -114,6 +114,7 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 		
 		BeanReader beanReader = null;
 		BeanWriter beanWriter = null;
+		FileInputStream fileInputStream = null;
 		
 		Reader reader = null;
 		Writer writer = null;
@@ -210,7 +211,8 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	        FinEntidadCreditoFase3 finEntidadCreditoFase3 = null;
 	        FinEntidadTransmisoraFase3 finEntidadTransmisoraFase3 = null;
 	        
-	        reader = new InputStreamReader(new FileInputStream(ficheroEmbargo), encoding);
+	        fileInputStream = new FileInputStream(ficheroEmbargo);
+	        reader = new InputStreamReader(fileInputStream, encoding);
 	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_DILIGENCIAS, reader);	
 	        
 	        Object record = null; 
@@ -430,6 +432,7 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 			if (beanWriter != null) {
 				beanWriter.close();
 			}
+			if (fileInputStream!=null) fileInputStream.close();
 		}
 		
 	}
