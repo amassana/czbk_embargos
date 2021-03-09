@@ -137,7 +137,42 @@ public abstract class Cuaderno63Mapper {
 		int i=1;
 		for (AccountDTO accountDTO : listAccount) {
 				
-			//Solo se setean las cuentas que tengan estado ACTIVE:
+			//Solo se setean las cuentas que tengan estado ACTIVE y moneda EUR
+			if (EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE.equals(accountDTO.getStatus()) && EmbargosConstants.ISO_MONEDA_EUR.equals(accountDTO.getDivisa())) {
+				switch(i) {
+					case 1:
+						peticionInformacion.setCuenta1(accountDTO.getAccountNum());
+						peticionInformacion.setIban1(accountDTO.getIban());
+						break;
+					case 2:
+						peticionInformacion.setCuenta2(accountDTO.getAccountNum());
+						peticionInformacion.setIban2(accountDTO.getIban());
+						break;
+					case 3:
+						peticionInformacion.setCuenta3(accountDTO.getAccountNum());
+						peticionInformacion.setIban3(accountDTO.getIban());
+						break;
+					case 4:
+						peticionInformacion.setCuenta4(accountDTO.getAccountNum());
+						peticionInformacion.setIban4(accountDTO.getIban());
+						break;
+					case 5:
+						peticionInformacion.setCuenta5(accountDTO.getAccountNum());
+						peticionInformacion.setIban5(accountDTO.getIban());
+						break;
+					case 6:
+						peticionInformacion.setCuenta6(accountDTO.getAccountNum());
+						peticionInformacion.setIban6(accountDTO.getIban());
+						break;
+					default:
+				}
+				i++;
+			}
+		}
+		
+		//Si no ha habido suficientes de EUR se coge del resto
+		for (AccountDTO accountDTO : listAccount) {
+			
 			if (EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE.equals(accountDTO.getStatus())) {
 				switch(i) {
 					case 1:
