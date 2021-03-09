@@ -138,40 +138,47 @@ public abstract class Cuaderno63Mapper {
 	 */
 	private void setPreloadedBankAccounts(PeticionInformacion peticionInformacion, List<AccountDTO> listAccount) {
 	
+		List<String> listAccounts = new ArrayList<String>();
 		//Iterating by the bank accounts:
 		int i=1;
 		for (AccountDTO accountDTO : listAccount) {
-			LOG.info("Cuenta " + accountDTO.getStatus() + " " + accountDTO.getDivisa());
+			LOG.info("For 1 Cuenta " + accountDTO.getStatus() + " " + accountDTO.getDivisa());
 			//Solo se setean las cuentas que tengan estado ACTIVE y moneda EUR
 			if (EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE.equals(accountDTO.getStatus()) && EmbargosConstants.ISO_MONEDA_EUR.equals(accountDTO.getDivisa())) {
 				switch(i) {
 					case 1:
 						LOG.info("Cuenta 1 " + accountDTO.getStatus() + " " + accountDTO.getDivisa());
+						listAccounts.add(accountDTO.getAccountNum());
 						peticionInformacion.setCuenta1(accountDTO.getAccountNum());
 						peticionInformacion.setIban1(accountDTO.getIban());
 						break;
 					case 2:
 						LOG.info("Cuenta 2 " + accountDTO.getStatus() + " " + accountDTO.getDivisa());
+						listAccounts.add(accountDTO.getAccountNum());
 						peticionInformacion.setCuenta2(accountDTO.getAccountNum());
 						peticionInformacion.setIban2(accountDTO.getIban());
 						break;
 					case 3:
 						LOG.info("Cuenta 3 " + accountDTO.getStatus() + " " + accountDTO.getDivisa());
+						listAccounts.add(accountDTO.getAccountNum());
 						peticionInformacion.setCuenta3(accountDTO.getAccountNum());
 						peticionInformacion.setIban3(accountDTO.getIban());
 						break;
 					case 4:
 						LOG.info("Cuenta 4 " + accountDTO.getStatus() + " " + accountDTO.getDivisa());
+						listAccounts.add(accountDTO.getAccountNum());
 						peticionInformacion.setCuenta4(accountDTO.getAccountNum());
 						peticionInformacion.setIban4(accountDTO.getIban());
 						break;
 					case 5:
 						LOG.info("Cuenta 5 " + accountDTO.getStatus() + " " + accountDTO.getDivisa());
+						listAccounts.add(accountDTO.getAccountNum());
 						peticionInformacion.setCuenta5(accountDTO.getAccountNum());
 						peticionInformacion.setIban5(accountDTO.getIban());
 						break;
 					case 6:
 						LOG.info("Cuenta 6 " + accountDTO.getStatus() + " " + accountDTO.getDivisa());
+						listAccounts.add(accountDTO.getAccountNum());
 						peticionInformacion.setCuenta6(accountDTO.getAccountNum());
 						peticionInformacion.setIban6(accountDTO.getIban());
 						break;
@@ -183,8 +190,8 @@ public abstract class Cuaderno63Mapper {
 		
 		//Si no ha habido suficientes de EUR se coge del resto
 		for (AccountDTO accountDTO : listAccount) {
-			LOG.info("Cuenta " + accountDTO.getStatus() + " " + accountDTO.getDivisa());
-			if (EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE.equals(accountDTO.getStatus())) {
+			LOG.info("For 2 Cuenta " + accountDTO.getStatus() + " " + accountDTO.getDivisa());
+			if (EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE.equals(accountDTO.getStatus()) && !listAccounts.contains(accountDTO.getAccountNum())) {
 				switch(i) {
 					case 1:
 						LOG.info("Cuenta 1 " + accountDTO.getStatus() + " " + accountDTO.getDivisa());
