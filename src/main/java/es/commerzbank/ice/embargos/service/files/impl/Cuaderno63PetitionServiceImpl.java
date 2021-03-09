@@ -112,6 +112,8 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 		BeanReader beanReader = null;
 		Reader reader = null;
 
+		FileInputStream fileInputStream = null;
+		
 		ControlFichero controlFicheroPeticion = null;
 
 		String petitionFileName = null;
@@ -136,7 +138,8 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 
 	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_NORMA63);
 	        
-			reader = new InputStreamReader(new FileInputStream(processingFile), encoding);
+	        fileInputStream = new FileInputStream(processingFile);
+			reader = new InputStreamReader(fileInputStream, encoding);
 	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE1, reader);
 
 	        CabeceraEmisorFase1 cabeceraEmisor = null;
@@ -312,6 +315,8 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 				reader.close();
 			if (beanReader != null)
 				beanReader.close();
+			if (fileInputStream != null)
+				fileInputStream.close();
 		}
 
 	}
