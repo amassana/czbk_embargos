@@ -104,13 +104,15 @@ public class FinalResponseController {
 		ResponseEntity<InputStreamResource> response = null;
 
 		try {
-			DownloadReportFile.setTempFileName("TGSSAnexo" + num_anexo);
+			DownloadReportFile downloadReportFile = new DownloadReportFile();
+			
+			downloadReportFile.setTempFileName("TGSSAnexo" + num_anexo);
 
-			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
+			downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
-			DownloadReportFile.writeFile(finalResponseService.generarAnexo(cod_usuario, cod_traba, num_anexo));
+			downloadReportFile.writeFile(finalResponseService.generarAnexo(cod_usuario, cod_traba, num_anexo));
 
-			response = DownloadReportFile.returnToDownloadFile();
+			response = downloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
 			logger.error("Error in downloadAnexo", e);
@@ -127,13 +129,15 @@ public class FinalResponseController {
 			@PathVariable("fileControl") Integer codFileControl) {
 
 		try {
-			DownloadReportFile.setTempFileName("f6_finalization");
+			DownloadReportFile downloadReportFile = new DownloadReportFile();
+			
+			downloadReportFile.setTempFileName("f6_finalization");
 
-			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
+			downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
-			DownloadReportFile.writeFile(finalResponseService.generarRespuestaFinalEmbargo(codFileControl));
+			downloadReportFile.writeFile(finalResponseService.generarRespuestaFinalEmbargo(codFileControl));
 
-			return DownloadReportFile.returnToDownloadFile();
+			return downloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
 			logger.error("Error in generarRespuestaFinalEmbargo", e);
@@ -148,13 +152,15 @@ public class FinalResponseController {
 			@PathVariable("cod_traba") String cod_solicitud_ejecucion) {
 
 		try {
-			DownloadReportFile.setTempFileName("payment-letter-CGPJ");
+			DownloadReportFile downloadReportFile = new DownloadReportFile();
+			
+			downloadReportFile.setTempFileName("payment-letter-CGPJ");
 
-			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
+			downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
-			DownloadReportFile.writeFile(finalResponseService.generatePaymentLetterCGPJ(cod_solicitud_ejecucion));
+			downloadReportFile.writeFile(finalResponseService.generatePaymentLetterCGPJ(cod_solicitud_ejecucion));
 
-			return DownloadReportFile.returnToDownloadFile();
+			return downloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
 			logger.error("Error in generatePaymentLetterCGPJ", e);
@@ -169,13 +175,15 @@ public class FinalResponseController {
 			@PathVariable(name = "cod_control_fichero") String cod_control_fichero) {
 
 		try {
-			DownloadReportFile.setTempFileName("payment-letter-N63");
+			DownloadReportFile downloadReportFile = new DownloadReportFile();
+			
+			downloadReportFile.setTempFileName("payment-letter-N63");
 
-			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
+			downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
-			DownloadReportFile.writeFile(finalResponseService.generatePaymentLetterN63(cod_control_fichero));
+			downloadReportFile.writeFile(finalResponseService.generatePaymentLetterN63(cod_control_fichero));
 
-			return DownloadReportFile.returnToDownloadFile();
+			return downloadReportFile.returnToDownloadFile();
   
 		} catch (Exception e) {
 			logger.error("Error in generatePaymentLetterN63", e);

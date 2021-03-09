@@ -164,17 +164,19 @@ public class PetitionController {
 			@PathVariable("codeFileControl") Integer codeFileControl)
 	{
 		try {
-			DownloadReportFile.setTempFileName("petitionReportRequest");
+			DownloadReportFile downloadReportFile = new DownloadReportFile();
+			
+			downloadReportFile.setTempFileName("petitionReportRequest");
 
-			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
+			downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			String oficina = officeUtils.getLocalidadUsuario(authentication);
 
 			byte[] data = petitionService.generateF1PettitionRequest(codeFileControl, oficina);
 
-			DownloadReportFile.writeFile(data);
+			downloadReportFile.writeFile(data);
 
-			return DownloadReportFile.returnToDownloadFile();
+			return downloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
 			logger.error("Error in f1PettitionRequest", e);
@@ -190,17 +192,19 @@ public class PetitionController {
 			@PathVariable("codeFileControl") Integer codeFileControl)
 	{
 		try {
-			DownloadReportFile.setTempFileName("pettition-response");
+			DownloadReportFile downloadReportFile = new DownloadReportFile();
+			
+			downloadReportFile.setTempFileName("pettition-response");
 
-			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
+			downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			String oficina = officeUtils.getLocalidadUsuario(authentication);
 
 			byte[] data = petitionService.generateF2PettitionResponse(codeFileControl, oficina);
 
-			DownloadReportFile.writeFile(data);
+			downloadReportFile.writeFile(data);
 
-			return DownloadReportFile.returnToDownloadFile();
+			return downloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
 			logger.error("Error in petitionReport", e);

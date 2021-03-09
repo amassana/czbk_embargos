@@ -386,17 +386,18 @@ public class FileControlController {
 	) throws Exception
 	{
 		try {
-			DownloadReportFile.setTempFileName("file-control");
+			DownloadReportFile downloadReportFile = new DownloadReportFile();
+			downloadReportFile.setTempFileName("file-control");
 
-			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
+			downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			String oficina = officeUtils.getLocalidadUsuario(authentication);
 
 			byte[] data = fileControlService.generateFileControl(fileControlFilters, oficina);
 
-			DownloadReportFile.writeFile(data);
+			downloadReportFile.writeFile(data);
 
-			return DownloadReportFile.returnToDownloadFile();
+			return downloadReportFile.returnToDownloadFile();
 		} catch (Exception e) {
 			logger.error("Error in generarReportLista", e);
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);

@@ -249,13 +249,15 @@ public class LiftingController {
 	public ResponseEntity<InputStreamResource> generarResumenLevantamientoF5(
 			@PathVariable("fileControl") Integer codFileControl) {
 		try {
-			DownloadReportFile.setTempFileName("f5-seizure-lifting");
+			DownloadReportFile downloadReportFile = new DownloadReportFile();
+			
+			downloadReportFile.setTempFileName("f5-seizure-lifting");
 
-			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
+			downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
-			DownloadReportFile.writeFile(liftingService.generarResumenLevantamientoF5(codFileControl));
+			downloadReportFile.writeFile(liftingService.generarResumenLevantamientoF5(codFileControl));
 
-			return DownloadReportFile.returnToDownloadFile();
+			return downloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
 			logger.error("Error in anexoReport", e);
@@ -270,14 +272,16 @@ public class LiftingController {
 			@PathVariable("idLifting") Integer idLifting) {
 
 		try {
-			DownloadReportFile.setTempFileName("lifting-letter");
+			DownloadReportFile downloadReportFile = new DownloadReportFile();
+			
+			downloadReportFile.setTempFileName("lifting-letter");
 
-			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
+			downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			// seizure service falta
-			DownloadReportFile.writeFile(liftingService.generateLiftingLetter(idLifting));
+			downloadReportFile.writeFile(liftingService.generateLiftingLetter(idLifting));
 
-			return DownloadReportFile.returnToDownloadFile();
+			return downloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
 			logger.error("Error in levantamientoReport", e);
