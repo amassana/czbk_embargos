@@ -84,7 +84,7 @@
 				format="yyyyMMdd" />
 			<field name="posicionesLibres" length="487" ignore="true" />
 		</record>
-		<record name="registroControlEntidadTransmisora" minOccurs="1" maxOccurs="1"
+		<record name="registroControlEntidadTransmisora" maxOccurs="1"
 			class="es.commerzbank.ice.embargos.formats.aeat.diligencias.RegistroControlEntidadTransmisoraFase3">
 			<field name="indicadorRegistro" rid="true" literal="9" />
 			<field name="delegacionAgenciaEmisora" length="2" />
@@ -471,7 +471,7 @@
 			<field name="codigoError20" type="int" length="3" />
 			<field name="numeroCampoError20" type="int" length="2" />
 		</record>
-		<record name="registroControlEntidadTransmisora" minOccurs="1" maxOccurs="1"
+		<record name="registroControlEntidadTransmisora" maxOccurs="1"
 			class="es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.RegistroControlEntidadTransmisoraValidacionFase4">
 			<field name="indicadorRegistro" rid="true" literal="9" />
 			<field name="delegacionAgenciaEmisora" length="2" />
@@ -569,7 +569,7 @@
 				format="yyyyMMdd" />
 			<field name="posicionesLibres" length="387" ignore="true" />
 		</record>
-		<record name="registroControlEntidadTransmisora" minOccurs="1" maxOccurs="1"
+		<record name="registroControlEntidadTransmisora" maxOccurs="1"
 			class="es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.RegistroControlEntidadTransmisora">
 			<field name="indicadorRegistro" rid="true" literal="9" />
 			<field name="delegacionAgenciaReceptora" length="2" />
