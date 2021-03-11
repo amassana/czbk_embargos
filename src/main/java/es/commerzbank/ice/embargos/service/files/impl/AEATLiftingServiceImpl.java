@@ -259,6 +259,7 @@ public class AEATLiftingServiceImpl
 	                    }
 	
 	                    if (allCuentasLevantamientoContabilizados) {
+	                    	LOG.info("All seizure lifting count");
 	                        EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
 	                        estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION);
 	                        levantamiento.setEstadoLevantamiento(estadoLevantamiento);
