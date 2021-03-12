@@ -27,7 +27,7 @@ public class ScheduleEnvioCartas
   @Autowired
   private LiftingService liftingService;
 
-  @Scheduled(cron = "0 0/5 * * * ?")
+  @Scheduled(cron = "20 * * * * ?")
   public void scheduleEnvioCartas()
   {
     try
