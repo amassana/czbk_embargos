@@ -30,5 +30,5 @@ public interface SeizureService {
 	List<Embargo> listEmbargosTransferToTax();
 	boolean jobTransferToTax(String authorization, String user) throws ICEException;
 
-    void generateSeizureLetters(ControlFichero controlFichero);
+    void generateSeizureLetters(ControlFichero controlFichero) throws Exception;
 }

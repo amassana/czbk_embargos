@@ -49,6 +49,7 @@ public class ScheduleEnvioCartas
           {
             liftingService.generateLiftingLetters(pendiente);
           }
+
           fileControlService.cartaEnviada(pendiente);
         }
         catch (Exception e) {

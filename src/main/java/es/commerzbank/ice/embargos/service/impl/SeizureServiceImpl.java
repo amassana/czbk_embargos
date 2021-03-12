@@ -561,38 +561,29 @@ public class SeizureServiceImpl
 	}
 
 	@Override
-	public void generateSeizureLetters(ControlFichero controlFichero) {
-		try
+	public void generateSeizureLetters(ControlFichero controlFichero) throws Exception {
+		List<Embargo> seizures = seizureRepository.findAllByControlFichero(controlFichero);
+
+		if (seizures != null && seizures.size() > 0)
 		{
-			List<Embargo> seizures = seizureRepository.findAllByControlFichero(controlFichero);
+			File temporaryFile = reportHelper.getTemporaryFile("cartas-embargo-"+ controlFichero.getCodControlFichero(), ReportHelper.PDF_EXTENSION);
+			PdfDocument outDoc = new PdfDocument(new PdfWriter(temporaryFile));
 
-			if (seizures != null && seizures.size() > 0)
+			int pageCount = 1;
+
+			for (Embargo embargo : seizures)
 			{
-				File temporaryFile = reportHelper.getTemporaryFile("cartas-embargo-"+ controlFichero.getCodControlFichero(), ReportHelper.PDF_EXTENSION);
-				PdfDocument outDoc = new PdfDocument(new PdfWriter(temporaryFile));
+				JasperPrint filledReport = reportSeizureLetterInternal(embargo.getCodEmbargo());
 
-				int pageCount = 1;
-
-				for (Embargo embargo : seizures)
-				{
-					try
-					{
-						JasperPrint filledReport = reportSeizureLetterInternal(embargo.getCodEmbargo());
-						reportHelper.dumpReport(outDoc, filledReport, pageCount);
-						pageCount++;
-					}
-					catch (Exception e) {
-						throw new Exception("DB exception while generating the report", e);
-					}
+				if (filledReport != null) {
+					reportHelper.dumpReport(outDoc, filledReport, pageCount);
+					pageCount++;
 				}
-
-				outDoc.close();
-
-				reportHelper.moveToPrintFolder(temporaryFile);
 			}
-		}
-		catch (Exception e) {
-			logger.error("Error generando justificantes de domiciliaciones diarios", e);
+
+			outDoc.close();
+
+			reportHelper.moveToPrintFolder(temporaryFile);
 		}
 	}
 
