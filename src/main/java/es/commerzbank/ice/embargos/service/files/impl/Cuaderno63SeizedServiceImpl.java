@@ -10,10 +10,14 @@ import java.io.Reader;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import es.commerzbank.ice.comun.lib.domain.dto.Element;
+import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
 import es.commerzbank.ice.comun.lib.file.exchange.FileWriterHelper;
 import org.apache.commons.io.FileUtils;
 import org.beanio.BeanReader;
@@ -27,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import es.commerzbank.ice.comun.lib.service.FestiveService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
@@ -66,6 +71,9 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	private Cuaderno63Mapper cuaderno63Mapper;
 
 	@Autowired
+	private FestiveService festiveService;
+	
+	@Autowired
 	private FileControlMapper fileControlMapper;
 
 	@Autowired
@@ -102,6 +110,7 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 
 		BeanReader beanReader = null;
 		BeanWriter beanWriter = null;
+		FileInputStream fileInputStream = null;
 		
 		Reader reader = null;
 		Writer writer = null;
@@ -196,7 +205,8 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	        CabeceraEmisorFase3 cabeceraEmisorFase3 = null;
 	        FinFicheroFase3 finFicheroFase3 = null;
 	        
-	        reader = new InputStreamReader(new FileInputStream(ficheroEmbargo), encoding);
+	        fileInputStream = new FileInputStream(ficheroEmbargo);
+	        reader = new InputStreamReader(fileInputStream, encoding);
 	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE3, reader);	
 	        
 	        Object record = null; 
@@ -328,6 +338,32 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 			String outboxGenerated = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_OUTBOX);
 			fileWriterHelper.transferToOutbox(ficheroSalida, outboxGenerated, fileNameTrabas);
 	        
+			//- Se guarda la fecha maxima de respuesta fase6 (now + dias de margen)
+			int diasRespuestaF6 = entidadComunicadora.getDiasRespuestaF6() != null ? entidadComunicadora.getDiasRespuestaF6().intValue() : 0;
+			FestiveService.ValueDateCalculationParameters parameters = new FestiveService.ValueDateCalculationParameters();
+			parameters.numBusinessDays = diasRespuestaF6;
+			parameters.location = 1L;
+			parameters.fromDate = LocalDate.now();
+			LocalDate finalDate = festiveService.dateCalculation(parameters);
+			Date lastDateResponse = Date.from(finalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+			
+			//CALENDARIO:
+	        // - Se agrega la tarea al calendario:
+	        TaskAndEvent task = new TaskAndEvent();
+	        task.setDescription("Fase 6 programada " + controlFicheroEmbargo.getNombreFichero());
+	        task.setDate(lastDateResponse);
+	        task.setCodCalendar(1L);
+	        task.setType("T");
+	        Element office = new Element();
+	        office.setCode(1L);
+	        task.setOffice(office);
+	        //
+	        task.setAction("0");
+	        task.setStatus("P");
+	        task.setIndActive(true);
+	        task.setApplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
+	        Long codTarea = taskService.addCalendarTask(task);
+			
 		} catch (Exception e) {
 			
 			//TODO Estado de ERROR pendiente de ser eliminado, se comenta:
@@ -360,6 +396,8 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 			if (beanWriter != null) {
 				beanWriter.close();
 			}
+			
+			if (fileInputStream!=null) fileInputStream.close();
 		}
 		
 	}

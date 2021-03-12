@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
@@ -17,27 +19,34 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
+import es.commerzbank.ice.comun.lib.domain.dto.Element;
+import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
+import es.commerzbank.ice.comun.lib.service.EventService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.service.TaskService;
+import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
+import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
 import es.commerzbank.ice.embargos.domain.entity.EstadoLevantamiento;
 import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
 import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.embargos.domain.mapper.Cuaderno63Mapper;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
+import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.CabeceraEmisorFase5;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.OrdenLevantamientoRetencionFase5;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.repository.LiftingBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.LiftingRepository;
+import es.commerzbank.ice.embargos.repository.OrderingEntityRepository;
 import es.commerzbank.ice.embargos.repository.SeizedRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
-import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.embargos.service.EmailService;
+import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63LiftingService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.EmbargosUtils;
@@ -59,6 +68,9 @@ public class Cuaderno63LiftingServiceImpl
     @Value("${commerzbank.embargos.beanio.config-path.cuaderno63}")
     String pathFileConfigCuaderno63;
 
+    @Autowired
+	private EventService eventService;
+    
     @Autowired
     private FileControlMapper fileControlMapper;
     
@@ -84,16 +96,19 @@ public class Cuaderno63LiftingServiceImpl
     private Cuaderno63Mapper cuaderno63Mapper;
     
     @Autowired
-    private AccountingService accountingService;
-    
-    @Autowired
     private GeneralParametersService generalParametersService;
     
     @Autowired
-	private AccountingNoteService accountingNoteService;
+	private EmailService emailService;
     
     @Autowired
-	private EmailService emailService;
+	private FileControlService fileControlService;
+    
+    @Autowired
+	private OrderingEntityRepository orderingEntityRepository;
+    
+    @Autowired
+	private TaskService taskService;
     
     @Override
     public void tratarFicheroLevantamientos(File processingFile, String originalName, File processedFile)
@@ -101,48 +116,55 @@ public class Cuaderno63LiftingServiceImpl
     {
         BeanReader beanReader = null;
         Reader reader = null;
-        es.commerzbank.ice.comun.lib.domain.entity.ControlFichero controlFichero = null;
-
+        FileInputStream fileInputStream = null;
+        
+        ControlFichero controlFicheroLevantamiento = null;
+        		
         String levFileName = null;
         
         try {
+        	
         	levFileName = FilenameUtils.getName(processingFile.getCanonicalPath());
         	
-            BigDecimal importeMaximoAutomaticoDivisa =
-                    generalParametersService.loadBigDecimalParameter(EmbargosConstants.PARAMETRO_EMBARGOS_LEVANTAMIENTO_IMPORTE_MAXIMO_AUTOMATICO_DIVISA);
-
+        	// create a StreamFactory
+            StreamFactory factory = StreamFactory.newInstance();
+            // load the mapping file
+            factory.loadResource(pathFileConfigCuaderno63);
+            
             // Inicializar control fichero
-            ControlFichero controlFicheroLevantamiento =
+            controlFicheroLevantamiento =
                     fileControlMapper.generateControlFichero(processingFile, EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63, originalName, processedFile);
 
-            controlFicheroLevantamiento.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
-            controlFicheroLevantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
-            fileControlRepository.save(controlFicheroLevantamiento);
-
-            // Inicialiar beanIO parser
-            StreamFactory factory = StreamFactory.newInstance();
-            factory.loadResource(pathFileConfigCuaderno63);
+            fileControlService.saveFileControlTransaction(controlFicheroLevantamiento);
             
 	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_NORMA63);
 			
-	        reader = new InputStreamReader(new FileInputStream(processingFile), encoding);
+	        fileInputStream = new FileInputStream(processingFile);
+	        reader = new InputStreamReader(fileInputStream, encoding);
             beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE5, reader);
 
             Object currentRecord = null;
 
+            BigDecimal importeMaximoAutomaticoDivisa =
+                    generalParametersService.loadBigDecimalParameter(EmbargosConstants.PARAMETRO_EMBARGOS_LEVANTAMIENTO_IMPORTE_MAXIMO_AUTOMATICO_DIVISA);
+            
+            CabeceraEmisorFase5 cabeceraEmisor = null;
+	    	EntidadesOrdenante entidadOrdenante = null;
+	    	Date fechaObtencionFicheroOrganismo = null;
+	    	
             boolean allLevantamientosContabilizados = true;
             // almacena las cuentas que se han contabilizado, para su actualización posterior de estado.
             //List<CuentaLevantamiento> cuentasAContabilizar = new ArrayList<>();
 
             while ((currentRecord = beanReader.read()) != null) {
                 if (EmbargosConstants.RECORD_NAME_CABECERAEMISOR.equals(beanReader.getRecordName())) {
-                    //CabeceraEmisorFase5 cabeceraEmisorFase5 = (CabeceraEmisorFase5) currentRecord;
-                    // Recuperar organisme emissor?
-                }
-                else if (EmbargosConstants.RECORD_NAME_FINFICHERO.equals(beanReader.getRecordName())) {
-                    //FinFicheroFase5 finFicheroFase5 = (FinFicheroFase5) currentRecord;
-                    // validar num línies
-                    // validar sum amount
+                	cabeceraEmisor = (CabeceraEmisorFase5) currentRecord;
+	        		
+	        		String nifOrganismoEmisor = cabeceraEmisor.getNifOrganismoEmisor();
+	        		
+	        		entidadOrdenante = orderingEntityRepository.findByNifEntidad(nifOrganismoEmisor);
+	        		
+	        		fechaObtencionFicheroOrganismo = cabeceraEmisor.getFechaObtencionFicheroOrganismo();
                 }
                 else if (EmbargosConstants.RECORD_NAME_ORDENLEVANTAMIENTORETENCION.equals(beanReader.getRecordName()))
                 {
@@ -202,10 +224,12 @@ public class Cuaderno63LiftingServiceImpl
                         cuentaLevantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
                         liftingBankAccountRepository.save(cuentaLevantamiento);
 
-                        controlFichero = accountingService.sendAccountingLiftingBankAccount(cuentaLevantamiento, embargo, EmbargosConstants.USER_AUTOMATICO);
+                        // NO SE HACE AQUI LA CONTABILIDAD
+                        //controlFichero = accountingService.sendAccountingLiftingBankAccount(cuentaLevantamiento, embargo, EmbargosConstants.USER_AUTOMATICO);
                     }
 
                     if (allCuentasLevantamientoContabilizados) {
+                    	LOG.info("All seizure lifting count");
                         EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
                         estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION);
                         levantamiento.setEstadoLevantamiento(estadoLevantamiento);
@@ -216,17 +240,25 @@ public class Cuaderno63LiftingServiceImpl
                         liftingRepository.save(levantamiento);
                     }
                 }
-                else
-                    throw new Exception("BeanIO - Unexpected record name: "+ beanReader.getRecordName());
             }
 
             // cerrar y enviar la contabilización
-            if (allLevantamientosContabilizados && controlFichero!=null) {
-            	accountingNoteService.generacionFicheroContabilidad(controlFichero);
-            }
+            // NO SE HACE AQUI LA CONTABILIDAD
+            //if (allLevantamientosContabilizados && controlFichero!=null) {
+            	//accountingNoteService.generacionFicheroContabilidad(controlFichero);
+            //}
 
             // Actualizar control fichero
 
+            //- Se guarda el codigo de la Entidad comunicadora en ControlFichero:
+			//EntidadesComunicadora entidadComunicadora = entidadOrdenante.getEntidadesComunicadora();
+			controlFicheroLevantamiento.setEntidadesComunicadora(entidadOrdenante.getEntidadesComunicadora());
+
+			//- Se guarda la fecha de la cabecera en el campo fechaCreacion de ControlFichero:
+			BigDecimal fechaObtencionFicheroOrganismoBigDec = fechaObtencionFicheroOrganismo != null ? ICEDateUtils.dateToBigDecimal(fechaObtencionFicheroOrganismo, ICEDateUtils.FORMAT_yyyyMMdd) : null;
+			controlFicheroLevantamiento.setFechaCreacion(fechaObtencionFicheroOrganismoBigDec);
+			controlFicheroLevantamiento.setFechaComienzoCiclo(fechaObtencionFicheroOrganismoBigDec);
+			
             EstadoCtrlfichero estadoCtrlfichero = null;
 
             if (allLevantamientosContabilizados) {
@@ -245,8 +277,41 @@ public class Cuaderno63LiftingServiceImpl
             }
 
             controlFicheroLevantamiento.setEstadoCtrlfichero(estadoCtrlfichero);
-
-            controlFicheroLevantamiento.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+            
+            //CALENDARIO:
+	        // - Se agrega la tarea al calendario:
+	        TaskAndEvent task = new TaskAndEvent();
+	        task.setDescription("Levantamiento " + controlFicheroLevantamiento.getNombreFichero());
+	        task.setDate(DateUtils.convertToDate(LocalDate.now()));
+	        task.setCodCalendar(1L);
+	        task.setType("T");
+	        Element office = new Element();
+	        office.setCode(1L);
+	        task.setOffice(office);
+	        //
+	        task.setAction("0");
+	        task.setStatus("P");
+	        task.setIndActive(true);
+	        task.setApplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
+	        Long codTarea = taskService.addCalendarTask(task);
+	        
+	        // Se crea el evento
+	        TaskAndEvent event = new TaskAndEvent();
+	        event.setDescription("Levantamiento recibido " + controlFicheroLevantamiento.getNombreFichero());
+	        event.setDate(DateUtils.convertToDate(LocalDate.now()));
+	        event.setCodCalendar(1L);
+	        event.setType("E");
+	        event.setAction("0");
+	        event.setIndActive(true);
+	        event.setIndVisualizarCalendario(true);
+	        event.setApplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
+	        eventService.createOrUpdateEvent(event, EmbargosConstants.USER_AUTOMATICO);
+	        LOG.info("Evento de recepción creado");
+	        
+	        // - Se guarda el codigo de tarea del calendario:
+	        controlFicheroLevantamiento.setCodTarea(BigDecimal.valueOf(codTarea));
+	        
+	        controlFicheroLevantamiento.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
             controlFicheroLevantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
             fileControlRepository.save(controlFicheroLevantamiento);
         }
@@ -268,6 +333,8 @@ public class Cuaderno63LiftingServiceImpl
         	
         	if (beanReader != null)
                 beanReader.close();
+        	
+        	if (fileInputStream!=null) fileInputStream.close();
         }
     }
 }

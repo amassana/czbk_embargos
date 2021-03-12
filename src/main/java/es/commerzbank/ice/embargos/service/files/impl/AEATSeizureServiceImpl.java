@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,11 +23,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.comun.lib.domain.dto.Element;
 import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
+import es.commerzbank.ice.comun.lib.service.EventService;
+import es.commerzbank.ice.comun.lib.service.FestiveService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
@@ -72,6 +74,9 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	private AEATMapper aeatMapper;
 	
 	@Autowired
+	private FestiveService festiveService;
+	
+	@Autowired
 	private FileControlMapper fileControlMapper;
 	
 	@Autowired
@@ -108,7 +113,10 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	private EmailService emailService;
 
 	@Autowired
-	private GeneralParametersService generalParametersService;
+	private GeneralParametersService generalParametersService;	
+	
+	@Autowired
+	private EventService eventService;
 	
 	@Override
 	@Transactional(transactionManager = "transactionManager", rollbackFor = Exception.class)
@@ -118,6 +126,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 		
 		BeanReader beanReader = null;
 		Reader reader = null;
+		FileInputStream fileInputStream = null;
 		
 		ControlFichero controlFicheroEmbargo = null;
 		
@@ -142,7 +151,8 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	        // use a StreamFactory to create a BeanReader
 	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT);
 			
-	        reader = new InputStreamReader(new FileInputStream(processingFile)); 
+	        fileInputStream = new FileInputStream(processingFile);
+	        reader = new InputStreamReader(fileInputStream, encoding); 
 	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_DILIGENCIAS, reader);
 	        
 	        Object record = null;
@@ -291,8 +301,15 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 			controlFicheroEmbargo.setFechaComienzoCiclo(fechaInicioCicloBigDec);
 	       
 			//- Se guarda la fecha maxima de respuesta (now + dias de margen)
-			long diasRespuestaF3 = entidadComunicadora.getDiasRespuestaF3()!=null ? entidadComunicadora.getDiasRespuestaF3().longValue() : 0;
-			Date lastDateResponse = DateUtils.convertToDate(LocalDate.now().plusDays(diasRespuestaF3));
+			int diasRespuestaF3 = entidadComunicadora.getDiasRespuestaF3()!=null ? entidadComunicadora.getDiasRespuestaF3().intValue() : 0;
+			FestiveService.ValueDateCalculationParameters parameters = new FestiveService.ValueDateCalculationParameters();
+			parameters.numBusinessDays = diasRespuestaF3;
+			parameters.location = 1L;
+			parameters.fromDate = LocalDate.now();
+			LocalDate finalDate = festiveService.dateCalculation(parameters);
+			Date lastDateResponse = Date.from(finalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+			
+			//Date lastDateResponse = DateUtils.convertToDate(LocalDate.now().plusDays(diasRespuestaF3));
 			BigDecimal limitResponseDate = ICEDateUtils.dateToBigDecimal(lastDateResponse, ICEDateUtils.FORMAT_yyyyMMdd);
 			controlFicheroEmbargo.setFechaMaximaRespuesta(limitResponseDate);
 			
@@ -321,6 +338,19 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	        task.setApplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
 	        Long codTarea = taskService.addCalendarTask(task);
 	        
+	        // Se crea el evento
+	        TaskAndEvent event = new TaskAndEvent();
+	        event.setDescription("Embargo recibido " + controlFicheroEmbargo.getNombreFichero());
+	        event.setDate(DateUtils.convertToDate(LocalDate.now()));
+	        event.setCodCalendar(1L);
+	        event.setType("E");
+	        event.setAction("0");
+	        event.setIndActive(true);
+	        event.setIndVisualizarCalendario(true);
+	        event.setApplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
+            eventService.createOrUpdateEvent(event, EmbargosConstants.USER_AUTOMATICO);
+	        logger.info("Evento de recepción creado");
+            
 	        // - Se guarda el codigo de tarea del calendario:
 	        controlFicheroEmbargo.setCodTarea(BigDecimal.valueOf(codTarea));
 	        	        
@@ -353,6 +383,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 			if (beanReader!=null) {
 				beanReader.close();
 			}
+			if (fileInputStream!=null) fileInputStream.close();
 		}
 	
 		logger.info("AEATSeizureServiceImpl - tratarFicheroDiligenciasEmbargo - end");

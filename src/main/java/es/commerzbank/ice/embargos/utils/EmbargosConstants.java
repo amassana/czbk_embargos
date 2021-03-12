@@ -284,6 +284,8 @@ public class EmbargosConstants {
 	public static final String PARAMETRO_EMBARGOS_FILES_MAX_PROCESSING_TIME = "embargos.files.maxProcessingTime";
 
 	public static final String PARAMETRO_EMBARGOS_FILES_ARCHIVAL_FOLDER_DATE_PATTERN = "embargos.files.archivalFolderDatePattern";
+
+	public static final String PARAMETRO_EMBARGOS_DIAS_EMAIL_NOLECTURA_FICHEROS = "embargos.dias.email.nolectura.ficheros";
 	
 	//Definicion del valor por defecto de los PARAMETROS:
 	public static final String PARAMETRO_DWH_ENDPOINT_CLIENTACCOUNT_DEFAULT_VALUE = "/datawarehouse/client-account";

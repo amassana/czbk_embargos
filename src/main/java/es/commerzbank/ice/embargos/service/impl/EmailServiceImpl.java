@@ -13,6 +13,7 @@ import es.commerzbank.ice.comun.lib.domain.dto.ICEEmail;
 import es.commerzbank.ice.comun.lib.service.ClientEmailService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
+import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.ErrorTraba;
 import es.commerzbank.ice.embargos.service.EmailService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
@@ -182,5 +183,49 @@ public class EmailServiceImpl implements EmailService {
 		}
 
 		logger.info("EmailServiceImpl - sendEmailFileResult - end");
+	}
+
+	@Override
+	public void sendEmailUnreadFiles(List<ControlFichero> listFicheros) throws ICEException {
+		
+		logger.info("EmailServiceImpl - sendEmailUnreadFiles - start");
+
+		if (!generalParametersService.loadBooleanParameter(ValueConstants.EMAIL_SMTP_ENABLED, true))
+			return;
+
+		ICEEmail iceEmail = new ICEEmail();
+
+		List<String> recipientsTo = new ArrayList<>(); 
+		
+		String emailAddressesTo = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_EMAIL_TO);		
+		recipientsTo.add(emailAddressesTo);
+		iceEmail.setRecipientsTo(recipientsTo);
+		
+		String emailAddressFrom = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_EMAIL_FROM);
+		iceEmail.setEmailAddressFrom(emailAddressFrom);
+
+		iceEmail.setSubject("Outbox unread files");
+
+		List<String> paragraphTextList = new ArrayList<>();
+
+		paragraphTextList.add("Outbox unread files:");
+
+		for (ControlFichero controlFichero : listFicheros) {
+			if (controlFichero!=null)
+				paragraphTextList.add(controlFichero.getCodControlFichero() + " " + controlFichero.getNombreFichero());
+		}
+			
+		iceEmail.setParagraphTextList(paragraphTextList);
+
+		iceEmail.setFooterText(EmbargosConstants.EMAIL_DEFAULT_FOOTER_TEXT);
+
+		try {
+			clientEmailService.sendEmailWithAttachment(iceEmail);
+		} catch (Exception e) {
+			logger.error("ERROR al enviar el email de 'Fichero de errores recibido AEAT'", e);
+		}
+
+		logger.info("EmailServiceImpl - sendEmailUnreadFiles - end");
+		
 	}
 }

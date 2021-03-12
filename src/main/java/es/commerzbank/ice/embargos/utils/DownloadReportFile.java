@@ -16,15 +16,15 @@ import org.springframework.http.ResponseEntity;
 
 public class DownloadReportFile {
 
-	private static String filename;
-	private static String filenameAux;
-	private static String pdfSavedFullPath;
-	private static HttpHeaders respHeaders;
-	private static File jasperReportFile;
-	private static final String PDF_EXTENSION = ".pdf";
-	private static final String SLASH = "/";
+	private String filename;
+	private String filenameAux;
+	private String pdfSavedFullPath;
+	private HttpHeaders respHeaders;
+	private File jasperReportFile;
+	private final String PDF_EXTENSION = ".pdf";
+	private final String SLASH = "/";
 
-	public static void setTempFileName(String fileNameTemp) {
+	public void setTempFileName(String fileNameTemp) {
 
 		String randomUUID = UUID.randomUUID().toString();
 		filenameAux = fileNameTemp;
@@ -32,14 +32,14 @@ public class DownloadReportFile {
 
 	}
 
-	public static void setFileTempPath(String pdfSavedPath) {
+	public void setFileTempPath(String pdfSavedPath) {
 		pdfSavedFullPath = pdfSavedPath + SLASH + getTodayDate() + SLASH + filename;
 		jasperReportFile = new File(pdfSavedFullPath);
 	}
 
-	private static boolean areBytesNull = false;
+	private boolean areBytesNull = false;
 
-	public static void writeFile(byte[] fileBytes) throws Exception {
+	public void writeFile(byte[] fileBytes) throws Exception {
 
 		FileOutputStream fos = null;
 
@@ -70,7 +70,7 @@ public class DownloadReportFile {
 
 	}
 
-	public static void setRequestHeader(Long fileLength, String fileNameSuggestion) {
+	public void setRequestHeader(Long fileLength, String fileNameSuggestion) {
 
 		respHeaders = new HttpHeaders();
 
@@ -81,7 +81,7 @@ public class DownloadReportFile {
 		respHeaders.setContentDispositionFormData("attachment", fileNameSuggestion.concat(PDF_EXTENSION));
 	}
 
-	public static ResponseEntity<InputStreamResource> returnToDownloadFile() throws FileNotFoundException {
+	public ResponseEntity<InputStreamResource> returnToDownloadFile() throws FileNotFoundException {
 		FileInputStream fis = null;
 		
 		if (areBytesNull) {
@@ -98,7 +98,7 @@ public class DownloadReportFile {
 		return new ResponseEntity<InputStreamResource>(isr, respHeaders, HttpStatus.OK);
 	}
 
-	private static String getTodayDate() {
+	private String getTodayDate() {
 
 		Calendar calendar = Calendar.getInstance();
 

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
+import es.commerzbank.ice.comun.lib.service.EventService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
@@ -78,6 +82,9 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 	
 	@Autowired
 	private EmailService emailService;
+
+	@Autowired
+	private EventService eventService;
 	
 	@Override
 	@Transactional(transactionManager = "transactionManager", rollbackFor = Exception.class)
@@ -87,6 +94,7 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 		
 		BeanReader beanReader = null;
 		Reader reader = null;
+		FileInputStream fileInputStream = null;
 		
 		ControlFichero controlFicheroErrores = null;
 		
@@ -112,7 +120,8 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 	        // use a StreamFactory to create a BeanReader
 	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT);
 	        
-			reader = new InputStreamReader(new FileInputStream(processingFile), encoding);
+	        fileInputStream = new FileInputStream(processingFile);
+			reader = new InputStreamReader(fileInputStream, encoding);
 	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_RESULTADOVALIDACIONTRABAS, reader);
 	        
 	        Object record = null;
@@ -192,7 +201,19 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 		        }       	
 	        }
 	        
-
+			// Se crea el evento
+	        TaskAndEvent event = new TaskAndEvent();
+	        event.setDescription("Respuesta a embargo recibido " + controlFicheroErrores.getNombreFichero());
+	        event.setDate(DateUtils.convertToDate(LocalDate.now()));
+	        event.setCodCalendar(1L);
+	        event.setType("E");
+	        event.setAction("0");
+	        event.setIndActive(true);
+	        event.setIndVisualizarCalendario(true);
+	        event.setApplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
+	        eventService.createOrUpdateEvent(event, EmbargosConstants.USER_AUTOMATICO);
+	        logger.info("Evento de recepción creado");
+	        
 		} catch (Exception e) {
 	        
 			logger.error("Error while treating seized result file", e);
@@ -205,6 +226,7 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 			if (beanReader!=null) {
 				beanReader.close();
 			}
+			if (fileInputStream!=null) fileInputStream.close();
 		}
 	
 		String tipoFichero = FilenameUtils.getExtension(processingFile.getCanonicalPath()).toUpperCase();
@@ -216,7 +238,7 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 	    			logger.error("Error while sending email for .ERR file " + originalName, e);
 	    		}
 	            break;
-	        case EmbargosConstants.TIPO_FICHERO_RESULTADO:
+	        case EmbargosConstants.TIPO_FICHERO_EMBARGOS:
 	        	try {
 	        		if (listaErrores!=null && listaErrores.size()>0)
 	        			emailService.sendEmailFileError(listaErrores, originalName, processingFile.getAbsolutePath());

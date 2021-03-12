@@ -397,14 +397,16 @@ public class SeizureController {
 			@PathVariable("idSeizure") Long idSeizure)
 	{
     	try {
-			DownloadReportFile.setTempFileName("seizure-letter");
+    		DownloadReportFile downloadReportFile = new DownloadReportFile();
+    		
+    		downloadReportFile.setTempFileName("seizure-letter");
 
-			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
+    		downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			// seizure service falta
-			DownloadReportFile.writeFile(seizureService.reportSeizureLetter(idSeizure));
+			downloadReportFile.writeFile(seizureService.reportSeizureLetter(idSeizure));
 
-			return DownloadReportFile.returnToDownloadFile();
+			return downloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
 			logger.error("Error in justificanteReport", e);
@@ -418,14 +420,16 @@ public class SeizureController {
 	public ResponseEntity<InputStreamResource> generateSeizureRequestF3(@PathVariable("codeFileControl") Integer codControlFichero)
 	{
 		try {
-			DownloadReportFile.setTempFileName("seizure-request");
+			DownloadReportFile downloadReportFile = new DownloadReportFile();
+			
+			downloadReportFile.setTempFileName("seizure-request");
 
-			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
+			downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			// seizure service falta
-			DownloadReportFile.writeFile(seizureService.reportSeizureRequestF3(codControlFichero));
+			downloadReportFile.writeFile(seizureService.reportSeizureRequestF3(codControlFichero));
 
-			return DownloadReportFile.returnToDownloadFile();
+			return downloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
 			logger.error("Error in resumenTrabas", e);
@@ -440,14 +444,16 @@ public class SeizureController {
 			@PathVariable("fileControl") Integer codControlFichero)
 	{
 		try {
-			DownloadReportFile.setTempFileName("seizure-response");
+			DownloadReportFile downloadReportFile = new DownloadReportFile();
+			
+			downloadReportFile.setTempFileName("seizure-response");
 
-			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
+			downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			// seizure service falta
-			DownloadReportFile.writeFile(seizureService.reportSeizureResponseF4(codControlFichero));
+			downloadReportFile.writeFile(seizureService.reportSeizureResponseF4(codControlFichero));
 
-			return DownloadReportFile.returnToDownloadFile();
+			return downloadReportFile.returnToDownloadFile();
 
 		} catch (Exception e) {
 			logger.error("Error in resumenTrabas", e);

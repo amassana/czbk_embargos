@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -20,11 +21,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.commerzbank.ice.comun.lib.domain.dto.Element;
 import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
+import es.commerzbank.ice.comun.lib.service.EventService;
+import es.commerzbank.ice.comun.lib.service.FestiveService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
@@ -60,6 +62,12 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	@Value("${commerzbank.embargos.beanio.config-path.cuaderno63}")
 	String pathFileConfigCuaderno63;
 
+    @Autowired
+	private EventService eventService;
+    
+    @Autowired
+    private FestiveService festiveService;
+    
 	@Autowired
 	private Cuaderno63Mapper cuaderno63Mapper;
 
@@ -104,6 +112,8 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 		BeanReader beanReader = null;
 		Reader reader = null;
 
+		FileInputStream fileInputStream = null;
+		
 		ControlFichero controlFicheroPeticion = null;
 
 		String petitionFileName = null;
@@ -128,7 +138,8 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 
 	        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_NORMA63);
 	        
-			reader = new InputStreamReader(new FileInputStream(processingFile), encoding);
+	        fileInputStream = new FileInputStream(processingFile);
+			reader = new InputStreamReader(fileInputStream, encoding);
 	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE1, reader);
 
 	        CabeceraEmisorFase1 cabeceraEmisor = null;
@@ -227,8 +238,15 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 			controlFicheroPeticion.setFechaComienzoCiclo(fechaObtencionFicheroOrganismoBigDec);
 
 			//- Se guarda la fecha maxima de respuesta (now + dias de margen)
-			long diasRespuestaF1 = entidadComunicadora.getDiasRespuestaF1() != null ? entidadComunicadora.getDiasRespuestaF1().longValue() : 0;
-			Date lastDateResponse = DateUtils.convertToDate(LocalDate.now().plusDays(diasRespuestaF1));
+			int diasRespuestaF1 = entidadComunicadora.getDiasRespuestaF1() != null ? entidadComunicadora.getDiasRespuestaF1().intValue() : 0;
+			FestiveService.ValueDateCalculationParameters parameters = new FestiveService.ValueDateCalculationParameters();
+			parameters.numBusinessDays = diasRespuestaF1;
+			parameters.location = 1L;
+			parameters.fromDate = LocalDate.now();
+			LocalDate finalDate = festiveService.dateCalculation(parameters);
+			Date lastDateResponse = Date.from(finalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+			
+			//Date lastDateResponse = DateUtils.convertToDate(LocalDate.now().plusDays(diasRespuestaF1));
 			BigDecimal limitResponseDate = ICEDateUtils.dateToBigDecimal(lastDateResponse, ICEDateUtils.FORMAT_yyyyMMdd);
 			controlFicheroPeticion.setFechaMaximaRespuesta(limitResponseDate);
 
@@ -253,6 +271,19 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	        task.setIndActive(true);
 	        task.setApplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
 	        Long codTarea = taskService.addCalendarTask(task);
+	        
+	        // Se crea el evento
+	        TaskAndEvent event = new TaskAndEvent();
+	        event.setDescription("Petición de información recibido " + controlFicheroPeticion.getNombreFichero());
+	        event.setDate(DateUtils.convertToDate(LocalDate.now()));
+	        event.setCodCalendar(1L);
+	        event.setType("E");
+	        event.setAction("0");
+	        event.setIndActive(true);
+	        event.setIndVisualizarCalendario(true);
+	        event.setApplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
+	        eventService.createOrUpdateEvent(event, EmbargosConstants.USER_AUTOMATICO);
+	        LOG.info("Evento de recepción creado");
 	        
 	        // - Se guarda el codigo de tarea del calendario:
 	        controlFicheroPeticion.setCodTarea(BigDecimal.valueOf(codTarea));
@@ -284,6 +315,8 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 				reader.close();
 			if (beanReader != null)
 				beanReader.close();
+			if (fileInputStream != null)
+				fileInputStream.close();
 		}
 
 	}

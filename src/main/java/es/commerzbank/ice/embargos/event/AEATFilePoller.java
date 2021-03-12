@@ -7,10 +7,13 @@ import es.commerzbank.ice.comun.lib.util.FileUtils;
 import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import es.commerzbank.ice.comun.lib.util.YAMLUtil;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
+import es.commerzbank.ice.embargos.formats.aeat.diligencias.DiligenciaFase3;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.service.files.*;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import org.apache.commons.io.FilenameUtils;
+import org.beanio.BeanReader;
+import org.beanio.StreamFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +25,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
@@ -33,6 +39,9 @@ public class AEATFilePoller
 {
     private static final Logger LOG = LoggerFactory.getLogger(AEATFilePoller.class);
 
+    @Value("${commerzbank.embargos.beanio.config-path.aeat}")
+	String pathFileConfigAEAT;
+    
     private static final String pollerName = "AEAT Poller";
     @Autowired
     @Qualifier("aeatFolderPoller")
@@ -119,7 +128,52 @@ public class AEATFilePoller
 
             switch (tipoFichero) {
                 case EmbargosConstants.TIPO_FICHERO_EMBARGOS:
-                    aeatSeizureService.tratarFicheroDiligenciasEmbargo(processingFile, originalName, processedFile);
+                	
+                	boolean isEmbargo = false;
+                	
+                	Reader reader = null;
+                	BeanReader beanReader = null;
+                	FileInputStream fileInputStream = null;
+                	
+                	try {
+	        	        // create a StreamFactory
+	        	        StreamFactory factory = StreamFactory.newInstance();
+	        	        // load the mapping file
+	        	        factory.loadResource(pathFileConfigAEAT);
+	        	        
+	        	        fileInputStream = new FileInputStream(processingFile);
+	        	        reader = new InputStreamReader(fileInputStream); 
+	        	        beanReader = factory.createReader(EmbargosConstants.STREAM_NAME_AEAT_DILIGENCIAS, reader);
+	        	        
+	        	        Object record = null;
+	
+	        	        while ((record = beanReader.read()) != null && !isEmbargo) {
+	        	        	if(EmbargosConstants.RECORD_NAME_AEAT_DILIGENCIA.equals(beanReader.getRecordName())) {
+	        	        		DiligenciaFase3 diligenciaFase3 = (DiligenciaFase3) record;
+	        	        		if (diligenciaFase3!=null) isEmbargo = true;
+	        	        	}
+	        	        }
+                	} catch (Exception e) {
+                		LOG.error("No es tracta d'un arxiu de embargos, per tant serà un arxiu de resposta: " + originalName);
+            		} finally {
+            			if(reader!=null) {
+            				reader.close();
+            			}
+            			if (beanReader!=null) {
+            				beanReader.close();
+            			}
+            			if (fileInputStream!=null) fileInputStream.close();
+            		}
+                	
+                	if (isEmbargo) {
+                		LOG.info("Es tracta d'un arxiu de embargos: " + originalName);
+                		aeatSeizureService.tratarFicheroDiligenciasEmbargo(processingFile, originalName, processedFile);	
+                	}
+                	else {
+                		LOG.info("No es tracta d'un arxiu de embargos, per tant serà un arxiu de resposta: " + originalName);
+                		aeatSeizedResultService.tratarFicheroErrores(processingFile, originalName, processedFile);
+                	}
+                	
                     break;
                 case EmbargosConstants.TIPO_FICHERO_LEVANTAMIENTOS:
                     aeatLiftingService.tratarFicheroLevantamientos(processingFile, originalName, processedFile);
@@ -127,9 +181,9 @@ public class AEATFilePoller
                 case EmbargosConstants.TIPO_FICHERO_ERRORES:
                     aeatSeizedResultService.tratarFicheroErrores(processingFile, originalName, processedFile);
                     break;
-                case EmbargosConstants.TIPO_FICHERO_RESULTADO:
-                    aeatSeizedResultService.tratarFicheroErrores(processingFile, originalName, processedFile);
-                    break;
+                //case EmbargosConstants.TIPO_FICHERO_RESULTADO:
+                    //aeatSeizedResultService.tratarFicheroErrores(processingFile, originalName, processedFile);
+                    //break;
                 default:
             }
 
