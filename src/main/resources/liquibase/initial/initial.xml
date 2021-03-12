@@ -850,7 +850,7 @@
         </rollback>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1614163776015-actuaciones">
-        <loadData commentLineStartsWith="#" encoding="UTF-8" file="data2/cuenta_traba_actuacion.csv" quotchar="&quot;" separator="," tableName="CUENTA_TRABA_ACTUACION">
+        <loadData commentLineStartsWith="#" encoding="UTF-8" file="liquibase/initial/cuenta_traba_actuacion.csv" quotchar="&quot;" separator="," tableName="CUENTA_TRABA_ACTUACION">
             <column header="COD_ACTUACION" name="COD_ACTUACION" type="STRING"/>
             <column header="DESCRIPCION" name="DESCRIPCION" type="STRING"/>
             <column header="TIPO_ENTIDAD" name="TIPO_ENTIDAD" type="STRING"/>
