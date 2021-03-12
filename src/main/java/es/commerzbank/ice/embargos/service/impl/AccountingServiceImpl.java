@@ -296,7 +296,9 @@ public class AccountingServiceImpl implements AccountingService{
 				//La cuentaTraba no esta activa:
 				logger.info(logMessage + "no esta activa y no se contabiliza.");
 
-			} else if (cuentaTraba.getImporte() != null && cuentaTraba.getImporte().compareTo(BigDecimal.ZERO) <= 0) {
+			} else if (cuentaTraba.getImporte() == null) {
+				logger.info(logMessage + "El importe es nulo.");
+			} else if (cuentaTraba.getImporte() == null && cuentaTraba.getImporte().compareTo(BigDecimal.ZERO) <= 0) {
 				logger.info(logMessage + "No hay importe a contabilizar.");
 			}
 			else {
@@ -793,7 +795,7 @@ public class AccountingServiceImpl implements AccountingService{
 			}
 
 			// Marcamos como pendiente para el envío de la carta.
-			controlFichero.setIndEnvioCarta("S");
+			controlFichero.setIndEnvioCarta("N");
 
 			//Se cambia el estado de Control Fichero a "Pendiente de envio"
 			fileControlService.updateFileControlStatusTransaction(controlFichero, estado, USER_AUTOMATICO);
