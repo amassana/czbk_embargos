@@ -17,5 +17,6 @@
     <include file="2021/20210218_ficheroControl_CRC_length.xml" relativeToChangelogFile="true" />
     <include file="2021/20210218_eliminacionEstadosTransitorios.xml" relativeToChangelogFile="true" />
     <include file="2021/20210218_ficheroControl_tipo_opcional.xml" relativeToChangelogFile="true" />
+    <include file="2021/01/20210308_filecontrol_ind_envio_carta.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

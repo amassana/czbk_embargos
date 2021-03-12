@@ -1,8 +1,12 @@
 package es.commerzbank.ice.embargos.service.impl;
 
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.comun.lib.util.ValueConstants;
+import es.commerzbank.ice.comun.lib.util.jasper.ReportHelper;
+import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.datawarehouse.service.AccountService;
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
 import es.commerzbank.ice.embargos.domain.dto.*;
@@ -44,7 +48,9 @@ import java.util.*;
 
 @Service
 @Transactional(transactionManager = "transactionManager")
-public class SeizureServiceImpl implements SeizureService {
+public class SeizureServiceImpl
+		implements SeizureService
+{
 	
 	private static final Logger logger = LoggerFactory.getLogger(SeizureServiceImpl.class);
 
@@ -101,6 +107,9 @@ public class SeizureServiceImpl implements SeizureService {
 
 	@Autowired
 	AccountService accountService;
+
+	@Autowired
+	private ReportHelper reportHelper;
 
 	@Override
 	public List<SeizureDTO> getSeizureListByCodeFileControl(Long codeFileControl) {
@@ -382,53 +391,75 @@ public class SeizureServiceImpl implements SeizureService {
 	}
 
 	@Override
-	public byte[] generateSeizureLetter(Integer idSeizure) throws Exception {
+	public byte[] reportSeizureLetter(Long idSeizure) throws Exception {
+
+		JasperPrint fillReport = reportSeizureLetterInternal(idSeizure);
+
+		List<JRPrintPage> pages = fillReport.getPages();
+
+		if (pages.size() == 0)
+			return null;
+
+		return JasperExportManager.exportReportToPdf(fillReport);
+	}
+
+	private JasperPrint reportSeizureLetterInternal(Long idSeizure) throws Exception {
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
+
+		Optional<Embargo> optEmbargo = seizureRepository.findById(idSeizure);
+
+		if (!optEmbargo.isPresent()) {
+			throw new Exception("Embargo "+ idSeizure +" no encontrado");
+		}
+
+		Embargo embargo = optEmbargo.get();
+
+		if (embargo.getTrabas().size() != 1) {
+			throw new Exception("Embargo "+ idSeizure +" sin traba");
+		}
+
+		Traba traba = embargo.getTrabas().get(0);
+
+		// Si hay algun importe trabado, enviar la carta
+
+		boolean hasImporteTrabado = false;
+		for (CuentaTraba cuentaTraba : traba.getCuentaTrabas()) {
+			if (cuentaTraba.getImporte() != null && BigDecimal.ZERO.compareTo(cuentaTraba.getImporte()) < 0) {
+				hasImporteTrabado = true;
+				break;
+			}
+		}
+
+		if (!hasImporteTrabado) {
+			return null;
+		}
 
 		try (Connection conn = oracleDataSourceEmbargos.getEmbargosConnection()) {
 
-			Resource embargosJrxml = ResourcesUtil.getFromJasperFolder("seizureLetter.jasper");
-			Resource logoImage = ResourcesUtil.getImageLogoCommerceResource();
-			// Resource templateStyle = ResourcesUtil.getTemplateStyleResource();
+			ControlFichero controlFichero = embargo.getControlFichero();
+			EntidadesComunicadora entidadesComunicadora  = controlFichero.getEntidadesComunicadora();
 
-			File image = logoImage.getFile();
+			Resource report = ResourcesUtil.getFromJasperFolder("seizureLetter.jasper");
+			Resource logoRes = es.commerzbank.ice.comun.lib.util.jasper.ResourcesUtil.getImageLogoCommerceResource();
 
-			// InputStream templateStyleStream =
-			// getClass().getResourceAsStream("/jasper/CommerzBankStyle.jrtx");
+			CustomerDTO customer = accountService.getCustomerByNIF(embargo.getNif());
 
-			/*
-			TODO ver cómo se transforma esto en un batch y si entonces se tienen datos para ir al DWH
-
-			CustomerDTO customer = accountService.getCustomerAccountNumber(impuesto.get().getCuenta());
-
-			if (customer != null) {
+			if (customer != null) { // se permite un preview aunque no haya la dirección
 				parameters.put("nombre_titular", customer.getName());
 				parameters.put("addres_titular", customer.getAddress());
 				parameters.put("codigo_postal_titular", customer.getPostalCode());
 				parameters.put("ciudad_titular", customer.getCity());
 			}
-			*/
-			parameters.put("nombre_titular", "nombre");
-			parameters.put("addres_titular", "dirección");
-			parameters.put("codigo_postal_titular", "01234");
-			parameters.put("ciudad_titular", "ciudad");
 
-			parameters.put("COD_TRABA", idSeizure);
-			parameters.put("IMAGE_PARAM", image.toString());
-			// parameters.put("TEMPLATE_STYLE_PATH", templateStyleStream);
+			parameters.put("COD_TRABA", traba.getCodTraba());
+			parameters.put("ENTIDAD", entidadesComunicadora.getDesEntidad());
+			parameters.put("logo_image", logoRes.getFile().toString());
 
 			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 
-			InputStream justificanteInputStream = embargosJrxml.getInputStream();
+			InputStream justificanteInputStream = report.getInputStream();
 
-			JasperPrint fillReport = JasperFillManager.fillReport(justificanteInputStream, parameters, conn);
-
-			List<JRPrintPage> pages = fillReport.getPages();
-
-			if (pages.size() == 0)
-				return null;
-			
-			return JasperExportManager.exportReportToPdf(fillReport);
+			return JasperFillManager.fillReport(justificanteInputStream, parameters, conn);
 
 		} catch (Exception e) {
 
@@ -437,7 +468,7 @@ public class SeizureServiceImpl implements SeizureService {
 	}
 
 	@Override
-	public byte[] generateSeizureResponseF4(Integer codControlFichero) throws Exception {
+	public byte[] reportSeizureResponseF4(Integer codControlFichero) throws Exception {
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
 		try (Connection conn = oracleDataSourceEmbargos.getEmbargosConnection()) {
@@ -470,7 +501,7 @@ public class SeizureServiceImpl implements SeizureService {
 	}
 
 	@Override
-	public byte[] generateSeizureRequestF3(Integer codControlFichero) throws Exception {
+	public byte[] reportSeizureRequestF3(Integer codControlFichero) throws Exception {
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
 		try (Connection conn = oracleDataSourceEmbargos.getEmbargosConnection()) {
@@ -528,7 +559,43 @@ public class SeizureServiceImpl implements SeizureService {
 		
 		return true;
 	}
-	
+
+	@Override
+	public void generateSeizureLetters(ControlFichero controlFichero) {
+		try
+		{
+			List<Embargo> seizures = seizureRepository.findAllByControlFichero(controlFichero);
+
+			if (seizures != null && seizures.size() > 0)
+			{
+				File temporaryFile = reportHelper.getTemporaryFile("cartas-embargo-"+ controlFichero.getCodControlFichero(), ReportHelper.PDF_EXTENSION);
+				PdfDocument outDoc = new PdfDocument(new PdfWriter(temporaryFile));
+
+				int pageCount = 1;
+
+				for (Embargo embargo : seizures)
+				{
+					try
+					{
+						JasperPrint filledReport = reportSeizureLetterInternal(embargo.getCodEmbargo());
+						reportHelper.dumpReport(outDoc, filledReport, pageCount);
+						pageCount++;
+					}
+					catch (Exception e) {
+						throw new Exception("DB exception while generating the report", e);
+					}
+				}
+
+				outDoc.close();
+
+				reportHelper.moveToPrintFolder(temporaryFile);
+			}
+		}
+		catch (Exception e) {
+			logger.error("Error generando justificantes de domiciliaciones diarios", e);
+		}
+	}
+
 	private Long obtenerImporteEmbargo(Embargo embargo) {
 		Long importe = null;
 		List<Long> importes = seizureSummaryBankAccountRepository.getImporteEmbargo(embargo.getCodEmbargo());

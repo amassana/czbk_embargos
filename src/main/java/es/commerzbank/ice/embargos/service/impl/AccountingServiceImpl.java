@@ -88,9 +88,9 @@ public class AccountingServiceImpl implements AccountingService{
 		//Dependiendo del tipo de fichero:
 		String fileFormat = EmbargosUtils.determineFileFormatByTipoFichero(controlFichero.getTipoFichero().getCodTipoFichero());
 		
-		boolean isCGPJ = fileFormat!=null && fileFormat.equals(EmbargosConstants.FILE_FORMAT_CGPJ);
-		boolean isAEAT = fileFormat!=null && fileFormat.equals(EmbargosConstants.FILE_FORMAT_AEAT);
-		boolean isCuaderno63 = fileFormat!=null && fileFormat.equals(EmbargosConstants.FILE_FORMAT_NORMA63);
+		boolean isCGPJ = fileFormat!=null && fileFormat.equals(FILE_FORMAT_CGPJ);
+		boolean isAEAT = fileFormat!=null && fileFormat.equals(FILE_FORMAT_AEAT);
+		boolean isCuaderno63 = fileFormat!=null && fileFormat.equals(FILE_FORMAT_NORMA63);
 		
 		boolean isAccountingSent = false;
 		
@@ -99,7 +99,7 @@ public class AccountingServiceImpl implements AccountingService{
 		if (isCGPJ) {
 
 			//Para contabilizar, el estado de ControlFichero tiene que ser previo o igual a "Recibido":
-			if (codEstadoCtrlFichero != EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_RECEIVED) {
+			if (codEstadoCtrlFichero != COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_RECEIVED) {
 
 				logger.debug(generateMessageCtrlFicheroCannotSendAccounting(controlFichero));
 				
@@ -108,11 +108,11 @@ public class AccountingServiceImpl implements AccountingService{
 
 			sendSeizureCGPJ(controlFichero, userName);
 			fileControlService.updateFileControlStatusTransaction(controlFichero,
-					EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_ACCOUNTING_RESPONSE, userName);
+					COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_ACCOUNTING_RESPONSE, userName);
 		} else if (isAEAT){
 
 			//Para contabilizar, el estado de ControlFichero tiene que ser previo o igual a "Recibido":
-			if (codEstadoCtrlFichero != EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_RECEIVED) {
+			if (codEstadoCtrlFichero != COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_RECEIVED) {
 
 				logger.debug(generateMessageCtrlFicheroCannotSendAccounting(controlFichero));
 
@@ -122,13 +122,13 @@ public class AccountingServiceImpl implements AccountingService{
 			sendSeizureAEATCuaderno63(controlFichero, userName);
 
 			fileControlService.updateFileControlStatusTransaction(controlFichero,
-					EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_ACCOUNTING_RESPONSE, userName);
+					COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_ACCOUNTING_RESPONSE, userName);
 		}
 		else if (isCuaderno63)
 		{
 			
 			//Para contabilizar, el estado de ControlFichero tiene que ser previo o igual a "Recibido":
-			if (codEstadoCtrlFichero != EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_RECEIVED) {
+			if (codEstadoCtrlFichero != COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_RECEIVED) {
 			
 				logger.debug(generateMessageCtrlFicheroCannotSendAccounting(controlFichero));
 				
@@ -138,7 +138,7 @@ public class AccountingServiceImpl implements AccountingService{
 			sendSeizureAEATCuaderno63(controlFichero, userName);
 
 			fileControlService.updateFileControlStatusTransaction(controlFichero,
-					EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_ACCOUNTING_RESPONSE, userName);
+					COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_ACCOUNTING_RESPONSE, userName);
 			
 		} else {
 			logger.info("sendAccountingSeizure - end");
@@ -352,24 +352,23 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setActualDate(new Date());
 			accountingNote.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
 			accountingNote.setCodOffice(oficinaCuentaRecaudacion);
-			// estado 2
 			accountingNote.setAmount(cuentaTraba.getImporte().doubleValue());
 			accountingNote.setCodCurrency(cuentaTraba.getDivisa());
 			accountingNote.setDebitAccount(debitAccount);
 			accountingNote.setCreditAccount(creditAccount);
 			accountingNote.setDebitValueDate(new Date());
 			accountingNote.setCreditValueDate(new Date());
-			// cod motivo "   "
 			accountingNote.setExecutionDate(new Date());
 			accountingNote.setReference1(reference1);
 			accountingNote.setReference2(reference2);
 			accountingNote.setDetailPayment(detailPayment);
 
+			accountingNote.setChange(cuentaTraba.getCambio());
+
+			// borrar los tres siguientes?
 			accountingNote.setName(nombre);
 			accountingNote.setNif(nif);
-
 			accountingNote.setRecaudAccount(debitAccount);
-			accountingNote.setChange(cuentaTraba.getCambio());
 
 			accountingNote.setExtraInfo1(EmbargosConstants.APUNTES_CONTABLES_TIPO_TRABA);
 			accountingNote.setExtraInfo2(String.valueOf(cuentaTraba.getCodCuentaTraba()));
@@ -792,6 +791,9 @@ public class AccountingServiceImpl implements AccountingService{
 			else if (isCuaderno63) {
 				estado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_TO_SEND;
 			}
+
+			// Marcamos como pendiente para el envío de la carta.
+			controlFichero.setIndEnvioCarta("S");
 
 			//Se cambia el estado de Control Fichero a "Pendiente de envio"
 			fileControlService.updateFileControlStatusTransaction(controlFichero, estado, USER_AUTOMATICO);

@@ -1,10 +1,9 @@
 package es.commerzbank.ice.embargos.domain.entity;
 
-import java.io.Serializable;
-import javax.persistence.*;
-
 import es.commerzbank.ice.embargos.domain.entity.listener.ControlFicheroListener;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -76,6 +75,9 @@ public class ControlFichero implements Serializable {
 
 	@Column(name="COD_TAREA")
 	private BigDecimal codTarea;
+	
+	@Column(name="IND_ENVIO_CARTA", length=1)
+	private String indEnvioCarta;
 	
 	//bi-directional many-to-one association to ApunteContable
 	@OneToMany(mappedBy="controlFichero")
@@ -615,5 +617,12 @@ public class ControlFichero implements Serializable {
 
 		return tareasRealizada;
 	}
+	
+	public String getIndEnvioCarta() {
+		return indEnvioCarta;
+	}
 
+	public void setIndEnvioCarta(String indEnvioCarta) {
+		this.indEnvioCarta = indEnvioCarta;
+	}
 }

@@ -394,7 +394,7 @@ public class SeizureController {
 	@GetMapping("/notification/{idSeizure}/report")
 	@ApiOperation(value = "Devuelve un justificante de embargo")
 	public ResponseEntity<InputStreamResource> generateSeizureLetter(
-			@PathVariable("idSeizure") Integer idSeizure)
+			@PathVariable("idSeizure") Long idSeizure)
 	{
     	try {
 			DownloadReportFile.setTempFileName("seizure-letter");
@@ -402,7 +402,7 @@ public class SeizureController {
 			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			// seizure service falta
-			DownloadReportFile.writeFile(seizureService.generateSeizureLetter(idSeizure));
+			DownloadReportFile.writeFile(seizureService.reportSeizureLetter(idSeizure));
 
 			return DownloadReportFile.returnToDownloadFile();
 
@@ -423,7 +423,7 @@ public class SeizureController {
 			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			// seizure service falta
-			DownloadReportFile.writeFile(seizureService.generateSeizureRequestF3(codControlFichero));
+			DownloadReportFile.writeFile(seizureService.reportSeizureRequestF3(codControlFichero));
 
 			return DownloadReportFile.returnToDownloadFile();
 
@@ -445,7 +445,7 @@ public class SeizureController {
 			DownloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
 			// seizure service falta
-			DownloadReportFile.writeFile(seizureService.generateSeizureResponseF4(codControlFichero));
+			DownloadReportFile.writeFile(seizureService.reportSeizureResponseF4(codControlFichero));
 
 			return DownloadReportFile.returnToDownloadFile();
 

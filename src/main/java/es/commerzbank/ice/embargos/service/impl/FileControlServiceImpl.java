@@ -1,35 +1,11 @@
 package es.commerzbank.ice.embargos.service.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Connection;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import es.commerzbank.ice.comun.lib.service.OfficeCService;
-import net.sf.jasperreports.engine.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
 import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
 import es.commerzbank.ice.embargos.domain.dto.FileControlFiltersDTO;
-import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
-import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
-import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlficheroPK;
-import es.commerzbank.ice.embargos.domain.entity.HControlFichero;
-import es.commerzbank.ice.embargos.domain.entity.TipoFichero;
+import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlAuditMapper;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
 import es.commerzbank.ice.embargos.domain.specification.FileControlSpecification;
@@ -44,11 +20,28 @@ import es.commerzbank.ice.embargos.service.files.Cuaderno63SeizedService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 import es.commerzbank.ice.embargos.utils.ResourcesUtil;
-import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.engine.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.util.*;
 
 @Service
 @Transactional(transactionManager="transactionManager")
-public class FileControlServiceImpl implements FileControlService{
+public class FileControlServiceImpl
+	implements FileControlService
+{
 	
 	private static final Logger logger = LoggerFactory.getLogger(FileControlServiceImpl.class);
 	
@@ -472,6 +465,14 @@ public class FileControlServiceImpl implements FileControlService{
 		}
 	}
 
+	@Override
+	public List<ControlFichero> cartasPendientesEnvio() {
+		return fileControlRepository.findByIndEnvioCarta("N");
+	}
 
-	
+	@Override
+	public void cartaEnviada(ControlFichero controlFichero) {
+		controlFichero.setIndEnvioCarta("S");
+		fileControlRepository.save(controlFichero);
+	}
 }

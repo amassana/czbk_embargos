@@ -189,6 +189,14 @@
             <artifactId>opencsv</artifactId>
             <version>4.5</version>
         </dependency>
+
+		<!-- concatenación de pdfs -->
+		<!-- https://mvnrepository.com/artifact/com.itextpdf/kernel -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>kernel</artifactId>
+			<version>7.1.13</version>
+		</dependency>
         
 	</dependencies>
 

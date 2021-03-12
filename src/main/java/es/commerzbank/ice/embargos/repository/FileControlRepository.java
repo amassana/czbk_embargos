@@ -1,18 +1,18 @@
 package es.commerzbank.ice.embargos.repository;
 
+import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 //import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 //import org.springframework.transaction.annotation.Transactional;
-
-import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 
 @Repository
 public interface FileControlRepository
@@ -28,4 +28,6 @@ public interface FileControlRepository
 	List<ControlFichero> findEmbargoProcesadoByNumEnvio(@Param("numEnvio") String numEnvio);
 	
 	Optional<ControlFichero> findByNumCrc(String numCRC);
+
+	List<ControlFichero> findByIndEnvioCarta(String indEnvioCarta);
 }

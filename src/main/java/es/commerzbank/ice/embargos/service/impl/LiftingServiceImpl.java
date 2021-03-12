@@ -1,5 +1,32 @@
 package es.commerzbank.ice.embargos.service.impl;
 
+import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
+import es.commerzbank.ice.comun.lib.util.jasper.ReportHelper;
+import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
+import es.commerzbank.ice.datawarehouse.service.AccountService;
+import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
+import es.commerzbank.ice.embargos.domain.dto.*;
+import es.commerzbank.ice.embargos.domain.entity.*;
+import es.commerzbank.ice.embargos.domain.mapper.*;
+import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.OrdenLevantamientoRetencionFase5;
+import es.commerzbank.ice.embargos.repository.*;
+import es.commerzbank.ice.embargos.service.AccountingService;
+import es.commerzbank.ice.embargos.service.CustomerService;
+import es.commerzbank.ice.embargos.service.LiftingService;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosUtils;
+import es.commerzbank.ice.embargos.utils.ResourcesUtil;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.util.JRLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.io.File;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -8,58 +35,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import net.sf.jasperreports.engine.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
-import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
-import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
-import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
-import es.commerzbank.ice.datawarehouse.service.AccountService;
-import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
-import es.commerzbank.ice.embargos.domain.dto.BankAccountLiftingDTO;
-import es.commerzbank.ice.embargos.domain.dto.ClientLiftingManualDTO;
-import es.commerzbank.ice.embargos.domain.dto.LiftingAuditDTO;
-import es.commerzbank.ice.embargos.domain.dto.LiftingDTO;
-import es.commerzbank.ice.embargos.domain.dto.LiftingManualDTO;
-import es.commerzbank.ice.embargos.domain.dto.LiftingStatusDTO;
-import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
-import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
-import es.commerzbank.ice.embargos.domain.entity.Embargo;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
-import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
-import es.commerzbank.ice.embargos.domain.entity.EstadoLevantamiento;
-import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
-import es.commerzbank.ice.embargos.domain.entity.Traba;
-import es.commerzbank.ice.embargos.domain.mapper.BankAccountLiftingMapper;
-import es.commerzbank.ice.embargos.domain.mapper.Cuaderno63Mapper;
-import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
-import es.commerzbank.ice.embargos.domain.mapper.LiftingMapper;
-import es.commerzbank.ice.embargos.domain.mapper.LiftingStatusMapper;
-import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.OrdenLevantamientoRetencionFase5;
-import es.commerzbank.ice.embargos.repository.FileControlRepository;
-import es.commerzbank.ice.embargos.repository.LiftingBankAccountRepository;
-import es.commerzbank.ice.embargos.repository.LiftingRepository;
-import es.commerzbank.ice.embargos.repository.LiftingStatusRepository;
-import es.commerzbank.ice.embargos.repository.OrderingEntityRepository;
-import es.commerzbank.ice.embargos.repository.SeizedRepository;
-import es.commerzbank.ice.embargos.repository.SeizureRepository;
-import es.commerzbank.ice.embargos.service.AccountingService;
-import es.commerzbank.ice.embargos.service.CustomerService;
-import es.commerzbank.ice.embargos.service.LiftingService;
-import es.commerzbank.ice.embargos.utils.EmbargosConstants;
-import es.commerzbank.ice.embargos.utils.EmbargosUtils;
-import es.commerzbank.ice.embargos.utils.ResourcesUtil;
-import net.sf.jasperreports.engine.util.JRLoader;
-
 @Service
 @Transactional(transactionManager = "transactionManager")
-public class LiftingServiceImpl implements LiftingService {
+public class LiftingServiceImpl
+		implements LiftingService
+{
 
 	private static final Logger LOG = LoggerFactory.getLogger(LiftingServiceImpl.class);
 	
@@ -116,6 +96,9 @@ public class LiftingServiceImpl implements LiftingService {
 
 	@Autowired
 	AccountService accountService;
+
+	@Autowired
+	private ReportHelper reportHelper;
     
 	@Override
 	public List<LiftingDTO> getAllByControlFichero(ControlFichero controlFichero) {
@@ -550,5 +533,10 @@ public class LiftingServiceImpl implements LiftingService {
         }
 		
 		return true;
+	}
+
+	@Override
+	public void generateLiftingLetters(ControlFichero pendiente) {
+		// TODO
 	}
 }
