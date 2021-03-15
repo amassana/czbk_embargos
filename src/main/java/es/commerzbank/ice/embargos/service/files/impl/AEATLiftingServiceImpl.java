@@ -299,7 +299,7 @@ public class AEATLiftingServiceImpl
             if (allLevantamientosContabilizados) {
                 estadoCtrlfichero = new EstadoCtrlfichero(
                         EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_ACCOUNTING_RESPONSE,
-                        EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63);
+                        EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT);
                 
                 //Cambio del indProcesado a 'S' al cambiar al estado 'Pendiente de respuesta contable':
                 controlFicheroLevantamiento.setIndProcesado(EmbargosConstants.IND_FLAG_SI);
@@ -308,7 +308,7 @@ public class AEATLiftingServiceImpl
             {
                 estadoCtrlfichero = new EstadoCtrlfichero(
                         EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED,
-                        EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63);
+                        EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT);
             }
 
             controlFicheroLevantamiento.setEstadoCtrlfichero(estadoCtrlfichero);
