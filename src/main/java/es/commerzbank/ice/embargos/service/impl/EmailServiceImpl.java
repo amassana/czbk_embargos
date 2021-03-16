@@ -136,7 +136,7 @@ public class EmailServiceImpl implements EmailService {
 		
 		List<String> paragraphTextList = new ArrayList<>();
 		
-		paragraphTextList.add("Se ha recibido y procesado correctamente el siguiente fichero de peticiones: " + fileName);
+		paragraphTextList.add("Se ha recibido y procesado correctamente el siguiente fichero: " + fileName);
 		
 		iceEmail.setParagraphTextList(paragraphTextList);
 		
