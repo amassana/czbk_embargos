@@ -367,6 +367,9 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 	        controlFicheroEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
             fileControlRepository.save(controlFicheroEmbargo);
 
+            // - Se envia correo de la recepcion del fichero
+	        emailService.sendEmailPetitionReceived(seizureFileName);
+	        
 		} catch (Exception e) {
 			LOG.error("Error in Cuaderno63 Seizure Service", e);
 

@@ -287,15 +287,14 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	        
 	        // - Se guarda el codigo de tarea del calendario:
 	        controlFicheroPeticion.setCodTarea(BigDecimal.valueOf(codTarea));
-	        	  
-	        // - Se envia correo de la recepcion del fichero de peticiones:
-	        //DESACTIVADO, se comenta:
-	        //emailService.sendEmailPetitionReceived(petitionFileName);
 	        
 	        controlFicheroPeticion.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
 	        controlFicheroPeticion.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 			fileControlRepository.save(controlFicheroPeticion);
 
+	        // - Se envia correo de la recepcion del fichero
+	        emailService.sendEmailPetitionReceived(petitionFileName);
+	        
 		} catch (Exception e) {
 			LOG.error("Error in Cuaderno63 Petition Service", e);
 			//TODO Estado de ERROR pendiente de ser eliminado, se comenta:
