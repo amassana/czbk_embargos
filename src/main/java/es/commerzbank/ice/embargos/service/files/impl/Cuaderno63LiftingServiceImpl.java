@@ -1,14 +1,25 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
-
+import es.commerzbank.ice.comun.lib.domain.dto.Element;
+import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
+import es.commerzbank.ice.comun.lib.service.EventService;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.service.TaskService;
+import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
+import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
+import es.commerzbank.ice.embargos.domain.entity.*;
+import es.commerzbank.ice.embargos.domain.mapper.Cuaderno63Mapper;
+import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
+import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.CabeceraEmisorFase5;
+import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.OrdenLevantamientoRetencionFase5;
+import es.commerzbank.ice.embargos.repository.*;
+import es.commerzbank.ice.embargos.service.CustomerService;
+import es.commerzbank.ice.embargos.service.EmailService;
+import es.commerzbank.ice.embargos.service.FileControlService;
+import es.commerzbank.ice.embargos.service.files.Cuaderno63LiftingService;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosUtils;
+import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
@@ -19,38 +30,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import es.commerzbank.ice.comun.lib.domain.dto.Element;
-import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
-import es.commerzbank.ice.comun.lib.service.EventService;
-import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
-import es.commerzbank.ice.comun.lib.service.TaskService;
-import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
-import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
-import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
-import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
-import es.commerzbank.ice.embargos.domain.entity.Embargo;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
-import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
-import es.commerzbank.ice.embargos.domain.entity.EstadoLevantamiento;
-import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
-import es.commerzbank.ice.embargos.domain.entity.Traba;
-import es.commerzbank.ice.embargos.domain.mapper.Cuaderno63Mapper;
-import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
-import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.CabeceraEmisorFase5;
-import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.OrdenLevantamientoRetencionFase5;
-import es.commerzbank.ice.embargos.repository.FileControlRepository;
-import es.commerzbank.ice.embargos.repository.LiftingBankAccountRepository;
-import es.commerzbank.ice.embargos.repository.LiftingRepository;
-import es.commerzbank.ice.embargos.repository.OrderingEntityRepository;
-import es.commerzbank.ice.embargos.repository.SeizedRepository;
-import es.commerzbank.ice.embargos.repository.SeizureRepository;
-import es.commerzbank.ice.embargos.service.CustomerService;
-import es.commerzbank.ice.embargos.service.EmailService;
-import es.commerzbank.ice.embargos.service.FileControlService;
-import es.commerzbank.ice.embargos.service.files.Cuaderno63LiftingService;
-import es.commerzbank.ice.embargos.utils.EmbargosConstants;
-import es.commerzbank.ice.embargos.utils.EmbargosUtils;
-import es.commerzbank.ice.embargos.utils.ICEDateUtils;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
 
 /*
 TODO:
@@ -195,7 +182,7 @@ public class Cuaderno63LiftingServiceImpl
                     // recuperar cod traba
                     // estado contable?
                     // estado ejecutado?
-                    CustomerDTO customerDTO = customerService.findCustomerByNif(ordenLevantamientoRetencionFase5.getNifDeudor(), false);
+                    CustomerDTO customerDTO = customerService.findCustomerByNif(ordenLevantamientoRetencionFase5.getNifDeudor(), true);
 
                     LevantamientoTraba levantamiento = cuaderno63Mapper.generateLevantamiento(controlFicheroLevantamiento.getCodControlFichero(), ordenLevantamientoRetencionFase5, traba, customerDTO);
 
