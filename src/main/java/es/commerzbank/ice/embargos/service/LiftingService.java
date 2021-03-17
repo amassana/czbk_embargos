@@ -31,11 +31,11 @@ public interface LiftingService {
 
 	byte[] generarResumenLevantamientoF5(Integer cod_file_control) throws Exception;
 
-	byte[] generateLiftingLetter(Integer idLifting) throws Exception;
+	byte[] generateLiftingLetter(Long idLifting) throws Exception;
 	
 	boolean manualLifting(LiftingManualDTO liftingManualDTO, String userModif) throws Exception;
 
-    void generateLiftingLetters(ControlFichero pendiente);
+	void generateLiftingLetters(ControlFichero pendiente) throws Exception;
 
 	boolean updateAccountLiftingStatus(Long idAccount, Long codeLifting, AccountStatusLiftingDTO accountStatusLifting,
 			String userModif);

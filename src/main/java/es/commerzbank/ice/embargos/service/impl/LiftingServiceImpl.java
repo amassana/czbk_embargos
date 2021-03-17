@@ -1,8 +1,11 @@
 package es.commerzbank.ice.embargos.service.impl;
 
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
 import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
+import es.commerzbank.ice.comun.lib.util.jasper.ReportHelper;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.datawarehouse.service.AccountService;
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
@@ -96,6 +99,8 @@ public class LiftingServiceImpl
 	@Autowired
 	AccountService accountService;
 
+	@Autowired
+	private ReportHelper reportHelper;
     
 	@Override
 	public List<LiftingDTO> getAllByControlFichero(ControlFichero controlFichero) {
@@ -321,53 +326,88 @@ public class LiftingServiceImpl
 	}
 
 	@Override
-	public byte[] generateLiftingLetter(Integer idLifting) throws Exception {
-		LOG.info("SeizureServiceImpl - generateLevantamientoReport - start");
-		HashMap<String, Object> parameters = new HashMap<String, Object>();
+	public byte[] generateLiftingLetter(Long idLifting) throws Exception {
+		JasperPrint fillReport = reportLiftingLetterInternal(idLifting);
+
+		if (fillReport == null)
+			return null;
+
+		List<JRPrintPage> pages = fillReport.getPages();
+
+		if (pages.size() == 0)
+			return null;
+
+		return JasperExportManager.exportReportToPdf(fillReport);
+	}
+
+	private JasperPrint reportLiftingLetterInternal(Long idLifting) throws Exception {
+		HashMap<String, Object> parameters = new HashMap<>();
+
+		Optional<LevantamientoTraba> optLevantamiento = liftingRepository.findById(idLifting);
+
+		if (!optLevantamiento.isPresent()) {
+			throw new Exception("Levantamiento "+ idLifting +" no encontrado");
+		}
+
+		LevantamientoTraba levantamiento = optLevantamiento.get();
 
 		try (Connection conn = oracleDataSourceEmbargos.getEmbargosConnection()) {
 
-			Resource embargosJrxml = ResourcesUtil.getFromJasperFolder("liftingLetter.jasper");
-			Resource logoImage = ResourcesUtil.getImageLogoCommerceResource();
+			ControlFichero controlFichero = levantamiento.getControlFichero();
+			EntidadesComunicadora entidadesComunicadora  = controlFichero.getEntidadesComunicadora();
 
-			File image = logoImage.getFile();
+			Resource report = ResourcesUtil.getFromJasperFolder("liftingLetter.jasper");
+			Resource logoRes = es.commerzbank.ice.comun.lib.util.jasper.ResourcesUtil.getImageLogoCommerceResource();
 
-			// TODO ver cómo se transforma esto en un batch y si entonces se tienen datos para ir al DWH
-			/*
-			CustomerDTO customer = accountService.getCustomerAccountNumber(impuesto.get().getCuenta());
+			CustomerDTO customer = accountService.getCustomerByNIF(levantamiento.getTraba().getEmbargo().getNif());
 
-			if (customer != null) {
+			if (customer != null) { // se permite un preview aunque no haya la dirección
 				parameters.put("nombre_titular", customer.getName());
 				parameters.put("addres_titular", customer.getAddress());
 				parameters.put("codigo_postal_titular", customer.getPostalCode());
 				parameters.put("ciudad_titular", customer.getCity());
 			}
-			*/
-			parameters.put("nombre_titular", "nombre");
-			parameters.put("addres_titular", "dirección");
-			parameters.put("codigo_postal_titular", "01234");
-			parameters.put("ciudad_titular", "ciudad");
 
 			parameters.put("COD_LEVANTAMIENTO", idLifting);
-			parameters.put("IMAGE_PARAM", image.toString());
+			parameters.put("ENTIDAD", entidadesComunicadora.getDesEntidad());
+			parameters.put("logo_image", logoRes.getFile().toString());
 
 			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 
-			InputStream justificanteInputStream = embargosJrxml.getInputStream();
+			InputStream justificanteInputStream = report.getInputStream();
 
-			JasperPrint fillReport = JasperFillManager.fillReport(justificanteInputStream, parameters, conn);
-
-			List<JRPrintPage> pages = fillReport.getPages();
-
-			if (pages.size() == 0)
-				return null;
-
-			LOG.info("SeizureServiceImpl - generateLevantamientoReport - end");
-
-			return JasperExportManager.exportReportToPdf(fillReport);
+			return JasperFillManager.fillReport(justificanteInputStream, parameters, conn);
 
 		} catch (Exception e) {
+
 			throw new Exception("DB exception while generating the report", e);
+		}
+	}
+
+	@Override
+	public void generateLiftingLetters(ControlFichero controlFichero) throws Exception {
+		List<Embargo> seizures = seizureRepository.findAllByControlFichero(controlFichero);
+
+		if (seizures != null && seizures.size() > 0)
+		{
+			File temporaryFile = reportHelper.getTemporaryFile("cartas-levantamiento-"+ controlFichero.getCodControlFichero(), ReportHelper.PDF_EXTENSION);
+			PdfDocument outDoc = new PdfDocument(new PdfWriter(temporaryFile));
+
+			int pageCount = 1;
+
+			for (Embargo embargo : seizures)
+			{
+				JasperPrint filledReport = reportLiftingLetterInternal(embargo.getCodEmbargo());
+
+				if (filledReport != null) {
+					reportHelper.dumpReport(outDoc, filledReport, pageCount);
+					pageCount++;
+				}
+			}
+
+			outDoc.close();
+
+			reportHelper.moveToPrintFolder(temporaryFile);
 		}
 	}
 
@@ -566,10 +606,5 @@ public class LiftingServiceImpl
         }
 		
 		return true;
-	}
-
-	@Override
-	public void generateLiftingLetters(ControlFichero pendiente) {
-		// TODO
 	}
 }

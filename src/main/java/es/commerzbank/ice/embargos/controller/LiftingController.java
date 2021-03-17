@@ -303,7 +303,7 @@ public class LiftingController {
 	@GetMapping("/notification/{idLifting}/report")
 	@ApiOperation(value = "Devuelve un levantamiento de embargo")
 	public ResponseEntity<InputStreamResource> generateLiftingLetter(
-			@PathVariable("idLifting") Integer idLifting) {
+			@PathVariable("idLifting") Long idLifting) {
 
 		try {
 			DownloadReportFile downloadReportFile = new DownloadReportFile();

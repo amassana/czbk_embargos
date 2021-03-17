@@ -25,7 +25,6 @@
 ,	ct.importe AS IMPORTE_TRABA
 ,   SUBSTR(ct.cuenta, 13) AS DIVISA_TRABA
 ,	t.fecha_traba
-,	e.COD_EMBARGO
 ,	e.NOMBRE
 ,	e.numero_embargo
 ,	e.nif
@@ -51,9 +50,6 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 	</field>
 	<field name="FECHA_TRABA" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="FECHA_TRABA"/>
-	</field>
-	<field name="COD_EMBARGO" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="COD_EMBARGO"/>
 	</field>
 	<field name="NUMERO_EMBARGO" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="NUMERO_EMBARGO"/>
