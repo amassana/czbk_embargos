@@ -400,6 +400,13 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	        task.setApplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
 	        Long codTarea = taskService.addCalendarTask(task);
 	        
+	        // - Se guarda el codigo de tarea del calendario:
+	        controlFicheroTrabas.setCodTarea(BigDecimal.valueOf(codTarea));
+	        	        
+	        controlFicheroTrabas.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+	        controlFicheroTrabas.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+			fileControlRepository.save(controlFicheroTrabas);
+			
 		} catch (Exception e) {
 			
 			//TODO Estado de ERROR pendiente de ser eliminado, se comenta:
