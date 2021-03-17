@@ -37,6 +37,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MimeTypeUtils;
 
+import static es.commerzbank.ice.embargos.utils.EmbargosConstants.COD_ESTADO_TRABA_FINALIZADA;
+import static es.commerzbank.ice.embargos.utils.EmbargosConstants.USER_AUTOMATICO;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -350,6 +353,75 @@ public class SeizureServiceImpl
 		return updateSeizureStatus(idSeized, seizureStatusDTO, userModif);
 		
 	}	
+	
+	@Override
+	public boolean updateAccountSeizureStatus(Long idAccount, Long idSeizure, AccountStatusSeizedDTO accountStatusSeized,
+			String userModif) {
+		
+		Optional<Traba> trabaOpt = seizedRepository.findById(idSeizure);
+		Optional<CuentaTraba> cuentaTrabaOpt = seizedBankAccountRepository.findById(idAccount);
+
+		if (!trabaOpt.isPresent() || !cuentaTrabaOpt.isPresent()) {
+			return false;
+		}
+		
+		if (accountStatusSeized != null && accountStatusSeized.getCode() != null) {
+
+			Traba traba = trabaOpt.get();
+			CuentaTraba cuentaTraba = cuentaTrabaOpt.get();
+
+			// Actualizar estado:
+			EstadoTraba estadoTraba = new EstadoTraba();
+			estadoTraba.setCodEstado(Long.valueOf(accountStatusSeized.getCode()));
+
+			cuentaTraba.setEstadoTraba(estadoTraba);
+
+			// Usuario y fecha ultima modificacion de la Traba:
+			BigDecimal fechaActualBigDec = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
+			cuentaTraba.setUsuarioUltModificacion(userModif);
+			cuentaTraba.setFUltimaModificacion(fechaActualBigDec);
+
+			seizedBankAccountRepository.save(cuentaTraba);
+
+			boolean isAllCuentaTrabasContabilizadas = true;
+			for(CuentaTraba cuentaTr : traba.getCuentaTrabas()) {
+				if (cuentaTr.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA ||
+						cuentaTr.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_FINALIZADA || cuentaTr.getCodCuentaTraba() == idAccount.longValue()) {
+					; // está contabilizada o finalizada. ok
+				}
+				else {
+					isAllCuentaTrabasContabilizadas = false;
+				}
+			}
+			
+			if (isAllCuentaTrabasContabilizadas) {
+				logger.info("Todas las cuentas de la traba "+ traba.getCodTraba() +" se han tratado. Cambiando el estado a contabilizada");
+	
+				// Actualizar estado:
+				EstadoTraba estadoTrabaFinal = new EstadoTraba();
+				estadoTrabaFinal.setCodEstado(Long.valueOf(EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA));
+
+				traba.setEstadoTraba(estadoTrabaFinal);
+
+				// Usuario y fecha ultima modificacion de la Traba:
+				traba.setUsuarioUltModificacion(userModif);
+				traba.setFUltimaModificacion(fechaActualBigDec);
+
+				// Actualizar usuario y fecha ultima modificacion del Embargo (para que se
+				// inserte registro en el historico de embargos):
+				Embargo embargo = traba.getEmbargo();
+				embargo.setUsuarioUltModificacion(userModif);
+				embargo.setFUltimaModificacion(fechaActualBigDec);
+
+				seizedRepository.save(traba);
+			}
+			
+		} else {
+			return false;
+		}
+
+		return true;
+	}
 	
 	@Override
 	public List<SeizureDTO> getAuditSeizure(Long codFileControl, Long idSeizure) {

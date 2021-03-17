@@ -231,14 +231,36 @@ public class SeizureController {
 
 	@PostMapping(value = "/{codeFileControl}/case/{idSeizure}/{idAccount}/status")
 	@ApiOperation(value="Guarda una actualizacion de estado para el caso indicado")
-	public ResponseEntity<String> updateSeizureStatus(Authentication authentication,
+	public ResponseEntity<String> updateSeizureAccountStatus(Authentication authentication,
 													  @PathVariable("codeFileControl") Long codeFileControl,
 													  @PathVariable("idSeizure") Long idSeizure,
-													  @PathVariable("idSeizure") Long idAccount,
-													  @RequestBody SeizureStatusDTO seizureStatus)
+													  @PathVariable("idAccount") Long idAccount,
+													  @RequestBody AccountStatusSeizedDTO accountStatusSeized)
 	{
 		logger.info("SeizureController - Actualizando embargo "+ codeFileControl +"-"+ idSeizure +" cambiando de estado la cuenta "+ idAccount);
-    	return new ResponseEntity<>(HttpStatus.OK);
+		ResponseEntity<String> response = null;
+		boolean result = false;
+
+		try {
+
+			String userModif = authentication.getName();
+
+			result = seizureService.updateAccountSeizureStatus(idAccount, idSeizure, accountStatusSeized, userModif);
+
+			if (result) {
+				response = new ResponseEntity<>(HttpStatus.OK);
+			} else {
+				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+
+		} catch (Exception e) {
+
+			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+			logger.error("ERROR in updateSeizureAccountStatus: ", e);
+		}
+
+		return response;
 	}
     
 //    @PostMapping(value = "/{codeFileControl}/status")

@@ -211,6 +211,40 @@ public class LiftingController {
 		return response;
 	}
 	
+	@PostMapping(value = "/{codeFileControl}/liftingcase/{codeLifting}/{idAccount}/status")
+	@ApiOperation(value="Guarda una actualizacion de estado para el caso indicado")
+	public ResponseEntity<String> updateLiftingAccountStatus(Authentication authentication,
+													  @PathVariable("codeFileControl") Long codeFileControl,
+													  @PathVariable("codeLifting") Long codeLifting,
+													  @PathVariable("idAccount") Long idAccount,
+													  @RequestBody AccountStatusLiftingDTO accountStatusLifting)
+	{
+		logger.info("SeizureController - Actualizando levantamiento "+ codeFileControl +"-"+ codeLifting +" cambiando de estado la cuenta "+ idAccount);
+		ResponseEntity<String> response = null;
+		boolean result = false;
+
+		try {
+
+			String userModif = authentication.getName();
+
+			result = liftingService.updateAccountLiftingStatus(idAccount, codeLifting, accountStatusLifting, userModif);
+
+			if (result) {
+				response = new ResponseEntity<>(HttpStatus.OK);
+			} else {
+				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+
+		} catch (Exception e) {
+
+			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+			logger.error("ERROR in updateSeizureAccountStatus: ", e);
+		}
+
+		return response;
+	}
+	
 	@GetMapping(value = "/{codeFileControl}/accounting")
     @ApiOperation(value="Envio de datos a contabilidad.")
     public ResponseEntity<FileControlDTO> sendAccounting(Authentication authentication,

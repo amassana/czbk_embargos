@@ -31,4 +31,5 @@ public interface SeizureService {
 	boolean jobTransferToTax(String authorization, String user) throws ICEException;
 
     void generateSeizureLetters(ControlFichero controlFichero) throws Exception;
+	boolean updateAccountSeizureStatus(Long idAccount, Long idSeizure, AccountStatusSeizedDTO accountStatusSeized, String userModif);
 }

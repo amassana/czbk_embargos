@@ -1,5 +1,6 @@
 package es.commerzbank.ice.embargos.service;
 
+import es.commerzbank.ice.embargos.domain.dto.AccountStatusLiftingDTO;
 import es.commerzbank.ice.embargos.domain.dto.LiftingAuditDTO;
 import es.commerzbank.ice.embargos.domain.dto.LiftingDTO;
 import es.commerzbank.ice.embargos.domain.dto.LiftingManualDTO;
@@ -35,4 +36,7 @@ public interface LiftingService {
 	boolean manualLifting(LiftingManualDTO liftingManualDTO, String userModif) throws Exception;
 
     void generateLiftingLetters(ControlFichero pendiente);
+
+	boolean updateAccountLiftingStatus(Long idAccount, Long codeLifting, AccountStatusLiftingDTO accountStatusLifting,
+			String userModif);
 }

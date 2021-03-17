@@ -3,7 +3,6 @@ package es.commerzbank.ice.embargos.service.impl;
 import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
-import es.commerzbank.ice.comun.lib.util.jasper.ReportHelper;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.datawarehouse.service.AccountService;
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
@@ -97,8 +96,6 @@ public class LiftingServiceImpl
 	@Autowired
 	AccountService accountService;
 
-	@Autowired
-	private ReportHelper reportHelper;
     
 	@Override
 	public List<LiftingDTO> getAllByControlFichero(ControlFichero controlFichero) {
@@ -239,6 +236,42 @@ public class LiftingServiceImpl
 		return response;
 	}
 
+	@Override
+	public boolean updateAccountLiftingStatus(Long idAccount, Long codeLifting, AccountStatusLiftingDTO accountStatusLifting,
+			String userModif) {
+		
+		Optional<LevantamientoTraba> levantamientoOpt = liftingRepository.findById(codeLifting);
+		Optional<CuentaLevantamiento> cuentaLevantamientoOpt = liftingBankAccountRepository.findById(idAccount);
+
+		if (!levantamientoOpt.isPresent() || !cuentaLevantamientoOpt.isPresent()) {
+			return false;
+		}
+		
+		if (accountStatusLifting != null && accountStatusLifting.getCode() != null) {
+
+			//LevantamientoTraba levantamiento = levantamientoOpt.get();
+			CuentaLevantamiento cuentaLevantamiento = cuentaLevantamientoOpt.get();
+
+			// Actualizar estado:
+			EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
+			estadoLevantamiento.setCodEstado(Long.valueOf(accountStatusLifting.getCode()));
+
+			cuentaLevantamiento.setEstadoLevantamiento(estadoLevantamiento);
+
+			// Usuario y fecha ultima modificacion de la Traba:
+			BigDecimal fechaActualBigDec = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
+			cuentaLevantamiento.setUsuarioUltModificacion(userModif);
+			cuentaLevantamiento.setFUltimaModificacion(fechaActualBigDec);
+
+			liftingBankAccountRepository.save(cuentaLevantamiento);
+
+		} else {
+			return false;
+		}
+
+		return true;
+	}
+	
 	@Override
 	public void updateLiftingBankAccountingStatus(CuentaLevantamiento cuenta, long codEstado, String userName) {
 		
