@@ -1,28 +1,5 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-
-import es.commerzbank.ice.embargos.utils.EmbargosUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.beanio.BeanReader;
-import org.beanio.StreamFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import es.commerzbank.ice.comun.lib.domain.dto.Element;
 import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
 import es.commerzbank.ice.comun.lib.service.EventService;
@@ -33,11 +10,7 @@ import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
 import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
-import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
-import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
-import es.commerzbank.ice.embargos.domain.entity.PeticionInformacion;
-import es.commerzbank.ice.embargos.domain.entity.PeticionInformacionCuenta;
+import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.Cuaderno63Mapper;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
 import es.commerzbank.ice.embargos.domain.mapper.InformationPetitionBankAccountMapper;
@@ -52,7 +25,25 @@ import es.commerzbank.ice.embargos.service.EmailService;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63PetitionService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosUtils;
 import es.commerzbank.ice.embargos.utils.ICEDateUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.beanio.BeanReader;
+import org.beanio.StreamFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 
 @Service
 public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
@@ -167,13 +158,18 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 
 		        		CustomerDTO customerDTO = customerService.findCustomerByNif(solicitudInformacion.getNifDeudor(), false);
 
-		        		//Si existe el cliente:
-		        		if (customerDTO!=null) {
-
+		        		// Si existe el cliente:
+		        		if (customerDTO == null) {
+							LOG.info("Fase1 - No se ha encontrado el cliente "+ solicitudInformacion.getNifDeudor());
+						}
+		        		else {
 			        		List<AccountDTO> accountList = customerDTO.getBankAccounts();
 
 			        		//Tratar solamente los clientes en los que se han encontrado cuentas:
-			        		if(accountList != null && !accountList.isEmpty()) {
+							if (accountList == null || accountList.isEmpty()) {
+								LOG.info("Fase1 - No se ha encontrado cuentas para el cliente "+ solicitudInformacion.getNifDeudor());
+							}
+			        		else {
 								String razonSocialInterna = EmbargosUtils.determineRazonSocialInternaFromCustomer(customerDTO);
 
 				        		//Se guarda la PeticionInformacion en bbdd:
