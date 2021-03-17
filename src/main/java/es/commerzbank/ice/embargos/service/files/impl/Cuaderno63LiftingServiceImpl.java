@@ -301,6 +301,9 @@ public class Cuaderno63LiftingServiceImpl
 	        controlFicheroLevantamiento.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
             controlFicheroLevantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
             fileControlRepository.save(controlFicheroLevantamiento);
+            
+            // - Se envia correo de la recepcion del fichero
+	        emailService.sendEmailPetitionReceived(levFileName);
         }
         catch (Exception e)
         {

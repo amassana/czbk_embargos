@@ -114,8 +114,10 @@ public class EmailServiceImpl implements EmailService {
 	}
 
 	@Override
-	public void sendEmailPetitionReceived(String fileName) {
+	public void sendEmailPetitionReceived(String fileName) throws ICEException {
 
+		logger.info("EmailServiceImpl - sendEmailPetitionReceived - start");
+		
 		if (!generalParametersService.loadBooleanParameter(ValueConstants.EMAIL_SMTP_ENABLED, true))
 			return;
 
@@ -123,28 +125,30 @@ public class EmailServiceImpl implements EmailService {
 		
 		List<String> recipientsTo = new ArrayList<>(); 
 		
-		recipientsTo.add("commerzbank.alten@google.com");
-		
+		String emailAddressesTo = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_EMAIL_TO);		
+		recipientsTo.add(emailAddressesTo);
 		iceEmail.setRecipientsTo(recipientsTo);
-		iceEmail.setSubject("Fichero de peticiones recibido: " + fileName);
+		
+		String emailAddressFrom = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_EMAIL_FROM);
+		iceEmail.setEmailAddressFrom(emailAddressFrom);
+		
+		iceEmail.setSubject("Incoming file: " + fileName);
 		
 		List<String> paragraphTextList = new ArrayList<>();
-		String paragraph1 = "Se ha recibido y procesado correctamente el siguiente fichero de peticiones:" + fileName + ":";
-
-		paragraphTextList.add(paragraph1);
+		
+		paragraphTextList.add("Se ha recibido y procesado correctamente el siguiente fichero: " + fileName);
 		
 		iceEmail.setParagraphTextList(paragraphTextList);
 		
 		iceEmail.setFooterText(EmbargosConstants.EMAIL_DEFAULT_FOOTER_TEXT);
 		
 		try {
-		
 			clientEmailService.sendEmailWithAttachment(iceEmail);
-		
 		} catch (Exception e) {
-			
-			logger.error("ERROR al enviar el email de 'Fichero de peticiones recibido: " + fileName + "'", e);
+			logger.error("ERROR al enviar el email de 'Fichero recibido: " + fileName + "'", e);
 		}
+		
+		logger.info("EmailServiceImpl - sendEmailPetitionReceived - end");
 	}
 
 	@Override

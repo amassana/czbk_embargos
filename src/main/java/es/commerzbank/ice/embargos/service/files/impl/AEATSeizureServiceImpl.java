@@ -358,6 +358,8 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	        controlFicheroEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 			fileControlRepository.save(controlFicheroEmbargo);
 
+            // - Se envia correo de la recepcion del fichero
+	        emailService.sendEmailPetitionReceived(seizureFileName);
 
 		} catch (Exception e) {
 

@@ -10,7 +10,7 @@ public interface EmailService {
 
 	public void sendEmailFileParserError(String fileName, String descException) throws ICEException;
 	
-	public void sendEmailPetitionReceived(String fileName);
+	public void sendEmailPetitionReceived(String fileName) throws ICEException;
 
 	public void sendEmailFileError(List <ErrorTraba> errores, String nombreFichero, String rutaFichero) throws ICEException;
 	
