@@ -13,6 +13,7 @@ import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.CabeceraEmisorFase5;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.OrdenLevantamientoRetencionFase5;
 import es.commerzbank.ice.embargos.repository.*;
+import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.embargos.service.EmailService;
 import es.commerzbank.ice.embargos.service.FileControlService;
@@ -96,6 +97,9 @@ public class Cuaderno63LiftingServiceImpl
     
     @Autowired
 	private TaskService taskService;
+
+    @Autowired
+    private AccountingService accountingService;
     
     @Override
     public void tratarFicheroLevantamientos(File processingFile, String originalName, File processedFile)
@@ -138,10 +142,8 @@ public class Cuaderno63LiftingServiceImpl
             CabeceraEmisorFase5 cabeceraEmisor = null;
 	    	EntidadesOrdenante entidadOrdenante = null;
 	    	Date fechaObtencionFicheroOrganismo = null;
-	    	
-            boolean allLevantamientosContabilizados = true;
-            // almacena las cuentas que se han contabilizado, para su actualización posterior de estado.
-            //List<CuentaLevantamiento> cuentasAContabilizar = new ArrayList<>();
+
+            boolean puedeSerContabilizado = true;
 
             while ((currentRecord = beanReader.read()) != null) {
                 if (EmbargosConstants.RECORD_NAME_CABECERAEMISOR.equals(beanReader.getRecordName())) {
@@ -188,52 +190,36 @@ public class Cuaderno63LiftingServiceImpl
 
                     liftingRepository.save(levantamiento);
 
-                    boolean allCuentasLevantamientoContabilizados = true;
-
                     for (CuentaLevantamiento cuentaLevantamiento : levantamiento.getCuentaLevantamientos())
                     {
-                        if (!EmbargosConstants.ISO_MONEDA_EUR.equals(cuentaLevantamiento.getCodDivisa()) &&
-                                importeMaximoAutomaticoDivisa.compareTo(cuentaLevantamiento.getImporte()) < 0) {
-                            allLevantamientosContabilizados = false;
-                            allCuentasLevantamientoContabilizados = false;
-                            LOG.info("Cannot perform an automatic seizure lifting: "+ cuentaLevantamiento.getCodDivisa() +" and "+ cuentaLevantamiento.getImporte().toPlainString());
-                        }
-                        else
-                        {
-                            LOG.info("Doing an automatic seizure lifting.");
-
-                            EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
-                            estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION);
-                            cuentaLevantamiento.setEstadoLevantamiento(estadoLevantamiento);
-                        }
 
                         cuentaLevantamiento.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
                         cuentaLevantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
                         liftingBankAccountRepository.save(cuentaLevantamiento);
 
-                        // NO SE HACE AQUI LA CONTABILIDAD
-                        //controlFichero = accountingService.sendAccountingLiftingBankAccount(cuentaLevantamiento, embargo, EmbargosConstants.USER_AUTOMATICO);
-                    }
-
-                    if (allCuentasLevantamientoContabilizados) {
-                    	LOG.info("All seizure lifting count");
-                        EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
-                        estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION);
-                        levantamiento.setEstadoLevantamiento(estadoLevantamiento);
-                        levantamiento.setIndCasoRevisado(EmbargosConstants.IND_FLAG_YES);
-                        
-                        levantamiento.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
-                		levantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
-                        liftingRepository.save(levantamiento);
+                        if (!cuentaLevantamiento.getCuenta().endsWith(EmbargosConstants.ISO_MONEDA_EUR)) {
+                            CuentaTraba cuentaTraba = null;
+                            for (CuentaTraba cuentaTrabaActual : traba.getCuentaTrabas()) {
+                                if (cuentaLevantamiento.getCuenta().equals(cuentaTrabaActual.getCodCuentaTraba())) {
+                                    cuentaTraba = cuentaTrabaActual;
+                                    break;
+                                }
+                            }
+                            if (cuentaTraba == null) {
+                                LOG.error("No se encuentra la cuenta traba cuya cuenta sea igual a la cuenta de levantamiento "+ cuentaLevantamiento.getCuenta());
+                                puedeSerContabilizado = false;
+                            }
+                            else {
+                                // Si el contravalor en euros supera el límite..
+                                if (importeMaximoAutomaticoDivisa.compareTo(cuentaLevantamiento.getImporte().multiply(cuentaTraba.getCambio())) < 0) {
+                                    LOG.error("El contravalor en euros del levantamiento "+ cuentaLevantamiento.getCodCuentaLevantamiento() +" supera el límite permitido para contabilizar automáticamente.");
+                                    puedeSerContabilizado = false;
+                                }
+                            }
+                        }
                     }
                 }
             }
-
-            // cerrar y enviar la contabilización
-            // NO SE HACE AQUI LA CONTABILIDAD
-            //if (allLevantamientosContabilizados && controlFichero!=null) {
-            	//accountingNoteService.generacionFicheroContabilidad(controlFichero);
-            //}
 
             // Actualizar control fichero
 
@@ -248,22 +234,17 @@ public class Cuaderno63LiftingServiceImpl
 			
             EstadoCtrlfichero estadoCtrlfichero = null;
 
-            if (allLevantamientosContabilizados) {
-                estadoCtrlfichero = new EstadoCtrlfichero(
-                        EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_ACCOUNTING_RESPONSE,
-                        EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63);
-                
-                //Cambio del indProcesado a 'S' al cambiar al estado 'Pendiente de respuesta contable':
-                controlFicheroLevantamiento.setIndProcesado(EmbargosConstants.IND_FLAG_SI);
-            }
-            else
-            {
-                estadoCtrlfichero = new EstadoCtrlfichero(
-                        EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED,
-                        EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63);
-            }
+            estadoCtrlfichero = new EstadoCtrlfichero(
+                    EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED,
+                    EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63);
 
             controlFicheroLevantamiento.setEstadoCtrlfichero(estadoCtrlfichero);
+
+            fileControlRepository.save(controlFicheroLevantamiento);
+
+            if (puedeSerContabilizado) {
+                accountingService.sendLifting(controlFicheroLevantamiento.getCodControlFichero(), EmbargosConstants.USER_AUTOMATICO);
+            }
             
             //CALENDARIO:
 	        // - Se agrega la tarea al calendario:

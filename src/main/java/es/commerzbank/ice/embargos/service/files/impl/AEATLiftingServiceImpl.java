@@ -1,14 +1,28 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
-
+import es.commerzbank.ice.comun.lib.domain.dto.Element;
+import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
+import es.commerzbank.ice.comun.lib.service.EventService;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.service.TaskService;
+import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
+import es.commerzbank.ice.comun.lib.util.ICEException;
+import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
+import es.commerzbank.ice.embargos.domain.entity.*;
+import es.commerzbank.ice.embargos.domain.mapper.AEATMapper;
+import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
+import es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.EntidadCredito;
+import es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.EntidadTransmisora;
+import es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.Levantamiento;
+import es.commerzbank.ice.embargos.repository.*;
+import es.commerzbank.ice.embargos.service.AccountingService;
+import es.commerzbank.ice.embargos.service.CustomerService;
+import es.commerzbank.ice.embargos.service.EmailService;
+import es.commerzbank.ice.embargos.service.FileControlService;
+import es.commerzbank.ice.embargos.service.files.AEATLiftingService;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosUtils;
+import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
@@ -19,40 +33,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import es.commerzbank.ice.comun.lib.domain.dto.Element;
-import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
-import es.commerzbank.ice.comun.lib.service.EventService;
-import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
-import es.commerzbank.ice.comun.lib.service.TaskService;
-import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
-import es.commerzbank.ice.comun.lib.util.ICEException;
-import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
-import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
-import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
-import es.commerzbank.ice.embargos.domain.entity.Embargo;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
-import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
-import es.commerzbank.ice.embargos.domain.entity.EstadoLevantamiento;
-import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
-import es.commerzbank.ice.embargos.domain.entity.Traba;
-import es.commerzbank.ice.embargos.domain.mapper.AEATMapper;
-import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
-import es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.EntidadCredito;
-import es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.EntidadTransmisora;
-import es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.Levantamiento;
-import es.commerzbank.ice.embargos.repository.FileControlRepository;
-import es.commerzbank.ice.embargos.repository.LiftingBankAccountRepository;
-import es.commerzbank.ice.embargos.repository.LiftingRepository;
-import es.commerzbank.ice.embargos.repository.OrderingEntityRepository;
-import es.commerzbank.ice.embargos.repository.SeizedRepository;
-import es.commerzbank.ice.embargos.repository.SeizureRepository;
-import es.commerzbank.ice.embargos.service.CustomerService;
-import es.commerzbank.ice.embargos.service.EmailService;
-import es.commerzbank.ice.embargos.service.FileControlService;
-import es.commerzbank.ice.embargos.service.files.AEATLiftingService;
-import es.commerzbank.ice.embargos.utils.EmbargosConstants;
-import es.commerzbank.ice.embargos.utils.EmbargosUtils;
-import es.commerzbank.ice.embargos.utils.ICEDateUtils;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
 
 @Service
 @Transactional(transactionManager="transactionManager")
@@ -109,6 +97,9 @@ public class AEATLiftingServiceImpl
     
     @Autowired
 	private OrderingEntityRepository orderingEntityRepository;
+
+    @Autowired
+    private AccountingService accountingService;
     
     @Override
     public void tratarFicheroLevantamientos(File processingFile, String originalName, File processedFile) throws Exception {
@@ -157,10 +148,7 @@ public class AEATLiftingServiceImpl
 	        EntidadCredito entidadCredito = null;
             EntidadesOrdenante entidadOrdenante = null;
 	        
-            boolean allLevantamientosContabilizados = true;
-            
-            // almacena las cuentas que se han contabilizado, para su actualización posterior de estado.
-            //List<CuentaLevantamiento> cuentasContabilizadas = new ArrayList<>();
+            boolean puedeSerContabilizado = true;
 
             while ((currentRecord = beanReader.read()) != null) {
             	
@@ -235,49 +223,34 @@ public class AEATLiftingServiceImpl
 	
 	                    for (CuentaLevantamiento cuentaLevantamiento : levantamiento.getCuentaLevantamientos())
 	                    {
-	                        if (!EmbargosConstants.ISO_MONEDA_EUR.equals(cuentaLevantamiento.getCodDivisa()) &&
-	                                importeMaximoAutomaticoDivisa.compareTo(cuentaLevantamiento.getImporte()) < 0) {
-	                            allLevantamientosContabilizados = false;
-	                            allCuentasLevantamientoContabilizados = false;
-	                            LOG.info("Cannot perform an automatic seizure lifting: "+ cuentaLevantamiento.getCodDivisa() +" and "+ cuentaLevantamiento.getImporte().toPlainString());
-	                        }
-	                        else
-	                        {
-	                            LOG.info("Doing an automatic seizure lifting.");
-	
-	                            EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
-	                            estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION);
-	                            cuentaLevantamiento.setEstadoLevantamiento(estadoLevantamiento);
-	                        }
-	
-	                        cuentaLevantamiento.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
-	                        cuentaLevantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
-	                        liftingBankAccountRepository.save(cuentaLevantamiento);
-	
-	                        // NO SE HACE AQUI LA CONTABILIDAD
-	                        //controlFichero = accountingService.sendAccountingLiftingBankAccount(cuentaLevantamiento, embargo, EmbargosConstants.USER_AUTOMATICO);
-	                    }
-	
-	                    if (allCuentasLevantamientoContabilizados) {
-	                    	LOG.info("All seizure lifting count");
-	                        EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
-	                        estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION);
-	                        levantamiento.setEstadoLevantamiento(estadoLevantamiento);
-	                        levantamiento.setIndCasoRevisado(EmbargosConstants.IND_FLAG_YES);
-	                        
-	                        levantamiento.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
-	                		levantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
-	                        liftingRepository.save(levantamiento);
+							cuentaLevantamiento.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+							cuentaLevantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+							liftingBankAccountRepository.save(cuentaLevantamiento);
+
+	                    	if (!cuentaLevantamiento.getCuenta().endsWith(EmbargosConstants.ISO_MONEDA_EUR)) {
+								CuentaTraba cuentaTraba = null;
+								for (CuentaTraba cuentaTrabaActual : traba.getCuentaTrabas()) {
+									if (cuentaLevantamiento.getCuenta().equals(cuentaTrabaActual.getCodCuentaTraba())) {
+										cuentaTraba = cuentaTrabaActual;
+										break;
+									}
+								}
+								if (cuentaTraba == null) {
+									LOG.error("No se encuentra la cuenta traba cuya cuenta sea igual a la cuenta de levantamiento "+ cuentaLevantamiento.getCuenta());
+									puedeSerContabilizado = false;
+								}
+								else {
+									// Si el contravalor en euros supera el límite..
+									if (importeMaximoAutomaticoDivisa.compareTo(cuentaLevantamiento.getImporte().multiply(cuentaTraba.getCambio())) < 0) {
+										LOG.error("El contravalor en euros del levantamiento "+ cuentaLevantamiento.getCodCuentaLevantamiento() +" supera el límite permitido para contabilizar automáticamente.");
+										puedeSerContabilizado = false;
+									}
+								}
+							}
 	                    }
 	                }
 	        	}
             }
-
-            // cerrar y enviar la contabilización
-            // NO SE HACE AQUI LA CONTABILIDAD
-            //if (allLevantamientosContabilizados && controlFichero!=null) {
-            	//accountingNoteService.generacionFicheroContabilidad(controlFichero);
-            //}
 
             // Actualizar control fichero
 
@@ -296,22 +269,17 @@ public class AEATLiftingServiceImpl
             
             EstadoCtrlfichero estadoCtrlfichero = null;
 
-            if (allLevantamientosContabilizados) {
-                estadoCtrlfichero = new EstadoCtrlfichero(
-                        EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_ACCOUNTING_RESPONSE,
-                        EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT);
-                
-                //Cambio del indProcesado a 'S' al cambiar al estado 'Pendiente de respuesta contable':
-                controlFicheroLevantamiento.setIndProcesado(EmbargosConstants.IND_FLAG_SI);
-            }
-            else
-            {
-                estadoCtrlfichero = new EstadoCtrlfichero(
-                        EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED,
-                        EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT);
-            }
+			estadoCtrlfichero = new EstadoCtrlfichero(
+					EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED,
+					EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT);
 
             controlFicheroLevantamiento.setEstadoCtrlfichero(estadoCtrlfichero);
+
+            fileControlRepository.save(controlFicheroLevantamiento);
+
+            if (puedeSerContabilizado) {
+            	accountingService.sendLifting(controlFicheroLevantamiento.getCodControlFichero(), EmbargosConstants.USER_AUTOMATICO);
+			}
             
             //CALENDARIO:
 	        // - Se agrega la tarea al calendario:
