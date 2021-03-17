@@ -395,6 +395,9 @@ public class SeizureServiceImpl
 
 		JasperPrint fillReport = reportSeizureLetterInternal(idSeizure);
 
+		if (fillReport == null)
+			return null;
+
 		List<JRPrintPage> pages = fillReport.getPages();
 
 		if (pages.size() == 0)
