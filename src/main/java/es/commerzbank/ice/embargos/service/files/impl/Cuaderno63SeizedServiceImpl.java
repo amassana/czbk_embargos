@@ -361,13 +361,13 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	        task.setAction("0");
 	        task.setStatus("P");
 	        task.setIndActive(true);
-	        task.setExternalId(EmbargosConstants.EXTERNAL_ID_F6_N63 + controlFicheroEmbargo.getCodControlFichero());
+	        task.setExternalId(EmbargosConstants.EXTERNAL_ID_F6_N63 + controlFicheroTrabas.getCodControlFichero());
 	        task.setApplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
 	        Long codTarea = taskService.addCalendarTask(task);
 			
 	        // - Se guarda el codigo de tarea del calendario:
 	        controlFicheroTrabas.setCodTarea(BigDecimal.valueOf(codTarea));
-	        	        
+	        controlFicheroTrabas.setControlFicheroOrigen(controlFicheroEmbargo);
 	        controlFicheroTrabas.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
 	        controlFicheroTrabas.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 			fileControlRepository.save(controlFicheroTrabas);
