@@ -1,13 +1,13 @@
 package es.commerzbank.ice.embargos.domain.dto;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class FinalResponsePendingDTO {
 	
 	private CommunicatingEntity communicatingEntity;
 	private FileControlDTO fileControlDTOF3;
 	private FileControlDTO fileControlDTOF4;
-	private Date lastDateResponse;
+	private Timestamp lastDateResponse;
 	
 	/**
 	 * @return the communicatingEntity
@@ -48,13 +48,13 @@ public class FinalResponsePendingDTO {
 	/**
 	 * @return the lastDateResponse
 	 */
-	public Date getLastDateResponse() {
+	public Timestamp getLastDateResponse() {
 		return lastDateResponse;
 	}
 	/**
 	 * @param lastDateResponse the lastDateResponse to set
 	 */
-	public void setLastDateResponse(Date lastDateResponse) {
+	public void setLastDateResponse(Timestamp lastDateResponse) {
 		this.lastDateResponse = lastDateResponse;
 	}
 }
