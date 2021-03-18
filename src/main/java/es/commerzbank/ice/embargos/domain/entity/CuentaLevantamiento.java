@@ -53,6 +53,9 @@ public class CuentaLevantamiento implements Serializable {
 	@Column(name="NUMERO_ORDEN_CUENTA")
 	private BigDecimal numeroOrdenCuenta;
 	
+	@Column(name="ESTADO_CUENTA", length=10)
+	private String estadoCuenta;
+	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="ESTADO", nullable=false)
 	private EstadoLevantamiento estadoLevantamiento;
@@ -178,6 +181,20 @@ public class CuentaLevantamiento implements Serializable {
 
 	public void setEstadoLevantamiento(EstadoLevantamiento estadoLevantamiento) {
 		this.estadoLevantamiento = estadoLevantamiento;
+	}
+
+	/**
+	 * @return the estadoCuenta
+	 */
+	public String getEstadoCuenta() {
+		return estadoCuenta;
+	}
+
+	/**
+	 * @param estadoCuenta the estadoCuenta to set
+	 */
+	public void setEstadoCuenta(String estadoCuenta) {
+		this.estadoCuenta = estadoCuenta;
 	}
 
 	

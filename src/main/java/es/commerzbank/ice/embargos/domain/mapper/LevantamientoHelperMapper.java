@@ -25,7 +25,12 @@ public class LevantamientoHelperMapper {
         if (cuentaTraba != null) {
             cuentaLevantamiento.setCambio(cuentaTraba.getCambio());
             cuentaLevantamiento.setCodDivisa(cuentaTraba.getDivisa());
+            cuentaLevantamiento.setEstadoCuenta(cuentaTraba.getEstadoCuenta());
         }
+        else {
+        	cuentaLevantamiento.setEstadoCuenta(EmbargosConstants.BANK_ACCOUNT_STATUS_NOTFOUND);
+        }
+        
         EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
         estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE);
         cuentaLevantamiento.setEstadoLevantamiento(estadoLevantamiento);
