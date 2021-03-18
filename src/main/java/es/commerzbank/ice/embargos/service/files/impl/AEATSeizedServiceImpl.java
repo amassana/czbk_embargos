@@ -397,6 +397,7 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	        task.setAction("0");
 	        task.setStatus("P");
 	        task.setIndActive(true);
+	        task.setExternalId(EmbargosConstants.EXTERNAL_ID_F6_AEAT + controlFicheroEmbargo.getCodControlFichero());
 	        task.setApplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
 	        Long codTarea = taskService.addCalendarTask(task);
 	        
