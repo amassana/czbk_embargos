@@ -2,7 +2,11 @@ package es.commerzbank.ice.embargos.service.impl;
 
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
+
+import es.commerzbank.ice.comun.lib.domain.entity.Tarea;
+import es.commerzbank.ice.comun.lib.repository.TaskRepo;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import es.commerzbank.ice.comun.lib.util.jasper.ReportHelper;
@@ -38,7 +42,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MimeTypeUtils;
 
 import static es.commerzbank.ice.embargos.utils.EmbargosConstants.COD_ESTADO_TRABA_FINALIZADA;
-import static es.commerzbank.ice.embargos.utils.EmbargosConstants.USER_AUTOMATICO;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,6 +50,7 @@ import java.math.BigDecimal;
 import java.net.SocketTimeoutException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.*;
 
 @Service
@@ -57,6 +61,9 @@ public class SeizureServiceImpl
 	
 	private static final Logger logger = LoggerFactory.getLogger(SeizureServiceImpl.class);
 
+	@Autowired
+	private TaskRepo taskRepo;
+	
 	@Autowired
 	private SeizureMapper seizureMapper;
 
@@ -113,7 +120,10 @@ public class SeizureServiceImpl
 
 	@Autowired
 	private ReportHelper reportHelper;
-
+	
+	@Autowired
+	private TaskService taskService;
+	
 	@Override
 	public List<SeizureDTO> getSeizureListByCodeFileControl(Long codeFileControl) {
 		
@@ -616,20 +626,78 @@ public class SeizureServiceImpl
 
 	}
 
-	@Override
-	public List<Embargo> listEmbargosTransferToTax() {
-		return seizureRepository.listEmbargosTransferToTax();
-	}
+	//@Override
+	//public List<Embargo> listEmbargosTransferToTax() {
+		//return seizureRepository.listEmbargosTransferToTax();
+	//}
 	
 	@Override
 	public boolean jobTransferToTax(String authorization, String user) throws ICEException {
 		// TODO: OBTENER EL IMPORTE DE LA TABLA resultado_embargo del campo total_neto
-		List<Embargo> listaEmbargos = listEmbargosTransferToTax();
-		if (listaEmbargos!=null) {
-			for (Embargo embargo : listaEmbargos) {
-				Long importe = obtenerImporteEmbargo(embargo);
-				transferEmbargoToTax(embargo, importe, authorization, user);
+		
+		try {
+			List<Tarea> tareas = taskService.getTareasPendientesByExternalIdLike(EmbargosConstants.EXTERNAL_ID_F6_AEAT);
+
+			if (tareas!=null && tareas.size()>0) {
+				logger.info("Se han encontrado "+ tareas.size() +" tareas de F6 AEAT pendientes cuya fecha de expiración es hoy o anterior.");
+				
+				for (Tarea tarea : tareas) {
+					try {
+						if (tarea.getExternalId() == null) {
+							logger.error("Tarea " + tarea.getCodTarea() + " sin identificador externo");
+							continue;
+						}
+	
+						String[] partes = tarea.getExternalId().split("_");
+	
+						if (partes.length != 2) {
+							logger.error(
+									"Formato de identificador externo de la tarea " + tarea.getCodTarea() + " no reconocido: "
+											+ tarea.getExternalId());
+							continue;
+						}
+	
+						String codControlFichero = partes[1];
+	
+						Optional<ControlFichero> controlFicheroOptF4 = fileControlRepository.findById(Long.parseLong(codControlFichero));
+						if (!controlFicheroOptF4.isPresent())
+						{
+							logger.error("ControlFichero F4 " + codControlFichero + " no encontrado");
+							continue;
+						}
+						ControlFichero controlFicheroF4 = controlFicheroOptF4.get();
+	
+						ControlFichero controlFicheroF3 = null;
+						if (controlFicheroF4!=null && controlFicheroF4.getControlFicheroOrigen()!=null) {
+							controlFicheroF3 = controlFicheroF4.getControlFicheroOrigen();
+							List<Embargo> listaEmbargos = seizureRepository.findAllByControlFichero(controlFicheroF3);
+							if (listaEmbargos!=null) {
+								for (Embargo embargo : listaEmbargos) {
+									Long importe = obtenerImporteEmbargo(embargo);
+									transferEmbargoToTax(embargo, importe, authorization, user);
+								}
+							}
+							
+							tarea.setEstado(ValueConstants.STATUS_TASK_FINISH);
+							tarea.setfTarea(new Timestamp(new Date().getTime()));
+							taskRepo.save(tarea);
+						}
+						else {
+							logger.error("ControlFichero F3 origen de " + codControlFichero + " no encontrado");
+						}
+					}
+					catch (Exception e)
+					{
+						logger.error("Error mientras se recuperaba la tareas de F6 AEAT "+ tarea.getCodTarea(), e);
+					}
+				}
 			}
+			else {
+				logger.info("No se han encontrado tareas de F6 AEAT pendientes.");
+			}
+			
+		} catch (Exception e) {
+			logger.error("ERROR in jobTransferToTax: ", e);
 		}
 		
 		return true;
@@ -683,7 +751,7 @@ public class SeizureServiceImpl
 			cuenta = listaCuentas.get(0).getCuenta();
 		}
 		else {
-			logger.error("Embargo" + embargo.getCodEmbargo() + " sin cuentas");
+			logger.error("Embargo " + embargo.getCodEmbargo() + " sin cuentas");
 			return false;
 		}
 		
@@ -708,11 +776,15 @@ public class SeizureServiceImpl
 	        
 	        int statusCode = response.getStatusLine().getStatusCode();
 	        if (statusCode == HttpStatus.SC_OK) {
+	        	logger.info("Embargo " + embargo.getCodEmbargo() + " por importe " + importe + " traspasado a impuesto.");
 	        	result = true;
+	        }
+	        else {
+	        	logger.info("Embargo " + embargo.getCodEmbargo() + " por importe " + importe + " NO traspasado a impuesto: " + statusCode);
 	        }
 	        
 		} catch (Exception e) {
-			logger.error("ERROR Extracting response", e);
+			logger.error("ERROR transferEmbargoToTax para Embargo " + embargo.getCodEmbargo() + " por importe " + importe, e);
         }
 		
 		return result;

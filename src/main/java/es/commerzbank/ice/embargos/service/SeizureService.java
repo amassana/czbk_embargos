@@ -4,7 +4,6 @@ import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.embargos.domain.dto.*;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
-import es.commerzbank.ice.embargos.domain.entity.Embargo;
 
 import java.util.List;
 
@@ -27,7 +26,7 @@ public interface SeizureService {
 	byte[] reportSeizureRequestF3(Integer codControlFichero) throws Exception;
 	byte[] reportSeizureResponseF4(Integer codControlFichero) throws Exception;
 	
-	List<Embargo> listEmbargosTransferToTax();
+	//List<Embargo> listEmbargosTransferToTax();
 	boolean jobTransferToTax(String authorization, String user) throws ICEException;
 
     void generateSeizureLetters(ControlFichero controlFichero) throws Exception;
