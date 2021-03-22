@@ -267,7 +267,10 @@ public class FileControlServiceImpl
 			EstadoCtrlfichero estadoCtrlFichero = estadoCtrlficheroOpt.get();
 			
 			controlFichero.setEstadoCtrlfichero(estadoCtrlFichero);
-			
+
+			// Determinar envío carta
+			controlFichero.setIndEnvioCarta(determineIndEnvioCarta(estadoCtrlFichero));
+
 			//Indicador procesado: al cambiar de estado, determinar si el flag indProcesado tiene que cambiar:
 			String indProcesado = determineIndProcesadoFromEstadoControlFichero(estadoCtrlFichero);
 			controlFichero.setIndProcesado(indProcesado);
@@ -286,7 +289,28 @@ public class FileControlServiceImpl
 		return true;
 		
 	}
-	
+
+	private String determineIndEnvioCarta(EstadoCtrlfichero estadoControlFichero) {
+		long codEstadoCtrlFichero = estadoControlFichero.getId().getCodEstado();
+		long codTipoFichero = estadoControlFichero.getId().getCodTipoFichero();
+
+		// Flag envío carta a NO (indicando pendiente de envío) cuando:
+		// es embargo (aeat o norma63) y el nuevo estado es pendiente de envío
+		// o levantamiento (aeat o norma63) y el nuevo estado es procesado
+		// TODO pendiente CPGJ
+
+		if (
+				(codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_TO_SEND && codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63)
+			||	(codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_TO_SEND && codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT)
+			||	(codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_ACCOUNTED && codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63)
+			||	(codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_ACCOUNTED && codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT)
+		){
+			return EmbargosConstants.IND_FLAG_NO;
+		}
+
+		return null;
+	}
+
 	private String determineIndProcesadoFromEstadoControlFichero(EstadoCtrlfichero estadoControlFichero) {
 	
 		long codEstadoCtrlFichero = estadoControlFichero.getId().getCodEstado();
@@ -349,6 +373,7 @@ public class FileControlServiceImpl
 		}
 	}*/
 
+	/*
 	@Override
 	public void updateFileControlStatusTransaction(ControlFichero controlFichero, Long codEstado, String userModif) {
 					
@@ -371,7 +396,7 @@ public class FileControlServiceImpl
 
 		logger.info("FileControlServiceImpl - updateFileControlStatusTransaction - end");
 	}
-	
+	*/
 	@Override
 	public void saveFileControlTransaction(ControlFichero controlFichero) {
 		logger.info("FileControlServiceImpl - saveFileControlTransaction - start");

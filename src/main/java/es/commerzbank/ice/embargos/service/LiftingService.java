@@ -1,13 +1,7 @@
 package es.commerzbank.ice.embargos.service;
 
-import es.commerzbank.ice.embargos.domain.dto.AccountStatusLiftingDTO;
-import es.commerzbank.ice.embargos.domain.dto.LiftingAuditDTO;
-import es.commerzbank.ice.embargos.domain.dto.LiftingDTO;
-import es.commerzbank.ice.embargos.domain.dto.LiftingManualDTO;
-import es.commerzbank.ice.embargos.domain.dto.LiftingStatusDTO;
+import es.commerzbank.ice.embargos.domain.dto.*;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
-import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
-import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
 
 import java.util.List;
 
@@ -25,9 +19,9 @@ public interface LiftingService {
 
 	boolean changeStatus(Long codeLifting, Long status, String userName) throws Exception;
 
-	void updateLiftingBankAccountingStatus(CuentaLevantamiento cuenta, long codEstado, String userName);
+	//void updateLiftingBankAccountingStatus(CuentaLevantamiento cuenta, long codEstado, String userName);
 
-	void updateLiftingtatus(LevantamientoTraba levantamientoTraba, long codEstado, String userName);
+	//void updateLiftingtatus(LevantamientoTraba levantamientoTraba, long codEstado, String userName);
 
 	byte[] generarResumenLevantamientoF5(Integer cod_file_control) throws Exception;
 
@@ -37,6 +31,6 @@ public interface LiftingService {
 
 	void generateLiftingLetters(ControlFichero pendiente) throws Exception;
 
-	boolean updateAccountLiftingStatus(Long idAccount, Long codeLifting, AccountStatusLiftingDTO accountStatusLifting,
-			String userModif);
+	boolean updateAccountLiftingStatus(Long idAccount, AccountStatusLiftingDTO accountStatusLifting,
+			String userModif) throws Exception;
 }

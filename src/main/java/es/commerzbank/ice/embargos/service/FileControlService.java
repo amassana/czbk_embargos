@@ -30,7 +30,7 @@ public interface FileControlService {
 	
 	//void updateFileControlStatusTransaction(ControlFichero controlFichero, Long codEstado);
 	
-	void updateFileControlStatusTransaction(ControlFichero controlFichero, Long codEstado, String userModif);
+	//void updateFileControlStatusTransaction(ControlFichero controlFichero, Long codEstado, String userModif);
 	
 	void saveFileControlTransaction(ControlFichero controlFichero);
 	byte[] generateFileControl(FileControlFiltersDTO fileControlFilters, String oficina) throws Exception;

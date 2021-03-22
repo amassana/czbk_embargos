@@ -7,6 +7,7 @@ import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.datawarehouse.service.AccountService;
+import es.commerzbank.ice.embargos.domain.dto.AccountStatusLiftingDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureStatusDTO;
 import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.repository.*;
@@ -107,7 +108,8 @@ public class AccountingServiceImpl implements AccountingService{
 			}
 
 			sendSeizureCGPJ(controlFichero, userName);
-			fileControlService.updateFileControlStatusTransaction(controlFichero,
+
+			fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(),
 					COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_ACCOUNTING_RESPONSE, userName);
 		} else if (isAEAT){
 
@@ -121,7 +123,7 @@ public class AccountingServiceImpl implements AccountingService{
 			
 			sendSeizureAEATCuaderno63(controlFichero, userName);
 
-			fileControlService.updateFileControlStatusTransaction(controlFichero,
+			fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(),
 					COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_ACCOUNTING_RESPONSE, userName);
 		}
 		else if (isCuaderno63)
@@ -137,7 +139,7 @@ public class AccountingServiceImpl implements AccountingService{
 						
 			sendSeizureAEATCuaderno63(controlFichero, userName);
 
-			fileControlService.updateFileControlStatusTransaction(controlFichero,
+			fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(),
 					COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_ACCOUNTING_RESPONSE, userName);
 			
 		} else {
@@ -724,82 +726,8 @@ public class AccountingServiceImpl implements AccountingService{
 		CuentaTraba cuentaTraba = opt.get();
 
 		// Se cambia el estado de la Cuenta Traba a Contabilizada
+		// Se actualizará en cascada el estado de la traba y del fichero si es necesario
 		seizureService.updateSeizedBankStatus(cuentaTraba, EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA, USER_AUTOMATICO);
-
-		// Si todas las CuentaTraba asociadas a la Traba han cambiado a estado "Contabilizada", entonces:
-		// Cambiar el estado de la Traba a "Contabilizada":
-
-		Traba traba = cuentaTraba.getTraba();
-
-		boolean isAllCuentaTrabasContabilizadas = true;
-		for(CuentaTraba cuentaTr : traba.getCuentaTrabas()) {
-			if (cuentaTr.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA ||
-					cuentaTr.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_FINALIZADA) {
-				; // está contabilizada o finalizada. ok
-			}
-			else {
-				isAllCuentaTrabasContabilizadas = false;
-			}
-		}
-
-		if (!isAllCuentaTrabasContabilizadas)
-			return;
-
-		logger.info("Todas las cuentas de la traba "+ traba.getCodTraba() +" se han tratado. Cambiando el estado a contabilizada");
-
-		SeizureStatusDTO seizureStatusDTO = new SeizureStatusDTO();
-		seizureStatusDTO.setCode(String.valueOf(EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA));
-
-		seizureService.updateSeizureStatus(traba.getCodTraba(), seizureStatusDTO, USER_AUTOMATICO);
-
-
-		// Si todas las Trabas estan contabilizadas, entonces:
-		// Cambiar el estado de Control Fichero de Embargos (control fichero de la Traba no) a estado "Pendiente de envio".
-
-		Embargo embargo = traba.getEmbargo();
-		ControlFichero controlFichero = embargo.getControlFichero();
-
-		boolean isAllTrabasContabilizadas = true;
-		for (Embargo emb : controlFichero.getEmbargos()) {
-			Traba currentTraba = emb.getTrabas().get(0);
-			if (currentTraba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA ||
-					currentTraba.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_FINALIZADA) {
-				; // está contabilizada o finalizada. ok
-			}
-			else {
-				isAllTrabasContabilizadas = false;
-			}
-		}
-
-		if (isAllTrabasContabilizadas)
-		{
-			logger.info("ControlFichero con id " + controlFichero.getCodControlFichero() + " cambia a estado 'Pendiente de envio");
-
-			//Dependiendo del tipo de fichero:
-			String fileFormat = EmbargosUtils.determineFileFormatByTipoFichero(controlFichero.getTipoFichero().getCodTipoFichero());
-
-			boolean isCGPJ = fileFormat!=null && fileFormat.equals(EmbargosConstants.FILE_FORMAT_CGPJ);
-			boolean isAEAT = fileFormat!=null && fileFormat.equals(EmbargosConstants.FILE_FORMAT_AEAT);
-			boolean isCuaderno63 = fileFormat!=null && fileFormat.equals(EmbargosConstants.FILE_FORMAT_NORMA63);
-
-			Long estado = null;
-
-			if (isCGPJ) {
-				estado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_TO_SEND;
-			}
-			else if(isAEAT) {
-				estado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_TO_SEND;
-			}
-			else if (isCuaderno63) {
-				estado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_TO_SEND;
-			}
-
-			// Marcamos como pendiente para el envío de la carta.
-			controlFichero.setIndEnvioCarta("N");
-
-			//Se cambia el estado de Control Fichero a "Pendiente de envio"
-			fileControlService.updateFileControlStatusTransaction(controlFichero, estado, USER_AUTOMATICO);
-		}
 	}
 
 	@Override
@@ -820,8 +748,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 	@Override
 	@Transactional(transactionManager="transactionManager")
-	public void liftingCallback(Long codCuentaLevantamiento)
-	{
+	public void liftingCallback(Long codCuentaLevantamiento) throws Exception {
 		Optional<CuentaLevantamiento> opt = liftingBankAccountRepository.findById(codCuentaLevantamiento);
 
 		if (!opt.isPresent())
@@ -833,46 +760,9 @@ public class AccountingServiceImpl implements AccountingService{
 		CuentaLevantamiento	cuentaLevantamiento = opt.get();
 
 		// Actualizar cuenta
-		liftingService.updateLiftingBankAccountingStatus(cuentaLevantamiento, EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_CONTABILIZADO, USER_AUTOMATICO);
-
-		// Si todas las cuentsa levantamiento del levantamiento están contabilizadas, avanzar el estado del levantamiento
-		LevantamientoTraba levantamientoTraba = cuentaLevantamiento.getLevantamientoTraba();
-		boolean isAllCuentaLevantamientoContabilizados = true;
-		for(CuentaLevantamiento currentCuentaLevantamiento : levantamientoTraba.getCuentaLevantamientos()) {
-			if (currentCuentaLevantamiento.getEstadoLevantamiento().getCodEstado() != EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_CONTABILIZADO) {
-				isAllCuentaLevantamientoContabilizados = false;
-				break;
-			}
-		}
-
-		if (!isAllCuentaLevantamientoContabilizados)
-			return;
-
-		Log.info("Actualizando el levantamiento "+ levantamientoTraba.getCodLevantamiento() +" a estado 'Contabilizado'");
-		liftingService.updateLiftingtatus(levantamientoTraba, EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_CONTABILIZADO, USER_AUTOMATICO);
-
-		//4. Si todos los levantamientos del fichero están contabilziados, avanzar el estado del fichero
-
-		ControlFichero controlFichero = levantamientoTraba.getControlFichero();
-
-		boolean allLevantamientosContabilizados = true;
-
-		for (LevantamientoTraba currentLevantamientoTraba : controlFichero.getLevantamientoTrabas()) {
-			if (currentLevantamientoTraba.getEstadoLevantamiento().getCodEstado() != EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_CONTABILIZADO)
-			{
-				allLevantamientosContabilizados = false;
-				break;
-			}
-		}
-
-		if (allLevantamientosContabilizados)
-		{
-			Log.info("ControlFichero con id " + controlFichero.getCodControlFichero() + " cambia a estado 'Contabilizado'");
-
-			Long estado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_ACCOUNTED;
-
-			fileControlService.updateFileControlStatusTransaction(controlFichero, estado, USER_AUTOMATICO);
-		}
+		AccountStatusLiftingDTO status = new AccountStatusLiftingDTO();
+		status.setCode(String.valueOf(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_CONTABILIZADO));
+		liftingService.updateAccountLiftingStatus(codCuentaLevantamiento, status, USER_AUTOMATICO);
 	}
 
 	private Long getCodSucursal (String oficinaRecaudacion) throws Exception {

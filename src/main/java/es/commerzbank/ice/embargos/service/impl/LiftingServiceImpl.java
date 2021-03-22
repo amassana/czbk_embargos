@@ -16,12 +16,14 @@ import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.OrdenLevantamientoRe
 import es.commerzbank.ice.embargos.repository.*;
 import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.CustomerService;
+import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.LiftingService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.EmbargosUtils;
 import es.commerzbank.ice.embargos.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.util.JRLoader;
+import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,6 +103,9 @@ public class LiftingServiceImpl
 
 	@Autowired
 	private ReportHelper reportHelper;
+
+	@Autowired
+	private FileControlService fileControlService;
     
 	@Override
 	public List<LiftingDTO> getAllByControlFichero(ControlFichero controlFichero) {
@@ -231,7 +236,31 @@ public class LiftingServiceImpl
 				levantamiento.setEstadoLevantamiento(estadoLevantamiento);
 				
 				liftingRepository.save(levantamiento);
-				
+
+				//4. Si todos los levantamientos del fichero están contabilziados, avanzar el estado del fichero
+
+				ControlFichero controlFichero = levantamiento.getControlFichero();
+
+				boolean allLevantamientosContabilizados = true;
+
+				for (LevantamientoTraba currentLevantamientoTraba : controlFichero.getLevantamientoTrabas()) {
+					if (currentLevantamientoTraba.getEstadoLevantamiento().getCodEstado() != EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_CONTABILIZADO)
+					{
+						allLevantamientosContabilizados = false;
+						break;
+					}
+				}
+
+				if (allLevantamientosContabilizados)
+				{
+					Log.info("ControlFichero con id " + controlFichero.getCodControlFichero() + " cambia a estado 'Contabilizado'");
+
+					Long estado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_ACCOUNTED;
+
+					fileControlService.updateFileControlStatus(levantamiento.getControlFichero().getCodControlFichero(), estado,
+							userName);
+				}
+
 				response = true;
 			}
 			
@@ -242,13 +271,13 @@ public class LiftingServiceImpl
 	}
 
 	@Override
-	public boolean updateAccountLiftingStatus(Long idAccount, Long codeLifting, AccountStatusLiftingDTO accountStatusLifting,
-			String userModif) {
+	public boolean updateAccountLiftingStatus(Long idAccount, AccountStatusLiftingDTO accountStatusLifting,
+			String userModif) throws Exception {
 		
-		Optional<LevantamientoTraba> levantamientoOpt = liftingRepository.findById(codeLifting);
+		//Optional<LevantamientoTraba> levantamientoOpt = liftingRepository.findById(codeLifting);
 		Optional<CuentaLevantamiento> cuentaLevantamientoOpt = liftingBankAccountRepository.findById(idAccount);
 
-		if (!levantamientoOpt.isPresent() || !cuentaLevantamientoOpt.isPresent()) {
+		if (!cuentaLevantamientoOpt.isPresent()) {
 			return false;
 		}
 		
@@ -270,13 +299,27 @@ public class LiftingServiceImpl
 
 			liftingBankAccountRepository.save(cuentaLevantamiento);
 
+			// Si todas las cuentas levantamiento del levantamiento están contabilizadas, avanzar el estado del levantamiento
+			LevantamientoTraba levantamientoTraba = cuentaLevantamiento.getLevantamientoTraba();
+			boolean isAllCuentaLevantamientoContabilizados = true;
+			for(CuentaLevantamiento currentCuentaLevantamiento : levantamientoTraba.getCuentaLevantamientos()) {
+				if (currentCuentaLevantamiento.getEstadoLevantamiento().getCodEstado() != EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_CONTABILIZADO) {
+					isAllCuentaLevantamientoContabilizados = false;
+					break;
+				}
+			}
+
+			if (isAllCuentaLevantamientoContabilizados) {
+				Log.info("Actualizando el levantamiento " + levantamientoTraba.getCodLevantamiento() + " a estado 'Contabilizado'");
+				changeStatus(levantamientoTraba.getCodLevantamiento(), EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_CONTABILIZADO, userModif);
+			}
 		} else {
 			return false;
 		}
 
 		return true;
 	}
-	
+	/*
 	@Override
 	public void updateLiftingBankAccountingStatus(CuentaLevantamiento cuenta, long codEstado, String userName) {
 		
@@ -289,6 +332,7 @@ public class LiftingServiceImpl
 		
 		liftingBankAccountRepository.save(cuenta);
 	}
+	*/
 
 	@Override
 	public byte[] generarResumenLevantamientoF5(Integer cod_file_control) throws Exception {
@@ -409,19 +453,6 @@ public class LiftingServiceImpl
 
 			reportHelper.moveToPrintFolder(temporaryFile);
 		}
-	}
-
-
-	@Override
-	public void updateLiftingtatus(LevantamientoTraba levantamientoTraba, long codEstado, String userName) {
-		EstadoLevantamiento estado = new EstadoLevantamiento();
-		estado.setCodEstado(codEstado);
-		levantamientoTraba.setEstadoLevantamiento(estado);
-
-		levantamientoTraba.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
-		levantamientoTraba.setUsuarioUltModificacion(userName);
-
-		liftingRepository.save(levantamientoTraba);
 	}
 
 	@Override

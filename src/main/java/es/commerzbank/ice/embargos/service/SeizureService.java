@@ -16,7 +16,7 @@ public interface SeizureService {
 	List<SeizureStatusDTO> getSeizureStatusList();
 	boolean updateSeizedBankAccountList(Long codeFileControl, Long idSeizure, SeizureSaveDTO seizureSave, String userModif) throws Exception;
 	boolean updateSeizedBankStatus(CuentaTraba cuentaTraba, Long codEstado, String userModif);
-	boolean updateSeizedBankStatusTransaction(CuentaTraba cuentaTraba, Long codEstado, String userModif);
+	// boolean updateSeizedBankStatusTransaction(CuentaTraba cuentaTraba, Long codEstado, String userModif);
 	boolean updateSeizureStatus(Long idSeizure, SeizureStatusDTO seizureStatusDTO, String userModif);
 	boolean updateSeizureStatusTransaction(Long idSeizure, SeizureStatusDTO seizureStatusDTO, String userModif);
 	List<SeizureDTO> getAuditSeizure(Long codFileControl, Long idSeizure);

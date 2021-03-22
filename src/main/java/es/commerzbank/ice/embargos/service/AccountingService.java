@@ -13,7 +13,7 @@ public interface AccountingService {
 
 	void seizureCallback(Long codCuentaTraba);
 	void transferenciaFinalOrganismoCallback(Long codControlFicheroFinal);
-	void liftingCallback(Long codCuentaLevantamiento);
+	void liftingCallback(Long codCuentaLevantamiento) throws Exception;
 
 	// boolean undoAccounting(Long codeFileControl, Long idSeizure, String numAccount, String userName) throws Exception;
 }

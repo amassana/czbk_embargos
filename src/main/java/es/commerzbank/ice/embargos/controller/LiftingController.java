@@ -227,7 +227,7 @@ public class LiftingController {
 
 			String userModif = authentication.getName();
 
-			result = liftingService.updateAccountLiftingStatus(idAccount, codeLifting, accountStatusLifting, userModif);
+			result = liftingService.updateAccountLiftingStatus(idAccount, accountStatusLifting, userModif);
 
 			if (result) {
 				response = new ResponseEntity<>(HttpStatus.OK);
