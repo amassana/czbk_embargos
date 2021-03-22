@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4_1" pageWidth="595" pageHeight="842" columnWidth="455" leftMargin="70" rightMargin="70" topMargin="85" bottomMargin="85" uuid="ac052191-a188-44e3-9d67-7d4272c5135f">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4_1" pageWidth="595" pageHeight="842" columnWidth="455" leftMargin="70" rightMargin="70" topMargin="85" bottomMargin="45" uuid="ac052191-a188-44e3-9d67-7d4272c5135f">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Embargos"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -244,7 +244,7 @@ WHERE
 				<textFieldExpression><![CDATA[$F{IBAN}.substring(4,8) +" "+ $F{IBAN}.substring(8,12) +" ** "+ $F{IBAN}.substring(14)]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="182" y="-5" width="50" height="15" uuid="e33b1987-aec4-404c-abfb-e38318f3ff34">
+				<reportElement x="189" y="-5" width="50" height="15" uuid="e33b1987-aec4-404c-abfb-e38318f3ff34">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -253,7 +253,7 @@ WHERE
 				<text><![CDATA[IMPORTE]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="224" y="-5" width="90" height="15" uuid="9ec3b839-45c8-479b-ac74-34bddf22948e">
+				<reportElement x="237" y="-5" width="96" height="15" uuid="9ec3b839-45c8-479b-ac74-34bddf22948e">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box leftPadding="5"/>
@@ -263,7 +263,7 @@ WHERE
 				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTE_LEVANTAMIENTO}) +" " + $F{DIVISA_LEVANTAMIENTO}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="326" y="-5" width="50" height="15" uuid="031f3f81-053c-4a91-bf50-f74f63ca5e43">
+				<reportElement x="341" y="-5" width="50" height="15" uuid="031f3f81-053c-4a91-bf50-f74f63ca5e43">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -272,7 +272,7 @@ WHERE
 				<text><![CDATA[F.VALOR]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="370" y="-5" width="100" height="15" uuid="f448609d-23bc-4ca9-861f-90a3a87ad302">
+				<reportElement x="385" y="-5" width="100" height="15" uuid="f448609d-23bc-4ca9-861f-90a3a87ad302">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box leftPadding="5"/>
@@ -284,10 +284,10 @@ WHERE
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="186" splitType="Stretch">
+		<band height="227" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement x="13" y="79" width="124" height="25" uuid="3f2d065a-c352-46e3-ae34-7bd9d262f0c8"/>
+				<reportElement x="13" y="117" width="124" height="25" uuid="3f2d065a-c352-46e3-ae34-7bd9d262f0c8"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="9" isBold="true"/>
 				</textElement>
@@ -295,7 +295,7 @@ WHERE
 COMMERZBANK AG]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="13" y="104" width="140" height="25" uuid="a59845b8-286f-4fde-bb7b-c3cbb315b1ec"/>
+				<reportElement x="13" y="142" width="140" height="25" uuid="a59845b8-286f-4fde-bb7b-c3cbb315b1ec"/>
 				<textElement>
 					<font fontName="Serif" size="9" isBold="false"/>
 				</textElement>
@@ -303,14 +303,14 @@ COMMERZBANK AG]]></text>
 Sucursal en España]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="13" y="129" width="143" height="19" uuid="25757d12-7c03-46f1-966d-8a7641580b65"/>
+				<reportElement x="13" y="167" width="143" height="19" uuid="25757d12-7c03-46f1-966d-8a7641580b65"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Serif" size="9" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Esta notificación no precisa firma.]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="243" y="97" width="211" height="51" uuid="a486150c-3351-4d3c-a4ba-52e21b6a82f5">
+				<reportElement x="243" y="135" width="211" height="51" uuid="a486150c-3351-4d3c-a4ba-52e21b6a82f5">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<box leftPadding="5"/>
@@ -320,7 +320,7 @@ Sucursal en España]]></text>
 				<textFieldExpression><![CDATA[$P{nombre_titular} +"\n"+ $P{addres_titular} +"\n"+ $P{codigo_postal_titular} + " - " +  $P{ciudad_titular}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="13" y="159" width="214" height="18" uuid="d53f32da-d299-4f76-93ee-ed85eeb56098"/>
+				<reportElement x="13" y="197" width="214" height="18" uuid="d53f32da-d299-4f76-93ee-ed85eeb56098"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Serif" size="6"/>
 				</textElement>
