@@ -244,7 +244,7 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 				<textFieldExpression><![CDATA[$F{IBAN}.substring(4,8) +" "+ $F{IBAN}.substring(8,12) +" ** "+ $F{IBAN}.substring(14)]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="187" y="-5" width="50" height="15" uuid="e33b1987-aec4-404c-abfb-e38318f3ff34">
+				<reportElement x="188" y="-5" width="50" height="15" uuid="e33b1987-aec4-404c-abfb-e38318f3ff34">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -253,7 +253,7 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 				<text><![CDATA[IMPORTE]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="224" y="-5" width="96" height="15" uuid="9ec3b839-45c8-479b-ac74-34bddf22948e">
+				<reportElement x="239" y="-5" width="96" height="15" uuid="9ec3b839-45c8-479b-ac74-34bddf22948e">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box leftPadding="5"/>
@@ -263,7 +263,7 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTE_TRABA}) +" " + $F{DIVISA_TRABA}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="326" y="-5" width="50" height="15" uuid="031f3f81-053c-4a91-bf50-f74f63ca5e43">
+				<reportElement x="341" y="-5" width="50" height="15" uuid="031f3f81-053c-4a91-bf50-f74f63ca5e43">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -272,7 +272,7 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 				<text><![CDATA[F.VALOR]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="370" y="-5" width="100" height="15" uuid="f448609d-23bc-4ca9-861f-90a3a87ad302">
+				<reportElement x="385" y="-5" width="100" height="15" uuid="f448609d-23bc-4ca9-861f-90a3a87ad302">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box leftPadding="5"/>
