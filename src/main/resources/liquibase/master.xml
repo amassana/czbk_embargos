@@ -19,5 +19,8 @@
     <include file="2021/20210218_ficheroControl_tipo_opcional.xml" relativeToChangelogFile="true" />
     <include file="2021/20210308_filecontrol_ind_envio_carta.xml" relativeToChangelogFile="true"/>
     <include file="2021/20210318_cuenta_levantamiento_estado_cuenta.xml" relativeToChangelogFile="true"/>
+    <include file="2021/20210322_traba_levantamiento_fechavalor.xml" relativeToChangelogFile="true"/>
+    <include file="2021/20210322_entidadesOrdenantes_plazos.xml" relativeToChangelogFile="true"/>
+    <include file="2021/20210322_cuentra_traba_actuacion_full.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

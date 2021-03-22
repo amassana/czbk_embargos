@@ -1,0 +1,25 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet author="aniol.massana" id="20210322_traba_levantamiento_fechavalor">
+        <update tableName="ENTIDADES_COMUNICADORAS">
+            <column name="DIAS_RESPUESTA_F1">30</column>
+            <column name="DIAS_RESPUESTA_F3">4</column>
+            <column name="DIAS_RESPUESTA_F6">30</column>
+            <where>IND_NORMA63 = 'S' AND DES_ENTIDAD &lt;&gt; 'TGSS'</where>
+        </update>
+        <update tableName="ENTIDADES_COMUNICADORAS">
+            <column name="DIAS_RESPUESTA_F1">30</column>
+            <column name="DIAS_RESPUESTA_F3">3</column>
+            <column name="DIAS_RESPUESTA_F6">10</column>
+            <where>IND_NORMA63 = 'S' AND DES_ENTIDAD = 'TGSS'</where>
+        </update>
+        <update tableName="ENTIDADES_COMUNICADORAS">
+            <column name="DIAS_RESPUESTA_F3">4</column>
+            <column name="DIAS_RESPUESTA_F6">21</column>
+            <where>IND_FORMATO_AEAT = 'S'</where>
+        </update>
+        <rollback><sql>select count(*) from dual</sql></rollback>
+    </changeSet>
+
+</databaseChangeLog>
