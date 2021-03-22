@@ -122,7 +122,7 @@ public class FinalResponseController {
 		List<FinalResponsePendingDTO> result = null;
 
 		try {
-			List<Tarea> tareas = taskService.getTaskPendingByExternalIdLike(EmbargosConstants.EXTERNAL_ID_F6_N63);
+			List<Tarea> tareas = taskService.getTareasPendientesByExternalIdLike(EmbargosConstants.EXTERNAL_ID_F6_N63);
 
 			if (tareas!=null && tareas.size()>0) {
 				logger.info("Se han encontrado "+ tareas.size() +" tareas de F6 pendientes.");
