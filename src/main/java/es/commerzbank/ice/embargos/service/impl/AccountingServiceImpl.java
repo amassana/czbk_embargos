@@ -318,7 +318,7 @@ public class AccountingServiceImpl implements AccountingService{
 			}
 
 			if (contabilizado) {
-				seizureService.updateSeizedBankStatus(cuentaTraba, EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA, userName);
+				seizureService.updateSeizedBankStatus(cuentaTraba, COD_ESTADO_TRABA_ENVIADA_A_CONTABILIDAD, userName);
 			}
 			else {
 				seizureService.updateSeizedBankStatus(cuentaTraba, COD_ESTADO_TRABA_FINALIZADA, userName);
