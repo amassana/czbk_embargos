@@ -532,58 +532,88 @@ public class AccountingServiceImpl implements AccountingService{
 		AccountStatusLiftingDTO status = new AccountStatusLiftingDTO();
 		status.setCode(String.valueOf(COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION));
 
+		boolean algoSinContabilizar = false;
+
 		for (LevantamientoTraba levantamiento : controlFichero.getLevantamientoTrabas()) {
 			for (CuentaLevantamiento cuentaLevantamiento : levantamiento.getCuentaLevantamientos()) {
+				if (cuentaLevantamiento.getEstadoLevantamiento().getCodEstado() != COD_ESTADO_LEVANTAMIENTO_PENDIENTE) {
+					logger.info("cuenta levantamiento "+ cuentaLevantamiento.getCodCuentaLevantamiento() + " no pendiente - ignorando");
+					continue;
+				}
+
 				logger.info("cuenta levantamiento "+ cuentaLevantamiento.getCodCuentaLevantamiento() + " se contabilizará la cantidad "+ cuentaLevantamiento.getImporte());
 
-				apunteContableLevantamiento(cuentaLevantamiento, levantamiento.getTraba().getEmbargo(),
-						fileControlFicheroComunes.getCodControlFichero(), oficinaRecaudacion, cuentaRecaudacion, cuentaIntercambioDivisas);
+				Traba traba = levantamiento.getTraba();
+				Embargo embargo = traba.getEmbargo();
 
-				liftingService.updateAccountLiftingStatus(cuentaLevantamiento.getCodCuentaLevantamiento(), status, USER_AUTOMATICO);
+				BigDecimal cambio = BigDecimal.ONE;
+
+				CuentaTraba cuentaTraba = null;
+				for (CuentaTraba cuentaTrabaActual : traba.getCuentaTrabas()) {
+					if (cuentaLevantamiento.getCuenta().equals(cuentaTrabaActual.getCodCuentaTraba())) {
+						cuentaTraba = cuentaTrabaActual;
+						break;
+					}
+				}
+				if (cuentaTraba == null) {
+					logger.error("No se encuentra la cuenta traba cuya cuenta sea igual a la cuenta de levantamiento "+ cuentaLevantamiento.getCuenta());
+					algoSinContabilizar = true;
+				}
+				else {
+					apunteContableLevantamiento(cuentaLevantamiento, cuentaRecaudacion, cuentaLevantamiento.getCuenta(),
+							oficinaRecaudacion, embargo.getNumeroEmbargo(), "", embargo.getDatregcomdet(), cuentaIntercambioDivisas,
+							fileControlFicheroComunes.getCodControlFichero(), embargo.getNombre(), embargo.getNif(), cuentaTraba.getCambio());
+
+					liftingService.updateAccountLiftingStatus(cuentaLevantamiento.getCodCuentaLevantamiento(), status, USER_AUTOMATICO);
+				}
 			}
 
-			liftingService.changeStatus(levantamiento.getCodLevantamiento(), COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION, USER_AUTOMATICO);
+			if (!algoSinContabilizar)
+				liftingService.changeStatus(levantamiento.getCodLevantamiento(), COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION, USER_AUTOMATICO);
 		}
 
 		accountingNoteService.generacionFicheroContabilidad(fileControlFicheroComunes);
 
-		fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(),
+		if (!algoSinContabilizar)
+			fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(),
 				COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_ACCOUNTING_RESPONSE, userName);
 	}
 
 	private void apunteContableLevantamiento(
-			CuentaLevantamiento cuentaLevantamiento, Embargo embargo, Long codFileControlFicheroComunes,
-			String oficinaCuentaRecaudacion, String cuentaRecaudacion, String cuentaIntercambioDivisas)
+			CuentaLevantamiento cuentaLevantamiento, String debitAccount, String creditAccount,
+			String oficinaCuentaRecaudacion, String reference1, String reference2, String detailPayment, String cuentaIntercambioDivisas,
+			Long codFileControlFicheroComunes, String nombre, String nif, BigDecimal cambio)
 			throws Exception {
 		if (cuentaLevantamiento.getImporte()!=null && BigDecimal.ZERO.compareTo(cuentaLevantamiento.getImporte()) < 0)
 		{
+			/*
 			String reference1 = embargo.getNumeroEmbargo();
 			String reference2 = "";
 			String detailPayment = embargo.getDatregcomdet();
-
+*/
 			AccountingNote accountingNote = new AccountingNote();
 
+			accountingNote.setCodFileControl(codFileControlFicheroComunes);
+
+			accountingNote.setActualDate(new Date());
 			accountingNote.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
-			accountingNote.setCodOffice(oficinaCuentaRecaudacion.toString());
+			accountingNote.setCodOffice(oficinaCuentaRecaudacion);
 			accountingNote.setAmount(cuentaLevantamiento.getImporte().doubleValue());
 			accountingNote.setCodCurrency(cuentaLevantamiento.getCodDivisa());
-			accountingNote.setDebitAccount(cuentaRecaudacion);
-			accountingNote.setRecaudAccount(cuentaRecaudacion);
-			//accountingNote.setCreditAccount(cuentaLevantamiento.getCuenta());
-			accountingNote.setActualDate(new Date());
-			accountingNote.setExecutionDate(new Date());
+			accountingNote.setDebitAccount(debitAccount);
+			accountingNote.setCreditAccount(creditAccount);
 			accountingNote.setDebitValueDate(new Date());
 			accountingNote.setCreditValueDate(new Date());
+			accountingNote.setExecutionDate(new Date());
 			accountingNote.setReference1(reference1);
 			accountingNote.setReference2(reference2);
-			accountingNote.setChange(cuentaLevantamiento.getCambio());
-
-			accountingNote.setCodFileControl(codFileControlFicheroComunes);
-			accountingNote.setName(embargo.getNombre());
-			accountingNote.setNif(embargo.getNif());
 			accountingNote.setDetailPayment(detailPayment);
+			accountingNote.setChange(cambio);
 
-			accountingNote.setCreditAccount(cuentaLevantamiento.getCuenta());
+			// estos sobran?
+			accountingNote.setName(nombre);
+			accountingNote.setNif(nif);
+
 			accountingNote.setExtraInfo1(EmbargosConstants.APUNTES_CONTABLES_TIPO_LEVANTAMIENTO);
 			accountingNote.setExtraInfo2(String.valueOf(cuentaLevantamiento.getCodCuentaLevantamiento()));
 
