@@ -93,7 +93,7 @@ public class ControlFichero implements Serializable {
 	private List<ControlFichero> controlFicheroRespuestaList;
 
 	//bi-directional many-to-one association to ControlFichero
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="COD_CONTROL_FICHERO_ORIGEN")
 	private ControlFichero controlFicheroOrigen;
 
@@ -102,12 +102,12 @@ public class ControlFichero implements Serializable {
 	private List<ControlFichero> controlFicheroOrigenList;
 
 	//bi-directional many-to-one association to EntidadesComunicadora
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="COD_ENTIDAD_PRESENTADORA")
 	private EntidadesComunicadora entidadesComunicadora;
 
 	//bi-directional many-to-one association to EstadoCtrlfichero
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumns({
 		@JoinColumn(name="COD_ESTADO", referencedColumnName="COD_ESTADO", nullable=false),
 		@JoinColumn(name="COD_TIPO_FICHERO", referencedColumnName="COD_TIPO_FICHERO", nullable=false)

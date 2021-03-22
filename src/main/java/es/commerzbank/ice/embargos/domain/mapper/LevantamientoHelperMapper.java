@@ -12,20 +12,27 @@ public class LevantamientoHelperMapper {
     {
         CuentaLevantamiento cuentaLevantamiento = new CuentaLevantamiento();
 
-        String cuenta = findBankAccount(DWHCustomer, iban);
+        AccountDTO cuenta = findBankAccount(DWHCustomer, iban);
         CuentaTraba cuentaTraba = findCuentaTraba(traba, iban);
 
         cuentaLevantamiento.setLevantamientoTraba(levantamientoTraba);
         cuentaLevantamiento.setIban(iban);
-        cuentaLevantamiento.setCuenta(cuenta);
         cuentaLevantamiento.setImporte(importe);
         cuentaLevantamiento.setIndContabilizado(EmbargosConstants.IND_FLAG_NO);
         cuentaLevantamiento.setUsuarioUltModificacion(usuarioModif);
         cuentaLevantamiento.setFUltimaModificacion(fechaUltmaModif);
-        if (cuentaTraba != null) {
-            cuentaLevantamiento.setCambio(cuentaTraba.getCambio());
-            cuentaLevantamiento.setCodDivisa(cuentaTraba.getDivisa());
+        
+        if (cuentaTraba != null) cuentaLevantamiento.setCambio(cuentaTraba.getCambio());
+
+        if (cuenta!=null) {
+        	cuentaLevantamiento.setCuenta(cuenta.getAccountNum());
+            cuentaLevantamiento.setCodDivisa(cuenta.getDivisa());
+            cuentaLevantamiento.setEstadoCuenta(cuenta.getStatus());
         }
+        else {
+        	cuentaLevantamiento.setEstadoCuenta(EmbargosConstants.BANK_ACCOUNT_STATUS_NOTFOUND);
+        }
+        
         EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
         estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE);
         cuentaLevantamiento.setEstadoLevantamiento(estadoLevantamiento);
@@ -36,9 +43,9 @@ public class LevantamientoHelperMapper {
         return cuentaLevantamiento;
     }
 
-    private String findBankAccount(CustomerDTO DWHCustomer, String iban)
+    private AccountDTO findBankAccount(CustomerDTO DWHCustomer, String iban)
     {
-        String bankAccount = null;
+    	AccountDTO bankAccount = null;
 
         if (DWHCustomer!=null && DWHCustomer.getBankAccounts() != null && iban != null)
         {
@@ -46,7 +53,7 @@ public class LevantamientoHelperMapper {
             {
                 if (iban.equals(DWHBankAccount.getIban()))
                 {
-                    bankAccount = DWHBankAccount.getAccountNum();
+                    bankAccount = DWHBankAccount;
                     break;
                 }
             }

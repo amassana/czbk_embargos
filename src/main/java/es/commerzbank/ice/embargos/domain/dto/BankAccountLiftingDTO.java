@@ -4,6 +4,7 @@ public class BankAccountLiftingDTO {
 	private Long codLiftingAccount;
 	private String iban;
 	private String account;
+	private String bankAccountStatus;
 	private Double change;
 	private Double amount;
 	private LiftingStatusDTO status;
@@ -11,7 +12,7 @@ public class BankAccountLiftingDTO {
 	
 	public BankAccountLiftingDTO() {}
 	
-	public BankAccountLiftingDTO(Long codLiftingAccount, String iban, String account, Double change, Double amount, String codCurrency, LiftingStatusDTO status) {
+	public BankAccountLiftingDTO(Long codLiftingAccount, String iban, String account, Double change, Double amount, String codCurrency, LiftingStatusDTO status, String bankAccountStatus) {
 		super();
 		this.codLiftingAccount = codLiftingAccount;
 		this.iban = iban;
@@ -20,6 +21,7 @@ public class BankAccountLiftingDTO {
 		this.amount = amount;
 		this.status = status;
 		this.codCurrency = codCurrency;
+		this.setBankAccountStatus(bankAccountStatus);
 	}
 
 
@@ -65,5 +67,19 @@ public class BankAccountLiftingDTO {
 	}
 	public void setStatus(LiftingStatusDTO status) {
 		this.status = status;
+	}
+
+	/**
+	 * @return the bankAccountStatus
+	 */
+	public String getBankAccountStatus() {
+		return bankAccountStatus;
+	}
+
+	/**
+	 * @param bankAccountStatus the bankAccountStatus to set
+	 */
+	public void setBankAccountStatus(String bankAccountStatus) {
+		this.bankAccountStatus = bankAccountStatus;
 	}
 }
