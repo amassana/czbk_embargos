@@ -579,44 +579,6 @@ public class AccountingServiceImpl implements AccountingService{
 
 	@Override
 	@Transactional(transactionManager="transactionManager")
-	public es.commerzbank.ice.comun.lib.domain.entity.ControlFichero sendAccountingLiftingBankAccount(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, String userName)
-			throws Exception
-	{
-		return null;
-		/* TODO ELIMINAR - el levantamiento se hace en sendAccountingLifting con todo el fichero en bloque
-		TODO A eliminar cuando se pase por F5.
-		String oficinaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA);
-		String cuentaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);
-		
-		Long sucursal = null;
-		try {
-			Optional<Sucursal> sucursalOpt = officeCRepo.findByNumeroSucursal(new BigDecimal(oficinaRecaudacion));
-			if (sucursalOpt.isPresent()) {
-				sucursal = sucursalOpt.get().getCodSucursal();
-			}
-		} catch (Exception e) {
-			logger.error("sendAccountingAEATCuaderno63 - error obteniendo código de oficina", e);	
-		}
-		
-		String contabilizacionCallbackNameParameter = EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_FASE5_CALLBACK;
-		Long codFileControlFicheroComunes = null;
-		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = null;
-		
-		if (cuentaLevantamiento.getImporte().doubleValue() > 0) {
-			fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, embargo.getControlFichero().getDescripcion(), sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_IMPUESTOS_LEVANTAMIENTOS);
-			codFileControlFicheroComunes = fileControlFicheroComunes.getCodControlFichero();
-		}
-		
-		if (codFileControlFicheroComunes != null) {
-			apunteContableLevantamiento(cuentaLevantamiento, embargo, codFileControlFicheroComunes, userName, oficinaRecaudacion, cuentaRecaudacion);
-		}
-
-		return fileControlFicheroComunes;
-		 */
-	}
-
-	@Override
-	@Transactional(transactionManager="transactionManager")
 	public void sendFinalFile(Long codeFileControl, String userName) throws ICEException, Exception {
 		
 		//Para las Entidades Comunicadoras que tengan cuenta en Commerzbank, la transferencia

@@ -600,7 +600,7 @@ public class LiftingServiceImpl
                         liftingRepository.save(levantamiento);
                     }
             	}
-				
+
                 // Actualizar control fichero
                 EstadoCtrlfichero estadoCtrlfichero =  new EstadoCtrlfichero(
                             EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED,
