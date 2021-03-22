@@ -244,7 +244,7 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 				<textFieldExpression><![CDATA[$F{IBAN}.substring(4,8) +" "+ $F{IBAN}.substring(8,12) +" ** "+ $F{IBAN}.substring(14)]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="182" y="-5" width="50" height="15" uuid="e33b1987-aec4-404c-abfb-e38318f3ff34">
+				<reportElement x="187" y="-5" width="50" height="15" uuid="e33b1987-aec4-404c-abfb-e38318f3ff34">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -253,7 +253,7 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 				<text><![CDATA[IMPORTE]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="224" y="-5" width="90" height="15" uuid="9ec3b839-45c8-479b-ac74-34bddf22948e">
+				<reportElement x="224" y="-5" width="96" height="15" uuid="9ec3b839-45c8-479b-ac74-34bddf22948e">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box leftPadding="5"/>
