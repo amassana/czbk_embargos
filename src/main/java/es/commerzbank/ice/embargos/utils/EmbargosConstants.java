@@ -318,8 +318,8 @@ public class EmbargosConstants {
 
 	public static final String ACCOUNTING_EMBARGOS_PATTERN = "yyyyMMdd_HHmmss'.CON'";
 	public static final String ACCOUNTING_EMBARGO_F6 = "TGSS";
-	public static final String ACCOUNTING_IMPUESTOS_TRABAS = "TRABAS";
-	public static final String ACCOUNTING_IMPUESTOS_LEVANTAMIENTOS = "LEVANTAMIENTOS";
+	public static final String ACCOUNTING_EMBARGOS_TRABAS = "TRABAS";
+	public static final String ACCOUNTING_EMBARGOS_LEVANTAMIENTOS = "LEVANTAMIENTOS";
 	
 	public static final String APUNTES_CONTABLES_TIPO_TRABA = "TRABA";
 	public static final String APUNTES_CONTABLES_TIPO_LEVANTAMIENTO = "LEVANTAMIENTO";
