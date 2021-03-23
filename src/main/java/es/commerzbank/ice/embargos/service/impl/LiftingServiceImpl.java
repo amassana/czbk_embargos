@@ -569,7 +569,11 @@ public class LiftingServiceImpl
                         cuentaLevantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
                         liftingBankAccountRepository.save(cuentaLevantamiento);
 
-						if (!cuentaLevantamiento.getCuenta().endsWith(EmbargosConstants.ISO_MONEDA_EUR)) {
+						if (cuentaLevantamiento.getCuenta().endsWith(EmbargosConstants.ISO_MONEDA_EUR)) {
+							tieneAlgoAContabilizar = true;
+						}
+						else {
+							// De debe encontrar el cambio usado
 							CuentaTraba cuentaTraba = null;
 							for (CuentaTraba cuentaTrabaActual : traba.getCuentaTrabas()) {
 								if (cuentaLevantamiento.getCuenta().equals(cuentaTrabaActual.getCodCuentaTraba())) {
