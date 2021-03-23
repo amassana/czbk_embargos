@@ -1,0 +1,44 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet author="aniol.massana" id="20210323_estado_traba_letter_case">
+        <update tableName="ESTADO_TRABA">
+            <column name="DES_ESTADO">Pendiente</column>
+            <where>DES_ESTADO = 'PENDIENTE'</where>
+        </update>
+        <update tableName="ESTADO_TRABA">
+            <column name="DES_ESTADO">Revisada</column>
+            <where>DES_ESTADO = 'REVISADA'</where>
+        </update>
+        <update tableName="ESTADO_TRABA">
+            <column name="DES_ESTADO">Contabilizada</column>
+            <where>DES_ESTADO = 'CONTABILIZADA'</where>
+        </update>
+        <update tableName="ESTADO_TRABA">
+            <column name="DES_ESTADO">Modificada con extorno</column>
+            <where>DES_ESTADO = 'MODIFICADA CON EXTORNO'</where>
+        </update>
+        <update tableName="ESTADO_TRABA">
+            <column name="DES_ESTADO">Modificada por levantamiento sin extorno</column>
+            <where>DES_ESTADO = 'MODIFICADA POR LEVANTAMIENTO SIN EXTORNO'</where>
+        </update>
+        <update tableName="ESTADO_TRABA">
+            <column name="DES_ESTADO">Modificada por levantamiento con extorno</column>
+            <where>DES_ESTADO = 'MODIFICADA POR LEVANTAMIENTO CON EXTORNO'</where>
+        </update>
+        <update tableName="ESTADO_TRABA">
+            <column name="DES_ESTADO">Finalizada</column>
+            <where>DES_ESTADO = 'FINALIZADA'</where>
+        </update>
+        <update tableName="ESTADO_TRABA">
+            <column name="DES_ESTADO">Estado erróneo</column>
+            <where>DES_ESTADO = 'ESTADO ERRONEO'</where>
+        </update>
+        <update tableName="ESTADO_TRABA">
+            <column name="DES_ESTADO">Enviada a Contabilidad</column>
+            <where>DES_ESTADO = 'ENVIADA A CONTABILIDAD'</where>
+        </update>
+        <rollback><sql>select count(*) from dual</sql></rollback>
+    </changeSet>
+
+</databaseChangeLog>

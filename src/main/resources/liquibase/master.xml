@@ -22,5 +22,6 @@
     <include file="2021/20210322_traba_levantamiento_fechavalor.xml" relativeToChangelogFile="true"/>
     <include file="2021/20210322_entidadesOrdenantes_plazos.xml" relativeToChangelogFile="true"/>
     <include file="2021/20210322_cuentra_traba_actuacion_full.xml" relativeToChangelogFile="true"/>
+    <include file="2021/20210323_estado_traba_letter_case.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
