@@ -289,8 +289,11 @@ public class LiftingServiceImpl
 			// Actualizar estado:
 			EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
 			estadoLevantamiento.setCodEstado(Long.valueOf(accountStatusLifting.getCode()));
-
 			cuentaLevantamiento.setEstadoLevantamiento(estadoLevantamiento);
+
+			if (estadoLevantamiento.getCodEstado() == EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION) {
+				cuentaLevantamiento.setFechaValor(es.commerzbank.ice.embargos.utils.ICEDateUtils.actualDateToBigDecimal(es.commerzbank.ice.embargos.utils.ICEDateUtils.FORMAT_yyyyMMdd));
+			}
 
 			// Usuario y fecha ultima modificacion de la Traba:
 			BigDecimal fechaActualBigDec = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);

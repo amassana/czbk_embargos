@@ -55,6 +55,9 @@ public class CuentaLevantamiento implements Serializable {
 	
 	@Column(name="ESTADO_CUENTA", length=10)
 	private String estadoCuenta;
+
+	@Column(name="FECHA_VALOR", precision=8)
+	private BigDecimal fechaValor;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="ESTADO", nullable=false)
@@ -196,6 +199,12 @@ public class CuentaLevantamiento implements Serializable {
 	public void setEstadoCuenta(String estadoCuenta) {
 		this.estadoCuenta = estadoCuenta;
 	}
-
 	
+	public BigDecimal getFechaValor() {
+		return fechaValor;
+	}
+
+	public void setFechaValor(BigDecimal fechaValor) {
+		this.fechaValor = fechaValor;
+	}
 }

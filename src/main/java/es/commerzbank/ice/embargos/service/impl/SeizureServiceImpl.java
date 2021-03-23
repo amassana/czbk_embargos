@@ -303,7 +303,10 @@ public class SeizureServiceImpl
 		//Estado de la cuenta traba:
 		EstadoTraba estadoTraba = new EstadoTraba();
 		estadoTraba.setCodEstado(codEstado);
-		
+
+		if (codEstado == EmbargosConstants.COD_ESTADO_TRABA_ENVIADA_A_CONTABILIDAD) {
+			cuentaTraba.setFechaValor(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMdd));
+		}
 		cuentaTraba.setEstadoTraba(estadoTraba);
 		cuentaTraba.setUsuarioUltModificacion(userModif);
 		cuentaTraba.setFUltimaModificacion(fechaActualBigDec);

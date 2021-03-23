@@ -1,10 +1,9 @@
 package es.commerzbank.ice.embargos.domain.entity;
 
-import java.io.Serializable;
-import javax.persistence.*;
-
 import es.commerzbank.ice.embargos.domain.entity.listener.CuentaTrabaListener;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 
@@ -55,6 +54,9 @@ public class CuentaTraba implements Serializable {
 	
 	@Column(length=3)
 	private String divisa;
+
+	@Column(name="FECHA_VALOR", precision=8)
+	private BigDecimal fechaValor;
 	
 	//bi-directional many-to-one association to EstadoTraba
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -194,4 +196,11 @@ public class CuentaTraba implements Serializable {
 		this.traba = traba;
 	}
 
+	public BigDecimal getFechaValor() {
+		return fechaValor;
+	}
+
+	public void setFechaValor(BigDecimal fechaValor) {
+		this.fechaValor = fechaValor;
+	}
 }
