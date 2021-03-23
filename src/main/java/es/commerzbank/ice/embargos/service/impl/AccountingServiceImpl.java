@@ -512,8 +512,14 @@ public class AccountingServiceImpl implements AccountingService{
 */
 	@Override
 	@Transactional(transactionManager="transactionManager")
+	public void levantamientoContabilizarTx(Long codeFileControl, String userName)
+		throws Exception {
+		levantamientoContabilizar(codeFileControl, userName);
+	}
+
+	@Override
 	public void levantamientoContabilizar(Long codeFileControl, String userName)
-		throws Exception
+			throws Exception
 	{
 		Optional<ControlFichero> fileControlOpt = fileControlRepository.findById(codeFileControl);
 
