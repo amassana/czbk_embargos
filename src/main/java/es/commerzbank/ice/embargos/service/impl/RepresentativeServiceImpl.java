@@ -1,15 +1,13 @@
 package es.commerzbank.ice.embargos.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
+import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
+import es.commerzbank.ice.embargos.domain.dto.Representative;
+import es.commerzbank.ice.embargos.domain.entity.Apoderados;
+import es.commerzbank.ice.embargos.domain.entity.Apoderados_;
+import es.commerzbank.ice.embargos.domain.mapper.RepresentativeMapper;
+import es.commerzbank.ice.embargos.repository.ApoderadosRepository;
+import es.commerzbank.ice.embargos.service.RepresentativeService;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +17,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
-import es.commerzbank.ice.embargos.domain.dto.Representative;
-import es.commerzbank.ice.embargos.domain.entity.Apoderados;
-import es.commerzbank.ice.embargos.domain.entity.Apoderados_;
-import es.commerzbank.ice.embargos.domain.mapper.RepresentativeMapper;
-import es.commerzbank.ice.embargos.repository.ApoderadosRepository;
-import es.commerzbank.ice.embargos.service.RepresentativeService;
-import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class RepresentativeServiceImpl implements RepresentativeService {
@@ -60,8 +58,7 @@ public class RepresentativeServiceImpl implements RepresentativeService {
 		} else {
 			response = false;
 		}
-		
-		logger.info("RepresentativeServiceImpl - createUpdateRepresentative - end");
+
 		return response;
 	}
 
@@ -84,37 +81,31 @@ public class RepresentativeServiceImpl implements RepresentativeService {
 		} else {
 			response = false;
 		}
-		
-		logger.info("RepresentativeServiceImpl - deleteRepresentative - end");
+
 		return response;
 	}
 
 	@Override
 	public Representative viewRepresentative(Long idRepresentative) {
-		logger.info("RepresentativeServiceImpl - viewRepresentative - start");
 		Representative representative = null;
 
 		if (apoderadosRepository.existsById(idRepresentative)) {
 			Optional<Apoderados> apoderado = apoderadosRepository.findById(idRepresentative);
-			
-			logger.info("RepresentativeServiceImpl - viewRepresentative - Resultado de la consulta - sucursal = " + apoderado.get().toString());
+
 			if (apoderado != null) {
 				representative = representativeMapper.toRepresentative(apoderado.get());
 			}
 		}
-		
-		logger.info("RepresentativeServiceImpl - viewRepresentative - end");
+
 		return representative;
 	}
 
 	@Override
 	public Page<Representative> filter(Map<String, Object> parametros, Pageable dataPage) {
-		logger.info("RepresentativeServiceImpl - filter - start");
 		Page<Apoderados> list = null;
 		List<Representative> response = new ArrayList<>();
 		Page<Representative> page = null;
-		
-		logger.info("RepresentativeServiceImpl - filter - Filtros de la consulta - Apoderados = " + parametros.toString());
+
 		list = apoderadosRepository.findAll(new Specification<Apoderados>() {
 
 			@Override
@@ -136,8 +127,7 @@ public class RepresentativeServiceImpl implements RepresentativeService {
 			}
 			
 		}, dataPage);
-		
-		logger.info("RepresentativeServiceImpl - filter - Resultado de la consulta - list = " + list.getContent().toString());
+
 		if (list != null) {
 			if (list.getContent().size() > 0) {
 				for (Apoderados a : list.getContent()) {
@@ -147,14 +137,13 @@ public class RepresentativeServiceImpl implements RepresentativeService {
 			
 			page = new PageImpl<>(response, list.getPageable(), list.getTotalElements());
 		}
-		
-		logger.info("RepresentativeServiceImpl - filter - end");
+
 		return page;
 	}
 
 	@Override
 	public List<Representative> listAll() {
-		logger.info("RepresentativeServiceImpl - listAll - start");
+
 		List<Apoderados> apoderados = null;
 		List<Representative> response = null;
 		
@@ -176,8 +165,7 @@ public class RepresentativeServiceImpl implements RepresentativeService {
 				response.add(representativeMapper.toRepresentative(a));
 			}
 		}
-		
-		logger.info("RepresentativeServiceImpl - listAll - end");
+
 		return response;
 	}
 

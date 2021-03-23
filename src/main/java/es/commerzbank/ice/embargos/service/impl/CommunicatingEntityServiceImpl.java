@@ -1,15 +1,12 @@
 package es.commerzbank.ice.embargos.service.impl;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
+import es.commerzbank.ice.embargos.domain.dto.CommunicatingEntity;
+import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
+import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora_;
+import es.commerzbank.ice.embargos.domain.mapper.CommunicatingEntityMapper;
+import es.commerzbank.ice.embargos.repository.CommunicatingEntityRepository;
+import es.commerzbank.ice.embargos.service.CommunicatingEntityService;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +17,14 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import es.commerzbank.ice.embargos.domain.dto.CommunicatingEntity;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora_;
-import es.commerzbank.ice.embargos.domain.mapper.CommunicatingEntityMapper;
-import es.commerzbank.ice.embargos.repository.CommunicatingEntityRepository;
-import es.commerzbank.ice.embargos.service.CommunicatingEntityService;
-import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional("transactionManager")
@@ -91,25 +89,21 @@ public class CommunicatingEntityServiceImpl implements CommunicatingEntityServic
 
 	@Override
 	public CommunicatingEntity viewCommunicatingEntity(Long idCommunicatingEntity) {
-		logger.info("CommunicatingEntityServiceImpl - viewCommunicatingEntity - start");
 		CommunicatingEntity entity = null;
 
 		if (repository.existsById(idCommunicatingEntity)) {
 			Optional<EntidadesComunicadora> entidad = repository.findById(idCommunicatingEntity);
-			
-			logger.info("CommunicatingEntityServiceImpl - viewCommunicatingEntity - Resultado de la consulta - entidad = " + entidad.get().toString());
+
 			if (entidad != null) {
 				entity = mapper.toCommunicatingEntity(entidad.get());
 			}
 		}
-		
-		logger.info("CommunicatingEntityServiceImpl - viewCommunicatingEntity - end");
+
 		return entity;
 	}
 
 	@Override
 	public List<CommunicatingEntity> listAll() {
-		logger.info("CommunicatingEntityServiceImpl - listAll - start");
 		List<EntidadesComunicadora> entidades = null;
 		List<CommunicatingEntity> response = null;
 		
@@ -131,14 +125,12 @@ public class CommunicatingEntityServiceImpl implements CommunicatingEntityServic
 				response.add(mapper.toCommunicatingEntity(a));
 			}
 		}
-		
-		logger.info("CommunicatingEntityServiceImpl - listAll - end");
+
 		return response;
 	}
 
 	@Override
 	public Page<CommunicatingEntity> filter(Pageable dataPage) {
-		logger.info("CommunicatingEntityServiceImpl - filter - start");
 		Page<CommunicatingEntity> response = null;
 		List<CommunicatingEntity> list = null;
 		Page<EntidadesComunicadora> result = null;
@@ -163,8 +155,7 @@ public class CommunicatingEntityServiceImpl implements CommunicatingEntityServic
 			
 			response = new PageImpl<>(list, result.getPageable(), result.getTotalElements());
 		}
-		
-		logger.info("CommunicatingEntityServiceImpl - filter - end");
+
 		return response;
 	}
 

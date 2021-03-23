@@ -1,15 +1,12 @@
 package es.commerzbank.ice.embargos.service.impl;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
+import es.commerzbank.ice.embargos.domain.dto.OrderingEntity;
+import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
+import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante_;
+import es.commerzbank.ice.embargos.domain.mapper.OrderingEntityMapper;
+import es.commerzbank.ice.embargos.repository.OrderingEntityRepository;
+import es.commerzbank.ice.embargos.service.OrderingEntityService;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +17,14 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import es.commerzbank.ice.embargos.domain.dto.OrderingEntity;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante_;
-import es.commerzbank.ice.embargos.domain.mapper.OrderingEntityMapper;
-import es.commerzbank.ice.embargos.repository.OrderingEntityRepository;
-import es.commerzbank.ice.embargos.service.OrderingEntityService;
-import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional("transactionManager")
@@ -60,8 +58,7 @@ public class OrderingEntityServiceImpl implements OrderingEntityService {
 		} else {
 			response = false;
 		}
-		
-		logger.info("OrderingEntityServiceImpl - createUpdateOrderingEntity - end");
+
 		return response;
 	}
 
@@ -84,32 +81,27 @@ public class OrderingEntityServiceImpl implements OrderingEntityService {
 		} else {
 			response = false;
 		}
-		
-		logger.info("OrderingEntityServiceImpl - deleteOrderingEntity - end");
+
 		return response;
 	}
 
 	@Override
 	public OrderingEntity viewOrderingEntity(Long idOrderingEntity) {
-		logger.info("OrderingEntityServiceImpl - viewOrderingEntity - start");
 		OrderingEntity entity = null;
 
 		if (repository.existsById(idOrderingEntity)) {
 			Optional<EntidadesOrdenante> entidad = repository.findById(idOrderingEntity);
-			
-			logger.info("viewOrderingEntity - Resultado de la consulta - entidad = " + entidad.get().toString());
+
 			if (entidad != null) {
 				entity = mapper.toOrderingEntity(entidad.get());
 			}
 		}
-		
-		logger.info("OrderingEntityServiceImpl - viewOrderingEntity - end");
+
 		return entity;
 	}
 
 	@Override
 	public List<OrderingEntity> listAll() {
-		logger.info("OrderingEntityServiceImpl - listAll - start");
 		List<EntidadesOrdenante> entidades = null;
 		List<OrderingEntity> response = null;
 		
@@ -131,14 +123,12 @@ public class OrderingEntityServiceImpl implements OrderingEntityService {
 				response.add(mapper.toOrderingEntity(a));
 			}
 		}
-		
-		logger.info("OrderingEntityServiceImpl - listAll - end");
+
 		return response;
 	}
 
 	@Override
 	public Page<OrderingEntity> filter(Pageable dataPage) {
-		logger.info("OrderingEntityServiceImpl - filter - start");
 		Page<OrderingEntity> response = null;
 		List<OrderingEntity> list = null;
 		Page<EntidadesOrdenante> result = null;
@@ -163,8 +153,7 @@ public class OrderingEntityServiceImpl implements OrderingEntityService {
 			
 			response = new PageImpl<>(list, result.getPageable(), result.getTotalElements());
 		}
-		
-		logger.info("OrderingEntityServiceImpl - filter - end");
+
 		return response;
 	}
 }

@@ -1,14 +1,12 @@
 package es.commerzbank.ice.embargos.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
+import es.commerzbank.ice.embargos.domain.dto.AuditoriaEmbDto;
+import es.commerzbank.ice.embargos.domain.dto.AuditoriaEmbFilter;
+import es.commerzbank.ice.embargos.domain.entity.AuditoriaEmb;
+import es.commerzbank.ice.embargos.domain.entity.AuditoriaEmb_;
+import es.commerzbank.ice.embargos.domain.mapper.AuditoriaEmbMapper;
+import es.commerzbank.ice.embargos.repository.AuditoriaEmbRepo;
+import es.commerzbank.ice.embargos.service.AuditoriaEmbService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +18,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import es.commerzbank.ice.embargos.domain.dto.AuditoriaEmbDto;
-import es.commerzbank.ice.embargos.domain.dto.AuditoriaEmbFilter;
-import es.commerzbank.ice.embargos.domain.entity.AuditoriaEmb;
-import es.commerzbank.ice.embargos.domain.entity.AuditoriaEmb_;
-import es.commerzbank.ice.embargos.domain.mapper.AuditoriaEmbMapper;
-import es.commerzbank.ice.embargos.repository.AuditoriaEmbRepo;
-import es.commerzbank.ice.embargos.service.AuditoriaEmbService;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AuditoriaEmbServiceImpl implements AuditoriaEmbService {
@@ -40,9 +38,8 @@ public class AuditoriaEmbServiceImpl implements AuditoriaEmbService {
 	private AuditoriaEmbMapper auditoriaMapper;
 	
 	@Override
-	public Page<AuditoriaEmbDto> listFilterAuditoria(AuditoriaEmbFilter auditoriaFilter, Pageable dataPage) {
-
-		logger.info("listFilterAuditoria - start");
+	public Page<AuditoriaEmbDto> listFilterAuditoria(AuditoriaEmbFilter auditoriaFilter, Pageable dataPage)
+	{
 		Page<AuditoriaEmb> list = null;
 		List<AuditoriaEmbDto> response = new ArrayList<>();
 		Page<AuditoriaEmbDto> result = null; 
@@ -84,8 +81,7 @@ public class AuditoriaEmbServiceImpl implements AuditoriaEmbService {
 			response = auditoriaMapper.toAuditoriaDto(list.getContent());
 			result = new PageImpl<>(response, list.getPageable(), list.getTotalElements());
 		}
-		
-		logger.info("listFilterAuditoria - end");
+
 		return result;
 	}
 
@@ -114,8 +110,8 @@ public class AuditoriaEmbServiceImpl implements AuditoriaEmbService {
 	}
 
 	@Override
-	public AuditoriaEmbDto viewAuditoria(Long idAuditoria) {
-		logger.info("viewAuditoria - start");
+	public AuditoriaEmbDto viewAuditoria(Long idAuditoria)
+	{
 		AuditoriaEmbDto auditoriaDto = null;
 
 		Optional<AuditoriaEmb> optAuditoria = auditoriaRepo.findById(idAuditoria);
@@ -123,8 +119,7 @@ public class AuditoriaEmbServiceImpl implements AuditoriaEmbService {
 		if (optAuditoria.isPresent()) {
 			auditoriaDto = auditoriaMapper.toAuditoriaDto(optAuditoria.get());
 		}
-		
-		logger.info("viewAuditoria - end");
+
 		return auditoriaDto;
 	}
 

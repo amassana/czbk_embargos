@@ -1,20 +1,5 @@
 package es.commerzbank.ice.embargos.service.impl;
 
-import java.io.File;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.*;
-
-import net.sf.jasperreports.engine.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
 import es.commerzbank.ice.embargos.domain.dto.FinalResponseBankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.FinalResponseDTO;
@@ -27,7 +12,21 @@ import es.commerzbank.ice.embargos.repository.FinalResponseBankAccountRepository
 import es.commerzbank.ice.embargos.repository.FinalResponseRepository;
 import es.commerzbank.ice.embargos.service.FinalResponseService;
 import es.commerzbank.ice.embargos.utils.ResourcesUtil;
+import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.util.JRLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.File;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.*;
 
 @Service
 @Transactional(transactionManager = "transactionManager")
@@ -92,7 +91,6 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 
 	@Override
 	public byte[] generarAnexo(BigDecimal cod_usuario, BigDecimal cod_traba, Integer num_anexo) throws Exception {
-		logger.info("SeizureServiceImpl - generarAnexo - start");
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
 		try (Connection conn_embargos = oracleDataSourceEmbargos.getEmbargosConnection()) {
@@ -123,8 +121,6 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 
 			if (pages.size() == 0)
 				return null;
-
-			logger.info("SeizureServiceImpl - generarAnexo - end");
 
 			return JasperExportManager.exportReportToPdf(fillReport);
 

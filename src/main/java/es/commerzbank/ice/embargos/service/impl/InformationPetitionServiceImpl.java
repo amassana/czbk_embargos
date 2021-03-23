@@ -1,15 +1,5 @@
 package es.commerzbank.ice.embargos.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import es.commerzbank.ice.embargos.domain.dto.PetitionCaseDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.HPeticionInformacion;
@@ -22,6 +12,15 @@ import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.embargos.service.InformationPetitionService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.ICEDateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(transactionManager="transactionManager")
@@ -46,8 +45,6 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 
 	@Override
 	public PetitionCaseDTO getByCodeInformationPetition(Long codeInformationPetition) {
-		logger.info("InformationPetitionServiceImpl - getByCodeInformationPetition - start");
-		
 		Optional<PeticionInformacion> peticionInformacionOpt = informationPetitionRepository.findById(codeInformationPetition);
 		
 		if(!peticionInformacionOpt.isPresent()) {
@@ -57,8 +54,7 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 		//TODO cambiar parametro mockeados:
 		
 		PeticionInformacion peticionInformacion = peticionInformacionOpt.get();
-			
-		logger.info("InformationPetitionServiceImpl - getByCodeInformationPetition - end");
+
 		return informationPetitionMapper.toInformationPetitionDTO(peticionInformacion);
 	}
 	
@@ -165,8 +161,6 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 	
 	@Override
 	public List<PetitionCaseDTO> getAllByControlFichero(ControlFichero controlFichero) {
-		logger.info("InformationPetitionServiceImpl - getAllByControlFichero - start");
-
 		List<PeticionInformacion> peticionInformacionList = informationPetitionRepository.findAllByControlFichero(controlFichero);
 		
 		List<PetitionCaseDTO> informationPetitionDTOList = new ArrayList<>();
@@ -175,8 +169,7 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 		
 			informationPetitionDTOList.add(informationPetition);
 		}
-		
-		logger.info("InformationPetitionServiceImpl - getAllByControlFichero - end");
+
 		return informationPetitionDTOList;
 	}
 
@@ -203,7 +196,7 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 	
 	@Override
 	public boolean savePetitionCase(Long codeFileControl, Long codePetitionCase, PetitionCaseDTO petitionCase, String userModif) {
-		logger.info("InformationPetitionServiceImpl - savePetitionCase - start");
+		logger.info("InformationPetitionServiceImpl - savePetitionCase - file "+ codeFileControl +" case "+ codePetitionCase);
 		
 		Optional<PeticionInformacion> peticionInformacionOpt = informationPetitionRepository.findById(codePetitionCase);
 		
@@ -261,8 +254,6 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 
 	@Override
 	public List<PetitionCaseDTO> getAuditByCodeInformationPetition(Long codeInformationPetition) {
-		logger.info("InformationPetitionServiceImpl - getAuditByCodeInformationPetition - start");
-
 		List<HPeticionInformacion> hPeticionInformacionList = informationPetitionAuditRepository.findByCodPeticion(codeInformationPetition);
 		
 		List<PetitionCaseDTO> informationPetitionDTOList = new ArrayList<>();
@@ -272,7 +263,6 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 			informationPetitionDTOList.add(informationPetition);
 		}
 		
-		logger.info("InformationPetitionServiceImpl - getAuditByCodeInformationPetition - end");
 		return informationPetitionDTOList;
 	}
 

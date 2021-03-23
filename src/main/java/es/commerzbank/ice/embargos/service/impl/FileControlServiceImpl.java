@@ -80,7 +80,6 @@ public class FileControlServiceImpl
 
 	@Override
 	public Page<FileControlDTO> fileSearch(FileControlFiltersDTO fileControlFiltersDTO, Pageable pageable) throws Exception{
-		logger.info("FileControlServiceImpl - fileSearch - start");
 		List<FileControlDTO> fileSearchResponseDTOList = new ArrayList<>();
 				
 		//Date startDate = fileControlFiltersDTO.getStartDate();
@@ -108,8 +107,7 @@ public class FileControlServiceImpl
 			fileSearchResponseDTOList.add(fileSearchResponseDTO);
 		
 		}
-		
-		logger.info("FileControlServiceImpl - fileSearch - end");
+
 		return new PageImpl<>(fileSearchResponseDTOList, pageable, controlFicheroList.getTotalElements());
 		
 	}
@@ -121,20 +119,19 @@ public class FileControlServiceImpl
 
 	@Override
 	public FileControlDTO getByCodeFileControl(Long codeFileControl) {
-		logger.info("FileControlServiceImpl - getByCodeFileControl - start");
 		Optional<ControlFichero> controlFicheroOpt = fileControlRepository.findById(codeFileControl);
 		
 		if(!controlFicheroOpt.isPresent()) {
 			return null;
 		}
-		logger.info("FileControlServiceImpl - getByCodeFileControl - end");
+
 		return fileControlMapper.toFileControlDTO(controlFicheroOpt.get());
 	}
 
 	@Override
 	@Transactional(transactionManager="transactionManager")
 	public boolean tramitarFicheroInformacion(Long codeFileControl, String usuarioTramitador) throws IOException, ICEException {
-		logger.info("FileControlServiceImpl - tramitarFicheroInformacion - start");
+		logger.info("FileControlServiceImpl - tramitarFicheroInformacion - codigo "+ codeFileControl);
 		//Obtener el codigo del fichero de control:
 		Optional<ControlFichero> controlFicheroOpt = fileControlRepository.findById(codeFileControl);
 		
@@ -182,7 +179,7 @@ public class FileControlServiceImpl
 
 	@Override
 	public boolean tramitarTrabasCuaderno63(Long codeFileControl, String usuarioTramitador) throws IOException, ICEException {
-		logger.info("FileControlServiceImpl - tramitarTrabasCuaderno63 - start");
+		logger.info("FileControlServiceImpl - tramitarTrabasCuaderno63 - codigo "+ codeFileControl);
 		
 		cuaderno63SeizedService.tramitarTrabas(codeFileControl, usuarioTramitador);
 		
@@ -192,7 +189,7 @@ public class FileControlServiceImpl
 
 	@Override
 	public boolean tramitarTrabasAEAT(Long codeFileControl, String usuarioTramitador) throws IOException, ICEException {
-		logger.info("FileControlServiceImpl - tramitarTrabasAEAT - start");
+		logger.info("FileControlServiceImpl - tramitarTrabasAEAT - codigo "+ codeFileControl);
 		
 		aeatSeizedService.tramitarTrabas(codeFileControl, usuarioTramitador);
 		
@@ -202,7 +199,7 @@ public class FileControlServiceImpl
 	
 	@Override
 	public boolean updateFileControl(Long codeFileControl, FileControlDTO fileControlDTO, String userModif) {
-		logger.info("FileControlServiceImpl - updateFileControl - start");
+		logger.info("FileControlServiceImpl - updateFileControl - codigo "+ codeFileControl);
 		Optional<ControlFichero> controlFicheroOpt = fileControlRepository.findById(codeFileControl);
 		
 		if(!controlFicheroOpt.isPresent()) {
@@ -243,7 +240,7 @@ public class FileControlServiceImpl
 	
 	@Override
 	public boolean updateFileControlStatus(Long codeFileControl, Long codFileControlStatus, String userModif) {
-		logger.info("FileControlServiceImpl - updateFileControlStatus - start");
+		logger.info("FileControlServiceImpl - updateFileControlStatus - codigo "+ codeFileControl +" estado "+ codFileControlStatus);
 		Optional<ControlFichero> fileControlOpt = fileControlRepository.findById(codeFileControl);
 		
 		if(!fileControlOpt.isPresent()) {
@@ -399,14 +396,11 @@ public class FileControlServiceImpl
 	*/
 	@Override
 	public void saveFileControlTransaction(ControlFichero controlFichero) {
-		logger.info("FileControlServiceImpl - saveFileControlTransaction - start");
 		fileControlRepository.save(controlFichero);
-		logger.info("FileControlServiceImpl - saveFileControlTransaction - end");
 	}
 	
 	@Override
 	public List<FileControlDTO> getAuditByCodeFileControl(Long codeFileControl) {
-		logger.info("FileControlServiceImpl - getAuditByCodeFileControl - start");
 
 		List<FileControlDTO> fileControlDTOList = new ArrayList<>();
 		
@@ -437,7 +431,6 @@ public class FileControlServiceImpl
 			fileControlDTOList.add(fileControlDTO);
 		}
 
-		logger.info("FileControlServiceImpl - getAuditByCodeFileControl - end");
 		return fileControlDTOList;
 		
 		
