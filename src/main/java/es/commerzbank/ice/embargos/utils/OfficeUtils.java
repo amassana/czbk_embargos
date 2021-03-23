@@ -1,15 +1,16 @@
 package es.commerzbank.ice.embargos.utils;
 
+import es.commerzbank.ice.comun.lib.domain.dto.Location;
+import es.commerzbank.ice.comun.lib.domain.entity.Sucursal;
+import es.commerzbank.ice.comun.lib.service.LocationService;
+import es.commerzbank.ice.comun.lib.service.OfficeCService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.List;
-
-import es.commerzbank.ice.comun.lib.service.LocationService;
-import es.commerzbank.ice.comun.lib.service.OfficeCService;
-import es.commerzbank.ice.comun.lib.domain.dto.Location;
-import es.commerzbank.ice.comun.lib.domain.entity.Sucursal;
+import java.util.stream.Collectors;
 
 @Component
 public class OfficeUtils {
@@ -33,5 +34,9 @@ public class OfficeUtils {
         }
 
         return "Madrid";
+    }
+
+    public List<String> getPrefijosSucursales() {
+        return officeCService.listarSucursalesActivas().stream().map(Sucursal::getNumeroSucursal).map(BigDecimal::toString).collect(Collectors.toList());
     }
 }
