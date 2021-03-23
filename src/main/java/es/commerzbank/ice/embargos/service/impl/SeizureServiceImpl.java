@@ -52,7 +52,6 @@ import java.sql.Timestamp;
 import java.util.*;
 
 import static es.commerzbank.ice.embargos.utils.EmbargosConstants.COD_ESTADO_TRABA_FINALIZADA;
-import static es.commerzbank.ice.embargos.utils.EmbargosConstants.USER_AUTOMATICO;
 
 @Service
 @Transactional(transactionManager = "transactionManager")
@@ -530,7 +529,7 @@ public class SeizureServiceImpl
 			ControlFichero controlFichero = embargo.getControlFichero();
 			EntidadesComunicadora entidadesComunicadora  = controlFichero.getEntidadesComunicadora();
 
-			Resource report = ResourcesUtil.getFromJasperFolder("seizureLetter.jasper");
+			Resource report = ResourcesUtil.getFromJasperFolder("cartaEmbargo.jasper");
 			Resource logoRes = es.commerzbank.ice.comun.lib.util.jasper.ResourcesUtil.getImageLogoCommerceResource();
 
 			CustomerDTO customer = accountService.getCustomerByNIF(embargo.getNif());

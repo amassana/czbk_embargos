@@ -400,7 +400,7 @@ public class LiftingServiceImpl
 			ControlFichero controlFichero = levantamiento.getControlFichero();
 			EntidadesComunicadora entidadesComunicadora  = controlFichero.getEntidadesComunicadora();
 
-			Resource report = ResourcesUtil.getFromJasperFolder("liftingLetter.jasper");
+			Resource report = ResourcesUtil.getFromJasperFolder("cartaLevantamiento.jasper");
 			Resource logoRes = es.commerzbank.ice.comun.lib.util.jasper.ResourcesUtil.getImageLogoCommerceResource();
 
 			CustomerDTO customer = accountService.getCustomerByNIF(levantamiento.getTraba().getEmbargo().getNif());
