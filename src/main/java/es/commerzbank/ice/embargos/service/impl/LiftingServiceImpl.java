@@ -559,8 +559,6 @@ public class LiftingServiceImpl
                     levantamiento.setUsuarioUltModificacion(userModif);
                     liftingRepository.save(levantamiento);
 
-                    boolean allCuentasLevantamientoContabilizados = true;
-
                     for (CuentaLevantamiento cuentaLevantamiento : levantamiento.getCuentaLevantamientos())
                     {
                         cuentaLevantamiento.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
@@ -587,17 +585,6 @@ public class LiftingServiceImpl
 								}
 							}
 						}
-                    }
-
-                    if (allCuentasLevantamientoContabilizados) {
-                        EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
-                        estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION);
-                        levantamiento.setEstadoLevantamiento(estadoLevantamiento);
-                        levantamiento.setIndCasoRevisado(EmbargosConstants.IND_FLAG_YES);
-                        
-                        levantamiento.setUsuarioUltModificacion(userModif);
-                		levantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
-                        liftingRepository.save(levantamiento);
                     }
             	}
 
