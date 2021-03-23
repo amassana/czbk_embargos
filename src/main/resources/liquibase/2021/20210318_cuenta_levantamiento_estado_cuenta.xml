@@ -3,7 +3,7 @@
 
     <changeSet author="daniel.borruel" id="mantis_14869_estado_cuenta">
         <addColumn tableName="CUENTA_LEVANTAMIENTO">
-            <column name="ESTADO_CUENTA" type="CHAR(10 CHAR)"/>
+            <column name="ESTADO_CUENTA" type="VARCHAR2(10 CHAR)"/>
         </addColumn>
     </changeSet>
 
