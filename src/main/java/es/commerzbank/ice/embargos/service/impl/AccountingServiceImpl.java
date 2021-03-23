@@ -532,8 +532,6 @@ public class AccountingServiceImpl implements AccountingService{
 		AccountStatusLiftingDTO status = new AccountStatusLiftingDTO();
 		status.setCode(String.valueOf(COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION));
 
-		boolean algoSinContabilizar = false;
-
 		for (LevantamientoTraba levantamiento : controlFichero.getLevantamientoTrabas()) {
 			for (CuentaLevantamiento cuentaLevantamiento : levantamiento.getCuentaLevantamientos()) {
 				if (cuentaLevantamiento.getEstadoLevantamiento().getCodEstado() != COD_ESTADO_LEVANTAMIENTO_PENDIENTE) {
@@ -550,14 +548,13 @@ public class AccountingServiceImpl implements AccountingService{
 
 				CuentaTraba cuentaTraba = null;
 				for (CuentaTraba cuentaTrabaActual : traba.getCuentaTrabas()) {
-					if (cuentaLevantamiento.getCuenta().equals(cuentaTrabaActual.getCodCuentaTraba())) {
+					if (cuentaLevantamiento.getCuenta().equals(cuentaTrabaActual.getCuenta())) {
 						cuentaTraba = cuentaTrabaActual;
 						break;
 					}
 				}
 				if (cuentaTraba == null) {
-					logger.error("No se encuentra la cuenta traba cuya cuenta sea igual a la cuenta de levantamiento "+ cuentaLevantamiento.getCuenta());
-					algoSinContabilizar = true;
+					throw new Exception("No se encuentra la cuenta traba cuya cuenta sea igual a la cuenta de levantamiento "+ cuentaLevantamiento.getCuenta());
 				}
 				else {
 					apunteContableLevantamiento(cuentaLevantamiento, cuentaRecaudacion, cuentaLevantamiento.getCuenta(),
@@ -568,15 +565,12 @@ public class AccountingServiceImpl implements AccountingService{
 				}
 			}
 
-			if (!algoSinContabilizar)
-				liftingService.changeStatus(levantamiento.getCodLevantamiento(), COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION, USER_AUTOMATICO);
+			liftingService.changeStatus(levantamiento.getCodLevantamiento(), COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION, USER_AUTOMATICO);
 		}
 
 		accountingNoteService.generacionFicheroContabilidad(fileControlFicheroComunes);
 
-		if (!algoSinContabilizar)
-			fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(),
-				COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_ACCOUNTING_RESPONSE, userName);
+		fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(), COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_ACCOUNTING_RESPONSE, userName);
 	}
 
 	private void apunteContableLevantamiento(
