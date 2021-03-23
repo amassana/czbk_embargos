@@ -1,20 +1,29 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import es.commerzbank.ice.comun.lib.domain.dto.Element;
+import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
+import es.commerzbank.ice.comun.lib.service.EventService;
+import es.commerzbank.ice.comun.lib.service.FestiveService;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.service.TaskService;
+import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
+import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
+import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
+import es.commerzbank.ice.embargos.domain.entity.*;
+import es.commerzbank.ice.embargos.domain.mapper.Cuaderno63Mapper;
+import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
+import es.commerzbank.ice.embargos.domain.mapper.SeizedBankAccountMapper;
+import es.commerzbank.ice.embargos.formats.cuaderno63.fase3.CabeceraEmisorFase3;
+import es.commerzbank.ice.embargos.formats.cuaderno63.fase3.OrdenEjecucionEmbargoComplementarioFase3;
+import es.commerzbank.ice.embargos.formats.cuaderno63.fase3.OrdenEjecucionEmbargoFase3;
+import es.commerzbank.ice.embargos.repository.*;
+import es.commerzbank.ice.embargos.service.CustomerService;
+import es.commerzbank.ice.embargos.service.EmailService;
+import es.commerzbank.ice.embargos.service.FileControlService;
+import es.commerzbank.ice.embargos.service.files.Cuaderno63SeizureService;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.EmbargosUtils;
+import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
@@ -25,42 +34,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import es.commerzbank.ice.comun.lib.domain.dto.Element;
-import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
-import es.commerzbank.ice.comun.lib.service.EventService;
-import es.commerzbank.ice.comun.lib.service.FestiveService;
-import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
-import es.commerzbank.ice.comun.lib.service.TaskService;
-import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
-import es.commerzbank.ice.comun.lib.util.ICEException;
-import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
-import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
-import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
-import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
-import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
-import es.commerzbank.ice.embargos.domain.entity.Embargo;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
-import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
-import es.commerzbank.ice.embargos.domain.entity.Traba;
-import es.commerzbank.ice.embargos.domain.mapper.Cuaderno63Mapper;
-import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
-import es.commerzbank.ice.embargos.domain.mapper.SeizedBankAccountMapper;
-import es.commerzbank.ice.embargos.formats.cuaderno63.fase3.CabeceraEmisorFase3;
-import es.commerzbank.ice.embargos.formats.cuaderno63.fase3.OrdenEjecucionEmbargoComplementarioFase3;
-import es.commerzbank.ice.embargos.formats.cuaderno63.fase3.OrdenEjecucionEmbargoFase3;
-import es.commerzbank.ice.embargos.repository.FileControlRepository;
-import es.commerzbank.ice.embargos.repository.OrderingEntityRepository;
-import es.commerzbank.ice.embargos.repository.SeizedBankAccountRepository;
-import es.commerzbank.ice.embargos.repository.SeizedRepository;
-import es.commerzbank.ice.embargos.repository.SeizureBankAccountRepository;
-import es.commerzbank.ice.embargos.repository.SeizureRepository;
-import es.commerzbank.ice.embargos.service.CustomerService;
-import es.commerzbank.ice.embargos.service.EmailService;
-import es.commerzbank.ice.embargos.service.FileControlService;
-import es.commerzbank.ice.embargos.service.files.Cuaderno63SeizureService;
-import es.commerzbank.ice.embargos.utils.EmbargosConstants;
-import es.commerzbank.ice.embargos.utils.ICEDateUtils;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.*;
 
 @Service
 public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
@@ -121,7 +102,7 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 	
 	@Override
 	@Transactional(transactionManager = "transactionManager", rollbackFor = Exception.class)
-	public void cargarFicheroEmbargos(File processingFile, String originalName, File processedFile) throws IOException, ICEException{
+	public void cargarFicheroEmbargos(File processingFile, String originalName, File processedFile) throws Exception {
 		
 		BeanReader beanReader = null;
 		Reader reader = null;
@@ -185,8 +166,28 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 	        		
 	        		fechaObtencionFicheroOrganismo = cabeceraEmisor.getFechaObtencionFicheroOrganismo();
 	        		
-	        		//TODO TRATAR SI entidadOrdenante ES NULO -> NO SE PUEDE CREAR REGISTRO EN EMBARGO...
-	        		
+	        		if (entidadOrdenante == null) {
+	        			throw new Exception("Entidad ordenante NIF "+ nifOrganismoEmisor +" no configurada");
+					}
+
+					EntidadesComunicadora entidadComunicadora = entidadOrdenante.getEntidadesComunicadora();
+					controlFicheroEmbargo.setEntidadesComunicadora(entidadOrdenante.getEntidadesComunicadora());
+
+					BigDecimal fechaObtencionFicheroOrganismoBigDec = fechaObtencionFicheroOrganismo != null ? ICEDateUtils.dateToBigDecimal(fechaObtencionFicheroOrganismo, ICEDateUtils.FORMAT_yyyyMMdd) : null;
+					controlFicheroEmbargo.setFechaCreacion(fechaObtencionFicheroOrganismoBigDec);
+					controlFicheroEmbargo.setFechaComienzoCiclo(fechaObtencionFicheroOrganismoBigDec);
+
+					int diasRespuestaF3 = entidadComunicadora.getDiasRespuestaF3() != null ? entidadComunicadora.getDiasRespuestaF3().intValue() : 0;
+					FestiveService.ValueDateCalculationParameters parameters = new FestiveService.ValueDateCalculationParameters();
+					parameters.numBusinessDays = diasRespuestaF3;
+					parameters.location = 1L;
+					parameters.fromDate = DateUtils.convertToLocalDate(fechaObtencionFicheroOrganismo);
+					LocalDate finalDate = festiveService.dateCalculation(parameters);
+					Date lastDateResponse = Date.from(finalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+
+					//Date lastDateResponse = DateUtils.convertToDate(LocalDate.now().plusDays(diasRespuestaF3));
+					BigDecimal limitResponseDate = ICEDateUtils.dateToBigDecimal(lastDateResponse, ICEDateUtils.FORMAT_yyyyMMdd);
+					controlFicheroEmbargo.setFechaMaximaRespuesta(limitResponseDate);
 	        		
 	        	} else if(EmbargosConstants.RECORD_NAME_FINFICHERO.equals(beanReader.getRecordName())) {
 	        		
@@ -209,17 +210,8 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 		        		}
 		        		
 	        		}
-	        		
-	        		//Determinacion de la fecha limite de la traba:
-	        		BigDecimal diasRespuestaFase3 = new BigDecimal(0);
-	        		if (entidadOrdenante!=null && entidadOrdenante.getEntidadesComunicadora()!=null && entidadOrdenante.getEntidadesComunicadora().getDiasRespuestaF3()!=null) {
-	        			diasRespuestaFase3 = entidadOrdenante.getEntidadesComunicadora().getDiasRespuestaF3();
-	        		}       				
-	        		BigDecimal fechaLimiteTraba = null;
-	        		if (fechaObtencionFicheroOrganismo!=null) {
-	        			Date fechaLimiteTrabaDate = DateUtils.convertToDate(DateUtils.convertToLocalDate(fechaObtencionFicheroOrganismo).plusDays(diasRespuestaFase3.longValue()));
-	        			fechaLimiteTraba = ICEDateUtils.dateToBigDecimal(fechaLimiteTrabaDate, ICEDateUtils.FORMAT_yyyyMMdd);
-	        		}
+
+	        		BigDecimal fechaLimiteTraba = controlFicheroEmbargo.getFechaMaximaRespuesta();
 
 					String razonSocialInterna = EmbargosUtils.determineRazonSocialInternaFromCustomer(customerDTO);
 	        		        		
@@ -298,31 +290,6 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 	        	}
 	        	
 	        }
-	        
-	        
-	        //Datos a guardar en ControlFichero una vez procesado el fichero:
-	        
-			//- Se guarda el codigo de la Entidad comunicadora en ControlFichero:
-			EntidadesComunicadora entidadComunicadora = entidadOrdenante.getEntidadesComunicadora();
-			controlFicheroEmbargo.setEntidadesComunicadora(entidadOrdenante.getEntidadesComunicadora());
-
-			//- Se guarda la fecha de la cabecera en el campo fechaCreacion de ControlFichero:
-			BigDecimal fechaObtencionFicheroOrganismoBigDec = fechaObtencionFicheroOrganismo != null ? ICEDateUtils.dateToBigDecimal(fechaObtencionFicheroOrganismo, ICEDateUtils.FORMAT_yyyyMMdd) : null;
-			controlFicheroEmbargo.setFechaCreacion(fechaObtencionFicheroOrganismoBigDec);
-			controlFicheroEmbargo.setFechaComienzoCiclo(fechaObtencionFicheroOrganismoBigDec);
-
-			//- Se guarda la fecha maxima de respuesta (now + dias de margen)
-			int diasRespuestaF3 = entidadComunicadora.getDiasRespuestaF3() != null ? entidadComunicadora.getDiasRespuestaF3().intValue() : 0;
-			FestiveService.ValueDateCalculationParameters parameters = new FestiveService.ValueDateCalculationParameters();
-			parameters.numBusinessDays = diasRespuestaF3;
-			parameters.location = 1L;
-			parameters.fromDate = LocalDate.now();
-			LocalDate finalDate = festiveService.dateCalculation(parameters);
-			Date lastDateResponse = Date.from(finalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-			
-			//Date lastDateResponse = DateUtils.convertToDate(LocalDate.now().plusDays(diasRespuestaF3));
-			BigDecimal limitResponseDate = ICEDateUtils.dateToBigDecimal(lastDateResponse, ICEDateUtils.FORMAT_yyyyMMdd);
-			controlFicheroEmbargo.setFechaMaximaRespuesta(limitResponseDate);
 
 			//Cambio de estado de CtrlFichero a: RECIBIDO
 	        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
