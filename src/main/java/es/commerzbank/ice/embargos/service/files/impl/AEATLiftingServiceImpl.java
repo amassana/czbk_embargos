@@ -43,7 +43,6 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-@Transactional(transactionManager="transactionManager")
 public class AEATLiftingServiceImpl
     implements AEATLiftingService
 {
@@ -102,6 +101,7 @@ public class AEATLiftingServiceImpl
     private AccountingService accountingService;
     
     @Override
+	@Transactional(transactionManager = "transactionManager", rollbackFor = Exception.class)
     public void tratarFicheroLevantamientos(File processingFile, String originalName, File processedFile) throws Exception {
     	
     	LOG.info("AEATLiftingServiceImpl - tratarFicheroLevantamientos - start");
@@ -149,6 +149,7 @@ public class AEATLiftingServiceImpl
             EntidadesOrdenante entidadOrdenante = null;
 	        
             boolean puedeSerContabilizado = true;
+			boolean tieneAlgoAContabilizar = false;
 
             while ((currentRecord = beanReader.read()) != null) {
             	
@@ -245,6 +246,9 @@ public class AEATLiftingServiceImpl
 										LOG.error("El contravalor en euros del levantamiento "+ cuentaLevantamiento.getCodCuentaLevantamiento() +" supera el límite permitido para contabilizar automáticamente.");
 										puedeSerContabilizado = false;
 									}
+									else {
+										tieneAlgoAContabilizar = true;
+									}
 								}
 							}
 	                    }
@@ -277,7 +281,7 @@ public class AEATLiftingServiceImpl
 
             fileControlRepository.save(controlFicheroLevantamiento);
 
-            if (puedeSerContabilizado) {
+            if (puedeSerContabilizado && tieneAlgoAContabilizar) {
             	accountingService.sendLifting(controlFicheroLevantamiento.getCodControlFichero(), EmbargosConstants.USER_AUTOMATICO);
 			}
             

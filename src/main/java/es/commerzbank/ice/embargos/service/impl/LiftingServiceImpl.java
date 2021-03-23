@@ -467,6 +467,7 @@ public class LiftingServiceImpl
                     generalParametersService.loadBigDecimalParameter(EmbargosConstants.PARAMETRO_EMBARGOS_LEVANTAMIENTO_IMPORTE_MAXIMO_AUTOMATICO_DIVISA);
 
     		boolean puedeSerContabilizado = true;
+    		boolean tieneAlgoAContabilizar = false;
             // almacena las cuentas que se han contabilizado, para su actualización posterior de estado.
             //List<CuentaLevantamiento> cuentasAContabilizar = new ArrayList<>();
 
@@ -586,6 +587,9 @@ public class LiftingServiceImpl
 									LOG.error("El contravalor en euros del levantamiento "+ cuentaLevantamiento.getCodCuentaLevantamiento() +" supera el límite permitido para contabilizar automáticamente.");
 									puedeSerContabilizado = false;
 								}
+								else {
+									tieneAlgoAContabilizar = true;
+								}
 							}
 						}
                     }
@@ -602,7 +606,7 @@ public class LiftingServiceImpl
                 controlFicheroLevantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
                 fileControlRepository.save(controlFicheroLevantamiento);
 
-				if (puedeSerContabilizado) {
+				if (puedeSerContabilizado && tieneAlgoAContabilizar) {
 					accountingService.sendLifting(controlFicheroLevantamiento.getCodControlFichero(), EmbargosConstants.USER_AUTOMATICO);
 				}
             }

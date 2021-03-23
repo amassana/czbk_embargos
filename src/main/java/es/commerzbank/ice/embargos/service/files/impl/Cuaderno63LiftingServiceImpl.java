@@ -46,7 +46,6 @@ TODO:
  Cargar: Razón Social interna
  */
 @Service
-@Transactional(transactionManager="transactionManager")
 public class Cuaderno63LiftingServiceImpl
     implements Cuaderno63LiftingService
 {
@@ -102,6 +101,7 @@ public class Cuaderno63LiftingServiceImpl
     private AccountingService accountingService;
     
     @Override
+    @Transactional(transactionManager = "transactionManager", rollbackFor = Exception.class)
     public void tratarFicheroLevantamientos(File processingFile, String originalName, File processedFile)
     		throws Exception
     {
@@ -144,6 +144,7 @@ public class Cuaderno63LiftingServiceImpl
 	    	Date fechaObtencionFicheroOrganismo = null;
 
             boolean puedeSerContabilizado = true;
+            boolean tieneAlgoAContabilizar = false;
 
             while ((currentRecord = beanReader.read()) != null) {
                 if (EmbargosConstants.RECORD_NAME_CABECERAEMISOR.equals(beanReader.getRecordName())) {
@@ -215,6 +216,9 @@ public class Cuaderno63LiftingServiceImpl
                                     LOG.error("El contravalor en euros del levantamiento "+ cuentaLevantamiento.getCodCuentaLevantamiento() +" supera el límite permitido para contabilizar automáticamente.");
                                     puedeSerContabilizado = false;
                                 }
+                                else {
+                                    tieneAlgoAContabilizar = true;
+                                }
                             }
                         }
                     }
@@ -242,7 +246,7 @@ public class Cuaderno63LiftingServiceImpl
 
             fileControlRepository.save(controlFicheroLevantamiento);
 
-            if (puedeSerContabilizado) {
+            if (puedeSerContabilizado && tieneAlgoAContabilizar) {
                 accountingService.sendLifting(controlFicheroLevantamiento.getCodControlFichero(), EmbargosConstants.USER_AUTOMATICO);
             }
             
