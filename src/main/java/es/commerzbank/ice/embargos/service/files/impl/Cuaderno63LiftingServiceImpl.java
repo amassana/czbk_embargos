@@ -251,7 +251,7 @@ public class Cuaderno63LiftingServiceImpl
             fileControlRepository.save(controlFicheroLevantamiento);
 
             if (puedeSerContabilizado && tieneAlgoAContabilizar) {
-                accountingService.sendLifting(controlFicheroLevantamiento.getCodControlFichero(), EmbargosConstants.USER_AUTOMATICO);
+                accountingService.levantamientoContabilizar(controlFicheroLevantamiento.getCodControlFichero(), EmbargosConstants.USER_AUTOMATICO);
             }
             
             //CALENDARIO:

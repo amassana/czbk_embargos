@@ -39,9 +39,9 @@ public class JobImportacionApuntesContables implements Job
 						logger.info("Detectado nuevo apunte contable " + apunteContable.getExtraInfo1() + "-" + apunteContable.getExtraInfo2());
 
 						if (EmbargosConstants.APUNTES_CONTABLES_TIPO_TRABA.equals(apunteContable.getExtraInfo1()))
-							accountingService.seizureCallback(Long.valueOf(apunteContable.getExtraInfo2()));
+							accountingService.embargoCallback(Long.valueOf(apunteContable.getExtraInfo2()));
 						else if (EmbargosConstants.APUNTES_CONTABLES_TIPO_LEVANTAMIENTO.equals(apunteContable.getExtraInfo1()))
-							accountingService.liftingCallback((Long.valueOf(apunteContable.getExtraInfo2())));
+							accountingService.levantamientoCallback((Long.valueOf(apunteContable.getExtraInfo2())));
 						else if (EmbargosConstants.APUNTES_CONTABLES_TIPO_TESORERIA.equals(apunteContable.getExtraInfo1()))
 							accountingService.transferenciaFinalOrganismoCallback((Long.valueOf(apunteContable.getExtraInfo2())));
 						else

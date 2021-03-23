@@ -75,7 +75,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 	@Override
 	@Transactional(transactionManager="transactionManager")
-	public void sendSeizure(Long codeFileControl, String userName) throws ICEException, Exception {
+	public void embargoContabilizar(Long codeFileControl, String userName) throws ICEException, Exception {
 	
 		logger.info("sendAccountingSeizure - start "+ codeFileControl);
 		
@@ -512,7 +512,7 @@ public class AccountingServiceImpl implements AccountingService{
 */
 	@Override
 	@Transactional(transactionManager="transactionManager")
-	public void sendLifting(Long codeFileControl, String userName)
+	public void levantamientoContabilizar(Long codeFileControl, String userName)
 		throws Exception
 	{
 		Optional<ControlFichero> fileControlOpt = fileControlRepository.findById(codeFileControl);
@@ -721,7 +721,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 	@Override
 	@Transactional(transactionManager="transactionManager")
-	public void seizureCallback(Long codCuentaTraba) {
+	public void embargoCallback(Long codCuentaTraba) {
 		Optional<CuentaTraba> opt = seizedBankAccountRepository.findById(codCuentaTraba);
 
 		if (!opt.isPresent()) {
@@ -754,7 +754,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 	@Override
 	@Transactional(transactionManager="transactionManager")
-	public void liftingCallback(Long codCuentaLevantamiento) throws Exception {
+	public void levantamientoCallback(Long codCuentaLevantamiento) throws Exception {
 		Optional<CuentaLevantamiento> opt = liftingBankAccountRepository.findById(codCuentaLevantamiento);
 
 		if (!opt.isPresent())

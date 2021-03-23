@@ -367,7 +367,7 @@ public class SeizureController {
 
 			String userName = authentication.getName();
 		
-			accountingService.sendSeizure(codeFileControl, userName);
+			accountingService.embargoContabilizar(codeFileControl, userName);
 			
 			//Se obtiene el fileControl que se va a retornar:
 			resultFileControlDTO = fileControlService.getByCodeFileControl(codeFileControl);
