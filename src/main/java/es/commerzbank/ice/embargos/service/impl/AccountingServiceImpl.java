@@ -19,6 +19,7 @@ import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -514,11 +515,22 @@ public class AccountingServiceImpl implements AccountingService{
 	@Transactional(transactionManager="transactionManager")
 	public void levantamientoContabilizarTx(Long codeFileControl, String userName)
 		throws Exception {
-		levantamientoContabilizar(codeFileControl, userName);
+		levantamientoContabilizarInterno(codeFileControl, userName);
 	}
 
 	@Override
-	public void levantamientoContabilizar(Long codeFileControl, String userName)
+	@Async
+	@Transactional(transactionManager="transactionManager")
+	public void levantamientoContabilizar(Long codeFileControl, String userName) {
+		try {
+			levantamientoContabilizarInterno(codeFileControl, userName);
+		}
+		catch (Exception e) {
+			logger.error("Error mientras se contabilizaba", e);
+		}
+	}
+
+	public void levantamientoContabilizarInterno(Long codeFileControl, String userName)
 			throws Exception
 	{
 		Optional<ControlFichero> fileControlOpt = fileControlRepository.findById(codeFileControl);
