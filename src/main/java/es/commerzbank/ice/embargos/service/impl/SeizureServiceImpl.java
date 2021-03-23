@@ -51,6 +51,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 
+import static es.commerzbank.ice.embargos.utils.EmbargosConstants.COD_ESTADO_TRABA_ENVIADA_A_CONTABILIDAD;
 import static es.commerzbank.ice.embargos.utils.EmbargosConstants.COD_ESTADO_TRABA_FINALIZADA;
 
 @Service
@@ -361,6 +362,10 @@ public class SeizureServiceImpl
 			estadoTraba.setCodEstado(Long.valueOf(seizureStatusDTO.getCode()));
 
 			traba.setEstadoTraba(estadoTraba);
+
+			if (estadoTraba.getCodEstado() == COD_ESTADO_TRABA_ENVIADA_A_CONTABILIDAD) {
+				traba.setFechaTraba(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMdd));
+			}
 
 			// Usuario y fecha ultima modificacion de la Traba:
 			BigDecimal fechaActualBigDec = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
