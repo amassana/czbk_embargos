@@ -1,46 +1,22 @@
 package es.commerzbank.ice.embargos.domain.mapper;
 
+import es.commerzbank.ice.comun.lib.util.BankAccountUtils;
+import es.commerzbank.ice.comun.lib.util.ICEException;
+import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
+import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
+import es.commerzbank.ice.embargos.domain.entity.*;
+import es.commerzbank.ice.embargos.formats.aeat.diligencias.*;
+import es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.Levantamiento;
+import es.commerzbank.ice.embargos.formats.aeat.trabas.*;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.ICEDateUtils;
+import org.mapstruct.*;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import org.mapstruct.AfterMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
-
-import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
-import es.commerzbank.ice.comun.lib.util.BankAccountUtils;
-import es.commerzbank.ice.comun.lib.util.ICEException;
-import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
-import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
-import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
-import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
-import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
-import es.commerzbank.ice.embargos.domain.entity.CuentaTrabaActuacion;
-import es.commerzbank.ice.embargos.domain.entity.CuentasInmovilizacion;
-import es.commerzbank.ice.embargos.domain.entity.Embargo;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
-import es.commerzbank.ice.embargos.domain.entity.EstadoLevantamiento;
-import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
-import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
-import es.commerzbank.ice.embargos.domain.entity.Traba;
-import es.commerzbank.ice.embargos.formats.aeat.diligencias.DiligenciaFase3;
-import es.commerzbank.ice.embargos.formats.aeat.diligencias.EntidadCreditoFase3;
-import es.commerzbank.ice.embargos.formats.aeat.diligencias.EntidadTransmisoraFase3;
-import es.commerzbank.ice.embargos.formats.aeat.diligencias.FinEntidadCreditoFase3;
-import es.commerzbank.ice.embargos.formats.aeat.diligencias.FinEntidadTransmisoraFase3;
-import es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.Levantamiento;
-import es.commerzbank.ice.embargos.formats.aeat.trabas.EntidadCreditoFase4;
-import es.commerzbank.ice.embargos.formats.aeat.trabas.EntidadTransmisoraFase4;
-import es.commerzbank.ice.embargos.formats.aeat.trabas.FinEntidadCreditoFase4;
-import es.commerzbank.ice.embargos.formats.aeat.trabas.FinEntidadTransmisoraFase4;
-import es.commerzbank.ice.embargos.formats.aeat.trabas.TrabaFase4;
-import es.commerzbank.ice.embargos.utils.EmbargosConstants;
-import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 
 @Mapper(componentModel="spring")
 public abstract class AEATMapper {
@@ -63,10 +39,11 @@ public abstract class AEATMapper {
 		@Mapping(source = "codControlFicheroEmbargo", target = "controlFichero.codControlFichero"),
 		@Mapping(source = "entidadOrdenante", target = "entidadesOrdenante"),
 		@Mapping(source = "razonSocialInterna", target = "razonSocialInterna"),
+		@Mapping(source = "fechaLimiteTraba", target = "fechaLimiteTraba"),
 	})
 	public abstract Embargo generateEmbargo(
 			DiligenciaFase3 diligenciaFase3, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante,
-			String razonSocialInterna, EntidadCreditoFase3 entidadCreditoFase3, Map<String, AccountDTO> customerAccountsMap)
+			String razonSocialInterna, EntidadCreditoFase3 entidadCreditoFase3, Map<String, AccountDTO> customerAccountsMap, BigDecimal fechaLimiteTraba)
 		throws ICEException;
 	
 	@AfterMapping
@@ -85,8 +62,8 @@ public abstract class AEATMapper {
 				
 		//Determinacion de la fecha limite de la traba:
 		Date fechaGeneracionDiligencia = diligenciaFase3.getFechaGeneracionDiligencia();
-		BigDecimal fechaLimiteTraba = determineFechaLimiteTraba(entidadOrdenante, fechaGeneracionDiligencia);
-		embargo.setFechaLimiteTraba(fechaLimiteTraba);
+		//BigDecimal fechaLimiteTraba = determineFechaLimiteTraba(entidadOrdenante, fechaGeneracionDiligencia);
+		//embargo.setFechaLimiteTraba(fechaLimiteTraba);
 		
 		//Fecha de generacion:
 		embargo.setFechaGeneracion(ICEDateUtils.dateToBigDecimal(fechaGeneracionDiligencia, ICEDateUtils.FORMAT_yyyyMMdd));
@@ -183,10 +160,10 @@ public abstract class AEATMapper {
 	}
 	
 
-	public abstract Traba generateTraba(DiligenciaFase3 diligenciaFase3, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante, Map<String, AccountDTO> customerAccountsMap) throws ICEException;
+	public abstract Traba generateTraba(DiligenciaFase3 diligenciaFase3, Long codControlFicheroEmbargo, EntidadesOrdenante entidadOrdenante, Map<String, AccountDTO> customerAccountsMap, BigDecimal fechaLimiteTraba) throws ICEException;
 	
 	@AfterMapping
-	public void generateTrabaAfterMapping(@MappingTarget Traba traba, DiligenciaFase3 diligenciaFase3, EntidadesOrdenante entidadOrdenante, Map<String, AccountDTO> customerAccountsMap) throws ICEException {
+	public void generateTrabaAfterMapping(@MappingTarget Traba traba, DiligenciaFase3 diligenciaFase3, EntidadesOrdenante entidadOrdenante, Map<String, AccountDTO> customerAccountsMap, BigDecimal fechaLimiteTraba) throws ICEException {
 		
 		BigDecimal fechaUltmaModif = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
 		String usuarioModif = EmbargosConstants.USER_AUTOMATICO;
@@ -209,7 +186,7 @@ public abstract class AEATMapper {
 			
 		//Determinacion de la fecha limite de la traba:
 		Date fechaGeneracionDiligencia = diligenciaFase3.getFechaGeneracionDiligencia();
-		BigDecimal fechaLimiteTraba = determineFechaLimiteTraba(entidadOrdenante, fechaGeneracionDiligencia);
+		//BigDecimal fechaLimiteTraba = determineFechaLimiteTraba(entidadOrdenante, fechaGeneracionDiligencia);
 		traba.setFechaLimite(fechaLimiteTraba);
 		
 		traba.setFechaTraba(ICEDateUtils.dateToBigDecimal(new Date(), ICEDateUtils.FORMAT_yyyyMMdd));
@@ -320,7 +297,7 @@ public abstract class AEATMapper {
 		cuentaTraba.setFUltimaModificacion(fechaUltmaModif);
 		return cuentaTraba;
 	}
-
+/*
 	private BigDecimal determineFechaLimiteTraba(EntidadesOrdenante entidadOrdenante, Date fechaGeneracionDiligencia) {
 
 		BigDecimal fechaLimiteTraba = null;
@@ -336,7 +313,7 @@ public abstract class AEATMapper {
 		}
 		
 		return fechaLimiteTraba;
-	}
+	}*/
 	
 	
 	// GENERACION FICHERO TRABAS:

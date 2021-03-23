@@ -1,30 +1,5 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import es.commerzbank.ice.embargos.utils.EmbargosUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.beanio.BeanReader;
-import org.beanio.StreamFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import es.commerzbank.ice.comun.lib.domain.dto.Element;
 import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
 import es.commerzbank.ice.comun.lib.service.EventService;
@@ -35,32 +10,36 @@ import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
 import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
-import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
-import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
-import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
-import es.commerzbank.ice.embargos.domain.entity.Embargo;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
-import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
-import es.commerzbank.ice.embargos.domain.entity.Traba;
+import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.AEATMapper;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
 import es.commerzbank.ice.embargos.domain.mapper.SeizedBankAccountMapper;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.DiligenciaFase3;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.EntidadCreditoFase3;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.EntidadTransmisoraFase3;
-import es.commerzbank.ice.embargos.repository.FileControlRepository;
-import es.commerzbank.ice.embargos.repository.OrderingEntityRepository;
-import es.commerzbank.ice.embargos.repository.SeizedBankAccountRepository;
-import es.commerzbank.ice.embargos.repository.SeizedRepository;
-import es.commerzbank.ice.embargos.repository.SeizureBankAccountRepository;
-import es.commerzbank.ice.embargos.repository.SeizureRepository;
+import es.commerzbank.ice.embargos.repository.*;
 import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.embargos.service.EmailService;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.files.AEATSeizureService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosUtils;
 import es.commerzbank.ice.embargos.utils.ICEDateUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.beanio.BeanReader;
+import org.beanio.StreamFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.*;
 
 @Service
 public class AEATSeizureServiceImpl implements AEATSeizureService{
@@ -163,6 +142,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	        DiligenciaFase3 diligenciaFase3 = null;
 	        
 	        EntidadesOrdenante entidadOrdenante = null;
+			EntidadesComunicadora entidadComunicadora = null;
 	        //Date fechaObtencionFicheroOrganismo = null;
 
 	        while ((record = beanReader.read()) != null) {
@@ -197,6 +177,8 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 		        			throw new ICEException("No se puede procesar el fichero '" + processingFile.getName() +
 		        					"': Entidad Ordenante con identificadorEntidad " + identificadorEntidad + " no encontrada.");
 		        		}
+
+		        		 entidadComunicadora = entidadOrdenante.getEntidadesComunicadora();
 		        	}
 		        	
 		        	if(EmbargosConstants.RECORD_NAME_AEAT_DILIGENCIA.equals(beanReader.getRecordName())) {
@@ -220,11 +202,18 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 		        		}
 
 						String razonSocialInterna = EmbargosUtils.determineRazonSocialInternaFromCustomer(customerDTO);
-		        		
+
+						FestiveService.ValueDateCalculationParameters parameters = new FestiveService.ValueDateCalculationParameters();
+						parameters.numBusinessDays = entidadComunicadora.getDiasRespuestaF3()!=null ? entidadComunicadora.getDiasRespuestaF3().intValue() : 0;;
+						parameters.location = 1L;
+						parameters.fromDate = DateUtils.convertToLocalDate(diligenciaFase3.getFechaGeneracionDiligencia());
+						Date finalDate = DateUtils.convertToDate(festiveService.dateCalculation(parameters));
+						BigDecimal limitResponseDate = ICEDateUtils.dateToBigDecimal(finalDate, ICEDateUtils.FORMAT_yyyyMMdd);
+
 		        		//Generacion de las instancias de Embargo y de Traba:
-		        		embargo = aeatMapper.generateEmbargo(diligenciaFase3, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, razonSocialInterna, entidadCreditoFase3, customerAccountsMap);
+		        		embargo = aeatMapper.generateEmbargo(diligenciaFase3, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, razonSocialInterna, entidadCreditoFase3, customerAccountsMap, limitResponseDate);
 		        			
-		        		traba =  aeatMapper.generateTraba(diligenciaFase3, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, customerAccountsMap);        			
+		        		traba =  aeatMapper.generateTraba(diligenciaFase3, controlFicheroEmbargo.getCodControlFichero(), entidadOrdenante, customerAccountsMap, limitResponseDate);
 		        		traba.setEmbargo(embargo);
 	
 	       			        		
@@ -288,7 +277,6 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	        //Datos a guardar en ControlFichero una vez procesado el fichero:
 	        
 			//- Se guarda el codigo de la Entidad comunicadora en ControlFichero:
-	        EntidadesComunicadora entidadComunicadora = entidadOrdenante.getEntidadesComunicadora();
 	        controlFicheroEmbargo.setEntidadesComunicadora(entidadOrdenante.getEntidadesComunicadora());
 			
 			//- Fechas de creacion y de comienzo de ciclo:
@@ -305,7 +293,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 			FestiveService.ValueDateCalculationParameters parameters = new FestiveService.ValueDateCalculationParameters();
 			parameters.numBusinessDays = diasRespuestaF3;
 			parameters.location = 1L;
-			parameters.fromDate = LocalDate.now();
+			parameters.fromDate = DateUtils.convertToLocalDate(fechaInicioCiclo);
 			LocalDate finalDate = festiveService.dateCalculation(parameters);
 			Date lastDateResponse = Date.from(finalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
 			
