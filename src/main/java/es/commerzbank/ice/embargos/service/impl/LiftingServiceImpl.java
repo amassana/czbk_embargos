@@ -608,10 +608,10 @@ public class LiftingServiceImpl
 
                 controlFicheroLevantamiento.setUsuarioUltModificacion(userModif);
                 controlFicheroLevantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
-                fileControlRepository.save(controlFicheroLevantamiento);
+                fileControlRepository.saveAndFlush(controlFicheroLevantamiento);
 
 				if (puedeSerContabilizado && tieneAlgoAContabilizar) {
-					accountingService.levantamientoContabilizar(controlFicheroLevantamiento.getCodControlFichero(), EmbargosConstants.USER_AUTOMATICO);
+					accountingService.levantamientoContabilizarAsynch(controlFicheroLevantamiento.getCodControlFichero(), EmbargosConstants.USER_AUTOMATICO);
 				}
             }
         }

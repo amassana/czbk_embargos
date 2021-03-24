@@ -283,10 +283,10 @@ public class AEATLiftingServiceImpl
 
             controlFicheroLevantamiento.setEstadoCtrlfichero(estadoCtrlfichero);
 
-            fileControlRepository.save(controlFicheroLevantamiento);
+            fileControlRepository.saveAndFlush(controlFicheroLevantamiento);
 
             if (puedeSerContabilizado && tieneAlgoAContabilizar) {
-            	accountingService.levantamientoContabilizar(controlFicheroLevantamiento.getCodControlFichero(), EmbargosConstants.USER_AUTOMATICO);
+            	accountingService.levantamientoContabilizarAsynch(controlFicheroLevantamiento.getCodControlFichero(), EmbargosConstants.USER_AUTOMATICO);
 			}
             
             //CALENDARIO:

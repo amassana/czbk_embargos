@@ -24,7 +24,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static es.commerzbank.ice.embargos.utils.EmbargosConstants.*;
@@ -512,27 +514,20 @@ public class AccountingServiceImpl implements AccountingService{
 		liftingService.updateLiftingBankAccountingStatus(cuentaLevantamiento, EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION, userName);
 */
 	@Override
-	@Transactional(transactionManager="transactionManager")
-	public void levantamientoContabilizarTx(Long codeFileControl, String userName)
-		throws Exception {
-		levantamientoContabilizarInterno(codeFileControl, userName);
+	@Async
+	public void levantamientoContabilizarAsynch(Long codeFileControl, String userName) {
+		try {
+			levantamientoContabilizar(codeFileControl, userName);
+		}
+		catch (Exception e) {
+			logger.error("Error mientras se contabilizaba asíncronamente el levantamiento "+ codeFileControl, e);
+		}
 	}
 
 	@Override
-	@Async
 	@Transactional(transactionManager="transactionManager")
-	public void levantamientoContabilizar(Long codeFileControl, String userName) {
-		try {
-			levantamientoContabilizarInterno(codeFileControl, userName);
-		}
-		catch (Exception e) {
-			logger.error("Error mientras se contabilizaba", e);
-		}
-	}
-
-	public void levantamientoContabilizarInterno(Long codeFileControl, String userName)
-			throws Exception
-	{
+	public void levantamientoContabilizar(Long codeFileControl, String userName)
+		throws Exception {
 		Optional<ControlFichero> fileControlOpt = fileControlRepository.findById(codeFileControl);
 
 		if(!fileControlOpt.isPresent())
