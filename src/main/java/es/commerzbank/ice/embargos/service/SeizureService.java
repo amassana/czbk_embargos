@@ -23,8 +23,8 @@ public interface SeizureService {
 	List<SeizedBankAccountDTO> getAuditSeizedBankAccounts(Long codFileControl, Long idSeizure, Long codAudit);
 	
 	byte[] reportSeizureLetter(Long idSeizure) throws Exception;
-	byte[] reportSeizureRequestF3(Integer codControlFichero) throws Exception;
-	byte[] reportSeizureResponseF4(Integer codControlFichero) throws Exception;
+	byte[] reportSeizureRequestF3(Integer codControlFichero, String oficina) throws Exception;
+	byte[] reportSeizureResponseF4(Integer codControlFichero, String oficina) throws Exception;
 	
 	//List<Embargo> listEmbargosTransferToTax();
 	boolean jobTransferToTax(String authorization, String user) throws ICEException;

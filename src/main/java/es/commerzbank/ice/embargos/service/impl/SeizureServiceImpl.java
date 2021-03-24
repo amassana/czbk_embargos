@@ -23,7 +23,6 @@ import es.commerzbank.ice.embargos.utils.EmbargosUtils;
 import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 import es.commerzbank.ice.embargos.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.util.JRLoader;
 import org.apache.commons.codec.Charsets;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -566,19 +565,18 @@ public class SeizureServiceImpl
 	}
 
 	@Override
-	public byte[] reportSeizureResponseF4(Integer codControlFichero) throws Exception {
+	public byte[] reportSeizureResponseF4(Integer codControlFichero, String oficina) throws Exception {
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
 		try (Connection conn = oracleDataSourceEmbargos.getEmbargosConnection()) {
 
-			Resource resumenTrabasJrxml = ResourcesUtil.getFromJasperFolder("f4_seizureResponse.jasper");
+			Resource resumenTrabasJrxml = ResourcesUtil.getFromJasperFolder("F4_trabas.jasper");
 
-			Resource logoImage = ResourcesUtil.getImageLogoCommerceResource();
+			Resource logoRes = ResourcesUtil.getImageLogoCommerceResource();
 
-			File image = logoImage.getFile();
-
-			parameters.put("IMAGE_PARAM", image.toString());
+			parameters.put("img_param", logoRes.getFile().toString());
 			parameters.put("COD_FILE_CONTROL", codControlFichero);
+			parameters.put("NOMBRE_SUCURSAL", oficina);
 
 			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 
@@ -599,26 +597,18 @@ public class SeizureServiceImpl
 	}
 
 	@Override
-	public byte[] reportSeizureRequestF3(Integer codControlFichero) throws Exception {
+	public byte[] reportSeizureRequestF3(Integer codControlFichero, String oficina) throws Exception {
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
 		try (Connection conn = oracleDataSourceEmbargos.getEmbargosConnection()) {
 
 			Resource resumenTrabasJrxml = ResourcesUtil.getFromJasperFolder("F3_diligenciasEmbargo.jasper");
 
-			Resource headerSubreport = ResourcesUtil.getReportHeaderResource();
+			Resource logoRes = ResourcesUtil.getImageLogoCommerceResource();
 
-			Resource logoImage = ResourcesUtil.getImageLogoCommerceResource();
-
-			File image = logoImage.getFile();
-
-			InputStream subReportHeaderInputStream = headerSubreport.getInputStream();
-
-			JasperReport subReportHeader = (JasperReport) JRLoader.loadObject(subReportHeaderInputStream);
-
-			parameters.put("sub_img_param", image.toString());
-			parameters.put("SUBREPORT_HEADER", subReportHeader);
+			parameters.put("img_param", logoRes.getFile().toString());
 			parameters.put("COD_FILE_CONTROL", codControlFichero);
+			parameters.put("NOMBRE_SUCURSAL", oficina);
 
 			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 

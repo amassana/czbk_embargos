@@ -8,6 +8,7 @@ import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.embargos.utils.DownloadReportFile;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.OfficeUtils;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,9 @@ public class SeizureController {
 	
 	@Autowired
 	private FileControlService fileControlService;
+
+	@Autowired
+	private OfficeUtils officeUtils;
 
     @GetMapping(value = "/{codeFileControl}")
     @ApiOperation(value="Devuelve la lista de embargos para una petición de embargo.")
@@ -439,7 +443,9 @@ public class SeizureController {
 	
 	@GetMapping("/{codeFileControl}/report")
 	@ApiOperation(value = "Devuelve un fichero de resumen trabas fase 3")
-	public ResponseEntity<InputStreamResource> generateSeizureRequestF3(@PathVariable("codeFileControl") Integer codControlFichero)
+	public ResponseEntity<InputStreamResource> generateSeizureRequestF3(
+			Authentication authentication,
+			@PathVariable("codeFileControl") Integer codControlFichero)
 	{
 		try {
 			DownloadReportFile downloadReportFile = new DownloadReportFile();
@@ -448,8 +454,9 @@ public class SeizureController {
 
 			downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
-			// seizure service falta
-			downloadReportFile.writeFile(seizureService.reportSeizureRequestF3(codControlFichero));
+			String oficina = officeUtils.getLocalidadUsuario(authentication);
+
+			downloadReportFile.writeFile(seizureService.reportSeizureRequestF3(codControlFichero, oficina));
 
 			return downloadReportFile.returnToDownloadFile();
 
@@ -463,6 +470,7 @@ public class SeizureController {
 	@GetMapping("/response/{fileControl}/report")
 	@ApiOperation(value = "Devuelve un fichero de resumen trabas fase 4")
 	public ResponseEntity<InputStreamResource> generateSeizureResponseF4(
+			Authentication authentication,
 			@PathVariable("fileControl") Integer codControlFichero)
 	{
 		try {
@@ -472,8 +480,9 @@ public class SeizureController {
 
 			downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
-			// seizure service falta
-			downloadReportFile.writeFile(seizureService.reportSeizureResponseF4(codControlFichero));
+			String oficina = officeUtils.getLocalidadUsuario(authentication);
+
+			downloadReportFile.writeFile(seizureService.reportSeizureResponseF4(codControlFichero, oficina));
 
 			return downloadReportFile.returnToDownloadFile();
 
