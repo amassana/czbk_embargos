@@ -29,6 +29,7 @@
 	peti.RAZON_SOCIAL_INTERNA AS RAZON_SOCIAL_INTERNA,
 	cf_peticion.COD_ENTIDAD_PRESENTADORA,
 	cf_peticion.FECHA_CREACION,
+	cf.NOMBRE_FICHERO,
 	ec.DES_ENTIDAD
 FROM
 	PETICION_INFORMACION peti
@@ -91,6 +92,9 @@ WHERE
 	<field name="DES_ENTIDAD" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="DES_ENTIDAD"/>
 	</field>
+	<field name="NOMBRE_FICHERO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NOMBRE_FICHERO"/>
+	</field>
 	<variable name="TodayDayHeader" class="java.lang.String">
 		<variableExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new Date())]]></variableExpression>
 		<initialValueExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new Date())]]></initialValueExpression>
@@ -122,7 +126,7 @@ WHERE
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["INFORME DE ENVÍO DE INFORMACIÓN - " + $F{DES_ENTIDAD}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["ENVÍO DE INFORMACIÓN - " + $F{DES_ENTIDAD}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -270,6 +274,20 @@ WHERE
 				</textElement>
 				<text><![CDATA[FECHA DE CREACIÓN: ]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="9" y="0" width="60" height="30" uuid="2eaeeaba-25f8-4aa6-80d0-99c8071331f7"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Serif" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FICHERO:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="70" y="0" width="168" height="30" uuid="4f48b62a-5f89-43cf-a793-de8eb64988ef"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Serif" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOMBRE_FICHERO}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>

@@ -29,6 +29,7 @@
 	peti.RAZON_SOCIAL_INTERNA AS RAZON_SOCIAL_INTERNA,
 	cf.COD_ENTIDAD_PRESENTADORA,
 	cf.FECHA_CREACION,
+	cf.NOMBRE_FICHERO,
 	ec.DES_ENTIDAD
 FROM
 	PETICION_INFORMACION peti
@@ -91,6 +92,9 @@ WHERE
 	<field name="DES_ENTIDAD" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="DES_ENTIDAD"/>
 	</field>
+	<field name="NOMBRE_FICHERO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NOMBRE_FICHERO"/>
+	</field>
 	<variable name="TodayDayHeader" class="java.lang.String">
 		<variableExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new Date())]]></variableExpression>
 		<initialValueExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new Date())]]></initialValueExpression>
@@ -122,7 +126,7 @@ WHERE
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["INFORME DE PETICIÓN DE INFORMACIÓN - " + $F{DES_ENTIDAD}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["PETICIÓN DE INFORMACIÓN - " + $F{DES_ENTIDAD}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -270,6 +274,20 @@ WHERE
 				</textElement>
 				<text><![CDATA[FECHA DE CREACIÓN: ]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="9" y="0" width="60" height="30" uuid="aff03c0f-0e6c-4aaf-a378-3f832a452916"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Serif" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FICHERO:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="70" y="0" width="168" height="30" uuid="5a9fa944-0954-4ea0-b1e4-f8255942f8ce"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Serif" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOMBRE_FICHERO}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
@@ -304,7 +322,7 @@ WHERE
 				<textElement textAlignment="Justified" verticalAlignment="Middle">
 					<font fontName="Serif" size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{RAZON_SOCIAL_INTERNA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{RAZON_SOCIAL}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="703" y="0" width="95" height="13" uuid="8d0a5413-08cc-46eb-b2a9-c446568e9a37">
@@ -509,6 +527,21 @@ WHERE
 					<font fontName="Serif" size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{CUENTA2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="35" y="13" width="178" height="13" uuid="3bb98c6d-5e3b-49d4-9eb8-dcaef4588b96">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="70336e19-b482-4d6d-8e95-6a79b597cad8"/>
+				</reportElement>
+				<box topPadding="0" leftPadding="0" bottomPadding="0">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Serif" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{RAZON_SOCIAL_INTERNA}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
