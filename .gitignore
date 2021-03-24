@@ -32,3 +32,5 @@ profiles/LOCAL/
 .mvn/
 mvnw.cmd
 mvnw
+
+src/main/resources/liquibase/output/
