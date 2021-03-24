@@ -604,7 +604,7 @@ public class SeizureServiceImpl
 
 		try (Connection conn = oracleDataSourceEmbargos.getEmbargosConnection()) {
 
-			Resource resumenTrabasJrxml = ResourcesUtil.getFromJasperFolder("f3_seizureRequest.jasper");
+			Resource resumenTrabasJrxml = ResourcesUtil.getFromJasperFolder("F3_diligenciasEmbargo.jasper");
 
 			Resource headerSubreport = ResourcesUtil.getReportHeaderResource();
 
