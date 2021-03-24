@@ -25,4 +25,8 @@ public class ResourcesUtil {
 		return getFromJasperFolder("CommerzBankStyle.jrtx");
 	}
 
+	public static Resource getLeyendaMotivos() {
+		return new ClassPathResource("reports/leyendaMotivosActuacion.jasper");
+	}
+
 }

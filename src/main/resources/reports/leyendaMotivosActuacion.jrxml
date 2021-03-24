@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="leyendaActuaciones" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="847831ee-2e52-4a67-bcb6-888b478b5de8">
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="Embargos"/>
+    <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+    <property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="530"/>
+    <property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="456"/>
+    <parameter name="TIPO_ENTIDAD" class="java.lang.String"/>
+    <parameter name="QUE_MITAD" class="java.lang.String"/>
+    <parameter name="CONDICION_QUE_MITAD" class="java.lang.String" isForPrompting="false">
+        <defaultValueExpression><![CDATA["PRIMERA".equals($P{QUE_MITAD}) ? " <= " : " > "]]></defaultValueExpression>
+    </parameter>
+    <queryString>
+        <![CDATA[SELECT
+	cod_externo_actuacion
+,	descripcion
+FROM (
+SELECT
+	ROWNUM AS RN
+,	cod_externo_actuacion
+,	descripcion
+FROM
+	cuenta_traba_actuacion
+WHERE
+    tipo_entidad = $P{TIPO_ENTIDAD}
+ORDER BY
+    cod_externo_actuacion)
+WHERE RN $P!{CONDICION_QUE_MITAD} (select CEIL(count(*)/2) from cuenta_traba_actuacion WHERE tipo_entidad = $P{TIPO_ENTIDAD})]]>
+    </queryString>
+    <field name="COD_EXTERNO_ACTUACION" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="COD_EXTERNO_ACTUACION"/>
+    </field>
+    <field name="DESCRIPCION" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="DESCRIPCION"/>
+    </field>
+    <detail>
+        <band height="14" splitType="Stretch">
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+            <property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+            <textField isBlankWhenNull="true">
+                <reportElement x="0" y="0" width="80" height="14" uuid="cae159c1-1a60-4be7-9aae-8d2d82d859b9">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="642a7aec-f048-48fa-99fc-fbe2cb965521"/>
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <box leftPadding="0" bottomPadding="2"/>
+                <textElement textAlignment="Right" verticalAlignment="Bottom">
+                    <font fontName="Serif" size="9"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{COD_EXTERNO_ACTUACION}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="90" y="0" width="401" height="14" uuid="b0847408-a2c9-48a6-a9d8-3f84abf70d6a">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="642a7aec-f048-48fa-99fc-fbe2cb965521"/>
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <box leftPadding="0" bottomPadding="2"/>
+                <textElement verticalAlignment="Bottom">
+                    <font fontName="Serif" size="9"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{DESCRIPCION}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+</jasperReport>

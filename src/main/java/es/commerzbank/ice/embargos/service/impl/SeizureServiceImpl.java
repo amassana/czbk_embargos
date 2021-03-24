@@ -23,6 +23,7 @@ import es.commerzbank.ice.embargos.utils.EmbargosUtils;
 import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 import es.commerzbank.ice.embargos.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.util.JRLoader;
 import org.apache.commons.codec.Charsets;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -573,6 +574,11 @@ public class SeizureServiceImpl
 			Resource resumenTrabasJrxml = ResourcesUtil.getFromJasperFolder("F4_trabas.jasper");
 
 			Resource logoRes = ResourcesUtil.getImageLogoCommerceResource();
+
+			Resource subreportLeyendaResource = ResourcesUtil.getLeyendaMotivos();
+			InputStream subreportLeyendaInputStream = subreportLeyendaResource.getInputStream();
+			JasperReport subreportLeyenda = (JasperReport) JRLoader.loadObject(subreportLeyendaInputStream);
+			parameters.put("SUBREPORT_LEYENDA", subreportLeyenda);
 
 			parameters.put("img_param", logoRes.getFile().toString());
 			parameters.put("COD_FILE_CONTROL", codControlFichero);

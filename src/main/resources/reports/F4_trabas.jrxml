@@ -10,9 +10,11 @@
 	<parameter name="file_param" class="java.lang.Object"/>
 	<parameter name="conn_param" class="java.sql.Connection"/>
 	<parameter name="NOMBRE_SUCURSAL" class="java.lang.String"/>
+	<parameter name="SUBREPORT_LEYENDA" class="java.lang.Object" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[SELECT
 	ec.des_entidad
+,	DECODE(ec.ind_norma63, 'S', 'NORMA63', DECODE(ec.ind_formato_aeat, 'S', 'AEAT', 'CGPJ')) as TIPO_ENTIDAD
 ,	e.numero_embargo
 ,	e.nif
 ,	e.NOMBRE
@@ -43,6 +45,9 @@ ORDER BY
 	t.cod_traba,
 	ct.COD_CUENTA_TRABA]]>
 	</queryString>
+	<field name="TIPO_ENTIDAD" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="TIPO_ENTIDAD"/>
+	</field>
 	<field name="DES_ENTIDAD" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="DES_ENTIDAD"/>
 	</field>
@@ -426,7 +431,7 @@ ORDER BY
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="40" splitType="Stretch">
+		<band height="222" splitType="Stretch">
 			<textField pattern="#,##0.00#" isBlankWhenNull="true">
 				<reportElement x="410" y="5" width="120" height="30" uuid="289aea83-2059-456d-aad6-a21b13a94e45"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -434,6 +439,30 @@ ORDER BY
 				</textElement>
 				<textFieldExpression><![CDATA["Total trabado: " + new DecimalFormat("#,##0.00").format($V{IMPORTE_TOTAL_TRABADO}) +" EUROS"]]></textFieldExpression>
 			</textField>
+			<subreport>
+				<reportElement x="57" y="40" width="293" height="128" uuid="ef2fcd63-e0d4-4159-8884-1b12bf84d957"/>
+				<subreportParameter name="TIPO_ENTIDAD">
+					<subreportParameterExpression><![CDATA[$F{TIPO_ENTIDAD}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="QUE_MITAD">
+					<subreportParameterExpression><![CDATA["PRIMERA"]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_LEYENDA}]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="350" y="40" width="293" height="128" uuid="1234b329-b466-4e05-94bb-d0a84d08d242">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<subreportParameter name="TIPO_ENTIDAD">
+					<subreportParameterExpression><![CDATA[$F{TIPO_ENTIDAD}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="QUE_MITAD">
+					<subreportParameterExpression><![CDATA["SEGUNDA"]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_LEYENDA}]]></subreportExpression>
+			</subreport>
 		</band>
 	</summary>
 </jasperReport>
