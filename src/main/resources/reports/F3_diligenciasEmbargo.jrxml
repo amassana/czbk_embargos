@@ -134,7 +134,7 @@ ORDER BY
 					<text><![CDATA[Titular]]></text>
 				</staticText>
 				<textField isBlankWhenNull="true">
-					<reportElement x="297" y="2" width="186" height="21" uuid="efc82a88-f5e3-4987-9ee4-90124298a5ed">
+					<reportElement x="297" y="2" width="244" height="21" uuid="efc82a88-f5e3-4987-9ee4-90124298a5ed">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="14cd551a-0484-4f9b-8d1b-b6fa09dfd68e"/>
 					</reportElement>
 					<box leftPadding="2" bottomPadding="2">
@@ -146,7 +146,7 @@ ORDER BY
 					<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="483" y="2" width="99" height="21" uuid="bef2985c-a7e2-444f-92b6-fd6f0d53dfa3">
+					<reportElement x="541" y="2" width="99" height="21" uuid="bef2985c-a7e2-444f-92b6-fd6f0d53dfa3">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6eebb496-2b1b-449a-b62e-eec1608c1e51"/>
 					</reportElement>
 					<box bottomPadding="2">
@@ -158,7 +158,7 @@ ORDER BY
 					<text><![CDATA[IMPORTE DEUDA:]]></text>
 				</staticText>
 				<textField pattern="#,##0.00##;(#,##0.00##-)" isBlankWhenNull="true">
-					<reportElement x="560" y="2" width="140" height="21" uuid="103fce56-0750-43d6-b624-c37a8158e645">
+					<reportElement x="640" y="2" width="140" height="21" uuid="103fce56-0750-43d6-b624-c37a8158e645">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6eebb496-2b1b-449a-b62e-eec1608c1e51"/>
 					</reportElement>
 					<box bottomPadding="2">
@@ -215,7 +215,7 @@ ORDER BY
 				<textFieldExpression><![CDATA[$F{NOMBRE_FICHERO}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="571" y="30" width="130" height="30" uuid="ad1f9178-9a40-4961-ae4f-a0c35c4813a7"/>
+				<reportElement x="567" y="30" width="130" height="30" uuid="ad1f9178-9a40-4961-ae4f-a0c35c4813a7"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Serif" isBold="true"/>
 				</textElement>
@@ -229,7 +229,7 @@ ORDER BY
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHA_CREACION}.toString()))]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="325" y="30" width="134" height="30" uuid="0a877789-1b95-47d0-855e-790d5bf871cd"/>
+				<reportElement x="321" y="30" width="134" height="30" uuid="0a877789-1b95-47d0-855e-790d5bf871cd"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Serif" isBold="true"/>
 				</textElement>
