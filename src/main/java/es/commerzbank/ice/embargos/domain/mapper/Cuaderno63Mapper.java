@@ -1,35 +1,9 @@
 package es.commerzbank.ice.embargos.domain.mapper;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import es.commerzbank.ice.comun.lib.util.ICEException;
-import org.mapstruct.AfterMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
-import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
-import es.commerzbank.ice.embargos.domain.entity.CuentaLevantamiento;
-import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
-import es.commerzbank.ice.embargos.domain.entity.CuentaTrabaActuacion;
-import es.commerzbank.ice.embargos.domain.entity.CuentasInmovilizacion;
-import es.commerzbank.ice.embargos.domain.entity.Embargo;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
-import es.commerzbank.ice.embargos.domain.entity.EstadoLevantamiento;
-import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
-import es.commerzbank.ice.embargos.domain.entity.LevantamientoTraba;
-import es.commerzbank.ice.embargos.domain.entity.PeticionInformacion;
-import es.commerzbank.ice.embargos.domain.entity.Traba;
+import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase1.CabeceraEmisorFase1;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase1.FinFicheroFase1;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase1.SolicitudInformacionFase1;
@@ -47,6 +21,15 @@ import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.OrdenLevantamientoRe
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.EmbargosUtils;
 import es.commerzbank.ice.embargos.utils.ICEDateUtils;
+import org.mapstruct.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Mapper(componentModel="spring")
 public abstract class Cuaderno63Mapper {
@@ -662,17 +645,14 @@ public abstract class Cuaderno63Mapper {
 		int cont = 1;
 		
 		for (CuentaTraba cuentaTraba : cuentaTrabaOrderedList) {
-			
-			//boolean agregarATraba = cuentaTraba.getAgregarATraba() != null && EmbargosConstants.IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba());
-			//if (agregarATraba) {
+			if (EmbargosConstants.IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba())) {
 			
 				String claveSeguridad = EmbargosUtils.generateClaveSeguridad(cuentaTraba.getIban());
 				
 				String resultadoRetencion = cuentaTraba.getCuentaTrabaActuacion() != null ? 
 						cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion() : null;
-				
-				switch(cont) {
-					
+
+				switch (cont) {
 					case 1:
 						comunicacionResultadoRetencionFase4.setIbanCuenta1(cuentaTraba.getIban());
 						comunicacionResultadoRetencionFase4.setClaveSeguridadIban1(claveSeguridad);
@@ -710,8 +690,8 @@ public abstract class Cuaderno63Mapper {
 						comunicacionResultadoRetencionFase4.setCodigoResultadoRetencionCuenta6(resultadoRetencion);
 						break;
 					default:
-					
-				//}
+				}
+
 				cont++;
 			}
 		}

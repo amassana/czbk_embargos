@@ -372,52 +372,64 @@ public abstract class AEATMapper {
 			int i=1;
 			for (CuentaTraba cuentaTraba : cuentaTrabaOrderedList) {
 				if (i==1) {
-					if (cuentaTraba.getIban()!=null && cuentaTraba.getIban().length()>4)
-						trabaFase4.setCodigoCuentaCliente1(cuentaTraba.getIban().substring(4));
-					if (cuentaTraba.getCuentaTrabaActuacion()!=null)
-						trabaFase4.setCodigoResultadoTrabaCC1(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
-					if (cuentaTraba.getImporte()!=null)
-						trabaFase4.setImporteTrabadoCC1(cuentaTraba.getImporte());
+					if (EmbargosConstants.IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba())) {
+						if (cuentaTraba.getIban() != null && cuentaTraba.getIban().length() > 4)
+							trabaFase4.setCodigoCuentaCliente1(cuentaTraba.getIban().substring(4));
+						if (cuentaTraba.getCuentaTrabaActuacion() != null)
+							trabaFase4.setCodigoResultadoTrabaCC1(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
+						if (cuentaTraba.getImporte() != null)
+							trabaFase4.setImporteTrabadoCC1(cuentaTraba.getImporte());
+					}
 				}
 				if (i==2) {
-					if (cuentaTraba.getIban()!=null && cuentaTraba.getIban().length()>4)
-						trabaFase4.setCodigoCuentaCliente2(cuentaTraba.getIban().substring(4));
-					if (cuentaTraba.getCuentaTrabaActuacion()!=null)
-						trabaFase4.setCodigoResultadoTrabaCC2(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
-					if (cuentaTraba.getImporte()!=null)
-						trabaFase4.setImporteTrabadoCC2(cuentaTraba.getImporte());
+					if (EmbargosConstants.IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba())) {
+						if (cuentaTraba.getIban()!=null && cuentaTraba.getIban().length()>4)
+							trabaFase4.setCodigoCuentaCliente2(cuentaTraba.getIban().substring(4));
+						if (cuentaTraba.getCuentaTrabaActuacion()!=null)
+							trabaFase4.setCodigoResultadoTrabaCC2(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
+						if (cuentaTraba.getImporte()!=null)
+							trabaFase4.setImporteTrabadoCC2(cuentaTraba.getImporte());
+					}
 				}
 				if (i==3) {
-					if (cuentaTraba.getIban()!=null && cuentaTraba.getIban().length()>4)
-						trabaFase4.setCodigoCuentaCliente3(cuentaTraba.getIban().substring(4));
-					if (cuentaTraba.getCuentaTrabaActuacion()!=null)
-						trabaFase4.setCodigoResultadoTrabaCC3(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
-					if (cuentaTraba.getImporte()!=null)
-						trabaFase4.setImporteTrabadoCC3(cuentaTraba.getImporte());
+					if (EmbargosConstants.IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba())) {
+						if (cuentaTraba.getIban() != null && cuentaTraba.getIban().length() > 4)
+							trabaFase4.setCodigoCuentaCliente3(cuentaTraba.getIban().substring(4));
+						if (cuentaTraba.getCuentaTrabaActuacion() != null)
+							trabaFase4.setCodigoResultadoTrabaCC3(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
+						if (cuentaTraba.getImporte() != null)
+							trabaFase4.setImporteTrabadoCC3(cuentaTraba.getImporte());
+					}
 				}
 				if (i==4) {
-					if (cuentaTraba.getIban()!=null && cuentaTraba.getIban().length()>4)
-						trabaFase4.setCodigoCuentaCliente4(cuentaTraba.getIban().substring(4));
-					if (cuentaTraba.getCuentaTrabaActuacion()!=null)
-						trabaFase4.setCodigoResultadoTrabaCC4(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
-					if (cuentaTraba.getImporte()!=null)
-						trabaFase4.setImporteTrabadoCC4(cuentaTraba.getImporte());
+					if (EmbargosConstants.IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba())) {
+						if (cuentaTraba.getIban() != null && cuentaTraba.getIban().length() > 4)
+							trabaFase4.setCodigoCuentaCliente4(cuentaTraba.getIban().substring(4));
+						if (cuentaTraba.getCuentaTrabaActuacion() != null)
+							trabaFase4.setCodigoResultadoTrabaCC4(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
+						if (cuentaTraba.getImporte() != null)
+							trabaFase4.setImporteTrabadoCC4(cuentaTraba.getImporte());
+					}
 				}
 				if (i==5) {
-					if (cuentaTraba.getIban()!=null && cuentaTraba.getIban().length()>4)
-						trabaFase4.setCodigoCuentaCliente5(cuentaTraba.getIban().substring(4));
-					if (cuentaTraba.getCuentaTrabaActuacion()!=null)
-						trabaFase4.setCodigoResultadoTrabaCC5(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
-					if (cuentaTraba.getImporte()!=null)
-						trabaFase4.setImporteTrabadoCC5(cuentaTraba.getImporte());
+					if (EmbargosConstants.IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba())) {
+						if (cuentaTraba.getIban() != null && cuentaTraba.getIban().length() > 4)
+							trabaFase4.setCodigoCuentaCliente5(cuentaTraba.getIban().substring(4));
+						if (cuentaTraba.getCuentaTrabaActuacion() != null)
+							trabaFase4.setCodigoResultadoTrabaCC5(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
+						if (cuentaTraba.getImporte() != null)
+							trabaFase4.setImporteTrabadoCC5(cuentaTraba.getImporte());
+					}
 				}
 				if (i==6) {
-					if (cuentaTraba.getIban()!=null && cuentaTraba.getIban().length()>4)
-						trabaFase4.setCodigoCuentaCliente6(cuentaTraba.getIban().substring(4));
-					if (cuentaTraba.getCuentaTrabaActuacion()!=null)
-						trabaFase4.setCodigoResultadoTrabaCC6(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
-					if (cuentaTraba.getImporte()!=null)
-						trabaFase4.setImporteTrabadoCC6(cuentaTraba.getImporte());
+					if (EmbargosConstants.IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba())) {
+						if (cuentaTraba.getIban() != null && cuentaTraba.getIban().length() > 4)
+							trabaFase4.setCodigoCuentaCliente6(cuentaTraba.getIban().substring(4));
+						if (cuentaTraba.getCuentaTrabaActuacion() != null)
+							trabaFase4.setCodigoResultadoTrabaCC6(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
+						if (cuentaTraba.getImporte() != null)
+							trabaFase4.setImporteTrabadoCC6(cuentaTraba.getImporte());
+					}
 				}
 				i++;
 			}	
