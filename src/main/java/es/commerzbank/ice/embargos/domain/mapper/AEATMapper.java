@@ -320,13 +320,15 @@ public abstract class AEATMapper {
 	
 	@Mappings({
 		@Mapping(source = "delegacionAgenciaEmisora", target = "delegacionAgenciaReceptora"),
-		@Mapping(expression = "java(new java.util.Date())", target="fechaCreacionFicheroTrabas")
+		@Mapping(expression = "java(new java.util.Date())", target="fechaCreacionFicheroTrabas"),
+		@Mapping(constant = "T", target="indicadorTipoFichero")
 	})
 	public abstract EntidadTransmisoraFase4 generateEntidadTransmisoraFase4(EntidadTransmisoraFase3 entidadTransmisoraFase3);
 	
 	@Mappings({
 		@Mapping(source = "delegacionAgenciaEmisora", target = "delegacionAgenciaReceptora"),
-		@Mapping(expression = "java(new java.util.Date())", target="fechaCreacionFicheroTrabas")
+		@Mapping(expression = "java(new java.util.Date())", target="fechaCreacionFicheroTrabas"),
+		@Mapping(constant = "T", target="indicadorTipoFichero")
 	})
 	public abstract EntidadCreditoFase4 generateEntidadCreditoFase4(EntidadCreditoFase3 entidadCreditoFase3);
 	
