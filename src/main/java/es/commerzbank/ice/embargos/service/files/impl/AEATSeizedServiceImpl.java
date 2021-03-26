@@ -1,58 +1,21 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
 import es.commerzbank.ice.comun.lib.domain.dto.Element;
 import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
 import es.commerzbank.ice.comun.lib.file.exchange.FileWriterHelper;
-import org.apache.commons.io.FileUtils;
-import org.beanio.BeanReader;
-import org.beanio.BeanWriter;
-import org.beanio.StreamFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import es.commerzbank.ice.comun.lib.service.FestiveService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
-import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
-import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
-import es.commerzbank.ice.embargos.domain.entity.Embargo;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
-import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
-import es.commerzbank.ice.embargos.domain.entity.Traba;
+import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.AEATMapper;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.EntidadCreditoFase3;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.EntidadTransmisoraFase3;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.FinEntidadCreditoFase3;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.FinEntidadTransmisoraFase3;
-import es.commerzbank.ice.embargos.formats.aeat.trabas.EntidadCreditoFase4;
-import es.commerzbank.ice.embargos.formats.aeat.trabas.EntidadTransmisoraFase4;
-import es.commerzbank.ice.embargos.formats.aeat.trabas.FinEntidadCreditoFase4;
-import es.commerzbank.ice.embargos.formats.aeat.trabas.FinEntidadTransmisoraFase4;
-import es.commerzbank.ice.embargos.formats.aeat.trabas.TrabaFase4;
+import es.commerzbank.ice.embargos.formats.aeat.trabas.*;
 import es.commerzbank.ice.embargos.repository.CommunicatingEntityRepository;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.repository.SeizedBankAccountRepository;
@@ -62,6 +25,24 @@ import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.embargos.service.files.AEATSeizedService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.ICEDateUtils;
+import org.beanio.BeanReader;
+import org.beanio.BeanWriter;
+import org.beanio.StreamFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AEATSeizedServiceImpl implements AEATSeizedService{
@@ -277,6 +258,15 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	        List<Embargo> embargoList = seizureRepository.findAllByControlFichero(controlFichero);
 	        
 	        BigDecimal importeTotalTrabado = new BigDecimal(0);
+
+			//- Se guarda la fecha maxima de respuesta fase6 (now + dias de margen)
+			int diasRespuestaF6 = entidadComunicadora.getDiasRespuestaF6() != null ? entidadComunicadora.getDiasRespuestaF6().intValue() : 0;
+			FestiveService.ValueDateCalculationParameters parameters = new FestiveService.ValueDateCalculationParameters();
+			parameters.numBusinessDays = diasRespuestaF6;
+			parameters.location = 1L;
+			parameters.fromDate = LocalDate.now();
+			LocalDate finalDate = festiveService.dateCalculation(parameters);
+			Date lastDateResponse = Date.from(finalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
 	        
 	        for (Embargo embargo : embargoList) {
 	        	
@@ -292,7 +282,7 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	    		List<CuentaTraba> cuentaTrabaOrderedList = seizedBankAccountRepository.findAllByTrabaOrderByNumeroOrdenCuentaAsc(traba);
 	        	
 		        TrabaFase4 trabaFase4 = 
-		        		aeatMapper.generateTrabaFase4(embargo, traba, cuentaTrabaOrderedList);
+		        		aeatMapper.generateTrabaFase4(embargo, traba, cuentaTrabaOrderedList, lastDateResponse);
 		        
 		        beanWriter.write(EmbargosConstants.RECORD_NAME_AEAT_TRABA, trabaFase4);
 		        numeroRegistrosFichero++;
@@ -373,16 +363,7 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	        // Mover a outbox
 			String outboxGenerated = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_AEAT_OUTBOX);
 			fileWriterHelper.transferToOutbox(ficheroSalida, outboxGenerated, fileNameTrabas);
-	        
-			//- Se guarda la fecha maxima de respuesta fase6 (now + dias de margen)
-			int diasRespuestaF6 = entidadComunicadora.getDiasRespuestaF6() != null ? entidadComunicadora.getDiasRespuestaF6().intValue() : 0;
-			FestiveService.ValueDateCalculationParameters parameters = new FestiveService.ValueDateCalculationParameters();
-			parameters.numBusinessDays = diasRespuestaF6;
-			parameters.location = 1L;
-			parameters.fromDate = LocalDate.now();
-			LocalDate finalDate = festiveService.dateCalculation(parameters);
-			Date lastDateResponse = Date.from(finalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-			
+
 			//CALENDARIO:
 	        // - Se agrega la tarea al calendario:
 	        TaskAndEvent task = new TaskAndEvent();

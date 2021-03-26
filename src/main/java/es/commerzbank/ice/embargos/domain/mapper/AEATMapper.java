@@ -350,18 +350,18 @@ public abstract class AEATMapper {
 		@Mapping(source = "traba.importeTrabado", target = "importeTotalTrabado"),
 		@Mapping(target = "fechaTraba", ignore=true)
 	})
-	public abstract TrabaFase4 generateTrabaFase4(Embargo embargo, Traba traba, List<CuentaTraba> cuentaTrabaOrderedList);
+	public abstract TrabaFase4 generateTrabaFase4(Embargo embargo, Traba traba, List<CuentaTraba> cuentaTrabaOrderedList, Date lastDateResponse);
 	
 	@AfterMapping
 	public void generateTrabaFase4AfterMapping(@MappingTarget TrabaFase4 trabaFase4,
-			Embargo embargo, Traba traba, List<CuentaTraba> cuentaTrabaOrderedList) {
+			Embargo embargo, Traba traba, List<CuentaTraba> cuentaTrabaOrderedList, Date lastDateResponse) {
 
 		if (traba.getFechaTraba()!=null) {
 			trabaFase4.setFechaTraba(ICEDateUtils.bigDecimalToDate(traba.getFechaTraba(), ICEDateUtils.FORMAT_yyyyMMdd));
 		}
 		
 		if (traba.getFechaLimite()!=null) {
-			trabaFase4.setFechaLimiteIngresoImporteTrabado(ICEDateUtils.bigDecimalToDate(traba.getFechaLimite(), ICEDateUtils.FORMAT_yyyyMMdd));
+			trabaFase4.setFechaLimiteIngresoImporteTrabado(lastDateResponse);
 		}
 		
 		if (embargo.getFechaGeneracion()!=null) {
