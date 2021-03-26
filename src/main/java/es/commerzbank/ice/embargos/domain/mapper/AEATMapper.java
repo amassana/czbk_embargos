@@ -267,10 +267,18 @@ public abstract class AEATMapper {
 			cuentaTraba.setDivisa(accountDTO.getDivisa());
 			cuentaTraba.setEstadoCuenta(accountDTO.getStatus());
 			
-			//Por defecto informar la actuacion (motivo) de la cuentaTraba a 'Sin actuacion':
-			CuentaTrabaActuacion cuentaTrabaActuacion = new CuentaTrabaActuacion();
-			cuentaTrabaActuacion.setCodActuacion(EmbargosConstants.CODIGO_ACTUACION_SIN_ACTUACION_AEAT);
-			cuentaTraba.setCuentaTrabaActuacion(cuentaTrabaActuacion);
+			if (EmbargosConstants.BANK_ACCOUNT_STATUS_CANCELLED.equals(accountDTO.getStatus())) {
+				//Indicar la actuacion (motivo) de la cuentaTraba a cancelada:
+				CuentaTrabaActuacion cuentaTrabaActuacion = new CuentaTrabaActuacion();
+				cuentaTrabaActuacion.setCodActuacion(EmbargosConstants.CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA_AEAT);
+				cuentaTraba.setCuentaTrabaActuacion(cuentaTrabaActuacion);
+			}
+			else {
+				//Por defecto informar la actuacion (motivo) de la cuentaTraba a 'Sin actuacion':
+				CuentaTrabaActuacion cuentaTrabaActuacion = new CuentaTrabaActuacion();
+				cuentaTrabaActuacion.setCodActuacion(EmbargosConstants.CODIGO_ACTUACION_SIN_ACTUACION_AEAT);
+				cuentaTraba.setCuentaTrabaActuacion(cuentaTrabaActuacion);
+			}
 		
 		} else {
 			//Cuenta no encontrada en DWH:

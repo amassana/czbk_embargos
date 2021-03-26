@@ -265,6 +265,12 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 		        					numeroOrdenCuenta = numeroOrdenCuenta.add(BigDecimal.valueOf(1));
 		        					
 		        					CuentaTraba cuentaTrabaExtra = seizedBankAccountMapper.accountDTOToCuentaTraba(accountDTO, numeroOrdenCuenta, traba);
+		        					if (EmbargosConstants.BANK_ACCOUNT_STATUS_CANCELLED.equals(accountDTO.getStatus())) {
+		        						//Indicar la actuacion (motivo) de la cuentaTraba a cancelada:
+		        						CuentaTrabaActuacion cuentaTrabaActuacion = new CuentaTrabaActuacion();
+		        						cuentaTrabaActuacion.setCodActuacion(EmbargosConstants.CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA_AEAT);
+		        						cuentaTrabaExtra.setCuentaTrabaActuacion(cuentaTrabaActuacion);
+		        					}
 		        					seizedBankAccountRepository.save(cuentaTrabaExtra);
 		        				}
 		        			}
