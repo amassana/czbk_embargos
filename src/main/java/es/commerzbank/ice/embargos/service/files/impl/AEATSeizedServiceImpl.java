@@ -342,6 +342,7 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	        
 	        controlFicheroEmbargo.setUsuarioUltModificacion(usuarioTramitador);
 	        controlFicheroEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+	        controlFicheroEmbargo.setFechaGeneracionRespuesta(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 	        fileControlRepository.save(controlFicheroEmbargo);
         
 	        //Cerrar la tarea:

@@ -18,6 +18,8 @@ public class FileControlDTO {
 	private Boolean isTGSS;
 	private Boolean isCuaderno63;
 	private String rutaFichero;
+	private Date createdDate;
+	private Date responseGenerationDate;
 	
 	public String getCode() {
 		return code;
@@ -102,6 +104,32 @@ public class FileControlDTO {
 	}
 	public void setRutaFichero(String rutaFichero) {
 		this.rutaFichero = rutaFichero;
+	}
+	
+	/**
+	 * @return the createdDate
+	 */
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+	/**
+	 * @param createdDate the createdDate to set
+	 */
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+	
+	/**
+	 * @return the responseGenerationDate
+	 */
+	public Date getResponseGenerationDate() {
+		return responseGenerationDate;
+	}
+	/**
+	 * @param responseGenerationDate the responseGenerationDate to set
+	 */
+	public void setResponseGenerationDate(Date responseGenerationDate) {
+		this.responseGenerationDate = responseGenerationDate;
 	}
 		
 }
