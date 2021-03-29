@@ -196,7 +196,7 @@ public abstract class FileControlMapper {
 		
 		
 		if (controlFichero.getFechaCreacion()!=null) {
-			fileControlDTO.setCreatedDate(ICEDateUtils.bigDecimalToDate(controlFichero.getFechaCreacion(), ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+			fileControlDTO.setCreatedDate(ICEDateUtils.bigDecimalToDate(controlFichero.getFechaCreacion(), ICEDateUtils.FORMAT_yyyyMMdd));
 		}
 		
 		if (controlFichero.getFechaGeneracionRespuesta()!=null) {
