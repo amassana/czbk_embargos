@@ -332,7 +332,7 @@ ORDER BY
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["DILIGENCIAS DE EMBARGO - " + $F{DES_ENTIDAD}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["TRABAS - " + $F{DES_ENTIDAD}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="10" y="30" width="60" height="30" uuid="161f95a7-87c1-4311-8d3c-5cafceb81c8c"/>
