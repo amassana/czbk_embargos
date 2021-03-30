@@ -369,7 +369,7 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setReference1(reference1);
 			accountingNote.setReference2(reference2);
 			accountingNote.setDetailPayment(detailPayment);
-
+			accountingNote.setEsCredito(false);
 			accountingNote.setChange(cuentaTraba.getCambio());
 
 			// borrar los tres siguientes?
@@ -546,8 +546,6 @@ public class AccountingServiceImpl implements AccountingService{
 				Traba traba = levantamiento.getTraba();
 				Embargo embargo = traba.getEmbargo();
 
-				BigDecimal cambio = BigDecimal.ONE;
-
 				CuentaTraba cuentaTraba = null;
 				for (CuentaTraba cuentaTrabaActual : traba.getCuentaTrabas()) {
 					if (cuentaLevantamiento.getCuenta().equals(cuentaTrabaActual.getCuenta())) {
@@ -556,10 +554,14 @@ public class AccountingServiceImpl implements AccountingService{
 					}
 				}
 				if (cuentaTraba == null) {
-					throw new Exception("No se encuentra la cuenta traba cuya cuenta sea igual a la cuenta de levantamiento "+ cuentaLevantamiento.getCuenta());
+					throw new Exception("No se encuentra la cuenta traba cuya cuenta sea igual a la cuenta de levantamiento "+ cuentaLevantamiento.getCodCuentaLevantamiento() +" "+ cuentaLevantamiento.getCuenta());
 				}
 				else {
-					BigDecimal cambioInverso = BigDecimal.ONE.divide(cuentaTraba.getCambio(), cuentaTraba.getCambio().scale(), RoundingMode.HALF_UP);
+					BigDecimal cambioInverso = cuentaTraba.getCambio() == null ? null : BigDecimal.ONE.divide(cuentaTraba.getCambio(), cuentaTraba.getCambio().scale(), RoundingMode.HALF_UP);
+
+					if (!cuentaLevantamiento.getCuenta().endsWith(EmbargosConstants.ISO_MONEDA_EUR) && cambioInverso == null) {
+						throw new Exception("No se encuentra el cambio de divisa a aplicar para la cuenta de levantamiento "+ cuentaLevantamiento.getCodCuentaLevantamiento() +" "+ cuentaLevantamiento.getCuenta());
+					}
 
 					apunteContableLevantamiento(cuentaLevantamiento, cuentaRecaudacion, cuentaLevantamiento.getCuenta(),
 							oficinaRecaudacion, embargo.getNumeroEmbargo(), "", embargo.getDatregcomdet(), cuentaIntercambioDivisas,
@@ -607,7 +609,7 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setReference2(reference2);
 			accountingNote.setDetailPayment(detailPayment);
 			accountingNote.setChange(cambio);
-
+			accountingNote.setEsCredito(true);
 			// estos sobran?
 			accountingNote.setName(nombre);
 			accountingNote.setNif(nif);

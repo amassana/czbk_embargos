@@ -38,6 +38,7 @@ public class ScheduleContabilizacioneAutomaticas
 
     for (ControlFichero ficheroActual : ficherosPendientesContabilizar) {
       try {
+        logger.info("Contabilizando el levantamiento "+ ficheroActual.getCodControlFichero() +" "+ ficheroActual.getNombreFichero());
         accountingService.levantamientoContabilizar(ficheroActual.getCodControlFichero(), USER_AUTOMATICO);
       } catch (Exception e) {
         logger.error("No se ha podido contabilizar el fichero de levantamiento "+ ficheroActual.getCodControlFichero() +". Se cambia el estado a Recibido", e);
