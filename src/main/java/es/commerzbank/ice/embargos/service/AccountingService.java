@@ -4,7 +4,6 @@ public interface AccountingService {
 
 	void embargoContabilizar(Long codeFileControl, String userName) throws Exception;
 	void levantamientoContabilizar(Long codeFileControl, String userName) throws Exception;
-	void levantamientoContabilizarAsynch(Long codeFileControl, String userName) throws Exception;
 	void sendFinalFile(Long codeFileControl, String userName) throws Exception;
 	//es.commerzbank.ice.comun.lib.domain.entity.ControlFichero sendAccountingLiftingBankAccount(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, String userName) throws ICEException, Exception;
 

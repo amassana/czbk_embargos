@@ -37,4 +37,6 @@ public interface FileControlService {
 
 	List<ControlFichero> cartasPendientesEnvio();
 	void cartaEnviada(ControlFichero controlFichero);
+
+	List<ControlFichero> listByStatus(long estado, List<Long> tiposFichero);
 }

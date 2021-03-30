@@ -493,4 +493,9 @@ public class FileControlServiceImpl
 		controlFichero.setIndEnvioCarta("S");
 		fileControlRepository.save(controlFichero);
 	}
+
+	@Override
+	public List<ControlFichero> listByStatus(long estado, List<Long> tiposFichero) {
+		return fileControlRepository.findFicherosByTipoFicheroByCodEstado(estado, tiposFichero);
+	}
 }

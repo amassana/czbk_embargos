@@ -263,17 +263,19 @@ public class AEATLiftingServiceImpl
             
             EstadoCtrlfichero estadoCtrlfichero = null;
 
-			estadoCtrlfichero = new EstadoCtrlfichero(
-					EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED,
-					EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT);
-
-            controlFicheroLevantamiento.setEstadoCtrlfichero(estadoCtrlfichero);
-
-            fileControlRepository.saveAndFlush(controlFicheroLevantamiento);
-
             if (puedeSerContabilizado && tieneAlgoAContabilizar) {
-            	accountingService.levantamientoContabilizarAsynch(controlFicheroLevantamiento.getCodControlFichero(), EmbargosConstants.USER_AUTOMATICO);
+				estadoCtrlfichero = new EstadoCtrlfichero(
+						EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_AUTOMATIC_ACCOUNTING,
+						EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT);
+			} else {
+				estadoCtrlfichero = new EstadoCtrlfichero(
+						EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED,
+						EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT);
 			}
+
+			controlFicheroLevantamiento.setEstadoCtrlfichero(estadoCtrlfichero);
+
+			fileControlRepository.saveAndFlush(controlFicheroLevantamiento);
             
             //CALENDARIO:
 	        // - Se agrega la tarea al calendario:

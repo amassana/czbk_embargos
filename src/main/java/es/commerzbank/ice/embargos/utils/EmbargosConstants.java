@@ -98,6 +98,7 @@ public class EmbargosConstants {
 	public static final long COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_AEAT_ERROR = 0;
 	//delete estados transitorios public static final long COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_LOADING = 1;
 	public static final long COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED = 2;
+	public static final long COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_AUTOMATIC_ACCOUNTING = 5;
 	public static final long COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_ACCOUNTING_RESPONSE = 3;
 	public static final long COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_ACCOUNTED = 4;
 

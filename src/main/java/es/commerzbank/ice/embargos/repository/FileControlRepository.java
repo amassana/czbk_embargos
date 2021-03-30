@@ -18,8 +18,8 @@ import java.util.Optional;
 public interface FileControlRepository
 	extends JpaRepository<ControlFichero, Long>, JpaSpecificationExecutor<ControlFichero>
 {
-	@Query(value = "select * from CONTROL_FICHERO cf where cf.COD_ESTADO = :codEstado and cf.COD_TIPO_FICHERO in (2, 7, 9, 11)", nativeQuery = true)
-	List<ControlFichero> findByCodEstado(@Param("codEstado") long codEstadoControlFicheroGeneradoScheduled);
+	@Query(value = "select * from CONTROL_FICHERO cf where cf.COD_ESTADO = :codEstado and cf.COD_TIPO_FICHERO in :tiposFichero", nativeQuery = true)
+	List<ControlFichero> findFicherosByTipoFicheroByCodEstado(@Param("codEstado") long codEstadoControlFicheroGeneradoScheduled, @Param("tiposFichero") List<Long> tiposFichero);
 
 	@Query(value = "select * from CONTROL_FICHERO cf where cf.COD_ESTADO = :codEstado and cf.COD_TIPO_FICHERO in (2, 7, 9, 11) and sysdate > to_date(cf.fecha_incorporacion,'YYYYMMDDHH24MISS')+ :dias", nativeQuery = true)
 	List<ControlFichero> findByCodEstadoAndFecha(@Param("codEstado") long codEstadoControlFicheroGeneradoScheduled, @Param("dias") int dias);

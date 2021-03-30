@@ -27,9 +27,11 @@
     <include file="2021/20210322_entidadesOrdenantes_plazos.xml" relativeToChangelogFile="true" />
     <include file="2021/20210322_cuentra_traba_actuacion_full.xml" relativeToChangelogFile="true" />
     <include file="2021/20210323_estado_traba_letter_case.xml" relativeToChangelogFile="true" />
-    
+
     <changeSet id="entrega_20210324" author="aniol.massana">
         <tagDatabase tag="entrega_20210324"/>
     </changeSet>
+
+    <include file="2021/20210330_estado_ctrlfichero_levantamiento_pendiente_conta_auto.xml" relativeToChangelogFile="true" />
 
 </databaseChangeLog>

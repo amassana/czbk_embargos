@@ -513,24 +513,10 @@ public class AccountingServiceImpl implements AccountingService{
 	//Se actualiza el estado de la Cuenta Levantamiento a "Enviada a contabilidad":
 		liftingService.updateLiftingBankAccountingStatus(cuentaLevantamiento, EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION, userName);
 */
-	@Override
-	public void levantamientoContabilizarAsynch(Long codeFileControl, String userName) {
-		try {
-			levantamientoContabilizarInterno(codeFileControl, userName);
-		}
-		catch (Exception e) {
-			logger.error("Error mientras se contabilizaba asíncronamente el levantamiento "+ codeFileControl, e);
-		}
-	}
 
 	@Override
 	@Transactional(transactionManager="transactionManager")
 	public void levantamientoContabilizar(Long codeFileControl, String userName) throws Exception {
-		levantamientoContabilizarInterno(codeFileControl, userName);
-	}
-
-	private void levantamientoContabilizarInterno(Long codeFileControl, String userName)
-		throws Exception {
 		Optional<ControlFichero> fileControlOpt = fileControlRepository.findById(codeFileControl);
 
 		if(!fileControlOpt.isPresent())

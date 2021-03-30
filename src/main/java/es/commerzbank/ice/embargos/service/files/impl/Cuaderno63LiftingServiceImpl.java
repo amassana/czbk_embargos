@@ -228,17 +228,19 @@ public class Cuaderno63LiftingServiceImpl
 			
             EstadoCtrlfichero estadoCtrlfichero = null;
 
-            estadoCtrlfichero = new EstadoCtrlfichero(
-                    EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED,
-                    EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63);
+            if (puedeSerContabilizado && tieneAlgoAContabilizar) {
+                estadoCtrlfichero = new EstadoCtrlfichero(
+                        EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_AUTOMATIC_ACCOUNTING,
+                        EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT);
+            } else {
+                estadoCtrlfichero = new EstadoCtrlfichero(
+                        EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED,
+                        EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT);
+            }
 
             controlFicheroLevantamiento.setEstadoCtrlfichero(estadoCtrlfichero);
 
             fileControlRepository.saveAndFlush(controlFicheroLevantamiento);
-
-            if (puedeSerContabilizado && tieneAlgoAContabilizar) {
-                accountingService.levantamientoContabilizarAsynch(controlFicheroLevantamiento.getCodControlFichero(), EmbargosConstants.USER_AUTOMATICO);
-            }
             
             //CALENDARIO:
 	        // - Se agrega la tarea al calendario:

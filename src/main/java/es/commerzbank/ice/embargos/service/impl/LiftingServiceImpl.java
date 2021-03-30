@@ -585,20 +585,23 @@ public class LiftingServiceImpl
                     }
             	}
 
-                // Actualizar control fichero
-                EstadoCtrlfichero estadoCtrlfichero =  new EstadoCtrlfichero(
-                            EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED,
-                            EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63);
+				EstadoCtrlfichero estadoCtrlfichero = null;
 
-                controlFicheroLevantamiento.setEstadoCtrlfichero(estadoCtrlfichero);
+				if (puedeSerContabilizado && tieneAlgoAContabilizar) {
+					estadoCtrlfichero = new EstadoCtrlfichero(
+							EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_AUTOMATIC_ACCOUNTING,
+							EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT);
+				} else {
+					estadoCtrlfichero = new EstadoCtrlfichero(
+							EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED,
+							EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT);
+				}
+
+				controlFicheroLevantamiento.setEstadoCtrlfichero(estadoCtrlfichero);
 
                 controlFicheroLevantamiento.setUsuarioUltModificacion(userModif);
                 controlFicheroLevantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
                 fileControlRepository.saveAndFlush(controlFicheroLevantamiento);
-
-				if (puedeSerContabilizado && tieneAlgoAContabilizar) {
-					accountingService.levantamientoContabilizarAsynch(controlFicheroLevantamiento.getCodControlFichero(), EmbargosConstants.USER_AUTOMATICO);
-				}
             }
         }
         catch (Exception e)
