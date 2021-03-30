@@ -194,6 +194,14 @@ public abstract class FileControlMapper {
 			fileControlDTO.setModifiedDate(ICEDateUtils.bigDecimalToDate(controlFichero.getFUltimaModificacion(), ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 		}
 		
+		
+		if (controlFichero.getFechaCreacion()!=null) {
+			fileControlDTO.setCreatedDate(ICEDateUtils.bigDecimalToDate(controlFichero.getFechaCreacion(), ICEDateUtils.FORMAT_yyyyMMdd));
+		}
+		
+		if (controlFichero.getFechaGeneracionRespuesta()!=null) {
+			fileControlDTO.setResponseGenerationDate(ICEDateUtils.bigDecimalToDate(controlFichero.getFechaGeneracionRespuesta(), ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+		}
 	}
 	
 }

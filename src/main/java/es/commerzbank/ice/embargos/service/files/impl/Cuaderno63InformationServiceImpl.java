@@ -298,6 +298,7 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        
 	        controlFicheroPeticion.setUsuarioUltModificacion(usuarioTramitador);
 	        controlFicheroPeticion.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+	        controlFicheroPeticion.setFechaGeneracionRespuesta(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 	        fileControlRepository.save(controlFicheroPeticion);
         
 	        //Cerrar la tarea:

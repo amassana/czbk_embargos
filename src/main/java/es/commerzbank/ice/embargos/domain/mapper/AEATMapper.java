@@ -133,10 +133,10 @@ public abstract class AEATMapper {
 		
 		CuentaEmbargo cuentaEmbargo = new CuentaEmbargo();
 		
-		String cuenta = null;
-		String iban = null;
+		//String cuenta = null;
+		//String iban = null;
 		
-		if (false && accountDTO!=null) {
+		/*if (accountDTO!=null) {
 			//Cuenta encontrada en DWH -> seteo de datos de DWH a partir del accountDTO:
 			cuenta = accountDTO.getAccountNum();
 			iban = accountDTO.getIban();
@@ -145,12 +145,20 @@ public abstract class AEATMapper {
 			//del codigo cuenta cliente que viene del fichero de diligencias de embargo:
 			cuenta = codigoCuentaCliente; // era null....
 			iban = ibanCalculatedFromDiligenciaFase3;
-		}
+		}*/
 
+		if(accountDTO!=null) {
+			cuentaEmbargo.setCuenta(accountDTO.getAccountNum());
+			cuentaEmbargo.setIban(accountDTO.getIban());
+		} else {
+			//Sino, si la cuenta no se encuentra en DWH: indicar motivo de cuenta embargo a inexistente
+			cuentaEmbargo.setActuacion(EmbargosConstants.CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA_AEAT);
+			//Iban obtenido del fichero de embargos:
+			cuentaEmbargo.setIban(ibanCalculatedFromDiligenciaFase3);
+		}
+		
 		cuentaEmbargo.setEmbargo(embargo);
-		cuentaEmbargo.setCuenta(cuenta);
 		cuentaEmbargo.setImporte(BigDecimal.valueOf(0));
-		cuentaEmbargo.setIban(iban);
 		//Clave de seguridad del IBAN no viene en el fichero de AEAT (no tiene fase 1 y 2) -> no se setea.
 		cuentaEmbargo.setNumeroOrdenCuenta(numeroOrden);
 		cuentaEmbargo.setUsuarioUltModificacion(usuarioModif);
@@ -267,10 +275,18 @@ public abstract class AEATMapper {
 			cuentaTraba.setDivisa(accountDTO.getDivisa());
 			cuentaTraba.setEstadoCuenta(accountDTO.getStatus());
 			
-			//Por defecto informar la actuacion (motivo) de la cuentaTraba a 'Sin actuacion':
-			CuentaTrabaActuacion cuentaTrabaActuacion = new CuentaTrabaActuacion();
-			cuentaTrabaActuacion.setCodActuacion(EmbargosConstants.CODIGO_ACTUACION_SIN_ACTUACION_AEAT);
-			cuentaTraba.setCuentaTrabaActuacion(cuentaTrabaActuacion);
+			if (EmbargosConstants.BANK_ACCOUNT_STATUS_CANCELLED.equals(accountDTO.getStatus())) {
+				//Indicar la actuacion (motivo) de la cuentaTraba a cancelada:
+				CuentaTrabaActuacion cuentaTrabaActuacion = new CuentaTrabaActuacion();
+				cuentaTrabaActuacion.setCodActuacion(EmbargosConstants.CODIGO_ACTUACION_CUENTA_INEXISTENTE_O_CANCELADA_AEAT);
+				cuentaTraba.setCuentaTrabaActuacion(cuentaTrabaActuacion);
+			}
+			else {
+				//Por defecto informar la actuacion (motivo) de la cuentaTraba a 'Sin actuacion':
+				CuentaTrabaActuacion cuentaTrabaActuacion = new CuentaTrabaActuacion();
+				cuentaTrabaActuacion.setCodActuacion(EmbargosConstants.CODIGO_ACTUACION_SIN_ACTUACION_AEAT);
+				cuentaTraba.setCuentaTrabaActuacion(cuentaTrabaActuacion);
+			}
 		
 		} else {
 			//Cuenta no encontrada en DWH:
