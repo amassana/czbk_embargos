@@ -202,27 +202,13 @@ public class Cuaderno63LiftingServiceImpl
                             tieneAlgoAContabilizar = true;
                         }
                         else {
-                            // De debe encontrar el cambio usado
-                            CuentaTraba cuentaTraba = null;
-                            for (CuentaTraba cuentaTrabaActual : traba.getCuentaTrabas()) {
-                                if (cuentaLevantamiento.getCuenta().equals(cuentaTrabaActual.getCodCuentaTraba())) {
-                                    cuentaTraba = cuentaTrabaActual;
-                                    break;
-                                }
-                            }
-                            if (cuentaTraba == null) {
-                                LOG.error("No se encuentra la cuenta traba cuya cuenta sea igual a la cuenta de levantamiento "+ cuentaLevantamiento.getCuenta());
+                            // Si el contravalor en euros supera el límite..
+                            if (importeMaximoAutomaticoDivisa.compareTo(cuentaLevantamiento.getImporte()) <= 0) {
+                                LOG.info("El contravalor en euros del levantamiento "+ cuentaLevantamiento.getCodCuentaLevantamiento() +" supera el límite permitido para contabilizar automáticamente.");
                                 puedeSerContabilizado = false;
                             }
                             else {
-                                // Si el contravalor en euros supera el límite..
-                                if (importeMaximoAutomaticoDivisa.compareTo(cuentaLevantamiento.getImporte().multiply(cuentaTraba.getCambio())) < 0) {
-                                    LOG.error("El contravalor en euros del levantamiento "+ cuentaLevantamiento.getCodCuentaLevantamiento() +" supera el límite permitido para contabilizar automáticamente.");
-                                    puedeSerContabilizado = false;
-                                }
-                                else {
-                                    tieneAlgoAContabilizar = true;
-                                }
+                                tieneAlgoAContabilizar = true;
                             }
                         }
                     }

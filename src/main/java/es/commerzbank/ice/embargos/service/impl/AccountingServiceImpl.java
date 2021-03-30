@@ -19,11 +19,11 @@ import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -514,10 +514,9 @@ public class AccountingServiceImpl implements AccountingService{
 		liftingService.updateLiftingBankAccountingStatus(cuentaLevantamiento, EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION, userName);
 */
 	@Override
-	@Async
 	public void levantamientoContabilizarAsynch(Long codeFileControl, String userName) {
 		try {
-			levantamientoContabilizar(codeFileControl, userName);
+			levantamientoContabilizarInterno(codeFileControl, userName);
 		}
 		catch (Exception e) {
 			logger.error("Error mientras se contabilizaba asíncronamente el levantamiento "+ codeFileControl, e);
@@ -526,7 +525,11 @@ public class AccountingServiceImpl implements AccountingService{
 
 	@Override
 	@Transactional(transactionManager="transactionManager")
-	public void levantamientoContabilizar(Long codeFileControl, String userName)
+	public void levantamientoContabilizar(Long codeFileControl, String userName) throws Exception {
+		levantamientoContabilizarInterno(codeFileControl, userName);
+	}
+
+	private void levantamientoContabilizarInterno(Long codeFileControl, String userName)
 		throws Exception {
 		Optional<ControlFichero> fileControlOpt = fileControlRepository.findById(codeFileControl);
 
@@ -570,9 +573,11 @@ public class AccountingServiceImpl implements AccountingService{
 					throw new Exception("No se encuentra la cuenta traba cuya cuenta sea igual a la cuenta de levantamiento "+ cuentaLevantamiento.getCuenta());
 				}
 				else {
+					BigDecimal cambioInverso = BigDecimal.ONE.divide(cuentaTraba.getCambio(), cuentaTraba.getCambio().scale(), RoundingMode.HALF_UP);
+
 					apunteContableLevantamiento(cuentaLevantamiento, cuentaRecaudacion, cuentaLevantamiento.getCuenta(),
 							oficinaRecaudacion, embargo.getNumeroEmbargo(), "", embargo.getDatregcomdet(), cuentaIntercambioDivisas,
-							fileControlFicheroComunes.getCodControlFichero(), embargo.getNombre(), embargo.getNif(), cuentaTraba.getCambio());
+							fileControlFicheroComunes.getCodControlFichero(), embargo.getNombre(), embargo.getNif(), cambioInverso);
 
 					liftingService.updateAccountLiftingStatus(cuentaLevantamiento.getCodCuentaLevantamiento(), status, USER_AUTOMATICO);
 				}
