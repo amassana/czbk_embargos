@@ -41,19 +41,19 @@ public class OrdenLevantamientoRetencionFase5 {
 	private String claveSeguridadIban5;
 	private String claveSeguridadIban6;
 	private BigDecimal totalImporteALevantar;
-	private Integer codigoTipoLevantamientoARealizar;
+	private String codigoTipoLevantamientoARealizar;
 	private BigDecimal importeALevantarIban1;
-	private Integer codigoTipoLevantamientoIban1;
+	private String codigoTipoLevantamientoIban1;
 	private BigDecimal importeALevantarIban2;
-	private Integer codigoTipoLevantamientoIban2;
+	private String codigoTipoLevantamientoIban2;
 	private BigDecimal importeALevantarIban3;
-	private Integer codigoTipoLevantamientoIban3;
+	private String codigoTipoLevantamientoIban3;
 	private BigDecimal importeALevantarIban4;
-	private Integer codigoTipoLevantamientoIban4;
+	private String codigoTipoLevantamientoIban4;
 	private BigDecimal importeALevantarIban5;
-	private Integer codigoTipoLevantamientoIban5;
+	private String codigoTipoLevantamientoIban5;
 	private BigDecimal importeALevantarIban6;
-	private Integer codigoTipoLevantamientoIban6;
+	private String codigoTipoLevantamientoIban6;
 	
 	public Integer getCodigoRegistro() {
 		return codigoRegistro;
@@ -271,10 +271,10 @@ public class OrdenLevantamientoRetencionFase5 {
 	public void setTotalImporteALevantar(BigDecimal totalImporteALevantar) {
 		this.totalImporteALevantar = totalImporteALevantar;
 	}
-	public Integer getCodigoTipoLevantamientoARealizar() {
+	public String getCodigoTipoLevantamientoARealizar() {
 		return codigoTipoLevantamientoARealizar;
 	}
-	public void setCodigoTipoLevantamientoARealizar(Integer codigoTipoLevantamientoARealizar) {
+	public void setCodigoTipoLevantamientoARealizar(String codigoTipoLevantamientoARealizar) {
 		this.codigoTipoLevantamientoARealizar = codigoTipoLevantamientoARealizar;
 	}
 	public BigDecimal getImporteALevantarIban1() {
@@ -283,10 +283,10 @@ public class OrdenLevantamientoRetencionFase5 {
 	public void setImporteALevantarIban1(BigDecimal importeALevantarIban1) {
 		this.importeALevantarIban1 = importeALevantarIban1;
 	}
-	public Integer getCodigoTipoLevantamientoIban1() {
+	public String getCodigoTipoLevantamientoIban1() {
 		return codigoTipoLevantamientoIban1;
 	}
-	public void setCodigoTipoLevantamientoIban1(Integer codigoTipoLevantamientoIban1) {
+	public void setCodigoTipoLevantamientoIban1(String codigoTipoLevantamientoIban1) {
 		this.codigoTipoLevantamientoIban1 = codigoTipoLevantamientoIban1;
 	}
 	public BigDecimal getImporteALevantarIban2() {
@@ -295,10 +295,10 @@ public class OrdenLevantamientoRetencionFase5 {
 	public void setImporteALevantarIban2(BigDecimal importeALevantarIban2) {
 		this.importeALevantarIban2 = importeALevantarIban2;
 	}
-	public Integer getCodigoTipoLevantamientoIban2() {
+	public String getCodigoTipoLevantamientoIban2() {
 		return codigoTipoLevantamientoIban2;
 	}
-	public void setCodigoTipoLevantamientoIban2(Integer codigoTipoLevantamientoIban2) {
+	public void setCodigoTipoLevantamientoIban2(String codigoTipoLevantamientoIban2) {
 		this.codigoTipoLevantamientoIban2 = codigoTipoLevantamientoIban2;
 	}
 	public BigDecimal getImporteALevantarIban3() {
@@ -307,10 +307,10 @@ public class OrdenLevantamientoRetencionFase5 {
 	public void setImporteALevantarIban3(BigDecimal importeALevantarIban3) {
 		this.importeALevantarIban3 = importeALevantarIban3;
 	}
-	public Integer getCodigoTipoLevantamientoIban3() {
+	public String getCodigoTipoLevantamientoIban3() {
 		return codigoTipoLevantamientoIban3;
 	}
-	public void setCodigoTipoLevantamientoIban3(Integer codigoTipoLevantamientoIban3) {
+	public void setCodigoTipoLevantamientoIban3(String codigoTipoLevantamientoIban3) {
 		this.codigoTipoLevantamientoIban3 = codigoTipoLevantamientoIban3;
 	}
 	public BigDecimal getImporteALevantarIban4() {
@@ -319,10 +319,10 @@ public class OrdenLevantamientoRetencionFase5 {
 	public void setImporteALevantarIban4(BigDecimal importeALevantarIban4) {
 		this.importeALevantarIban4 = importeALevantarIban4;
 	}
-	public Integer getCodigoTipoLevantamientoIban4() {
+	public String getCodigoTipoLevantamientoIban4() {
 		return codigoTipoLevantamientoIban4;
 	}
-	public void setCodigoTipoLevantamientoIban4(Integer codigoTipoLevantamientoIban4) {
+	public void setCodigoTipoLevantamientoIban4(String codigoTipoLevantamientoIban4) {
 		this.codigoTipoLevantamientoIban4 = codigoTipoLevantamientoIban4;
 	}
 	public BigDecimal getImporteALevantarIban5() {
@@ -331,10 +331,10 @@ public class OrdenLevantamientoRetencionFase5 {
 	public void setImporteALevantarIban5(BigDecimal importeALevantarIban5) {
 		this.importeALevantarIban5 = importeALevantarIban5;
 	}
-	public Integer getCodigoTipoLevantamientoIban5() {
+	public String getCodigoTipoLevantamientoIban5() {
 		return codigoTipoLevantamientoIban5;
 	}
-	public void setCodigoTipoLevantamientoIban5(Integer codigoTipoLevantamientoIban5) {
+	public void setCodigoTipoLevantamientoIban5(String codigoTipoLevantamientoIban5) {
 		this.codigoTipoLevantamientoIban5 = codigoTipoLevantamientoIban5;
 	}
 	public BigDecimal getImporteALevantarIban6() {
@@ -343,10 +343,10 @@ public class OrdenLevantamientoRetencionFase5 {
 	public void setImporteALevantarIban6(BigDecimal importeALevantarIban6) {
 		this.importeALevantarIban6 = importeALevantarIban6;
 	}
-	public Integer getCodigoTipoLevantamientoIban6() {
+	public String getCodigoTipoLevantamientoIban6() {
 		return codigoTipoLevantamientoIban6;
 	}
-	public void setCodigoTipoLevantamientoIban6(Integer codigoTipoLevantamientoIban6) {
+	public void setCodigoTipoLevantamientoIban6(String codigoTipoLevantamientoIban6) {
 		this.codigoTipoLevantamientoIban6 = codigoTipoLevantamientoIban6;
 	}
 	

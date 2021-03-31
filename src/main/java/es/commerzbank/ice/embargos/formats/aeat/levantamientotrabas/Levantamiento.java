@@ -14,22 +14,22 @@ public class Levantamiento {
 	private Date fechaTraba;
 	private Date fechaLimiteIngresoImporteTrabado;
 	private String codigoCuentaCliente1;
-	private Integer codigoTipoLevantamientoEmbargoCC1;
+	private String codigoTipoLevantamientoEmbargoCC1;
 	private BigDecimal importeALevantarCC1;
 	private String codigoCuentaCliente2;
-	private Integer codigoTipoLevantamientoEmbargoCC2;
+	private String codigoTipoLevantamientoEmbargoCC2;
 	private BigDecimal importeALevantarCC2;
 	private String codigoCuentaCliente3;
-	private Integer codigoTipoLevantamientoEmbargoCC3;
+	private String codigoTipoLevantamientoEmbargoCC3;
 	private BigDecimal importeALevantarCC3;
 	private String codigoCuentaCliente4;
-	private Integer codigoTipoLevantamientoEmbargoCC4;
+	private String codigoTipoLevantamientoEmbargoCC4;
 	private BigDecimal importeALevantarCC4;
 	private String codigoCuentaCliente5;
-	private Integer codigoTipoLevantamientoEmbargoCC5;
+	private String codigoTipoLevantamientoEmbargoCC5;
 	private BigDecimal importeALevantarCC5;
 	private String codigoCuentaCliente6;
-	private Integer codigoTipoLevantamientoEmbargoCC6;
+	private String codigoTipoLevantamientoEmbargoCC6;
 	private BigDecimal importeALevantarCC6;
 	
 	public String getIndicadorRegistro() {
@@ -92,10 +92,10 @@ public class Levantamiento {
 	public void setCodigoCuentaCliente1(String codigoCuentaCliente1) {
 		this.codigoCuentaCliente1 = codigoCuentaCliente1;
 	}
-	public Integer getCodigoTipoLevantamientoEmbargoCC1() {
+	public String getCodigoTipoLevantamientoEmbargoCC1() {
 		return codigoTipoLevantamientoEmbargoCC1;
 	}
-	public void setCodigoTipoLevantamientoEmbargoCC1(Integer codigoTipoLevantamientoEmbargoCC1) {
+	public void setCodigoTipoLevantamientoEmbargoCC1(String codigoTipoLevantamientoEmbargoCC1) {
 		this.codigoTipoLevantamientoEmbargoCC1 = codigoTipoLevantamientoEmbargoCC1;
 	}
 	public BigDecimal getImporteALevantarCC1() {
@@ -110,10 +110,10 @@ public class Levantamiento {
 	public void setCodigoCuentaCliente2(String codigoCuentaCliente2) {
 		this.codigoCuentaCliente2 = codigoCuentaCliente2;
 	}
-	public Integer getCodigoTipoLevantamientoEmbargoCC2() {
+	public String getCodigoTipoLevantamientoEmbargoCC2() {
 		return codigoTipoLevantamientoEmbargoCC2;
 	}
-	public void setCodigoTipoLevantamientoEmbargoCC2(Integer codigoTipoLevantamientoEmbargoCC2) {
+	public void setCodigoTipoLevantamientoEmbargoCC2(String codigoTipoLevantamientoEmbargoCC2) {
 		this.codigoTipoLevantamientoEmbargoCC2 = codigoTipoLevantamientoEmbargoCC2;
 	}
 	public BigDecimal getImporteALevantarCC2() {
@@ -128,10 +128,10 @@ public class Levantamiento {
 	public void setCodigoCuentaCliente3(String codigoCuentaCliente3) {
 		this.codigoCuentaCliente3 = codigoCuentaCliente3;
 	}
-	public Integer getCodigoTipoLevantamientoEmbargoCC3() {
+	public String getCodigoTipoLevantamientoEmbargoCC3() {
 		return codigoTipoLevantamientoEmbargoCC3;
 	}
-	public void setCodigoTipoLevantamientoEmbargoCC3(Integer codigoTipoLevantamientoEmbargoCC3) {
+	public void setCodigoTipoLevantamientoEmbargoCC3(String codigoTipoLevantamientoEmbargoCC3) {
 		this.codigoTipoLevantamientoEmbargoCC3 = codigoTipoLevantamientoEmbargoCC3;
 	}
 	public BigDecimal getImporteALevantarCC3() {
@@ -146,10 +146,10 @@ public class Levantamiento {
 	public void setCodigoCuentaCliente4(String codigoCuentaCliente4) {
 		this.codigoCuentaCliente4 = codigoCuentaCliente4;
 	}
-	public Integer getCodigoTipoLevantamientoEmbargoCC4() {
+	public String getCodigoTipoLevantamientoEmbargoCC4() {
 		return codigoTipoLevantamientoEmbargoCC4;
 	}
-	public void setCodigoTipoLevantamientoEmbargoCC4(Integer codigoTipoLevantamientoEmbargoCC4) {
+	public void setCodigoTipoLevantamientoEmbargoCC4(String codigoTipoLevantamientoEmbargoCC4) {
 		this.codigoTipoLevantamientoEmbargoCC4 = codigoTipoLevantamientoEmbargoCC4;
 	}
 	public BigDecimal getImporteALevantarCC4() {
@@ -164,10 +164,10 @@ public class Levantamiento {
 	public void setCodigoCuentaCliente5(String codigoCuentaCliente5) {
 		this.codigoCuentaCliente5 = codigoCuentaCliente5;
 	}
-	public Integer getCodigoTipoLevantamientoEmbargoCC5() {
+	public String getCodigoTipoLevantamientoEmbargoCC5() {
 		return codigoTipoLevantamientoEmbargoCC5;
 	}
-	public void setCodigoTipoLevantamientoEmbargoCC5(Integer codigoTipoLevantamientoEmbargoCC5) {
+	public void setCodigoTipoLevantamientoEmbargoCC5(String codigoTipoLevantamientoEmbargoCC5) {
 		this.codigoTipoLevantamientoEmbargoCC5 = codigoTipoLevantamientoEmbargoCC5;
 	}
 	public BigDecimal getImporteALevantarCC5() {
@@ -182,10 +182,10 @@ public class Levantamiento {
 	public void setCodigoCuentaCliente6(String codigoCuentaCliente6) {
 		this.codigoCuentaCliente6 = codigoCuentaCliente6;
 	}
-	public Integer getCodigoTipoLevantamientoEmbargoCC6() {
+	public String getCodigoTipoLevantamientoEmbargoCC6() {
 		return codigoTipoLevantamientoEmbargoCC6;
 	}
-	public void setCodigoTipoLevantamientoEmbargoCC6(Integer codigoTipoLevantamientoEmbargoCC6) {
+	public void setCodigoTipoLevantamientoEmbargoCC6(String codigoTipoLevantamientoEmbargoCC6) {
 		this.codigoTipoLevantamientoEmbargoCC6 = codigoTipoLevantamientoEmbargoCC6;
 	}
 	public BigDecimal getImporteALevantarCC6() {

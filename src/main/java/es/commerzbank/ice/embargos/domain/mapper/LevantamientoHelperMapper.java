@@ -8,12 +8,15 @@ import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import java.math.BigDecimal;
 
 public class LevantamientoHelperMapper {
-    public CuentaLevantamiento mapCuentaLevantamiento(LevantamientoTraba levantamientoTraba, String iban, BigDecimal importe, CustomerDTO DWHCustomer, Traba traba, String usuarioModif, BigDecimal fechaUltmaModif)
+    public CuentaLevantamiento mapCuentaLevantamiento(
+            LevantamientoTraba levantamientoTraba, String iban, BigDecimal importe,
+            CustomerDTO DWHCustomer, Traba traba, String usuarioModif, BigDecimal fechaUltmaModif,
+            String codigoTipoLevantamiento)
     {
         CuentaLevantamiento cuentaLevantamiento = new CuentaLevantamiento();
 
         AccountDTO cuenta = findBankAccount(DWHCustomer, iban);
-        CuentaTraba cuentaTraba = findCuentaTraba(traba, iban);
+        CuentaTraba cuentaTraba = findCuentaTraba(traba, cuenta.getAccountNum());
 
         cuentaLevantamiento.setLevantamientoTraba(levantamientoTraba);
         cuentaLevantamiento.setIban(iban);
@@ -37,8 +40,7 @@ public class LevantamientoHelperMapper {
         estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE);
         cuentaLevantamiento.setEstadoLevantamiento(estadoLevantamiento);
 
-        // TODO
-        // TO BE DEFINED cuentaLevantamiento.setActuacion();
+        cuentaLevantamiento.setActuacion(codigoTipoLevantamiento);
 
         return cuentaLevantamiento;
     }
@@ -62,11 +64,11 @@ public class LevantamientoHelperMapper {
         return bankAccount;
     }
 
-    private CuentaTraba findCuentaTraba(Traba traba, String iban)
+    private CuentaTraba findCuentaTraba(Traba traba, String cuenta)
     {
         for (CuentaTraba cuentaTraba : traba.getCuentaTrabas())
         {
-            if (iban.equals(cuentaTraba.getIban()))
+            if (cuenta.equals(cuentaTraba.getCuenta()))
                 return cuentaTraba;
         }
 

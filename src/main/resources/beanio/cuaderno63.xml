@@ -383,19 +383,19 @@
 			<field name="claveSeguridadIban5" length="12" />
 			<field name="claveSeguridadIban6" length="12" />
 			<field name="totalImporteALevantar" typeHandler="importe12Digits" length="12"/>
-			<field name="codigoTipoLevantamientoARealizar" type="int" length="1"/>
+			<field name="codigoTipoLevantamientoARealizar" length="1"/>
 			<field name="importeALevantarIban1" typeHandler="importe12Digits" length="12"/>
-			<field name="codigoTipoLevantamientoIban1" type="int" length="1"/>
+			<field name="codigoTipoLevantamientoIban1" length="1"/>
 			<field name="importeALevantarIban2" typeHandler="importe12Digits" length="12"/>
-			<field name="codigoTipoLevantamientoIban2" type="int" length="1"/>
+			<field name="codigoTipoLevantamientoIban2" length="1"/>
 			<field name="importeALevantarIban3" typeHandler="importe12Digits" length="12"/>
-			<field name="codigoTipoLevantamientoIban3" type="int" length="1"/>
+			<field name="codigoTipoLevantamientoIban3" length="1"/>
 			<field name="importeALevantarIban4" typeHandler="importe12Digits" length="12"/>
-			<field name="codigoTipoLevantamientoIban4" type="int" length="1"/>
+			<field name="codigoTipoLevantamientoIban4" length="1"/>
 			<field name="importeALevantarIban5" typeHandler="importe12Digits" length="12"/>
-			<field name="codigoTipoLevantamientoIban5" type="int" length="1"/>
+			<field name="codigoTipoLevantamientoIban5" length="1"/>
 			<field name="importeALevantarIban6" typeHandler="importe12Digits" length="12"/>
-			<field name="codigoTipoLevantamientoIban6" type="int" length="1"/>
+			<field name="codigoTipoLevantamientoIban6" length="1"/>
 			<field name="libre" ignore="true" length="61" />
 		</record>
 		<record name="finFichero"

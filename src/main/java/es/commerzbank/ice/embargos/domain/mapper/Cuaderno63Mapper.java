@@ -750,7 +750,7 @@ public abstract class Cuaderno63Mapper {
 			CuentaLevantamiento cuentaLevantamiento1 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento,
 					ordenLevantamientoRetencionFase5.getIbanCuenta1(),
 					ordenLevantamientoRetencionFase5.getImporteALevantarIban1(), DWHCustomer, traba, usuarioModif,
-					fechaUltmaModif);
+					fechaUltmaModif, ordenLevantamientoRetencionFase5.getCodigoTipoLevantamientoIban1());
 			cuentaLevantamiento1.setNumeroOrdenCuenta(new BigDecimal(1));
 			cuentas.add(cuentaLevantamiento1);
 		}
@@ -759,7 +759,7 @@ public abstract class Cuaderno63Mapper {
 			CuentaLevantamiento cuentaLevantamiento2 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento,
 					ordenLevantamientoRetencionFase5.getIbanCuenta2(),
 					ordenLevantamientoRetencionFase5.getImporteALevantarIban2(), DWHCustomer, traba, usuarioModif,
-					fechaUltmaModif);
+					fechaUltmaModif, ordenLevantamientoRetencionFase5.getCodigoTipoLevantamientoIban2());
 			cuentaLevantamiento2.setNumeroOrdenCuenta(new BigDecimal(2));
 			cuentas.add(cuentaLevantamiento2);
 		}
@@ -768,7 +768,7 @@ public abstract class Cuaderno63Mapper {
 			CuentaLevantamiento cuentaLevantamiento3 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento,
 					ordenLevantamientoRetencionFase5.getIbanCuenta3(),
 					ordenLevantamientoRetencionFase5.getImporteALevantarIban3(), DWHCustomer, traba, usuarioModif,
-					fechaUltmaModif);
+					fechaUltmaModif, ordenLevantamientoRetencionFase5.getCodigoTipoLevantamientoIban3());
 			cuentaLevantamiento3.setNumeroOrdenCuenta(new BigDecimal(3));
 			cuentas.add(cuentaLevantamiento3);
 		}
@@ -777,7 +777,7 @@ public abstract class Cuaderno63Mapper {
 			CuentaLevantamiento cuentaLevantamiento4 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento,
 					ordenLevantamientoRetencionFase5.getIbanCuenta4(),
 					ordenLevantamientoRetencionFase5.getImporteALevantarIban4(), DWHCustomer, traba, usuarioModif,
-					fechaUltmaModif);
+					fechaUltmaModif, ordenLevantamientoRetencionFase5.getCodigoTipoLevantamientoIban4());
 			cuentaLevantamiento4.setNumeroOrdenCuenta(new BigDecimal(4));
 			cuentas.add(cuentaLevantamiento4);
 		}
@@ -786,7 +786,7 @@ public abstract class Cuaderno63Mapper {
 			CuentaLevantamiento cuentaLevantamiento5 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento,
 					ordenLevantamientoRetencionFase5.getIbanCuenta5(),
 					ordenLevantamientoRetencionFase5.getImporteALevantarIban5(), DWHCustomer, traba, usuarioModif,
-					fechaUltmaModif);
+					fechaUltmaModif, ordenLevantamientoRetencionFase5.getCodigoTipoLevantamientoIban5());
 			cuentaLevantamiento5.setNumeroOrdenCuenta(new BigDecimal(5));
 			cuentas.add(cuentaLevantamiento5);
 		}
@@ -795,7 +795,7 @@ public abstract class Cuaderno63Mapper {
 			CuentaLevantamiento cuentaLevantamiento6 = levantamientoHelperMapper.mapCuentaLevantamiento(levantamiento,
 					ordenLevantamientoRetencionFase5.getIbanCuenta6(),
 					ordenLevantamientoRetencionFase5.getImporteALevantarIban6(), DWHCustomer, traba, usuarioModif,
-					fechaUltmaModif);
+					fechaUltmaModif, ordenLevantamientoRetencionFase5.getCodigoTipoLevantamientoIban6());
 			cuentaLevantamiento6.setNumeroOrdenCuenta(new BigDecimal(6));
 			cuentas.add(cuentaLevantamiento6);
 		}

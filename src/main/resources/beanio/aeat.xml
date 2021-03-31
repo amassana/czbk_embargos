@@ -531,22 +531,22 @@
 			<field name="fechaTraba" type="date" length="8" format="yyyyMMdd" />
 			<field name="fechaLimiteIngresoImporteTrabado" type="date" length="8" format="yyyyMMdd" />
 			<field name="codigoCuentaCliente1" length="20" />
-			<field name="codigoTipoLevantamientoEmbargoCC1" type="int" length="2" />
+			<field name="codigoTipoLevantamientoEmbargoCC1" length="2" />
 			<field name="importeALevantarCC1" typeHandler="importe" length="15" />
 			<field name="codigoCuentaCliente2" length="20" />
-			<field name="codigoTipoLevantamientoEmbargoCC2" type="int" length="2" />
+			<field name="codigoTipoLevantamientoEmbargoCC2" length="2" />
 			<field name="importeALevantarCC2" typeHandler="importe" length="15" />
 			<field name="codigoCuentaCliente3" length="20" />
-			<field name="codigoTipoLevantamientoEmbargoCC3" type="int" length="2" />
+			<field name="codigoTipoLevantamientoEmbargoCC3" length="2" />
 			<field name="importeALevantarCC3" typeHandler="importe" length="15" />
 			<field name="codigoCuentaCliente4" length="20" />
-			<field name="codigoTipoLevantamientoEmbargoCC4" type="int" length="2" />
+			<field name="codigoTipoLevantamientoEmbargoCC4" length="2" />
 			<field name="importeALevantarCC4" typeHandler="importe" length="15" />
 			<field name="codigoCuentaCliente5" length="20" />
-			<field name="codigoTipoLevantamientoEmbargoCC5" type="int" length="2" />
+			<field name="codigoTipoLevantamientoEmbargoCC5" length="2" />
 			<field name="importeALevantarCC5" typeHandler="importe" length="15" />
 			<field name="codigoCuentaCliente6" length="20" />
-			<field name="codigoTipoLevantamientoEmbargoCC6" type="int" length="2" />
+			<field name="codigoTipoLevantamientoEmbargoCC6" length="2" />
 			<field name="importeALevantarCC6" typeHandler="importe" length="15" />
 			<field name="posicionesLibres" length="4" ignore="true" />
 		</record>
