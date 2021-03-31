@@ -34,4 +34,8 @@
 
     <include file="2021/20210330_estado_ctrlfichero_levantamiento_pendiente_conta_auto.xml" relativeToChangelogFile="true" />
 
+    <changeSet id="entrega_20210331" author="aniol.massana">
+        <tagDatabase tag="entrega_20210331"/>
+    </changeSet>
+
 </databaseChangeLog>
