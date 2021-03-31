@@ -338,28 +338,23 @@ public class LiftingServiceImpl
 	*/
 
 	@Override
-	public byte[] generarResumenLevantamientoF5(Integer cod_file_control) throws Exception {
+	public byte[] generarResumenLevantamientoF5(Integer codControlFichero, String oficina) throws Exception {
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 		try (Connection conn_embargos = oracleDataSourceEmbargos.getEmbargosConnection()) {
 
-			Resource resumenLevantamiento = ResourcesUtil.getFromJasperFolder("f5_seizureLifting.jasper");
-			Resource headerResource = ResourcesUtil.getReportHeaderResource();
-			Resource imageResource = ResourcesUtil.getImageLogoCommerceResource();
+			Resource resumenLevantamiento = ResourcesUtil.getFromJasperFolder("F5_levantamiento.jasper");
 
-			File image = imageResource.getFile();
+			Resource logoRes = ResourcesUtil.getImageLogoCommerceResource();
 
-			InputStream subReportHeaderInputStream = headerResource.getInputStream();
-
-			JasperReport subReportHeader = (JasperReport) JRLoader.loadObject(subReportHeaderInputStream);
-
-			parameters.put("sub_img_param", image.toString());
-			parameters.put("SUBREPORT_HEADER", subReportHeader);
-			parameters.put("COD_FILE_CONTROL", cod_file_control);
+			parameters.put("img_param", logoRes.getFile().toString());
+			parameters.put("COD_FILE_CONTROL", codControlFichero);
+			parameters.put("NOMBRE_SUCURSAL", oficina);
 
 			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 
-			InputStream finalEmbargosIS = resumenLevantamiento.getInputStream();
-			JasperPrint fillReport = JasperFillManager.fillReport(finalEmbargosIS, parameters, conn_embargos);
+			InputStream resumenInputStream = resumenLevantamiento.getInputStream();
+
+			JasperPrint fillReport = JasperFillManager.fillReport(resumenInputStream, parameters, conn_embargos);
 
 			List<JRPrintPage> pages = fillReport.getPages();
 

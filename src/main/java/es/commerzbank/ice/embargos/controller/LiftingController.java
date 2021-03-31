@@ -8,6 +8,7 @@ import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.LiftingService;
 import es.commerzbank.ice.embargos.utils.DownloadReportFile;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.OfficeUtils;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,9 @@ public class LiftingController {
 
 	@Autowired
 	private FileControlService fileControlService;
+
+	@Autowired
+	private OfficeUtils officeUtils;
 
 	@GetMapping(value = "/{codeFileControl}")
 	@ApiOperation(value = "Devuelve la lista de casos de levamtamientos")
@@ -281,6 +285,7 @@ public class LiftingController {
 	@GetMapping("/{fileControl}/report")
 	@ApiOperation(value = "Devuelve el fichero de resumen de levantamiento FASE 5")
 	public ResponseEntity<InputStreamResource> generarResumenLevantamientoF5(
+			Authentication authentication,
 			@PathVariable("fileControl") Integer codFileControl) {
 		try {
 			DownloadReportFile downloadReportFile = new DownloadReportFile();
@@ -289,7 +294,8 @@ public class LiftingController {
 
 			downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
-			downloadReportFile.writeFile(liftingService.generarResumenLevantamientoF5(codFileControl));
+			String oficina = officeUtils.getLocalidadUsuario(authentication);
+			downloadReportFile.writeFile(liftingService.generarResumenLevantamientoF5(codFileControl, oficina));
 
 			return downloadReportFile.returnToDownloadFile();
 
@@ -301,8 +307,9 @@ public class LiftingController {
 	}
 
 	@GetMapping("/notification/{idLifting}/report")
-	@ApiOperation(value = "Devuelve un levantamiento de embargo")
+	@ApiOperation(value = "Imprime una carta de levantamiento")
 	public ResponseEntity<InputStreamResource> generateLiftingLetter(
+			Authentication authentication,
 			@PathVariable("idLifting") Long idLifting) {
 
 		try {
@@ -312,7 +319,6 @@ public class LiftingController {
 
 			downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
-			// seizure service falta
 			downloadReportFile.writeFile(liftingService.generateLiftingLetter(idLifting));
 
 			return downloadReportFile.returnToDownloadFile();

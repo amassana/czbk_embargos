@@ -23,7 +23,7 @@ public interface LiftingService {
 
 	//void updateLiftingtatus(LevantamientoTraba levantamientoTraba, long codEstado, String userName);
 
-	byte[] generarResumenLevantamientoF5(Integer cod_file_control) throws Exception;
+	byte[] generarResumenLevantamientoF5(Integer codControlFichero, String oficina) throws Exception;
 
 	byte[] generateLiftingLetter(Long idLifting) throws Exception;
 	
