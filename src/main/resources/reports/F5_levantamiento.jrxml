@@ -379,7 +379,7 @@ ORDER BY
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="SansSerif" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{IMPORTE_TOTAL_LEVANTADO}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($V{IMPORTE_TOTAL_LEVANTADO}) +" EUROS"]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="321" y="0" width="146" height="21" uuid="89008acf-4649-4274-b79e-12401559bece">
