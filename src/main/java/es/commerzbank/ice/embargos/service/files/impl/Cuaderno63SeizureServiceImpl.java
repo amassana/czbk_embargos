@@ -273,7 +273,9 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 	        			for (AccountDTO accountDTO : customerDTO.getBankAccounts()) {
 	        			
 	        				//Se guarda la cuenta si no se encuentra en el fichero de embargos:
-	        				if(!ibanClienteFicheroEmbargoList.contains(accountDTO.getIban())) {
+	        				//Se añade la condición de que la cuenta no esté cancelada
+	        				if(!ibanClienteFicheroEmbargoList.contains(accountDTO.getIban()) &&
+	        					!EmbargosConstants.BANK_ACCOUNT_STATUS_CANCELLED.equals(accountDTO.getStatus())) {
 	        					
 	        					numeroOrdenCuenta = numeroOrdenCuenta.add(BigDecimal.valueOf(1));
 	        					
