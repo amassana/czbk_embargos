@@ -206,7 +206,8 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 						FestiveService.ValueDateCalculationParameters parameters = new FestiveService.ValueDateCalculationParameters();
 						parameters.numBusinessDays = entidadComunicadora.getDiasRespuestaF3()!=null ? entidadComunicadora.getDiasRespuestaF3().intValue() : 0;;
 						parameters.location = 1L;
-						parameters.fromDate = DateUtils.convertToLocalDate(diligenciaFase3.getFechaGeneracionDiligencia());
+						parameters.fromDate = LocalDate.now();
+						//parameters.fromDate = DateUtils.convertToLocalDate(diligenciaFase3.getFechaGeneracionDiligencia());
 						Date finalDate = DateUtils.convertToDate(festiveService.dateCalculation(parameters));
 						BigDecimal limitResponseDate = ICEDateUtils.dateToBigDecimal(finalDate, ICEDateUtils.FORMAT_yyyyMMdd);
 

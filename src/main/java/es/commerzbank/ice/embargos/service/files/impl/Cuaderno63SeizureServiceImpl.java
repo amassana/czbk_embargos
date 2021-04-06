@@ -181,7 +181,8 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 					FestiveService.ValueDateCalculationParameters parameters = new FestiveService.ValueDateCalculationParameters();
 					parameters.numBusinessDays = diasRespuestaF3;
 					parameters.location = 1L;
-					parameters.fromDate = DateUtils.convertToLocalDate(fechaObtencionFicheroOrganismo);
+					parameters.fromDate = LocalDate.now();
+					//parameters.fromDate = DateUtils.convertToLocalDate(fechaObtencionFicheroOrganismo);
 					LocalDate finalDate = festiveService.dateCalculation(parameters);
 					Date lastDateResponse = Date.from(finalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
 
