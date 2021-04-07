@@ -303,7 +303,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 			} else if (cuentaTraba.getImporte() == null) {
 				logger.info(logMessage + "El importe es nulo.");
-			} else if (cuentaTraba.getImporte() == null && cuentaTraba.getImporte().compareTo(BigDecimal.ZERO) <= 0) {
+			} else if (cuentaTraba.getImporte() != null && cuentaTraba.getImporte().compareTo(BigDecimal.ZERO) <= 0) {
 				logger.info(logMessage + "No hay importe a contabilizar.");
 			}
 			else {
