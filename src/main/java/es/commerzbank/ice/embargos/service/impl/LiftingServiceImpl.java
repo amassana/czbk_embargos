@@ -1,5 +1,6 @@
 package es.commerzbank.ice.embargos.service.impl;
 
+import com.itextpdf.kernel.PdfException;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
@@ -22,7 +23,6 @@ import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.EmbargosUtils;
 import es.commerzbank.ice.embargos.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.util.JRLoader;
 import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -447,9 +447,17 @@ public class LiftingServiceImpl
 				}
 			}
 
-			outDoc.close();
+			LOG.info("Se han acumulado "+ outDoc.getNumberOfPages() +" páginas de cartas a enviar");
 
-			reportHelper.moveToPrintFolder(temporaryFile);
+			try {
+				// Se prefiere el catch a numPages > 0 por si el outDoc debe igualmente hacer alguna acción en el close.
+				outDoc.close();
+
+				reportHelper.moveToPrintFolder(temporaryFile);
+			} catch (PdfException e) {
+				if ("Document has no pages.".equals(e.getMessage())) ;
+				else throw e;
+			}
 		}
 	}
 

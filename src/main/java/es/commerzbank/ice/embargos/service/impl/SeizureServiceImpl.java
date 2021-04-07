@@ -734,7 +734,10 @@ public class SeizureServiceImpl
 				}
 			}
 
+			logger.info("Se han acumulado "+ outDoc.getNumberOfPages() +" páginas de cartas a enviar");
+
 			try {
+				// Se prefiere el catch a numPages > 0 por si el outDoc debe igualmente hacer alguna acción en el close.
 				outDoc.close();
 
 				reportHelper.moveToPrintFolder(temporaryFile);
