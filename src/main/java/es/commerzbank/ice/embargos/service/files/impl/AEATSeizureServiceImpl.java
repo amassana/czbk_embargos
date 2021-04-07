@@ -206,7 +206,8 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 						FestiveService.ValueDateCalculationParameters parameters = new FestiveService.ValueDateCalculationParameters();
 						parameters.numBusinessDays = entidadComunicadora.getDiasRespuestaF3()!=null ? entidadComunicadora.getDiasRespuestaF3().intValue() : 0;;
 						parameters.location = 1L;
-						parameters.fromDate = DateUtils.convertToLocalDate(diligenciaFase3.getFechaGeneracionDiligencia());
+						parameters.fromDate = LocalDate.now();
+						//parameters.fromDate = DateUtils.convertToLocalDate(diligenciaFase3.getFechaGeneracionDiligencia());
 						Date finalDate = DateUtils.convertToDate(festiveService.dateCalculation(parameters));
 						BigDecimal limitResponseDate = ICEDateUtils.dateToBigDecimal(finalDate, ICEDateUtils.FORMAT_yyyyMMdd);
 
@@ -260,7 +261,9 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 		        			for (AccountDTO accountDTO : customerDTO.getBankAccounts()) {
 			
 		        				//Se guarda la cuenta si no se encuentra en el fichero de embargos:
-		        				if(!accountNumClienteFicheroEmbargoList.contains(accountDTO.getAccountNum())) {
+		        				//Se añade la condición de que la cuenta no esté cancelada
+		        				if(!accountNumClienteFicheroEmbargoList.contains(accountDTO.getAccountNum()) &&
+		        					!EmbargosConstants.BANK_ACCOUNT_STATUS_CANCELLED.equals(accountDTO.getStatus())) {
 		        					
 		        					numeroOrdenCuenta = numeroOrdenCuenta.add(BigDecimal.valueOf(1));
 		        					
