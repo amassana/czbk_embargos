@@ -1,5 +1,6 @@
 package es.commerzbank.ice.embargos.service.impl;
 
+import com.itextpdf.kernel.PdfException;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import es.commerzbank.ice.comun.lib.domain.entity.Tarea;
@@ -733,9 +734,14 @@ public class SeizureServiceImpl
 				}
 			}
 
-			outDoc.close();
+			try {
+				outDoc.close();
 
-			reportHelper.moveToPrintFolder(temporaryFile);
+				reportHelper.moveToPrintFolder(temporaryFile);
+			} catch (PdfException e) {
+				if ("Document has no pages.".equals(e.getMessage())) ;
+				else throw e;
+			}
 		}
 	}
 
