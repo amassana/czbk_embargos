@@ -1,18 +1,15 @@
 package es.commerzbank.ice.embargos.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.UUID;
-
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
 
 public class DownloadReportFile {
 
@@ -98,14 +95,10 @@ public class DownloadReportFile {
 		return new ResponseEntity<InputStreamResource>(isr, respHeaders, HttpStatus.OK);
 	}
 
+	private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+
 	private String getTodayDate() {
-
-		Calendar calendar = Calendar.getInstance();
-
-		int month = calendar.get(Calendar.MONTH);
-
-		return String
-				.valueOf(calendar.get(Calendar.YEAR) + "" + (month + 1) + "" + calendar.get(Calendar.DAY_OF_MONTH));
+		return simpleDateFormat.format(new Date());
 	}
 
 }
