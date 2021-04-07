@@ -110,10 +110,14 @@ public class AccountingServiceImpl implements AccountingService{
 				return;
 			}
 
-			sendSeizureCGPJ(controlFichero, userName);
+			boolean contabilizado = sendSeizureCGPJ(controlFichero, userName);
 
-			fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(),
+			if (contabilizado)
+				fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(),
 					COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_ACCOUNTING_RESPONSE, userName);
+			else
+				fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(),
+						COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_TO_SEND, userName);
 		} else if (isAEAT){
 
 			//Para contabilizar, el estado de ControlFichero tiene que ser previo o igual a "Recibido":
@@ -124,14 +128,17 @@ public class AccountingServiceImpl implements AccountingService{
 				return;
 			}
 			
-			sendSeizureAEATCuaderno63(controlFichero, userName);
+			boolean contabilizado = sendSeizureAEATCuaderno63(controlFichero, userName);
 
-			fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(),
+			if (contabilizado)
+				fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(),
 					COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_ACCOUNTING_RESPONSE, userName);
+			else
+				fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(),
+					COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_TO_SEND, userName);
 		}
 		else if (isCuaderno63)
 		{
-			
 			//Para contabilizar, el estado de ControlFichero tiene que ser previo o igual a "Recibido":
 			if (codEstadoCtrlFichero != COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_RECEIVED) {
 			
@@ -139,12 +146,15 @@ public class AccountingServiceImpl implements AccountingService{
 				
 				return;
 			}
-						
-			sendSeizureAEATCuaderno63(controlFichero, userName);
 
-			fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(),
+			boolean contabilizado = sendSeizureAEATCuaderno63(controlFichero, userName);
+
+			if (contabilizado)
+				fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(),
 					COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_ACCOUNTING_RESPONSE, userName);
-			
+			else
+				fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(),
+					COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_TO_SEND, userName);
 		} else {
 			logger.info("sendAccountingSeizure - end");
 			return;
@@ -165,7 +175,8 @@ public class AccountingServiceImpl implements AccountingService{
 		return stb.toString();
 	}
 
-	private void sendSeizureAEATCuaderno63(ControlFichero controlFichero, String userName) throws Exception {
+	// Devuelve true si se ha contabilizado algo
+	private boolean sendSeizureAEATCuaderno63(ControlFichero controlFichero, String userName) throws Exception {
 
 		String oficinaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA);
 		String cuentaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);
@@ -204,10 +215,14 @@ public class AccountingServiceImpl implements AccountingService{
 		
 		if (fileControlFicheroComunes != null) {
 			accountingNoteService.generacionFicheroContabilidad(fileControlFicheroComunes);
+			return true;
 		}
+
+		return false;
 	}
 
-	private void sendSeizureCGPJ(ControlFichero controlFichero, String userName) throws ICEException, Exception {
+	// devuelve true si se ha contabilizado algo
+	private boolean sendSeizureCGPJ(ControlFichero controlFichero, String userName) throws ICEException, Exception {
 		String oficinaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA);
 		String cuentaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);
 		String cuentaIntercambioDivisas = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_INTERCAMBIO_DIVISAS);
@@ -257,7 +272,10 @@ public class AccountingServiceImpl implements AccountingService{
 		
 		if (fileControlFicheroComunes != null) {
 			accountingNoteService.generacionFicheroContabilidad(fileControlFicheroComunes);
+			return true;
 		}
+
+		return false;
 	}
 
 	private es.commerzbank.ice.comun.lib.domain.entity.ControlFichero contabilizarTraba(
