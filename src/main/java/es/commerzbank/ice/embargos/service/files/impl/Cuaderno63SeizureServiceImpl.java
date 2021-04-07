@@ -278,7 +278,7 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 	        				if(!ibanClienteFicheroEmbargoList.contains(accountDTO.getIban()) &&
 	        					!EmbargosConstants.BANK_ACCOUNT_STATUS_CANCELLED.equals(accountDTO.getStatus())) {
 	        					
-	        					numeroOrdenCuenta = numeroOrdenCuenta.add(BigDecimal.valueOf(1));
+	        					numeroOrdenCuenta = numeroOrdenCuenta.add(BigDecimal.ONE);
 	        					
 	        					CuentaTraba cuentaTrabaExtra = seizedBankAccountMapper.accountDTOToCuentaTraba(accountDTO, numeroOrdenCuenta, traba);
 	        					if (EmbargosConstants.BANK_ACCOUNT_STATUS_CANCELLED.equals(accountDTO.getStatus())) {

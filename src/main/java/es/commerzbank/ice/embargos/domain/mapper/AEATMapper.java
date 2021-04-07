@@ -52,7 +52,7 @@ public abstract class AEATMapper {
 		
 		List<CuentaEmbargo> cuentaEmbargosList = new ArrayList<>();
 		
-		BigDecimal numeroOrden = new BigDecimal(1);
+		BigDecimal numeroOrden = BigDecimal.ONE;
 		
 		BigDecimal fechaUltmaModif = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
 		String usuarioModif = EmbargosConstants.USER_AUTOMATICO;
@@ -85,7 +85,7 @@ public abstract class AEATMapper {
 						
 			cuentaEmbargosList.add(cuentaEmbargo);
 
-			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
+			numeroOrden = numeroOrden.add(BigDecimal.ONE);
 			
 		}
 		
@@ -102,7 +102,7 @@ public abstract class AEATMapper {
 			
 			cuentaEmbargosList.add(cuentaEmbargo);
 
-			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
+			numeroOrden = numeroOrden.add(BigDecimal.ONE);
 		}
 		
 		//Datos cuenta cliente 3:	
@@ -117,7 +117,6 @@ public abstract class AEATMapper {
 			cuentaEmbargo = setCuentaEmbargoFromAccountDTO(accountDTO, codigoCuentaCliente3, ibanFromCCC3, embargo, numeroOrden, fechaUltmaModif, usuarioModif);
 			
 			cuentaEmbargosList.add(cuentaEmbargo);
-
 		}
 		
 		embargo.setCuentaEmbargos(cuentaEmbargosList);
@@ -220,7 +219,7 @@ public abstract class AEATMapper {
 			
 			cuentaTrabasList.add(cuentaTraba);
 			
-			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
+			numeroOrden = numeroOrden.add(BigDecimal.ONE);
 		}
 		
 		//Datos cuenta cliente 2:
@@ -236,7 +235,7 @@ public abstract class AEATMapper {
 			
 			cuentaTrabasList.add(cuentaTraba);
 			
-			numeroOrden = numeroOrden.add(BigDecimal.valueOf(1));
+			numeroOrden = numeroOrden.add(BigDecimal.ONE);
 		}
 		
 		//Datos cuenta cliente 3:
