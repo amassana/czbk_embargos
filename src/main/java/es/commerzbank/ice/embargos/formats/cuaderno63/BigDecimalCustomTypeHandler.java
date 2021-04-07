@@ -1,9 +1,9 @@
 package es.commerzbank.ice.embargos.formats.cuaderno63;
 
-import java.math.BigDecimal;
-
 import org.beanio.types.TypeConversionException;
 import org.beanio.types.TypeHandler;
+
+import java.math.BigDecimal;
 
 public class BigDecimalCustomTypeHandler implements TypeHandler{
 	
@@ -36,6 +36,11 @@ public class BigDecimalCustomTypeHandler implements TypeHandler{
 	 */
 	@Override
 	public Object parse(String text) throws TypeConversionException {
+		if (text == null)
+			return null;
+		if (text.trim().length() == 0)
+			return null;
+
 		return new BigDecimal(text).divide(pontenciaDeDiez);
 	}
 
