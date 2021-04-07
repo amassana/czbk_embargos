@@ -1,7 +1,6 @@
 package es.commerzbank.ice.embargos.controller;
 
 import es.commerzbank.ice.comun.lib.domain.entity.Tarea;
-import es.commerzbank.ice.comun.lib.security.Permissions;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
@@ -192,7 +191,8 @@ public class FinalResponseController {
 
 		return response;
 	}
-	
+
+	/*
 	@GetMapping("/anexo/{cod_usuario}/{cod_traba}/{num_anexo}/report")
 	public ResponseEntity<InputStreamResource> generarAnexo(@PathVariable("cod_usuario") BigDecimal cod_usuario,
 			@PathVariable("cod_traba") BigDecimal cod_traba, @PathVariable("num_anexo") Integer num_anexo)
@@ -219,10 +219,36 @@ public class FinalResponseController {
 
 		return response;
 	}
+	*/
+
+	@GetMapping("/anexoTGSS")
+	public ResponseEntity<InputStreamResource> reportAnexoTGSS(@PathVariable("codeFileControl") Long codeFileControl)
+	{
+		ResponseEntity<InputStreamResource> response = null;
+
+		try {
+			DownloadReportFile downloadReportFile = new DownloadReportFile();
+
+			downloadReportFile.setTempFileName("TGSSAnexo_"+ codeFileControl);
+
+			downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
+
+			downloadReportFile.writeFile(finalResponseService.generarAnexo(BigDecimal.ONE, BigDecimal.ONE, 1));
+
+			response = downloadReportFile.returnToDownloadFile();
+
+		} catch (Exception e) {
+			logger.error("Error in downloadAnexo", e);
+
+			response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		return response;
+	}
 	
 	@GetMapping("/{fileControl}/report")
 	@ApiOperation(value = "Devuelve el fichero de respuesta final de embargos")
-	public ResponseEntity<InputStreamResource> generarRespuestaFinalEmbargo(
+	public ResponseEntity<InputStreamResource> reportFinalCiclo(
 			@PathVariable("fileControl") Integer codFileControl) {
 
 		try {
@@ -245,7 +271,7 @@ public class FinalResponseController {
 	
 	@GetMapping("/cgpj/{cod_traba}/report")
 	@ApiOperation(value = "Devuelve el fichero de solicitud de ejecucion")
-	public ResponseEntity<InputStreamResource> generatePaymentLetterCGPJ(
+	public ResponseEntity<InputStreamResource> reportCartaPagoCGPJ(
 			@PathVariable("cod_traba") String cod_solicitud_ejecucion) {
 
 		try {
@@ -268,7 +294,7 @@ public class FinalResponseController {
 	
 	@GetMapping("/transferOrder/{cod_control_fichero}/report")
 	@ApiOperation(value = "Devuelve un fichero de orden de tansferencia")
-	private ResponseEntity<InputStreamResource> generatePaymentLetterN63(
+	public ResponseEntity<InputStreamResource> reportCartaPagoNorma63(
 			@PathVariable(name = "cod_control_fichero") String cod_control_fichero) {
 
 		try {
@@ -295,20 +321,13 @@ public class FinalResponseController {
 											  @PathVariable("codeFileControl") Long codeFileControl) {
 		logger.info("SeizureSummaryController - createNorma63 - start "+ codeFileControl);
 		ResponseEntity<Void> response = null;
-		//OrderingEntity result = null;
-
-		if (!Permissions.hasPermission(authentication, "ui.impuestos")) {
-			logger.info("SeizureSummaryController - createNorma63 - forbidden");
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-		}
 
 		if (codeFileControl != null) {
 			try {
 				norma63Fase6.generarFase6(codeFileControl, authentication.getName());
 				response = new ResponseEntity<>(HttpStatus.OK);
 			} catch (Exception e) {
-				logger.error("eizureSummaryController - createNorma63 - Error while generating norma 63 summary file",
-						e);
+				logger.error("SeizureSummaryController - createNorma63 - Error while generating norma 63 summary file", e);
 				response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		} else {
