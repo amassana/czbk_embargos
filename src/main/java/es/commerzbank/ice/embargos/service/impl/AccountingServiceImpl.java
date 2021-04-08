@@ -749,6 +749,11 @@ public class AccountingServiceImpl implements AccountingService{
 
 		CuentaTraba cuentaTraba = opt.get();
 
+		if (cuentaTraba.getEstadoTraba().getCodEstado() != COD_ESTADO_TRABA_ENVIADA_A_CONTABILIDAD) {
+			logger.error("La cuentaTraba código "+ codCuentaTraba +" no está pendiente de respuesta contable - ignorando.");
+			return;
+		}
+
 		// Se cambia el estado de la Cuenta Traba a Contabilizada
 		// Se actualizará en cascada el estado de la traba y del fichero si es necesario
 		seizureService.updateSeizedBankStatus(cuentaTraba, EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA, USER_AUTOMATICO);
@@ -782,6 +787,11 @@ public class AccountingServiceImpl implements AccountingService{
 		}
 
 		CuentaLevantamiento	cuentaLevantamiento = opt.get();
+
+		if (cuentaLevantamiento.getEstadoLevantamiento().getCodEstado() != COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION) {
+			logger.error("La cuentaLevantamiento código "+ codCuentaLevantamiento +" no está pendiente de respuesta contable - ignorando.");
+			return;
+		}
 
 		// Actualizar cuenta
 		AccountStatusLiftingDTO status = new AccountStatusLiftingDTO();
