@@ -50,7 +50,7 @@ public class AccountingServiceImpl implements AccountingService{
 	private GeneralParametersService generalParametersService;
 	
 	@Autowired
-	private FinalFileService finalFileService;
+	private FinalResponseService finalResponseService;
 	
 	@Autowired
 	private FileControlRepository fileControlRepository;
@@ -724,14 +724,14 @@ public class AccountingServiceImpl implements AccountingService{
 			
 			accountingNoteService.contabilizar(accountingNote);
 
-			finalFileService.updateFinalFileAccountingStatus(ficheroFinal, EmbargosConstants.COD_ESTADO_CONTABILIZACION_ENVIADA_A_CONTABILIDAD, userName);
+			finalResponseService.updateFinalFileAccountingStatus(ficheroFinal, EmbargosConstants.COD_ESTADO_CONTABILIZACION_ENVIADA_A_CONTABILIDAD, userName);
 
 			accountingNoteService.generacionFicheroContabilidad(fileControlFicheroComunes);
 		} else {
 			
 			//Si el importe es 0 -> no se llama a contabilizar y se actualiza el estado a 'Contabilizada':
 			
-			finalFileService.updateFinalFileAccountingStatus(ficheroFinal, EmbargosConstants.COD_ESTADO_CONTABILIZACION_CONTABILIZADA, userName);	
+			finalResponseService.updateFinalFileAccountingStatus(ficheroFinal, EmbargosConstants.COD_ESTADO_CONTABILIZACION_CONTABILIZADA, userName);
 		}	
 		
 		logger.info("sendAccountingFinalFile - end");
@@ -772,7 +772,7 @@ public class AccountingServiceImpl implements AccountingService{
 			Log.error ("FicheroFinal not found with codControlFichero=" + codControlFicheroFinal);
 		}
 
-		finalFileService.updateFinalFileAccountingStatus(ficheroFinal, EmbargosConstants.COD_ESTADO_CONTABILIZACION_CONTABILIZADA, USER_AUTOMATICO);
+		finalResponseService.updateFinalFileAccountingStatus(ficheroFinal, EmbargosConstants.COD_ESTADO_CONTABILIZACION_CONTABILIZADA, USER_AUTOMATICO);
 	}
 
 	@Override

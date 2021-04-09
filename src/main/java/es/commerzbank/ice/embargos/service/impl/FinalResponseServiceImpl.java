@@ -1,13 +1,13 @@
 package es.commerzbank.ice.embargos.service.impl;
 
+import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
 import es.commerzbank.ice.embargos.domain.dto.FinalResponseBankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.FinalResponseDTO;
-import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
-import es.commerzbank.ice.embargos.domain.entity.CuentaResultadoEmbargo;
-import es.commerzbank.ice.embargos.domain.entity.ResultadoEmbargo;
+import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.FinalResponseBankAccountMapper;
 import es.commerzbank.ice.embargos.domain.mapper.FinalResponseMapper;
+import es.commerzbank.ice.embargos.repository.FinalFileRepository;
 import es.commerzbank.ice.embargos.repository.FinalResponseBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.FinalResponseRepository;
 import es.commerzbank.ice.embargos.service.FinalResponseService;
@@ -33,8 +33,13 @@ import java.util.*;
 public class FinalResponseServiceImpl implements FinalResponseService {
 	private static final Logger logger = LoggerFactory.getLogger(FinalResponseServiceImpl.class);
 
+	// Repositorio RESULTADO_EMBARGO
 	@Autowired
 	private FinalResponseRepository finalResponseRepository;
+
+	// Repositorio FINAL_FILE
+	@Autowired
+	private FinalFileRepository finalFileRepository;
 
 	@Autowired
 	private FinalResponseMapper finalResponseMapper;
@@ -229,5 +234,23 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 			throw new Exception("DB exception while generating the report", e);
 		}
 
+	}
+
+	@Override
+	public boolean updateFinalFileAccountingStatus(FicheroFinal ficheroFinal, Long codEstadoContabilizacion,
+												   String userName) {
+
+		EstadoContabilizacion estadoContabilizacion = new EstadoContabilizacion();
+		estadoContabilizacion.setCodEstado(codEstadoContabilizacion);
+
+		ficheroFinal.setEstadoContabilizacion(estadoContabilizacion);
+
+		//Usuario y fecha de ultima modificacion:
+		ficheroFinal.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+		ficheroFinal.setUsuarioUltModificacion(userName);
+
+		finalFileRepository.save(ficheroFinal);
+
+		return false;
 	}
 }
