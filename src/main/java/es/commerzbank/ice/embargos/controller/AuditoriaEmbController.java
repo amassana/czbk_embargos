@@ -40,7 +40,7 @@ public class AuditoriaEmbController {
 			}
 		} catch(Exception e) {
 			logger.error("Error - AuditoriaController - filter ", e);
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		return response;
@@ -61,7 +61,7 @@ public class AuditoriaEmbController {
 			}
 		} catch(Exception e) {
 			logger.error("Error - AuditoriaController - viewAuditoria ", e);
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		return response;
@@ -93,7 +93,7 @@ public class AuditoriaEmbController {
 			response = new ResponseEntity<>(result, HttpStatus.OK);
 		} catch(Exception e) {
 			logger.error("Error - AuditoriaController - allTables ", e);
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		return response;
@@ -109,7 +109,7 @@ public class AuditoriaEmbController {
 			response = new ResponseEntity<>(result, HttpStatus.OK);
 		} catch(Exception e) {
 			logger.error("Error - AuditoriaController - allUsers ", e);
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		return response;

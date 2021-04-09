@@ -82,7 +82,7 @@ public class FinalResponseController {
 
 		} catch (Exception e) {
 
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 
 			logger.error("ERROR in getFinalResponseListByCodeFileControl: ", e);
 		}
@@ -106,7 +106,7 @@ public class FinalResponseController {
 
 		} catch (Exception e) {
 
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 
 			logger.error("ERROR in getBankAccountListByCodeFileControlAndFinalResponse: ", e);
 		}
@@ -185,7 +185,7 @@ public class FinalResponseController {
 			response = new ResponseEntity<>(result, HttpStatus.OK);
 
 		} catch (Exception e) {
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 			logger.error("ERROR in getPendingFinalResponses: ", e);
 		}
 
@@ -364,7 +364,7 @@ public class FinalResponseController {
 			response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.OK);
 		} catch (Exception e) {
 
-			response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.INTERNAL_SERVER_ERROR);
 
 			logger.error("ERROR in sendAccountingFinalFile: ", e);
 		}

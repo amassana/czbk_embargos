@@ -116,7 +116,7 @@ public class FileControlController {
 		
 		} catch (Exception e) {
 			
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 			
 			logger.error("ERROR in filecontrol/filter: ", e);
 		}	
@@ -151,7 +151,7 @@ public class FileControlController {
 		
 		} catch (Exception e) {
 			
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 			
 			logger.error("ERROR in getFileTypeStatusList: ", e);
 		}
@@ -176,7 +176,7 @@ public class FileControlController {
 		
 		} catch (Exception e) {
 			
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 			
 			logger.error("ERROR in getAuditByFileControl: ", e);
 		}
@@ -231,7 +231,7 @@ public class FileControlController {
 		
 		} catch (Exception e) {
 			
-			response = new ResponseEntity<>(resultFileControlDTO, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(resultFileControlDTO, HttpStatus.INTERNAL_SERVER_ERROR);
 			
 			logger.error("ERROR in tramitar: ", e);
 		}
@@ -263,7 +263,7 @@ public class FileControlController {
 		
 		} catch (Exception e) {
 			
-			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			
 			logger.error("ERROR in updateFileControl: ", e);
 		}
@@ -299,7 +299,7 @@ public class FileControlController {
 
 		} catch (Exception e) {
 
-			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 
 			logger.error("ERROR in updateFileControlStatus: ", e);
 		}
@@ -322,7 +322,7 @@ public class FileControlController {
 		
 		} catch (Exception e) {
 			
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 			
 			logger.error("ERROR in getByCodeFileControl: ", e);
 		}	
@@ -368,7 +368,7 @@ public class FileControlController {
 			
 		} catch (Exception e) {
 			
-			response = new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 			
 			logger.error("ERROR in download: ", e);
 		}
