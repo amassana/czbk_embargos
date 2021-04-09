@@ -59,7 +59,7 @@ public class SeizureController {
     	
 	    } catch (Exception e) {
 			
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 			
 			logger.error("ERROR in getSeizureListByCodeFileControl: ", e);
 		}	
@@ -84,7 +84,7 @@ public class SeizureController {
     	
 	    } catch (Exception e) {
 			
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 			
 			logger.error("ERROR in getSeizureListByCodeFileControl: ", e);
 		}
@@ -107,7 +107,7 @@ public class SeizureController {
     	
 	    } catch (Exception e) {
 			
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 			
 			logger.error("ERROR in getBankAccountListByCodeFileControlAndPetitionCase: ", e);
 		}
@@ -130,7 +130,7 @@ public class SeizureController {
     	
 	    } catch (Exception e) {
 			
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 			
 			logger.error("ERROR in getSeizureActions: ", e);
 		}
@@ -155,7 +155,7 @@ public class SeizureController {
     	
 	    } catch (Exception e) {
 			
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 			
 			logger.error("ERROR in getSeizureStatusList: ", e);
 		}	
@@ -189,7 +189,7 @@ public class SeizureController {
 
 		} catch (Exception e) {
 
-			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 
 			logger.error("ERROR in updateSeizedBankAccountList: ", e);
 		}
@@ -224,7 +224,7 @@ public class SeizureController {
 
 		} catch (Exception e) {
 
-			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 
 			logger.error("ERROR in updateSeizureStatus: ", e);
 		}
@@ -259,7 +259,7 @@ public class SeizureController {
 
 		} catch (Exception e) {
 
-			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 
 			logger.error("ERROR in updateSeizureAccountStatus: ", e);
 		}
@@ -320,7 +320,7 @@ public class SeizureController {
 	    	
 	    } catch (Exception e) {
 			
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 			
 			logger.error("ERROR in getAudit: ", e);
 		}
@@ -347,7 +347,7 @@ public class SeizureController {
 
 		} catch (Exception e) {
 
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 
 			logger.error("ERROR in getAudit: ", e);
 		}

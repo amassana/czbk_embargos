@@ -63,7 +63,7 @@ public class PetitionController {
 
 		} catch (Exception e) {
 
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 
 			logger.error("ERROR in getPetitionCaseListByCodeFileControl: ", e);
 		}
@@ -89,7 +89,7 @@ public class PetitionController {
 
 		} catch (Exception e) {
 
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 
 			logger.error("ERROR in getBankAccountListByCodeFileControlAndPetitionCase: ", e);
 		}
@@ -124,7 +124,7 @@ public class PetitionController {
 
 		} catch (Exception e) {
 
-			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 
 			logger.error("ERROR in savePetitionCase: ", e);
 		}
@@ -149,7 +149,7 @@ public class PetitionController {
 
 		} catch (Exception e) {
 
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 
 			logger.error("ERROR in getAuditPetitionCase: ", e);
 		}

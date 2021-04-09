@@ -63,7 +63,7 @@ public class LiftingController {
 
 		} catch (Exception e) {
 
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 
 			logger.error("ERROR in getLiftingListByCodeFileControl: ", e);
 		}
@@ -89,7 +89,7 @@ public class LiftingController {
 
 		} catch (Exception e) {
 
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 
 			logger.error("ERROR in getBankAccountListByCodeFileControlAndLifting: ", e);
 		}
@@ -124,7 +124,7 @@ public class LiftingController {
 		
 		} catch (Exception e) {
 		
-			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		
 			logger.error("ERROR in saveLifting: ", e);
 		}
@@ -148,7 +148,7 @@ public class LiftingController {
 
 		} catch (Exception e) {
 
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 
 			logger.error("ERROR in getAuditLiftingCase: ", e);
 		}
@@ -171,7 +171,7 @@ public class LiftingController {
 
 		} catch (Exception e) {
 
-			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 
 			logger.error("ERROR in getListStatus: ", e);
 		}
@@ -207,7 +207,7 @@ public class LiftingController {
 		
 		} catch (Exception e) {
 		
-			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		
 			logger.error("ERROR in changeStatus: ", e);
 		}
@@ -241,7 +241,7 @@ public class LiftingController {
 
 		} catch (Exception e) {
 
-			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 
 			logger.error("ERROR in updateSeizureAccountStatus: ", e);
 		}
@@ -273,7 +273,7 @@ public class LiftingController {
 			response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.OK);
 		} catch (Exception e) {
 
-			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 
 			logger.error("ERROR in doAccounting: ", e);
 		}
@@ -351,7 +351,7 @@ public class LiftingController {
 			}
 
 		} catch (Exception e) {
-			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			logger.error("ERROR in manualLifting: ", e);
 		}
 
