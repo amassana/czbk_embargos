@@ -171,7 +171,7 @@ public class SeizureController {
     														  @PathVariable("idSeizure") Long idSeizure,
     														  @RequestBody SeizureSaveDTO seizureSave)
 	{
-		logger.info("SeizureController - Actualizando embargo "+ codeFileControl +"-"+ idSeizure);
+		logger.debug("SeizureController - Actualizando embargo "+ codeFileControl +"-"+ idSeizure);
 		ResponseEntity<String> response = null;
 		boolean result = false;
 
@@ -206,7 +206,7 @@ public class SeizureController {
     												  @PathVariable("idSeizure") Long idSeizure,
     												  @RequestBody SeizureStatusDTO seizureStatus)
 	{
-		logger.info("SeizureController - Actualizando embargo "+ codeFileControl +"-"+ idSeizure +" cambio de estado");
+		logger.debug("SeizureController - Actualizando embargo "+ codeFileControl +"-"+ idSeizure +" cambio de estado");
 		ResponseEntity<String> response = null;
 		boolean result = false;
 
@@ -241,7 +241,7 @@ public class SeizureController {
 													  @PathVariable("idAccount") Long idAccount,
 													  @RequestBody AccountStatusSeizedDTO accountStatusSeized)
 	{
-		logger.info("SeizureController - Actualizando embargo "+ codeFileControl +"-"+ idSeizure +" cambiando de estado la cuenta "+ idAccount);
+		logger.debug("SeizureController - Actualizando embargo "+ codeFileControl +"-"+ idSeizure +" cambiando de estado la cuenta "+ idAccount);
 		ResponseEntity<String> response = null;
 		boolean result = false;
 
@@ -361,7 +361,7 @@ public class SeizureController {
     public ResponseEntity<FileControlDTO> sendAccounting(Authentication authentication,
     										  @PathVariable("codeFileControl") Long codeFileControl)
 	{
-		logger.info("SeizureController - Se contabilizan las trabas de "+ codeFileControl);
+		logger.debug("SeizureController - Se contabilizan las trabas de "+ codeFileControl);
     	ResponseEntity<FileControlDTO> response = null;
 		boolean result = false;
 
@@ -395,7 +395,7 @@ public class SeizureController {
     										  @PathVariable("codeFileControl") Long codeFileControl,
     										  @PathVariable("idSeizure") Long idSeizure,
     										  @RequestBody BankAccountDTO bankAccount){
-    	logger.info("SeizureController - undoAccounting - start");
+    	logger.debug("SeizureController - undoAccounting - start");
     	ResponseEntity<String> response = null;
 		boolean result = false;
 
@@ -411,7 +411,7 @@ public class SeizureController {
 			logger.error("ERROR in doAccounting: ", e);
 		}
 
-		logger.info("SeizureController - undoAccounting - end");
+		logger.debug("SeizureController - undoAccounting - end");
 		return response;
     	
     }

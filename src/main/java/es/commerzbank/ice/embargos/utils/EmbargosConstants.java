@@ -295,6 +295,10 @@ public class EmbargosConstants {
 	public static final String CRON_JOB_EMBARGOS_TO_TAX = "embargos.job.cron.embargo.to.tax";
 	public static final String ENDPOINT_EMBARGOS_TO_TAX = "embargos.endpoint.to.impuesto";
 	public static final String JOB_EMBARGOS_TO_TAX_USER = "embargos.job.embargo.to.tax.user";
+	
+	//JOB tareas pendientes
+	public static final String CRON_JOB_EMBARGOS_PENDING_TASK_DATE = "embargos.job.cron.pending.task.date";
+	public static final String PARAMETRO_EMBARGOS_DIAS_TAREAS_PENDIENTES = "embargos.dias.cron.pending.task";
 
 	public static final Object IND_AEAT_ENTIDAD = "AEAT";
 	

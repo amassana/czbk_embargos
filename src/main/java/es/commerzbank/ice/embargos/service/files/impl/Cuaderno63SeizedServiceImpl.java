@@ -41,6 +41,7 @@ import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
 import es.commerzbank.ice.embargos.domain.entity.Embargo;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
+import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
 import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.embargos.domain.mapper.Cuaderno63Mapper;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
@@ -52,6 +53,7 @@ import es.commerzbank.ice.embargos.formats.cuaderno63.fase4.FinFicheroFase4;
 import es.commerzbank.ice.embargos.repository.CommunicatingEntityRepository;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.repository.SeizedBankAccountRepository;
+import es.commerzbank.ice.embargos.repository.SeizedRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.SeizureService;
@@ -104,6 +106,9 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	@Autowired
 	private FileWriterHelper fileWriterHelper;
 
+	@Autowired
+	private SeizedRepository seizedRepository;
+	
 	@Override
 	@Transactional(transactionManager = "transactionManager", rollbackFor = Exception.class)
 	public void tramitarTrabas(Long codControlFicheroEmbargo, String usuarioTramitador) throws IOException, ICEException {
@@ -271,6 +276,24 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 		        importeTotalTrabado = importeTotalTrabado.add(traba.getImporteTrabado()!=null ? traba.getImporteTrabado() : BigDecimal.valueOf(0));
 		        
 		        beanWriter.flush();
+		        
+		        // Actualizar estado traba a finalizado
+				EstadoTraba estadoTraba = new EstadoTraba();
+				estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_FINALIZADA);
+		        traba.setEstadoTraba(estadoTraba);
+		        traba.setUsuarioUltModificacion(usuarioTramitador);
+		        traba.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+		        seizedRepository.save(traba);
+		        
+		        // Actualizar el estado de las cuenta traba a finalizado
+		        if (cuentaTrabaOrderedList!=null && cuentaTrabaOrderedList.size()>0) {
+		        	for (CuentaTraba cuentaTraba : cuentaTrabaOrderedList) {
+						cuentaTraba.setEstadoTraba(estadoTraba);
+						cuentaTraba.setUsuarioUltModificacion(usuarioTramitador);
+						cuentaTraba.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+						seizedBankAccountRepository.save(cuentaTraba);		        		
+		        	}
+		        }
 	        } 
 
 	        
@@ -369,7 +392,7 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	        // - Se guarda el codigo de tarea del calendario:
 	        controlFicheroTrabas.setCodTarea(BigDecimal.valueOf(codTarea));
 	        controlFicheroTrabas.setControlFicheroOrigen(controlFicheroEmbargo);
-	        controlFicheroTrabas.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+	        controlFicheroTrabas.setUsuarioUltModificacion(usuarioTramitador);
 	        controlFicheroTrabas.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 			fileControlRepository.save(controlFicheroTrabas);
 			

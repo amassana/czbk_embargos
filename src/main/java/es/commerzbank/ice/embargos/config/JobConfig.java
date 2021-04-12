@@ -9,6 +9,7 @@ import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.embargos.event.JobImportacionApuntesContables;
+import es.commerzbank.ice.embargos.event.JobTaskPendingDate;
 import es.commerzbank.ice.embargos.event.JobTransferToTax;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 
@@ -76,5 +77,32 @@ public class JobConfig {
       trigger.setJobDetail(jobDetailImportacionApuntesContables);
       trigger.setCronExpression(cronExpression);
       return trigger;
+    }
+    
+    @Bean
+    public JobDetailFactoryBean job2() {
+        JobDetailFactoryBean jobDetailFactory = new JobDetailFactoryBean();
+        jobDetailFactory.setJobClass(JobTaskPendingDate.class);
+        jobDetailFactory.setName(JobTaskPendingDate.class.getSimpleName());
+        jobDetailFactory.setDescription("Job de revisión de proximidad de fechas de tareas");
+        jobDetailFactory.setDurability(true);
+        return jobDetailFactory;
+    }
+    
+    @Bean
+    public CronTriggerFactoryBean trigger2(JobDetail job2) {
+    	String cronExpression = null;
+    	try {
+			cronExpression = generalParametersService.loadStringParameter(EmbargosConstants.CRON_JOB_EMBARGOS_PENDING_TASK_DATE);
+		} catch (ICEException e) {
+			cronExpression = "0 0 0/1 ? * * *";
+			//cronExpression = "0 0 3 * * ?";
+		}
+    	
+        CronTriggerFactoryBean trigger = new CronTriggerFactoryBean();
+        trigger.setName(job2.getKey().getName() + "Trigger");
+        trigger.setJobDetail(job2);
+        trigger.setCronExpression(cronExpression);
+        return trigger;           
     }
 }

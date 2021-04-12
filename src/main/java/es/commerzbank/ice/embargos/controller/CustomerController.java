@@ -24,7 +24,7 @@ public class CustomerController {
 	public CustomerDTO listAllAccountsByNif(Authentication authentication,
 			@PathVariable("nif") String nif){
 		
-		logger.info("CustomerController - listAllAccountsByNif - start");
+		logger.debug("CustomerController - listAllAccountsByNif - start");
 		
 		CustomerDTO customerDTO = null;
 		
@@ -36,7 +36,7 @@ public class CustomerController {
 			logger.error("ERROR: ", e);
 		}
 		
-		logger.info("CustomerController - listAllAccountsByNif - end");
+		logger.debug("CustomerController - listAllAccountsByNif - end");
 		
 		return customerDTO;
 	}
