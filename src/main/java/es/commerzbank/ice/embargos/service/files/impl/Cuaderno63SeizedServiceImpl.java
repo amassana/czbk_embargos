@@ -281,7 +281,7 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 				EstadoTraba estadoTraba = new EstadoTraba();
 				estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_FINALIZADA);
 		        traba.setEstadoTraba(estadoTraba);
-		        traba.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+		        traba.setUsuarioUltModificacion(usuarioTramitador);
 		        traba.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 		        seizedRepository.save(traba);
 		        
@@ -289,7 +289,7 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 		        if (cuentaTrabaOrderedList!=null && cuentaTrabaOrderedList.size()>0) {
 		        	for (CuentaTraba cuentaTraba : cuentaTrabaOrderedList) {
 						cuentaTraba.setEstadoTraba(estadoTraba);
-						cuentaTraba.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+						cuentaTraba.setUsuarioUltModificacion(usuarioTramitador);
 						cuentaTraba.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 						seizedBankAccountRepository.save(cuentaTraba);		        		
 		        	}
@@ -392,7 +392,7 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	        // - Se guarda el codigo de tarea del calendario:
 	        controlFicheroTrabas.setCodTarea(BigDecimal.valueOf(codTarea));
 	        controlFicheroTrabas.setControlFicheroOrigen(controlFicheroEmbargo);
-	        controlFicheroTrabas.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+	        controlFicheroTrabas.setUsuarioUltModificacion(usuarioTramitador);
 	        controlFicheroTrabas.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 			fileControlRepository.save(controlFicheroTrabas);
 			
