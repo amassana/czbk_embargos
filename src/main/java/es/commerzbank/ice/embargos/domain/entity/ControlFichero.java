@@ -160,7 +160,6 @@ public class ControlFichero implements Serializable {
 	private List<TareasRealizada> tareasRealizadas;
 
 	@OneToMany(mappedBy="controlFichero")
-	@JoinColumn(name="COD_TIPO_FICHERO", nullable=false, insertable=false, updatable=false)
 	private List<ResultadoEmbargo> resultadoEmbargos;
 
 	public ControlFichero() {
