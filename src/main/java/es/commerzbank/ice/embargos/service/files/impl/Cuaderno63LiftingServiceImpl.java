@@ -164,7 +164,7 @@ public class Cuaderno63LiftingServiceImpl
 
                     if (embargos == null || embargos.size() == 0)
                     {
-                        LOG.info("No embargo found for "+ ordenLevantamientoRetencionFase5.getIdentificadorDeuda());
+                        LOG.error("No embargo found for "+ ordenLevantamientoRetencionFase5.getIdentificadorDeuda());
                         // TODO ERROR
                         continue;
                     }
@@ -175,7 +175,7 @@ public class Cuaderno63LiftingServiceImpl
 
                     if (traba == null)
                     {
-                        LOG.error("Levantamiento not found for embargo "+ embargo.getCodEmbargo() +" code "+ ordenLevantamientoRetencionFase5.getIdentificadorDeuda());
+                        LOG.error("Traba not found for embargo "+ embargo.getCodEmbargo() +" code "+ ordenLevantamientoRetencionFase5.getIdentificadorDeuda());
                         continue;
                     }
 
