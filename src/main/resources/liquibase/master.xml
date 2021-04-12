@@ -38,4 +38,6 @@
         <tagDatabase tag="entrega_20210331"/>
     </changeSet>
 
+    <include file="2021/20210409_cambios_fin_ciclo.xml" relativeToChangelogFile="true" />
+
 </databaseChangeLog>

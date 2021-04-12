@@ -47,26 +47,26 @@ public class FinalResponseGenerationServiceImpl
     private FinalFileRepository finalFileRepository;
 
     @Override
-    public void calcFinalResult(Long codeFileControlFase3, String user)
+    public FicheroFinal calcFinalResult(ControlFichero ficheroFase3, String user)
         throws Exception
     {
-        ControlFichero ficheroFase3 = fileControlRepository.getOne(codeFileControlFase3);
-
         /* Creación Control Fichero Fase 6 como punto de entrada */
         String fileNameFinal = ficheroFase3.getEntidadesComunicadora().getPrefijoFicheros() +"_"+ ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMdd) +"."+ EmbargosConstants.TIPO_FICHERO_FINAL;
 
-        logger.info("Cerrando el ciclo de embargos "+ codeFileControlFase3 +" Nombre fichero cerrado "+ fileNameFinal);
+        logger.info("Cerrando el ciclo de embargos "+ ficheroFase3.getCodControlFichero() +" Nombre fichero cerrado "+ fileNameFinal);
 
         ControlFichero ficheroFase6 =
                 fileControlMapper.generateControlFichero(null, EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63, fileNameFinal, null);
         ficheroFase6.setEntidadesComunicadora(ficheroFase3.getEntidadesComunicadora());
-
+        List<ResultadoEmbargo> resultadosEmbargos = new ArrayList<>(50);
+        ficheroFase6.setResultadoEmbargos(resultadosEmbargos);
         ficheroFase6.setUsuarioUltModificacion(user);
         ficheroFase6.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
         fileControlRepository.save(ficheroFase6);
 
         List<Embargo> embargos = seizureRepository.findAllByControlFichero(ficheroFase3);
 
+        BigDecimal importeLevantadoFichero = BigDecimal.ZERO;
         BigDecimal importeNetoFichero = BigDecimal.ZERO;
 
         for (Embargo embargo : embargos) {
@@ -78,6 +78,8 @@ public class FinalResponseGenerationServiceImpl
 
             // Se calcula el resumen del embargo
             ResultadoEmbargo resultadoEmbargo = new ResultadoEmbargo();
+
+            resultadosEmbargos.add(resultadoEmbargo);
 
             resultadoEmbargo.setUsuarioUltModificacion(user);
             resultadoEmbargo.setfUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
@@ -175,6 +177,7 @@ public class FinalResponseGenerationServiceImpl
             }
 
             // Se acumulan los totales para el fichero
+            importeLevantadoFichero = importeLevantadoFichero.add(importeLevantadoEmbargo);
             importeNetoFichero = importeNetoFichero.add(importeNetoEmbargo);
         }
 
@@ -186,6 +189,7 @@ public class FinalResponseGenerationServiceImpl
         ficheroFinal.setControlFichero(ficheroFase6);
 
         ficheroFinal.setImporte(importeNetoFichero);
+        ficheroFinal.setImporteLevantado(importeLevantadoFichero);
 
         ficheroFinal.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
         ficheroFinal.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
@@ -204,5 +208,7 @@ public class FinalResponseGenerationServiceImpl
         ficheroFinal.setEstadoContabilizacion(estadoContabilizacion);
 
         finalFileRepository.save(ficheroFinal);
+
+        return ficheroFinal;
     }
 }
