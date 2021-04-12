@@ -221,7 +221,7 @@ public class FinalResponseController {
 	}
 	*/
 
-	@GetMapping("/anexoTGSS")
+	@GetMapping("/anexoTGSS/{codeFileControl}")
 	public ResponseEntity<InputStreamResource> reportAnexoTGSS(@PathVariable("codeFileControl") Long codeFileControl)
 	{
 		ResponseEntity<InputStreamResource> response = null;
@@ -268,8 +268,16 @@ public class FinalResponseController {
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	@GetMapping("/cgpj/{cod_traba}/report")
+
+	@GetMapping("/ordenTransferencia/{codeFileControl}")
+	@ApiOperation(value = "Devuelve el informe de pago de la transferencia")
+	public ResponseEntity<InputStreamResource> reportOrdenTransferencia(@PathVariable("codeFileControl") Long codeFileControl) {
+		// TODO
+		return null;
+	}
+
+	//@GetMapping("/cgpj/{cod_traba}/report")
+	@GetMapping("/cgpj/transferencias")
 	@ApiOperation(value = "Devuelve el fichero de solicitud de ejecucion")
 	public ResponseEntity<InputStreamResource> reportCartaPagoCGPJ(
 			@PathVariable("cod_traba") String cod_solicitud_ejecucion) {
@@ -292,7 +300,8 @@ public class FinalResponseController {
 		}
 	}
 	
-	@GetMapping("/transferOrder/{cod_control_fichero}/report")
+	//@GetMapping("/transferOrder/{cod_control_fichero}/report")
+	@GetMapping("/ordenTransferencia/{cod_control_fichero}")
 	@ApiOperation(value = "Devuelve un fichero de orden de tansferencia")
 	public ResponseEntity<InputStreamResource> reportCartaPagoNorma63(
 			@PathVariable(name = "cod_control_fichero") String cod_control_fichero) {
