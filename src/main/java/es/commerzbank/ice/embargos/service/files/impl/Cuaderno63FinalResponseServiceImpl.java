@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 import java.io.*;
 import java.util.List;
 
+@Service
 public class Cuaderno63FinalResponseServiceImpl
     implements Cuaderno63FinalResponseService
 {
