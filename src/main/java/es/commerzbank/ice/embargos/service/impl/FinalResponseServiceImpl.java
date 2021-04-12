@@ -10,6 +10,7 @@ import es.commerzbank.ice.embargos.domain.mapper.FinalResponseMapper;
 import es.commerzbank.ice.embargos.repository.FinalFileRepository;
 import es.commerzbank.ice.embargos.repository.FinalResponseBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.FinalResponseRepository;
+import es.commerzbank.ice.embargos.service.FinalResponseGenerationService;
 import es.commerzbank.ice.embargos.service.FinalResponseService;
 import es.commerzbank.ice.embargos.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.*;
@@ -33,10 +34,6 @@ import java.util.*;
 public class FinalResponseServiceImpl implements FinalResponseService {
 	private static final Logger logger = LoggerFactory.getLogger(FinalResponseServiceImpl.class);
 
-	// Repositorio RESULTADO_EMBARGO
-	@Autowired
-	private FinalResponseRepository finalResponseRepository;
-
 	// Repositorio FINAL_FILE
 	@Autowired
 	private FinalFileRepository finalFileRepository;
@@ -52,6 +49,12 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 
 	@Autowired
 	OracleDataSourceEmbargosConfig oracleDataSourceEmbargos;
+
+	@Autowired
+	private FinalResponseRepository finalResponseRepository;
+
+	@Autowired
+	private FinalResponseGenerationService finalResponseGenerationService;
 
 	@Override
 	public List<FinalResponseDTO> getAllByControlFichero(ControlFichero controlFichero) {
@@ -252,5 +255,12 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 		finalFileRepository.save(ficheroFinal);
 
 		return false;
+	}
+
+	@Override
+	public void calcFinalResult(Long codeFileControlFase3, String user)
+		throws Exception
+	{
+		finalResponseGenerationService.calcFinalResult(codeFileControlFase3, user);
 	}
 }

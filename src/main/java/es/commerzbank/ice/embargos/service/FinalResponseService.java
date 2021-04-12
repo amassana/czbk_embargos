@@ -12,11 +12,13 @@ public interface FinalResponseService {
 	List<FinalResponseDTO> getAllByControlFichero(ControlFichero controlFichero);
 
 	FinalResponseDTO AddBankAccountList(Long codeFileControl, Long codeFinalResponse);
-	
+
 	byte[] generarAnexo(BigDecimal cod_usuario, BigDecimal cod_traba, Integer num_anexo) throws Exception;
 	byte[] generarRespuestaFinalEmbargo(Integer cod_file_control) throws Exception;
 	byte[] generatePaymentLetterCGPJ(String cod_traba) throws Exception;
 	byte[] generatePaymentLetterN63(String cod_control_fichero) throws Exception;
 
 	boolean updateFinalFileAccountingStatus(FicheroFinal ficheroFinal, Long codEstadoContabilizacion, String userName);
+
+	void calcFinalResult(Long codeFileControlFase3, String user) throws Exception;
 }
