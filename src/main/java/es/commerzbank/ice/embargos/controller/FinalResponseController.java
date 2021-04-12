@@ -333,7 +333,7 @@ public class FinalResponseController {
 
 		if (codeFileControl != null) {
 			try {
-				norma63Fase6.generarFase6(codeFileControl, authentication.getName());
+				finalResponseService.calcFinalResult(codeFileControl, authentication.getName());
 				response = new ResponseEntity<>(HttpStatus.OK);
 			} catch (Exception e) {
 				logger.error("SeizureSummaryController - createNorma63 - Error while generating norma 63 summary file", e);
