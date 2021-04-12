@@ -124,7 +124,7 @@ public class FinalResponseController {
 			List<Tarea> tareas = taskService.getTaskPendingByExternalIdLike(EmbargosConstants.EXTERNAL_ID_F6_N63);
 
 			if (tareas!=null && tareas.size()>0) {
-				logger.info("Se han encontrado "+ tareas.size() +" tareas de F6 pendientes.");
+				logger.debug("Se han encontrado "+ tareas.size() +" tareas de F6 pendientes.");
 				result = new ArrayList<FinalResponsePendingDTO>();
 				
 				for (Tarea tarea : tareas) {
@@ -179,7 +179,7 @@ public class FinalResponseController {
 				}
 			}
 			else {
-				logger.info("No se han encontrado tareas de F6 pendientes.");
+				logger.debug("No se han encontrado tareas de F6 pendientes.");
 			}
 			
 			response = new ResponseEntity<>(result, HttpStatus.OK);
@@ -328,7 +328,7 @@ public class FinalResponseController {
 	@PostMapping(value = "/{codeFileControl}/generateFinalResponse", produces = { "application/json" })
 	public ResponseEntity<Void> createNorma63(Authentication authentication,
 											  @PathVariable("codeFileControl") Long codeFileControl) {
-		logger.info("SeizureSummaryController - createNorma63 - start "+ codeFileControl);
+		logger.debug("SeizureSummaryController - createNorma63 - start "+ codeFileControl);
 		ResponseEntity<Void> response = null;
 
 		if (codeFileControl != null) {
@@ -343,7 +343,7 @@ public class FinalResponseController {
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
-		logger.info("SeizureSummaryController - createNorma63 - end");
+		logger.debug("SeizureSummaryController - createNorma63 - end");
 
 		return response;
 	}
@@ -354,7 +354,7 @@ public class FinalResponseController {
     public ResponseEntity<FileControlDTO> sendAccountingFinalFile(Authentication authentication,
     										  @PathVariable("codeFileControl") Long codeFileControl){
     	
-    	logger.info("sendAccountingFinalFile - contabilización "+ codeFileControl);
+    	logger.debug("sendAccountingFinalFile - contabilización "+ codeFileControl);
     	
     	ResponseEntity<FileControlDTO> response = null;
 		//boolean result = false;
@@ -378,7 +378,7 @@ public class FinalResponseController {
 			logger.error("ERROR in sendAccountingFinalFile: ", e);
 		}
 
-		logger.info("sendAccountingFinalFile - end");
+		logger.debug("sendAccountingFinalFile - end");
 		return response;
     	
     }

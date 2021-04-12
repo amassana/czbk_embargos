@@ -105,7 +105,7 @@ public class LiftingController {
 			@PathVariable("codeFileControl") Long codeFileControl,
 			@PathVariable("codeLifting") Long codeLifting, @RequestBody LiftingDTO lifting)
 	{
-		logger.info("LiftingController - "+ codeFileControl +"-"+ codeLifting +" actualización");
+		logger.debug("LiftingController - "+ codeFileControl +"-"+ codeLifting +" actualización");
 
 		ResponseEntity<String> response = null;
 		boolean result = true;
@@ -188,7 +188,7 @@ public class LiftingController {
 			@PathVariable("codeFileControl") Long codeFileControl,
 			@PathVariable("codeLifting") Long codeLifting, @PathVariable("status") Long status)
 	{
-		logger.info("LiftingController - "+ codeFileControl +"-"+ codeLifting +" cambio de estado "+ status);
+		logger.debug("LiftingController - "+ codeFileControl +"-"+ codeLifting +" cambio de estado "+ status);
 
 		ResponseEntity<Void> response = null;
 		boolean result = true;
@@ -223,7 +223,7 @@ public class LiftingController {
 													  @PathVariable("idAccount") Long idAccount,
 													  @RequestBody AccountStatusLiftingDTO accountStatusLifting)
 	{
-		logger.info("SeizureController - Actualizando levantamiento "+ codeFileControl +"-"+ codeLifting +" cambiando de estado la cuenta "+ idAccount);
+		logger.debug("SeizureController - Actualizando levantamiento "+ codeFileControl +"-"+ codeLifting +" cambiando de estado la cuenta "+ idAccount);
 		ResponseEntity<String> response = null;
 		boolean result = false;
 
@@ -254,7 +254,7 @@ public class LiftingController {
     public ResponseEntity<FileControlDTO> sendAccounting(Authentication authentication,
 														 @PathVariable("codeFileControl") Long codeFileControl)
 	{
-    	logger.info("SeizureController - se contabilizan los levantamientos de "+ codeFileControl);
+    	logger.debug("SeizureController - se contabilizan los levantamientos de "+ codeFileControl);
 
     	ResponseEntity<FileControlDTO> response = null;
 		boolean result = false;
@@ -335,7 +335,7 @@ public class LiftingController {
     @ApiOperation(value="Realiza un levantamiento de forma manual.")
     public ResponseEntity<String> manualLifting(Authentication authentication,
     											@RequestBody LiftingManualDTO liftingManualDTO) {
-    	logger.info("LiftingController - levantamiento manual "+ liftingManualDTO.getSender() +" "+ liftingManualDTO.getClients().size());
+    	logger.debug("LiftingController - levantamiento manual "+ liftingManualDTO.getSender() +" "+ liftingManualDTO.getClients().size());
 		ResponseEntity<String> response = null;
 		boolean result = false;
 

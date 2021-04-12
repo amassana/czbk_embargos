@@ -33,12 +33,12 @@ public class RepresentativeController {
 	        produces = { "application/json" }, 
 	        consumes = { "application/json" })
 	public ResponseEntity<Void> create(Authentication authentication, @RequestBody Representative representative) {
-		logger.info("RepresentativeController - create - start");
+		logger.debug("RepresentativeController - create - start");
 		ResponseEntity<Void> response = null;
 		boolean result = true;
 		
 		if (!Permissions.hasPermission(authentication, "ui.impuestos")) {
-			logger.info("RepresentativeController - create - forbidden");
+			logger.debug("RepresentativeController - create - forbidden");
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		
@@ -54,7 +54,7 @@ public class RepresentativeController {
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
-		logger.info("RepresentativeController - create - end");
+		logger.debug("RepresentativeController - create - end");
 		return response;
 	}
 	
@@ -62,12 +62,12 @@ public class RepresentativeController {
 	        produces = { "application/json" }, 
 	        consumes = { "application/json" })
 	public ResponseEntity<Void> update(Authentication authentication,  @RequestBody Representative representative) {
-		logger.info("RepresentativeController - update - start");
+		logger.debug("RepresentativeController - update - start");
 		ResponseEntity<Void> response = null;
 		boolean result = true;
 		
 		if (!Permissions.hasPermission(authentication, "ui.impuestos")) {
-			logger.info("RepresentativeController - update - forbidden");
+			logger.debug("RepresentativeController - update - forbidden");
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		
@@ -83,19 +83,19 @@ public class RepresentativeController {
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
-		logger.info("RepresentativeController - update - end");
+		logger.debug("RepresentativeController - update - end");
 		return response;
 	}
 	
 	@DeleteMapping(value = "/representative/{idRepresentative}",
 	        produces = { "application/json" })
 	public ResponseEntity<Void> delete(Authentication authentication, @PathVariable("idRepresentative") Long idRepresentative) {
-		logger.info("RepresentativeController - delete - start");
+		logger.debug("RepresentativeController - delete - start");
 		ResponseEntity<Void> response = null;
 		boolean result = true;
 		
 		if (!Permissions.hasPermission(authentication, "ui.impuestos")) {
-			logger.info("RepresentativeController - delete - forbidden");
+			logger.debug("RepresentativeController - delete - forbidden");
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		
@@ -111,7 +111,7 @@ public class RepresentativeController {
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
-		logger.info("RepresentativeController - delete - end");
+		logger.debug("RepresentativeController - delete - end");
 		return response;
 	}
 	
@@ -122,7 +122,7 @@ public class RepresentativeController {
 		Representative result = null;
 		
 		if (!Permissions.hasPermission(authentication, "ui.impuestos")) {
-			logger.info("RepresentativeController - view - forbidden");
+			logger.debug("RepresentativeController - view - forbidden");
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		
@@ -170,7 +170,7 @@ public class RepresentativeController {
 	@PostMapping(value = "/representative/filter",
 			produces = {"application/json"})
 	public ResponseEntity<Page<Representative>> filter(Authentication authentication, Pageable dataPage, @RequestBody Map<String, Object> parametros) {
-		logger.info("RepresentativeController - filter - start");
+		logger.debug("RepresentativeController - filter - start");
 		ResponseEntity<Page<Representative>> response = null;
 		Page<Representative> list = null;
 		
@@ -186,7 +186,7 @@ public class RepresentativeController {
 			response = new ResponseEntity<Page<Representative>>(list, HttpStatus.BAD_REQUEST);
 		}
 		
-		logger.info("RepresentativeController - filter - end");
+		logger.debug("RepresentativeController - filter - end");
 		return response;
 	}
 	

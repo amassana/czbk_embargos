@@ -104,7 +104,7 @@ public class PetitionController {
 			@PathVariable("codeFileControl") Long codeFileControl,
 			@PathVariable("codePetitionCase") Long codePetitionCase, @RequestBody PetitionCaseDTO petitionCase)
 	{
-		logger.info("PetitionController actualización "+ codeFileControl +"-"+ codePetitionCase);
+		logger.debug("PetitionController actualización "+ codeFileControl +"-"+ codePetitionCase);
 
 		ResponseEntity<String> response = null;
 		boolean result = true;
