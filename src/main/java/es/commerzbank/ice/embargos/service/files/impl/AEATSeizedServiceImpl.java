@@ -19,6 +19,7 @@ import es.commerzbank.ice.embargos.formats.aeat.trabas.*;
 import es.commerzbank.ice.embargos.repository.CommunicatingEntityRepository;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.repository.SeizedBankAccountRepository;
+import es.commerzbank.ice.embargos.repository.SeizedRepository;
 import es.commerzbank.ice.embargos.repository.SeizureRepository;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.SeizureService;
@@ -87,6 +88,9 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 
 	@Autowired
 	private FileWriterHelper fileWriterHelper;
+	
+	@Autowired
+	private SeizedRepository seizedRepository;
 	
 	@Override
 	@Transactional(transactionManager = "transactionManager", rollbackFor = Exception.class)
@@ -290,6 +294,24 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 		        importeTotalTrabado = importeTotalTrabado.add(traba.getImporteTrabado()!=null ? traba.getImporteTrabado() : BigDecimal.valueOf(0));
 	        	
 		        beanWriter.flush();
+		        
+		        // Actualizar estado traba a finalizado
+				EstadoTraba estadoTraba = new EstadoTraba();
+				estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_FINALIZADA);
+		        traba.setEstadoTraba(estadoTraba);
+		        traba.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+		        traba.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+		        seizedRepository.save(traba);
+		        
+		        // Actualizar el estado de las cuenta traba a finalizado
+		        if (cuentaTrabaOrderedList!=null && cuentaTrabaOrderedList.size()>0) {
+		        	for (CuentaTraba cuentaTraba : cuentaTrabaOrderedList) {
+						cuentaTraba.setEstadoTraba(estadoTraba);
+						cuentaTraba.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+						cuentaTraba.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+						seizedBankAccountRepository.save(cuentaTraba);		        		
+		        	}
+		        }
 	        } 
 
 	        
