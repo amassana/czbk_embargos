@@ -836,6 +836,7 @@ public abstract class Cuaderno63Mapper {
 	*/
 
 	@Mappings({
+			@Mapping(target = "codigoRegistro", constant = "6"),
 			@Mapping(target = "nifDeudor", source="ordenEjecucionEmbargoFase3.nifDeudor"),
 			@Mapping(target = "nombreDeudor", source="ordenEjecucionEmbargoFase3.nombreDeudor"),
 			@Mapping(target = "domicilioDeudor", source="ordenEjecucionEmbargoFase3.domicilioDeudor"),
@@ -847,16 +848,6 @@ public abstract class Cuaderno63Mapper {
 			@Mapping(target = "importeTotalRetencionesEfectuadas", source = "traba.importeTrabado"),
 			@Mapping(target = "totalImporteALevantar", source = "resultadoEmbargo.totalLevantado"),
 			@Mapping(target = "importeTotalNetoEmbargadoAlDeudor", source = "resultadoEmbargo.totalNeto"),
-
-
-			@Mapping(source = "embargo.nombre", target = "nombreDeudor"),
-			@Mapping(source = "embargo.domicilio", target = "domicilioDeudor"),
-			@Mapping(source = "embargo.municipio", target = "municipio"),
-			@Mapping(source = "embargo.codigoPostal", target = "codigoPostal"),
-			@Mapping(source = "embargo.numeroEmbargo", target = "identificadorDeuda"),
-			@Mapping(source = "embargo.importe", target = "importeTotalAEmbargar"),
-			@Mapping(source = "embargo.codDeudaDeudor", target = "codigoDeuda"),
-
 	})
 	public abstract ResultadoFinalEmbargoFase6 generateResultadoFinalEmbargoFase6(
 			OrdenEjecucionEmbargoFase3 ordenEjecucionEmbargoFase3,
