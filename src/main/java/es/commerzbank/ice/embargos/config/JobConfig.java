@@ -1,19 +1,18 @@
 package es.commerzbank.ice.embargos.config;
 
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.util.ICEException;
+import es.commerzbank.ice.embargos.event.JobImportacionApuntesContables;
+import es.commerzbank.ice.embargos.event.JobNorma63FinalFile;
+import es.commerzbank.ice.embargos.event.JobTaskPendingDate;
+import es.commerzbank.ice.embargos.event.JobTransferToTax;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import org.quartz.JobDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.quartz.JobDetailFactoryBean;
-
-import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
-import es.commerzbank.ice.comun.lib.util.ICEException;
-import es.commerzbank.ice.embargos.event.JobImportacionApuntesContables;
-import es.commerzbank.ice.embargos.event.JobTaskPendingDate;
-import es.commerzbank.ice.embargos.event.JobTransferToTax;
-import es.commerzbank.ice.embargos.utils.EmbargosConstants;
-
 import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
+import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 
 @Configuration
 public class JobConfig {
@@ -109,8 +108,8 @@ public class JobConfig {
     @Bean
     public JobDetailFactoryBean jobNorma63FinalFileFactoryBean() {
         JobDetailFactoryBean jobDetailFactory = new JobDetailFactoryBean();
-        jobDetailFactory.setJobClass(JobTaskPendingDate.class);
-        jobDetailFactory.setName(JobTaskPendingDate.class.getSimpleName());
+        jobDetailFactory.setJobClass(JobNorma63FinalFile.class);
+        jobDetailFactory.setName(JobNorma63FinalFile.class.getSimpleName());
         jobDetailFactory.setDescription("Job de generación del fichero de fin de ciclo de norma 63");
         jobDetailFactory.setDurability(true);
         return jobDetailFactory;
