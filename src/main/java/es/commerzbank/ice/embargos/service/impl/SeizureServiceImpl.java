@@ -687,7 +687,7 @@ public class SeizureServiceImpl
 							
 							// Calcula los datos para realizar el cierre
 							logger.info("Calculando los datos para realizar el cierre para el fichero: " + controlFicheroF3.getCodControlFichero());
-							finalResponseGenerationService.calcFinalResult(controlFicheroF3.getCodControlFichero(), user);
+							finalResponseGenerationService.calcFinalResult(controlFicheroF3, user);
 							
 							List<Embargo> listaEmbargos = seizureRepository.findAllByControlFichero(controlFicheroF3);
 							if (listaEmbargos!=null) {
