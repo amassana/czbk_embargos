@@ -1,10 +1,16 @@
 package es.commerzbank.ice.embargos.service.impl;
 
+import es.commerzbank.ice.comun.lib.domain.entity.Tarea;
+import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
+import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
 import es.commerzbank.ice.embargos.domain.dto.FinalResponseBankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.FinalResponseDTO;
+import es.commerzbank.ice.embargos.domain.dto.FinalResponsePendingDTO;
 import es.commerzbank.ice.embargos.domain.entity.*;
+import es.commerzbank.ice.embargos.domain.mapper.CommunicatingEntityMapper;
+import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
 import es.commerzbank.ice.embargos.domain.mapper.FinalResponseBankAccountMapper;
 import es.commerzbank.ice.embargos.domain.mapper.FinalResponseMapper;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
@@ -64,6 +70,15 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 
 	@Autowired
 	private Cuaderno63FinalResponseService cuaderno63FinalResponseService;
+
+	@Autowired
+	private TaskService taskService;
+
+	@Autowired
+	private FileControlMapper fileControlMapper;
+
+	@Autowired
+	private CommunicatingEntityMapper communicatingEntityMapper;
 
 	@Override
 	public List<FinalResponseDTO> getAllByControlFichero(ControlFichero controlFichero) {
@@ -267,20 +282,107 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 	}
 
 	@Override
-	public void calcFinalResult(Long codeFileControlFase3, String user)
+	public Long calcFinalResult(Long codeFileControlFase3, String user)
 		throws Exception
 	{
 		ControlFichero ficheroFase3 = fileControlRepository.getOne(codeFileControlFase3);
 		EntidadesComunicadora entidadComunicadora = ficheroFase3.getEntidadesComunicadora();
+
+		ControlFichero ficheroFase4 = ficheroFase3.getControlFicheroRespuesta();
+
+		List<Tarea> tasks = taskService.getTaskPendingByExternalIdLike(EmbargosConstants.EXTERNAL_ID_F6_N63 + ficheroFase4.getCodControlFichero());
+
+		if (tasks == null || tasks.size() == 0) {
+			logger.error("No se ha encontrado la tarea pendiente para ejecutar el fin de ciclo. Fichero F3 indicado: "+ codeFileControlFase3);
+			return null;
+		}
+		if (tasks.size() != 1) {
+			logger.error("Se han encontrado "+ tasks.size() +" tareas pendientes para ejecutar el fin de ciclo, se esperaba una sola. Fichero F3 indicado: "+ codeFileControlFase3);
+			return null;
+		}
+
+		Tarea tarea = tasks.get(0);
+
+		logger.info("Ejecutando fin de ciclo "+ entidadComunicadora.getDesEntidad() +" fichero F3 "+ codeFileControlFase3 +" F4 "+ ficheroFase4.getCodControlFichero());
 
 		// Generar el contenido del cierre
 		FicheroFinal finalFile = finalResponseGenerationService.calcFinalResult(ficheroFase3, user);
 
 		ControlFichero ficheroFase6 = finalFile.getControlFichero();
 
+		logger.info("Fin de ciclo - generado F6 "+ ficheroFase6);
+
 		// Si es Norma 63, generar el fichero físico de salida
 		if (EmbargosConstants.IND_FLAG_SI.equals(entidadComunicadora.getIndNorma63())) {
 			cuaderno63FinalResponseService.tramitarFicheroInformacion(ficheroFase3, finalFile);
 		}
+
+		taskService.changeStatus(tarea.getCodTarea(), ValueConstants.STATUS_TASK_FINISH, user);
+		
+		return ficheroFase6.getCodControlFichero();
+	}
+
+	@Override
+	public List<FinalResponsePendingDTO> listPendingCyclesNorma63() throws Exception {
+		List<FinalResponsePendingDTO> result = null;
+		List<Tarea> tareas = taskService.getTaskPendingByExternalIdLike(EmbargosConstants.EXTERNAL_ID_F6_N63);
+
+		if (tareas == null || tareas.size() == 0) {
+			logger.debug("No se han encontrado tareas de F6 pendientes.");
+		}
+		else {
+			logger.debug("Se han encontrado " + tareas.size() + " tareas de F6 pendientes.");
+			result = new ArrayList<FinalResponsePendingDTO>();
+
+			for (Tarea tarea : tareas) {
+				try {
+					if (tarea.getExternalId() == null) {
+						logger.error("Tarea " + tarea.getCodTarea() + " sin identificador externo");
+						continue;
+					}
+
+					String[] partes = tarea.getExternalId().split("_");
+
+					if (partes.length != 2) {
+						logger.error(
+								"Formato de identificador externo de la tarea " + tarea.getCodTarea() + " no reconocido: "
+										+ tarea.getExternalId());
+						continue;
+					}
+
+					String codControlFichero = partes[1];
+
+					Optional<ControlFichero> controlFicheroOptF4 = fileControlRepository.findById(Long.parseLong(codControlFichero));
+					if (!controlFicheroOptF4.isPresent()) {
+						logger.error("ControlFichero F4 " + codControlFichero + " no encontrado");
+						continue;
+					}
+					ControlFichero controlFicheroF4 = controlFicheroOptF4.get();
+
+					ControlFichero controlFicheroF3 = null;
+					if (controlFicheroF4 != null && controlFicheroF4.getControlFicheroOrigen() != null) {
+						controlFicheroF3 = controlFicheroF4.getControlFicheroOrigen();
+					} else {
+						logger.error("ControlFichero F3 origen de " + codControlFichero + " no encontrado");
+					}
+
+					FinalResponsePendingDTO finalResponsePendingDTO = new FinalResponsePendingDTO();
+					finalResponsePendingDTO.setLastDateResponse(tarea.getfTarea());
+					if (controlFicheroF4 != null) {
+						finalResponsePendingDTO.setFileControlDTOF4(fileControlMapper.toFileControlDTO(controlFicheroF4));
+						if (controlFicheroF4.getEntidadesComunicadora() != null)
+							finalResponsePendingDTO.setCommunicatingEntity(communicatingEntityMapper.toCommunicatingEntity(controlFicheroF4.getEntidadesComunicadora()));
+					}
+					if (controlFicheroF3 != null)
+						finalResponsePendingDTO.setFileControlDTOF3(fileControlMapper.toFileControlDTO(controlFicheroF3));
+
+					result.add(finalResponsePendingDTO);
+				} catch (Exception e) {
+					logger.error("Error mientras se recuperaba la tareas de F6 " + tarea.getCodTarea(), e);
+				}
+			}
+		}
+
+		return result;
 	}
 }
