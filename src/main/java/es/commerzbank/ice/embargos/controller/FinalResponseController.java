@@ -9,7 +9,6 @@ import es.commerzbank.ice.embargos.domain.dto.FinalResponsePendingDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.mapper.CommunicatingEntityMapper;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
-import es.commerzbank.ice.embargos.event.Norma63Fase6;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.FileControlService;
@@ -45,9 +44,6 @@ public class FinalResponseController {
 
 	@Autowired
 	private FileControlService fileControlService;
-	
-	@Autowired
-	private Norma63Fase6 norma63Fase6;
 
 	@Autowired
 	private GeneralParametersService generalParametersService;
@@ -333,7 +329,7 @@ public class FinalResponseController {
 
 		if (codeFileControl != null) {
 			try {
-				norma63Fase6.generarFase6(codeFileControl, authentication.getName());
+				finalResponseService.calcFinalResult(codeFileControl, authentication.getName());
 				response = new ResponseEntity<>(HttpStatus.OK);
 			} catch (Exception e) {
 				logger.error("SeizureSummaryController - createNorma63 - Error while generating norma 63 summary file", e);

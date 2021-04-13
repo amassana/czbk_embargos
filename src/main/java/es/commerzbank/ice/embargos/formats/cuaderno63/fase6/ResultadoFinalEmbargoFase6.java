@@ -17,22 +17,22 @@ public class ResultadoFinalEmbargoFase6 {
 	private BigDecimal importeTotalRetencionesEfectuadas;
 	private Date fechaEjecucionRetenciones;
 	private String ibanCuenta1;
-	private Integer codigoResultadoRetencionIban1;
+	private String codigoResultadoRetencionIban1;
 	private BigDecimal importeRetenidoIban1;
 	private String ibanCuenta2;
-	private Integer codigoResultadoRetencionIban2;
+	private String codigoResultadoRetencionIban2;
 	private BigDecimal importeRetenidoIban2;
 	private String ibanCuenta3;
-	private Integer codigoResultadoRetencionIban3;
+	private String codigoResultadoRetencionIban3;
 	private BigDecimal importeRetenidoIban3;
 	private String ibanCuenta4;
-	private Integer codigoResultadoRetencionIban4;
+	private String codigoResultadoRetencionIban4;
 	private BigDecimal importeRetenidoIban4;
 	private String ibanCuenta5;
-	private Integer codigoResultadoRetencionIban5;
+	private String codigoResultadoRetencionIban5;
 	private BigDecimal importeRetenidoIban5;
 	private String ibanCuenta6;
-	private Integer codigoResultadoRetencionIban6;
+	private String codigoResultadoRetencionIban6;
 	private BigDecimal importeRetenidoIban6;
 	private String claveSeguridadIban1;
 	private String claveSeguridadIban2;
@@ -41,19 +41,19 @@ public class ResultadoFinalEmbargoFase6 {
 	private String claveSeguridadIban5;
 	private String claveSeguridadIban6;
 	private BigDecimal totalImporteALevantar;
-	private Integer codigoResultadoLevantamiento;
+	private String codigoResultadoLevantamiento;
 	private BigDecimal importeNetoEmbargadoIban1;
-	private Integer resultadoLevantamientoIban1;
+	private String resultadoLevantamientoIban1;
 	private BigDecimal importeNetoEmbargadoIban2;
-	private Integer resultadoLevantamientoIban2;
+	private String resultadoLevantamientoIban2;
 	private BigDecimal importeNetoEmbargadoIban3;
-	private Integer resultadoLevantamientoIban3;
+	private String resultadoLevantamientoIban3;
 	private BigDecimal importeNetoEmbargadoIban4;
-	private Integer resultadoLevantamientoIban4;
+	private String resultadoLevantamientoIban4;
 	private BigDecimal importeNetoEmbargadoIban5;
-	private Integer resultadoLevantamientoIban5;
+	private String resultadoLevantamientoIban5;
 	private BigDecimal importeNetoEmbargadoIban6;
-	private Integer resultadoLevantamientoIban6;
+	private String resultadoLevantamientoIban6;
 	private BigDecimal importeTotalNetoEmbargadoAlDeudor;
 	
 	public Integer getCodigoRegistro() {
@@ -128,10 +128,10 @@ public class ResultadoFinalEmbargoFase6 {
 	public void setIbanCuenta1(String ibanCuenta1) {
 		this.ibanCuenta1 = ibanCuenta1;
 	}
-	public Integer getCodigoResultadoRetencionIban1() {
+	public String getCodigoResultadoRetencionIban1() {
 		return codigoResultadoRetencionIban1;
 	}
-	public void setCodigoResultadoRetencionIban1(Integer codigoResultadoRetencionIban1) {
+	public void setCodigoResultadoRetencionIban1(String codigoResultadoRetencionIban1) {
 		this.codigoResultadoRetencionIban1 = codigoResultadoRetencionIban1;
 	}
 	public BigDecimal getImporteRetenidoIban1() {
@@ -146,10 +146,10 @@ public class ResultadoFinalEmbargoFase6 {
 	public void setIbanCuenta2(String ibanCuenta2) {
 		this.ibanCuenta2 = ibanCuenta2;
 	}
-	public Integer getCodigoResultadoRetencionIban2() {
+	public String getCodigoResultadoRetencionIban2() {
 		return codigoResultadoRetencionIban2;
 	}
-	public void setCodigoResultadoRetencionIban2(Integer codigoResultadoRetencionIban2) {
+	public void setCodigoResultadoRetencionIban2(String codigoResultadoRetencionIban2) {
 		this.codigoResultadoRetencionIban2 = codigoResultadoRetencionIban2;
 	}
 	public BigDecimal getImporteRetenidoIban2() {
@@ -164,10 +164,10 @@ public class ResultadoFinalEmbargoFase6 {
 	public void setIbanCuenta3(String ibanCuenta3) {
 		this.ibanCuenta3 = ibanCuenta3;
 	}
-	public Integer getCodigoResultadoRetencionIban3() {
+	public String getCodigoResultadoRetencionIban3() {
 		return codigoResultadoRetencionIban3;
 	}
-	public void setCodigoResultadoRetencionIban3(Integer codigoResultadoRetencionIban3) {
+	public void setCodigoResultadoRetencionIban3(String codigoResultadoRetencionIban3) {
 		this.codigoResultadoRetencionIban3 = codigoResultadoRetencionIban3;
 	}
 	public BigDecimal getImporteRetenidoIban3() {
@@ -182,10 +182,10 @@ public class ResultadoFinalEmbargoFase6 {
 	public void setIbanCuenta4(String ibanCuenta4) {
 		this.ibanCuenta4 = ibanCuenta4;
 	}
-	public Integer getCodigoResultadoRetencionIban4() {
+	public String getCodigoResultadoRetencionIban4() {
 		return codigoResultadoRetencionIban4;
 	}
-	public void setCodigoResultadoRetencionIban4(Integer codigoResultadoRetencionIban4) {
+	public void setCodigoResultadoRetencionIban4(String codigoResultadoRetencionIban4) {
 		this.codigoResultadoRetencionIban4 = codigoResultadoRetencionIban4;
 	}
 	public BigDecimal getImporteRetenidoIban4() {
@@ -200,10 +200,10 @@ public class ResultadoFinalEmbargoFase6 {
 	public void setIbanCuenta5(String ibanCuenta5) {
 		this.ibanCuenta5 = ibanCuenta5;
 	}
-	public Integer getCodigoResultadoRetencionIban5() {
+	public String getCodigoResultadoRetencionIban5() {
 		return codigoResultadoRetencionIban5;
 	}
-	public void setCodigoResultadoRetencionIban5(Integer codigoResultadoRetencionIban5) {
+	public void setCodigoResultadoRetencionIban5(String codigoResultadoRetencionIban5) {
 		this.codigoResultadoRetencionIban5 = codigoResultadoRetencionIban5;
 	}
 	public BigDecimal getImporteRetenidoIban5() {
@@ -218,10 +218,10 @@ public class ResultadoFinalEmbargoFase6 {
 	public void setIbanCuenta6(String ibanCuenta6) {
 		this.ibanCuenta6 = ibanCuenta6;
 	}
-	public Integer getCodigoResultadoRetencionIban6() {
+	public String getCodigoResultadoRetencionIban6() {
 		return codigoResultadoRetencionIban6;
 	}
-	public void setCodigoResultadoRetencionIban6(Integer codigoResultadoRetencionIban6) {
+	public void setCodigoResultadoRetencionIban6(String codigoResultadoRetencionIban6) {
 		this.codigoResultadoRetencionIban6 = codigoResultadoRetencionIban6;
 	}
 	public BigDecimal getImporteRetenidoIban6() {
@@ -272,10 +272,10 @@ public class ResultadoFinalEmbargoFase6 {
 	public void setTotalImporteALevantar(BigDecimal totalImporteALevantar) {
 		this.totalImporteALevantar = totalImporteALevantar;
 	}
-	public Integer getCodigoResultadoLevantamiento() {
+	public String getCodigoResultadoLevantamiento() {
 		return codigoResultadoLevantamiento;
 	}
-	public void setCodigoResultadoLevantamiento(Integer codigoResultadoLevantamiento) {
+	public void setCodigoResultadoLevantamiento(String codigoResultadoLevantamiento) {
 		this.codigoResultadoLevantamiento = codigoResultadoLevantamiento;
 	}
 	public BigDecimal getImporteNetoEmbargadoIban1() {
@@ -284,10 +284,10 @@ public class ResultadoFinalEmbargoFase6 {
 	public void setImporteNetoEmbargadoIban1(BigDecimal importeNetoEmbargadoIban1) {
 		this.importeNetoEmbargadoIban1 = importeNetoEmbargadoIban1;
 	}
-	public Integer getResultadoLevantamientoIban1() {
+	public String getResultadoLevantamientoIban1() {
 		return resultadoLevantamientoIban1;
 	}
-	public void setResultadoLevantamientoIban1(Integer resultadoLevantamientoIban1) {
+	public void setResultadoLevantamientoIban1(String resultadoLevantamientoIban1) {
 		this.resultadoLevantamientoIban1 = resultadoLevantamientoIban1;
 	}
 	public BigDecimal getImporteNetoEmbargadoIban2() {
@@ -296,10 +296,10 @@ public class ResultadoFinalEmbargoFase6 {
 	public void setImporteNetoEmbargadoIban2(BigDecimal importeNetoEmbargadoIban2) {
 		this.importeNetoEmbargadoIban2 = importeNetoEmbargadoIban2;
 	}
-	public Integer getResultadoLevantamientoIban2() {
+	public String getResultadoLevantamientoIban2() {
 		return resultadoLevantamientoIban2;
 	}
-	public void setResultadoLevantamientoIban2(Integer resultadoLevantamientoIban2) {
+	public void setResultadoLevantamientoIban2(String resultadoLevantamientoIban2) {
 		this.resultadoLevantamientoIban2 = resultadoLevantamientoIban2;
 	}
 	public BigDecimal getImporteNetoEmbargadoIban3() {
@@ -308,10 +308,10 @@ public class ResultadoFinalEmbargoFase6 {
 	public void setImporteNetoEmbargadoIban3(BigDecimal importeNetoEmbargadoIban3) {
 		this.importeNetoEmbargadoIban3 = importeNetoEmbargadoIban3;
 	}
-	public Integer getResultadoLevantamientoIban3() {
+	public String getResultadoLevantamientoIban3() {
 		return resultadoLevantamientoIban3;
 	}
-	public void setResultadoLevantamientoIban3(Integer resultadoLevantamientoIban3) {
+	public void setResultadoLevantamientoIban3(String resultadoLevantamientoIban3) {
 		this.resultadoLevantamientoIban3 = resultadoLevantamientoIban3;
 	}
 	public BigDecimal getImporteNetoEmbargadoIban4() {
@@ -320,10 +320,10 @@ public class ResultadoFinalEmbargoFase6 {
 	public void setImporteNetoEmbargadoIban4(BigDecimal importeNetoEmbargadoIban4) {
 		this.importeNetoEmbargadoIban4 = importeNetoEmbargadoIban4;
 	}
-	public Integer getResultadoLevantamientoIban4() {
+	public String getResultadoLevantamientoIban4() {
 		return resultadoLevantamientoIban4;
 	}
-	public void setResultadoLevantamientoIban4(Integer resultadoLevantamientoIban4) {
+	public void setResultadoLevantamientoIban4(String resultadoLevantamientoIban4) {
 		this.resultadoLevantamientoIban4 = resultadoLevantamientoIban4;
 	}
 	public BigDecimal getImporteNetoEmbargadoIban5() {
@@ -332,10 +332,10 @@ public class ResultadoFinalEmbargoFase6 {
 	public void setImporteNetoEmbargadoIban5(BigDecimal importeNetoEmbargadoIban5) {
 		this.importeNetoEmbargadoIban5 = importeNetoEmbargadoIban5;
 	}
-	public Integer getResultadoLevantamientoIban5() {
+	public String getResultadoLevantamientoIban5() {
 		return resultadoLevantamientoIban5;
 	}
-	public void setResultadoLevantamientoIban5(Integer resultadoLevantamientoIban5) {
+	public void setResultadoLevantamientoIban5(String resultadoLevantamientoIban5) {
 		this.resultadoLevantamientoIban5 = resultadoLevantamientoIban5;
 	}
 	public BigDecimal getImporteNetoEmbargadoIban6() {
@@ -344,10 +344,10 @@ public class ResultadoFinalEmbargoFase6 {
 	public void setImporteNetoEmbargadoIban6(BigDecimal importeNetoEmbargadoIban6) {
 		this.importeNetoEmbargadoIban6 = importeNetoEmbargadoIban6;
 	}
-	public Integer getResultadoLevantamientoIban6() {
+	public String getResultadoLevantamientoIban6() {
 		return resultadoLevantamientoIban6;
 	}
-	public void setResultadoLevantamientoIban6(Integer resultadoLevantamientoIban6) {
+	public void setResultadoLevantamientoIban6(String resultadoLevantamientoIban6) {
 		this.resultadoLevantamientoIban6 = resultadoLevantamientoIban6;
 	}
 	public BigDecimal getImporteTotalNetoEmbargadoAlDeudor() {

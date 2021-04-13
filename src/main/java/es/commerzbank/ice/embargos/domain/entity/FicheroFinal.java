@@ -1,19 +1,8 @@
 package es.commerzbank.ice.embargos.domain.entity;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
 
 
 /**
@@ -43,6 +32,9 @@ public class FicheroFinal implements Serializable {
 
 	@Column(nullable=false)
 	private BigDecimal importe;
+
+	@Column(name="IMPORTE_LEVANTADO")
+	private BigDecimal importeLevantado;
 
 	@Column(name="USUARIO_ULT_MODIFICACION", nullable=false, length=20)
 	private String usuarioUltModificacion;
@@ -124,4 +116,11 @@ public class FicheroFinal implements Serializable {
 		this.estadoContabilizacion = estadoContabilizacion;
 	}
 
+	public BigDecimal getImporteLevantado() {
+		return importeLevantado;
+	}
+
+	public void setImporteLevantado(BigDecimal importeLevantado) {
+		this.importeLevantado = importeLevantado;
+	}
 }

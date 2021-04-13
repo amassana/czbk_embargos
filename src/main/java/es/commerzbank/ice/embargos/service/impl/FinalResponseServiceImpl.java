@@ -7,11 +7,14 @@ import es.commerzbank.ice.embargos.domain.dto.FinalResponseDTO;
 import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.FinalResponseBankAccountMapper;
 import es.commerzbank.ice.embargos.domain.mapper.FinalResponseMapper;
+import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.repository.FinalFileRepository;
 import es.commerzbank.ice.embargos.repository.FinalResponseBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.FinalResponseRepository;
 import es.commerzbank.ice.embargos.service.FinalResponseGenerationService;
 import es.commerzbank.ice.embargos.service.FinalResponseService;
+import es.commerzbank.ice.embargos.service.files.Cuaderno63FinalResponseService;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.util.JRLoader;
@@ -55,6 +58,12 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 
 	@Autowired
 	private FinalResponseGenerationService finalResponseGenerationService;
+
+	@Autowired
+	private FileControlRepository fileControlRepository;
+
+	@Autowired
+	private Cuaderno63FinalResponseService cuaderno63FinalResponseService;
 
 	@Override
 	public List<FinalResponseDTO> getAllByControlFichero(ControlFichero controlFichero) {
@@ -261,6 +270,17 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 	public void calcFinalResult(Long codeFileControlFase3, String user)
 		throws Exception
 	{
-		finalResponseGenerationService.calcFinalResult(codeFileControlFase3, user);
+		ControlFichero ficheroFase3 = fileControlRepository.getOne(codeFileControlFase3);
+		EntidadesComunicadora entidadComunicadora = ficheroFase3.getEntidadesComunicadora();
+
+		// Generar el contenido del cierre
+		FicheroFinal finalFile = finalResponseGenerationService.calcFinalResult(ficheroFase3, user);
+
+		ControlFichero ficheroFase6 = finalFile.getControlFichero();
+
+		// Si es Norma 63, generar el fichero físico de salida
+		if (EmbargosConstants.IND_FLAG_SI.equals(entidadComunicadora.getIndNorma63())) {
+			cuaderno63FinalResponseService.tramitarFicheroInformacion(ficheroFase3, finalFile);
+		}
 	}
 }

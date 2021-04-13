@@ -193,7 +193,7 @@ public class AEATLiftingServiceImpl
 	
 	                    if (embargos == null || embargos.size() == 0)
 	                    {
-	                        LOG.info("No embargo found for "+ levantamientoAEAT.getNumeroDiligenciaEmbargo());
+	                        LOG.error("No embargo found for "+ levantamientoAEAT.getNumeroDiligenciaEmbargo());
 	                        // TODO ERROR
 	                        continue;
 	                    }
@@ -204,7 +204,7 @@ public class AEATLiftingServiceImpl
 	
 	                    if (traba == null)
 	                    {
-	                        LOG.error("Levantamiento not found for embargo "+ embargo.getCodEmbargo() +" code "+ levantamientoAEAT.getNumeroDiligenciaEmbargo());
+	                        LOG.error("Traba not found for embargo "+ embargo.getCodEmbargo() +" code "+ levantamientoAEAT.getNumeroDiligenciaEmbargo());
 	                        continue;
 	                    }
 	

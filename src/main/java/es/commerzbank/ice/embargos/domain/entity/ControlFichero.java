@@ -159,6 +159,9 @@ public class ControlFichero implements Serializable {
 	@OneToMany(mappedBy="controlFichero")
 	private List<TareasRealizada> tareasRealizadas;
 
+	@OneToMany(mappedBy="controlFichero")
+	private List<ResultadoEmbargo> resultadoEmbargos;
+
 	public ControlFichero() {
 	}
 
@@ -624,5 +627,20 @@ public class ControlFichero implements Serializable {
 
 	public void setIndEnvioCarta(String indEnvioCarta) {
 		this.indEnvioCarta = indEnvioCarta;
+	}
+
+	public List<ResultadoEmbargo> getResultadoEmbargos() {
+		return this.resultadoEmbargos;
+	}
+
+	public void setResultadoEmbargos(List<ResultadoEmbargo> resultadoEmbargos) {
+		this.resultadoEmbargos = resultadoEmbargos;
+	}
+
+	public ResultadoEmbargo addResultadoEmbargo(ResultadoEmbargo resultadoEmbargo) {
+		getResultadoEmbargos().add(resultadoEmbargo);
+		resultadoEmbargo.setControlFichero(this);
+
+		return resultadoEmbargo;
 	}
 }
