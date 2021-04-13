@@ -117,11 +117,11 @@ public class JobConfig {
     }
 
     @Bean
-    public CronTriggerFactoryBean triggerNorma63FinalFile(JobDetail jobNorma63FinalFile) {
+    public CronTriggerFactoryBean triggerNorma63FinalFile(JobDetail jobNorma63FinalFileFactoryBean) {
         String cronExpression = "0 */1 * ? * * *";
         CronTriggerFactoryBean trigger = new CronTriggerFactoryBean();
-        trigger.setName(jobNorma63FinalFile.getKey().getName() + "Trigger");
-        trigger.setJobDetail(jobNorma63FinalFile);
+        trigger.setName(jobNorma63FinalFileFactoryBean.getKey().getName() + "Trigger");
+        trigger.setJobDetail(jobNorma63FinalFileFactoryBean);
         trigger.setCronExpression(cronExpression);
         return trigger;
     }
