@@ -314,8 +314,8 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 
 		// Si es Norma 63, generar el fichero físico de salida
 		if (EmbargosConstants.IND_FLAG_SI.equals(entidadComunicadora.getIndNorma63())) {
-			//cuaderno63FinalResponseService.tramitarFicheroInformacion(ficheroFase3, finalFile);
-			logger.info("Generar fichero..");
+			cuaderno63FinalResponseService.tramitarFicheroInformacion(ficheroFase3, finalFile);
+			//logger.info("Generar fichero..");
 		}
 
 		taskService.changeStatus(tarea.getCodTarea(), ValueConstants.STATUS_TASK_FINISH, user);
