@@ -14,8 +14,6 @@ import es.commerzbank.ice.embargos.formats.cuaderno63.fase6.ResultadoFinalEmbarg
 import es.commerzbank.ice.embargos.repository.*;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63FinalResponseService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
-import es.commerzbank.ice.embargos.utils.EmbargosUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.beanio.BeanReader;
 import org.beanio.BeanWriter;
 import org.beanio.StreamFactory;
@@ -148,11 +146,10 @@ public class Cuaderno63FinalResponseServiceImpl
                     ordenEjecucionEmbargoComplementarioFase3 = (OrdenEjecucionEmbargoComplementarioFase3) readRecord;
                 }
 
-                if (ordenEjecucionEmbargoFase3 != null && ordenEjecucionEmbargoComplementarioFase3 != null) {
-                    Pair<Embargo, Traba> laParella = findEmbargoTraba(ordenEjecucionEmbargoFase3.getIdentificadorDeuda());
-
-                    Embargo embargo = laParella.getLeft();
-                    Traba traba = laParella.getRight();
+                if (ordenEjecucionEmbargoFase3 != null && ordenEjecucionEmbargoComplementarioFase3 != null)
+                {
+                    Embargo embargo = seizureRepository.findByControlFicheroNumeroEmbargo(ficheroFase3.getCodControlFichero(), ordenEjecucionEmbargoFase3.getIdentificadorDeuda());
+                    Traba traba = seizedRepository.getByEmbargo(embargo);
                     List<LevantamientoTraba> levantamientos = liftingRepository.findAllByTraba(traba);
 
                     ResultadoEmbargo resultadoEmbargo = finalResponseRepository.findByTraba(traba);
@@ -206,27 +203,5 @@ public class Cuaderno63FinalResponseServiceImpl
 
             if (fileInputStream!=null) fileInputStream.close();
         }
-    }
-
-    private Pair<Embargo, Traba> findEmbargoTraba(String identificadorDeuda) {
-        List<Embargo> embargos = seizureRepository.findAllByNumeroEmbargo(identificadorDeuda);
-
-        if (embargos == null || embargos.size() == 0)
-        {
-            logger.error("No embargo found for "+ identificadorDeuda);
-            return null;
-        }
-
-        Embargo embargo = EmbargosUtils.selectEmbargo(embargos);
-
-        Traba traba = seizedRepository.getByEmbargo(embargo);
-
-        if (traba == null)
-        {
-            logger.error("Levantamiento not found for embargo "+ embargo.getCodEmbargo() +" code "+ identificadorDeuda);
-            return null;
-        }
-
-        return Pair.of(embargo, traba);
     }
 }
