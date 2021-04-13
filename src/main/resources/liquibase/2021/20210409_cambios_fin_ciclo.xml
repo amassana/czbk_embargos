@@ -13,4 +13,8 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="aniol.massana" id="20210413_fichero_final_fecha_valor_optional">
+        <dropNotNullConstraint tableName="FICHERO_FINAL" columnName="F_VALOR"></dropNotNullConstraint>
+    </changeSet>
+
 </databaseChangeLog>
