@@ -256,8 +256,12 @@ public class FinalResponseController {
 
 		if (codeFileControl != null) {
 			try {
-				finalResponseService.calcFinalResult(codeFileControl, authentication.getName());
-				response = new ResponseEntity<>(HttpStatus.OK);
+				Long codControlFichero = finalResponseService.calcFinalResult(codeFileControl, authentication.getName());
+
+				if (codControlFichero == null)
+					response = new ResponseEntity<>(HttpStatus.CONFLICT);
+				else
+					response = new ResponseEntity<>(HttpStatus.OK);
 			} catch (Exception e) {
 				logger.error("SeizureSummaryController - createNorma63 - Error while generating norma 63 summary file", e);
 				response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

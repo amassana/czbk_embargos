@@ -3,6 +3,7 @@ package es.commerzbank.ice.embargos.service.impl;
 import es.commerzbank.ice.comun.lib.domain.entity.Tarea;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
+import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
 import es.commerzbank.ice.embargos.domain.dto.FinalResponseBankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.FinalResponseDTO;
@@ -281,21 +282,44 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 	}
 
 	@Override
-	public void calcFinalResult(Long codeFileControlFase3, String user)
+	public Long calcFinalResult(Long codeFileControlFase3, String user)
 		throws Exception
 	{
 		ControlFichero ficheroFase3 = fileControlRepository.getOne(codeFileControlFase3);
 		EntidadesComunicadora entidadComunicadora = ficheroFase3.getEntidadesComunicadora();
+
+		ControlFichero ficheroFase4 = ficheroFase3.getControlFicheroRespuesta();
+
+		List<Tarea> tasks = taskService.getTaskPendingByExternalIdLike(EmbargosConstants.EXTERNAL_ID_F6_N63 + ficheroFase4.getCodControlFichero());
+
+		if (tasks == null || tasks.size() == 0) {
+			logger.error("No se ha encontrado la tarea pendiente para ejecutar el fin de ciclo. Fichero F3 indicado: "+ codeFileControlFase3);
+			return null;
+		}
+		if (tasks.size() != 1) {
+			logger.error("Se han encontrado "+ tasks.size() +" tareas pendientes para ejecutar el fin de ciclo, se esperaba una sola. Fichero F3 indicado: "+ codeFileControlFase3);
+			return null;
+		}
+
+		Tarea tarea = tasks.get(0);
+
+		logger.info("Ejecutando fin de ciclo "+ entidadComunicadora.getDesEntidad() +" fichero F3 "+ codeFileControlFase3 +" F4 "+ ficheroFase4.getCodControlFichero());
 
 		// Generar el contenido del cierre
 		FicheroFinal finalFile = finalResponseGenerationService.calcFinalResult(ficheroFase3, user);
 
 		ControlFichero ficheroFase6 = finalFile.getControlFichero();
 
+		logger.info("Fin de ciclo - generado F6 "+ ficheroFase6);
+
 		// Si es Norma 63, generar el fichero físico de salida
 		if (EmbargosConstants.IND_FLAG_SI.equals(entidadComunicadora.getIndNorma63())) {
 			cuaderno63FinalResponseService.tramitarFicheroInformacion(ficheroFase3, finalFile);
 		}
+
+		taskService.changeStatus(tarea.getCodTarea(), ValueConstants.STATUS_TASK_FINISH, user);
+		
+		return ficheroFase6.getCodControlFichero();
 	}
 
 	@Override

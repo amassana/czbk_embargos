@@ -21,6 +21,6 @@ public interface FinalResponseService {
 
 	boolean updateFinalFileAccountingStatus(FicheroFinal ficheroFinal, Long codEstadoContabilizacion, String userName);
 
-	void calcFinalResult(Long codeFileControlFase3, String user) throws Exception;
+	Long calcFinalResult(Long codeFileControlFase3, String user) throws Exception;
 	List<FinalResponsePendingDTO> listPendingCyclesNorma63() throws Exception;
 }
