@@ -107,7 +107,7 @@ public class JobConfig {
     }
 
     @Bean
-    public JobDetailFactoryBean jobNorma63FinalFile() {
+    public JobDetailFactoryBean jobNorma63FinalFileFactoryBean() {
         JobDetailFactoryBean jobDetailFactory = new JobDetailFactoryBean();
         jobDetailFactory.setJobClass(JobTaskPendingDate.class);
         jobDetailFactory.setName(JobTaskPendingDate.class.getSimpleName());
