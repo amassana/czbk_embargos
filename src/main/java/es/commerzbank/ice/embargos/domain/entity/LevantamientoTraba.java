@@ -29,6 +29,9 @@ public class LevantamientoTraba implements Serializable {
 	@Column(name="COD_DEUDA_DEUDOR", length=8)
 	private String codDeudaDeudor;
 
+	@Column(name="TIPO_LEVANTAMIENTO", length=1)
+	private String tipoLevantamiento;
+	
 	@Column(name="ESTADO_CONTABLE")
 	private BigDecimal estadoContable;
 
@@ -176,5 +179,19 @@ public class LevantamientoTraba implements Serializable {
 
 	public void setEstadoLevantamiento(EstadoLevantamiento estadoLevantamiento) {
 		this.estadoLevantamiento = estadoLevantamiento;
+	}
+
+	/**
+	 * @return the tipoLevantamiento
+	 */
+	public String getTipoLevantamiento() {
+		return tipoLevantamiento;
+	}
+
+	/**
+	 * @param tipoLevantamiento the tipoLevantamiento to set
+	 */
+	public void setTipoLevantamiento(String tipoLevantamiento) {
+		this.tipoLevantamiento = tipoLevantamiento;
 	}
 }

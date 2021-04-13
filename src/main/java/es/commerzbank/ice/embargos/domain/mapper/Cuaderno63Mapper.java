@@ -733,6 +733,8 @@ public abstract class Cuaderno63Mapper {
 		levantamiento.setFUltimaModificacion(fechaUltmaModif);
 		levantamiento.setTraba(traba);
 
+		levantamiento.setTipoLevantamiento(ordenLevantamientoRetencionFase5.getCodigoTipoLevantamientoARealizar());
+		
 		EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
 		estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE);
 		levantamiento.setEstadoLevantamiento(estadoLevantamiento);
