@@ -39,5 +39,6 @@
     </changeSet>
 
     <include file="2021/20210409_cambios_fin_ciclo.xml" relativeToChangelogFile="true" />
+    <include file="2021/20210413_tipo_levantamiento.xml" relativeToChangelogFile="true" />
 
 </databaseChangeLog>
