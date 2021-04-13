@@ -1,10 +1,15 @@
 package es.commerzbank.ice.embargos.service.impl;
 
+import es.commerzbank.ice.comun.lib.domain.entity.Tarea;
+import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
 import es.commerzbank.ice.embargos.domain.dto.FinalResponseBankAccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.FinalResponseDTO;
+import es.commerzbank.ice.embargos.domain.dto.FinalResponsePendingDTO;
 import es.commerzbank.ice.embargos.domain.entity.*;
+import es.commerzbank.ice.embargos.domain.mapper.CommunicatingEntityMapper;
+import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
 import es.commerzbank.ice.embargos.domain.mapper.FinalResponseBankAccountMapper;
 import es.commerzbank.ice.embargos.domain.mapper.FinalResponseMapper;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
@@ -64,6 +69,15 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 
 	@Autowired
 	private Cuaderno63FinalResponseService cuaderno63FinalResponseService;
+
+	@Autowired
+	private TaskService taskService;
+
+	@Autowired
+	private FileControlMapper fileControlMapper;
+
+	@Autowired
+	private CommunicatingEntityMapper communicatingEntityMapper;
 
 	@Override
 	public List<FinalResponseDTO> getAllByControlFichero(ControlFichero controlFichero) {
@@ -282,5 +296,69 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 		if (EmbargosConstants.IND_FLAG_SI.equals(entidadComunicadora.getIndNorma63())) {
 			cuaderno63FinalResponseService.tramitarFicheroInformacion(ficheroFase3, finalFile);
 		}
+	}
+
+	@Override
+	public List<FinalResponsePendingDTO> listPendingCyclesNorma63() throws Exception {
+		List<FinalResponsePendingDTO> result = null;
+		List<Tarea> tareas = taskService.getTaskPendingByExternalIdLike(EmbargosConstants.EXTERNAL_ID_F6_N63);
+
+		if (tareas == null || tareas.size() == 0) {
+			logger.debug("No se han encontrado tareas de F6 pendientes.");
+		}
+		else {
+			logger.debug("Se han encontrado " + tareas.size() + " tareas de F6 pendientes.");
+			result = new ArrayList<FinalResponsePendingDTO>();
+
+			for (Tarea tarea : tareas) {
+				try {
+					if (tarea.getExternalId() == null) {
+						logger.error("Tarea " + tarea.getCodTarea() + " sin identificador externo");
+						continue;
+					}
+
+					String[] partes = tarea.getExternalId().split("_");
+
+					if (partes.length != 2) {
+						logger.error(
+								"Formato de identificador externo de la tarea " + tarea.getCodTarea() + " no reconocido: "
+										+ tarea.getExternalId());
+						continue;
+					}
+
+					String codControlFichero = partes[1];
+
+					Optional<ControlFichero> controlFicheroOptF4 = fileControlRepository.findById(Long.parseLong(codControlFichero));
+					if (!controlFicheroOptF4.isPresent()) {
+						logger.error("ControlFichero F4 " + codControlFichero + " no encontrado");
+						continue;
+					}
+					ControlFichero controlFicheroF4 = controlFicheroOptF4.get();
+
+					ControlFichero controlFicheroF3 = null;
+					if (controlFicheroF4 != null && controlFicheroF4.getControlFicheroOrigen() != null) {
+						controlFicheroF3 = controlFicheroF4.getControlFicheroOrigen();
+					} else {
+						logger.error("ControlFichero F3 origen de " + codControlFichero + " no encontrado");
+					}
+
+					FinalResponsePendingDTO finalResponsePendingDTO = new FinalResponsePendingDTO();
+					finalResponsePendingDTO.setLastDateResponse(tarea.getfTarea());
+					if (controlFicheroF4 != null) {
+						finalResponsePendingDTO.setFileControlDTOF4(fileControlMapper.toFileControlDTO(controlFicheroF4));
+						if (controlFicheroF4.getEntidadesComunicadora() != null)
+							finalResponsePendingDTO.setCommunicatingEntity(communicatingEntityMapper.toCommunicatingEntity(controlFicheroF4.getEntidadesComunicadora()));
+					}
+					if (controlFicheroF3 != null)
+						finalResponsePendingDTO.setFileControlDTOF3(fileControlMapper.toFileControlDTO(controlFicheroF3));
+
+					result.add(finalResponsePendingDTO);
+				} catch (Exception e) {
+					logger.error("Error mientras se recuperaba la tareas de F6 " + tarea.getCodTarea(), e);
+				}
+			}
+		}
+
+		return result;
 	}
 }

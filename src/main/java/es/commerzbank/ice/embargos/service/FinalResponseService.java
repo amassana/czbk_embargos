@@ -1,6 +1,7 @@
 package es.commerzbank.ice.embargos.service;
 
 import es.commerzbank.ice.embargos.domain.dto.FinalResponseDTO;
+import es.commerzbank.ice.embargos.domain.dto.FinalResponsePendingDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.FicheroFinal;
 
@@ -21,4 +22,5 @@ public interface FinalResponseService {
 	boolean updateFinalFileAccountingStatus(FicheroFinal ficheroFinal, Long codEstadoContabilizacion, String userName);
 
 	void calcFinalResult(Long codeFileControlFase3, String user) throws Exception;
+	List<FinalResponsePendingDTO> listPendingCyclesNorma63() throws Exception;
 }
