@@ -178,10 +178,7 @@ public class Cuaderno63FinalResponseServiceImpl
             ficheroFase6.setNumCrc(es.commerzbank.ice.comun.lib.util.FileUtils.getMD5(fase6File.getCanonicalPath()));
             ficheroFase6.setRutaFichero(fase6File.getCanonicalPath());
             fileControlRepository.save(ficheroFase6);
-
-            // TODO Cambiar el estado del fichero
-            // TODO falta mapeo campo tipo levantamiento
-
+            
             // Mover a outbox
             String outboxGenerated = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_OUTBOX);
             fileWriterHelper.transferToOutbox(fase6File, outboxGenerated, ficheroFase6.getNombreFichero());

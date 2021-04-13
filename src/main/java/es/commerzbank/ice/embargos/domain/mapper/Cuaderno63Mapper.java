@@ -864,7 +864,6 @@ public abstract class Cuaderno63Mapper {
 			Embargo embargo, Traba traba, List<LevantamientoTraba> levantamientosList, ResultadoEmbargo resultadoEmbargo)
 	{
 		// Copia de cuentas basado en setComunicacionResultadoRetencionFase4AfterMapping
-		// resultadoFinalEmbargoFase6.setCodigoRegistro(null);
 
 		resultadoFinalEmbargoFase6.setFechaEjecucionRetenciones(ICEDateUtils.bigDecimalToDate(traba.getFechaTraba(), ICEDateUtils.FORMAT_yyyyMMdd));
 
@@ -937,9 +936,8 @@ public abstract class Cuaderno63Mapper {
 			}
 		}
 
-		// TODO
 		if (levantamientosList.size() > 0)
-			resultadoFinalEmbargoFase6.setCodigoResultadoLevantamiento(null);
+			resultadoFinalEmbargoFase6.setCodigoResultadoLevantamiento(levantamientosList.get(0).getTipoLevantamiento());
 	}
 
 	private String getResultadoLevantamiento(List<LevantamientoTraba> levantamientosList, String cuenta) {
