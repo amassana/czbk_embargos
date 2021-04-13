@@ -1,6 +1,7 @@
 package es.commerzbank.ice.embargos.repository;
 
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -26,9 +27,15 @@ public interface FileControlRepository
 	
 	@Query(value = "select * from CONTROL_FICHERO cf where cf.COD_ESTADO = 6 and cf.COD_TIPO_FICHERO = 1 and cf.FECHA_COMIENZO_CICLO = :fechaComienzoCiclo and cf.FECHA_CREACION = :fechaCreacion ", nativeQuery = true)
 	List<ControlFichero> findEmbargoProcesadoByFechas(@Param("fechaComienzoCiclo") BigDecimal fechaComienzoCiclo, @Param("fechaCreacion") BigDecimal fechaCreacion);
-	
+
 	@Query(value = "select * from CONTROL_FICHERO cf where cf.COD_ESTADO = 6 and cf.COD_TIPO_FICHERO = 1 and cf.NUM_ENVIO = :numEnvio ", nativeQuery = true)
 	List<ControlFichero> findEmbargoProcesadoByNumEnvio(@Param("numEnvio") String numEnvio);
+
+	@Query(value = "select * from CONTROL_FICHERO cf where" +
+			" cf.COD_TIPO_FICHERO = "+ EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63 +
+			" and cf.COD_ESTADO = "+ EmbargosConstants.COD_ESTADO_CTRLFICHERO_FINAL_AEAT_PENDIENTE_FICHERO
+			, nativeQuery = true)
+	List<ControlFichero> findFicherosF6FinCicloPending();
 	
 	Optional<ControlFichero> findByNumCrc(String numCRC);
 

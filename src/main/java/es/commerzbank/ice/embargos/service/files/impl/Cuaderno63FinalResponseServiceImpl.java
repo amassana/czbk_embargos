@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class Cuaderno63FinalResponseServiceImpl
@@ -63,12 +64,26 @@ public class Cuaderno63FinalResponseServiceImpl
     @Autowired
     private FinalResponseRepository finalResponseRepository;
 
+    @Autowired
+    private FinalFileRepository finalFileRepository;
+
     @Override
     @Transactional(transactionManager = "transactionManager", propagation = Propagation.REQUIRED)
-    public void tramitarFicheroInformacion(ControlFichero ficheroFase3, FicheroFinal finalFile)
+    public void tramitarFicheroInformacion(ControlFichero ficheroFase6)
         throws Exception
     {
-        ControlFichero ficheroFase6 = finalFile.getControlFichero();
+        //ControlFichero ficheroFase6 = finalFile.getControlFichero();
+        FicheroFinal finalFile = finalFileRepository.findByControlFichero(ficheroFase6);
+
+        if (finalFile == null)
+            throw new Exception("No se ha encontrado la entidad fichero final para "+ ficheroFase6.getCodControlFichero());
+
+        Optional<ControlFichero> ficheroFase3Opt = fileControlRepository.findById(finalFile.getCodFicheroDiligencias());
+
+        if (!ficheroFase3Opt.isPresent())
+            throw new Exception("No se ha encontrado el fichero de diligencias "+ finalFile.getCodFicheroDiligencias());
+
+        ControlFichero ficheroFase3 = ficheroFase3Opt.get();
 
         BeanReader beanReader = null;
         BeanWriter beanWriter = null;
@@ -156,6 +171,10 @@ public class Cuaderno63FinalResponseServiceImpl
                 }
             }
 
+            EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
+                    EmbargosConstants.COD_ESTADO_CTRLFICHERO_FINAL_GENERADO,
+                    EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63);
+            ficheroFase6.setEstadoCtrlfichero(estadoCtrlfichero);
             ficheroFase6.setNumCrc(es.commerzbank.ice.comun.lib.util.FileUtils.getMD5(fase6File.getCanonicalPath()));
             ficheroFase6.setRutaFichero(fase6File.getCanonicalPath());
             fileControlRepository.save(ficheroFase6);

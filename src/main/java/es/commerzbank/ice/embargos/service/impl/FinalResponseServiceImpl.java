@@ -19,7 +19,6 @@ import es.commerzbank.ice.embargos.repository.FinalResponseBankAccountRepository
 import es.commerzbank.ice.embargos.repository.FinalResponseRepository;
 import es.commerzbank.ice.embargos.service.FinalResponseGenerationService;
 import es.commerzbank.ice.embargos.service.FinalResponseService;
-import es.commerzbank.ice.embargos.service.files.Cuaderno63FinalResponseService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.*;
@@ -67,9 +66,6 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 
 	@Autowired
 	private FileControlRepository fileControlRepository;
-
-	@Autowired
-	private Cuaderno63FinalResponseService cuaderno63FinalResponseService;
 
 	@Autowired
 	private TaskService taskService;
@@ -311,12 +307,6 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 		ControlFichero ficheroFase6 = finalFile.getControlFichero();
 
 		logger.info("Fin de ciclo - generado F6 "+ ficheroFase6);
-
-		// Si es Norma 63, generar el fichero físico de salida
-		if (EmbargosConstants.IND_FLAG_SI.equals(entidadComunicadora.getIndNorma63())) {
-			cuaderno63FinalResponseService.tramitarFicheroInformacion(ficheroFase3, finalFile);
-			//logger.info("Generar fichero..");
-		}
 
 		taskService.changeStatus(tarea.getCodTarea(), ValueConstants.STATUS_TASK_FINISH, user);
 		

@@ -187,7 +187,7 @@ public class FinalResponseGenerationServiceImpl
 
         FicheroFinal ficheroFinal = new FicheroFinal();
 
-        ficheroFinal.setCodFicheroDiligencias(BigDecimal.valueOf(ficheroFase3.getCodControlFichero()));
+        ficheroFinal.setCodFicheroDiligencias(ficheroFase3.getCodControlFichero());
         ficheroFinal.setControlFichero(ficheroFase6);
 
         ficheroFinal.setImporte(importeNetoFichero);
@@ -210,6 +210,23 @@ public class FinalResponseGenerationServiceImpl
         ficheroFinal.setEstadoContabilizacion(estadoContabilizacion);
 
         finalFileRepository.save(ficheroFinal);
+
+        if (EmbargosConstants.IND_FLAG_SI.equals(ficheroFase3.getEntidadesComunicadora().getIndFormatoAeat())) {
+            EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
+                    EmbargosConstants.COD_ESTADO_CTRLFICHERO_FINAL_AEAT_GENERADO,
+                    EmbargosConstants.COD_TIPO_FICHERO_FICHERO_FINAL_AEAT_INTERNAL);
+            ficheroFase6.setEstadoCtrlfichero(estadoCtrlfichero);
+        }
+        else if (EmbargosConstants.IND_FLAG_SI.equals(ficheroFase3.getEntidadesComunicadora().getIndNorma63())) {
+            EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
+                    EmbargosConstants.COD_ESTADO_CTRLFICHERO_FINAL_AEAT_PENDIENTE_FICHERO,
+                    EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63);
+            ficheroFase6.setEstadoCtrlfichero(estadoCtrlfichero);
+        }
+
+        ficheroFase6.setUsuarioUltModificacion(user);
+        ficheroFase6.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+        fileControlRepository.save(ficheroFase6);
 
         return ficheroFinal;
     }

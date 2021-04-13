@@ -77,6 +77,7 @@ public class EmbargosConstants {
 
 	//delete estados transitorios public static final long COD_ESTADO_CTRLFICHERO_FINAL_AEAT_GENERANDO = 1;
 	public static final long COD_ESTADO_CTRLFICHERO_FINAL_AEAT_GENERADO = 6;
+	public static final long COD_ESTADO_CTRLFICHERO_FINAL_AEAT_PENDIENTE_FICHERO = 11;
 	
 	public static final long COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_RECEIVED = 2;
 	public static final long COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_ACCOUNTING = 3;

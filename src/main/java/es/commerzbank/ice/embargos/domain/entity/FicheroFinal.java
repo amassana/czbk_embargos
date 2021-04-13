@@ -22,7 +22,7 @@ public class FicheroFinal implements Serializable {
 	private long codFicheroFinal;
 
 	@Column(name="COD_FICHERO_DILIGENCIAS", nullable=false)
-	private BigDecimal codFicheroDiligencias;
+	private Long codFicheroDiligencias;
 
 	@Column(name="F_ULTIMA_MODIFICACION", nullable=false, precision=14)
 	private BigDecimal fUltimaModificacion;
@@ -60,11 +60,11 @@ public class FicheroFinal implements Serializable {
 		this.codFicheroFinal = codFicheroFinal;
 	}
 
-	public BigDecimal getCodFicheroDiligencias() {
+	public Long getCodFicheroDiligencias() {
 		return this.codFicheroDiligencias;
 	}
 
-	public void setCodFicheroDiligencias(BigDecimal codFicheroDiligencias) {
+	public void setCodFicheroDiligencias(Long codFicheroDiligencias) {
 		this.codFicheroDiligencias = codFicheroDiligencias;
 	}
 

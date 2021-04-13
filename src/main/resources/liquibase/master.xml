@@ -40,5 +40,6 @@
 
     <include file="2021/20210409_cambios_fin_ciclo.xml" relativeToChangelogFile="true" />
     <include file="2021/20210413_tipo_levantamiento.xml" relativeToChangelogFile="true" />
+    <include file="2021/20210413_estado_ctrlfichero_n63_fin_pdte_gen_fichero.xml" relativeToChangelogFile="true" />
 
 </databaseChangeLog>

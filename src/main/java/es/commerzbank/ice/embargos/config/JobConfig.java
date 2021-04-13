@@ -105,4 +105,24 @@ public class JobConfig {
         trigger.setCronExpression(cronExpression);
         return trigger;           
     }
+
+    @Bean
+    public JobDetailFactoryBean jobNorma63FinalFile() {
+        JobDetailFactoryBean jobDetailFactory = new JobDetailFactoryBean();
+        jobDetailFactory.setJobClass(JobTaskPendingDate.class);
+        jobDetailFactory.setName(JobTaskPendingDate.class.getSimpleName());
+        jobDetailFactory.setDescription("Job de generación del fichero de fin de ciclo de norma 63");
+        jobDetailFactory.setDurability(true);
+        return jobDetailFactory;
+    }
+
+    @Bean
+    public CronTriggerFactoryBean triggerNorma63FinalFile(JobDetail jobNorma63FinalFile) {
+        String cronExpression = "0 */1 * ? * * *";
+        CronTriggerFactoryBean trigger = new CronTriggerFactoryBean();
+        trigger.setName(jobNorma63FinalFile.getKey().getName() + "Trigger");
+        trigger.setJobDetail(jobNorma63FinalFile);
+        trigger.setCronExpression(cronExpression);
+        return trigger;
+    }
 }
