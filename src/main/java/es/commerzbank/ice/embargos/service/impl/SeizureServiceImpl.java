@@ -18,6 +18,7 @@ import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.*;
 import es.commerzbank.ice.embargos.repository.*;
 import es.commerzbank.ice.embargos.service.FileControlService;
+import es.commerzbank.ice.embargos.service.FinalResponseGenerationService;
 import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.EmbargosUtils;
@@ -128,6 +129,9 @@ public class SeizureServiceImpl
 
 	@Autowired
 	private FileControlService fileControlService;
+		
+	@Autowired
+	private FinalResponseGenerationService finalResponseGenerationService;
 	
 	@Override
 	public List<SeizureDTO> getSeizureListByCodeFileControl(Long codeFileControl) {
@@ -680,9 +684,15 @@ public class SeizureServiceImpl
 						ControlFichero controlFicheroF3 = null;
 						if (controlFicheroF4!=null && controlFicheroF4.getControlFicheroOrigen()!=null) {
 							controlFicheroF3 = controlFicheroF4.getControlFicheroOrigen();
+							
+							// Calcula los datos para realizar el cierre
+							logger.info("Calculando los datos para realizar el cierre para el fichero: " + controlFicheroF3.getCodControlFichero());
+							finalResponseGenerationService.calcFinalResult(controlFicheroF3.getCodControlFichero(), user);
+							
 							List<Embargo> listaEmbargos = seizureRepository.findAllByControlFichero(controlFicheroF3);
 							if (listaEmbargos!=null) {
 								for (Embargo embargo : listaEmbargos) {
+									logger.info("Traspasando embargo " + embargo.getCodEmbargo() + " a impuesto");
 									Long importe = obtenerImporteEmbargo(embargo);
 									transferEmbargoToTax(embargo, importe, authorization, user);
 								}
