@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
@@ -63,7 +64,7 @@ public class Cuaderno63FinalResponseServiceImpl
     private FinalResponseRepository finalResponseRepository;
 
     @Override
-    @Transactional(transactionManager = "transactionManager")
+    @Transactional(transactionManager = "transactionManager", propagation = Propagation.REQUIRED)
     public void tramitarFicheroInformacion(ControlFichero ficheroFase3, FicheroFinal finalFile)
         throws Exception
     {
