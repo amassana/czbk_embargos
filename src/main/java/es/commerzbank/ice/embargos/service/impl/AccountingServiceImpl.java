@@ -105,7 +105,7 @@ public class AccountingServiceImpl implements AccountingService{
 			//Para contabilizar, el estado de ControlFichero tiene que ser previo o igual a "Recibido":
 			if (codEstadoCtrlFichero != COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_RECEIVED) {
 
-				logger.debug(generateMessageCtrlFicheroCannotSendAccounting(controlFichero));
+				logger.error(generateMessageCtrlFicheroCannotSendAccounting(controlFichero));
 				
 				return;
 			}
@@ -123,7 +123,7 @@ public class AccountingServiceImpl implements AccountingService{
 			//Para contabilizar, el estado de ControlFichero tiene que ser previo o igual a "Recibido":
 			if (codEstadoCtrlFichero != COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_RECEIVED) {
 
-				logger.debug(generateMessageCtrlFicheroCannotSendAccounting(controlFichero));
+				logger.error(generateMessageCtrlFicheroCannotSendAccounting(controlFichero));
 
 				return;
 			}
@@ -142,7 +142,7 @@ public class AccountingServiceImpl implements AccountingService{
 			//Para contabilizar, el estado de ControlFichero tiene que ser previo o igual a "Recibido":
 			if (codEstadoCtrlFichero != COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_RECEIVED) {
 			
-				logger.debug(generateMessageCtrlFicheroCannotSendAccounting(controlFichero));
+				logger.error(generateMessageCtrlFicheroCannotSendAccounting(controlFichero));
 				
 				return;
 			}
