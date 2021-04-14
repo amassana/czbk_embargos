@@ -1,5 +1,6 @@
 package es.commerzbank.ice.embargos.service;
 
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.embargos.domain.dto.FinalResponseDTO;
 import es.commerzbank.ice.embargos.domain.dto.FinalResponsePendingDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
@@ -23,4 +24,6 @@ public interface FinalResponseService {
 
 	Long calcFinalResult(Long codeFileControlFase3, String user) throws Exception;
 	List<FinalResponsePendingDTO> listPendingCyclesNorma63() throws Exception;
+
+	boolean jobTransferToTax(String authorization, String user) throws ICEException;
 }

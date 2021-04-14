@@ -333,4 +333,6 @@ public class EmbargosConstants {
 	
 	public static final String EXTERNAL_ID_F6_N63 = "SEIZUREN63_";
 	public static final String EXTERNAL_ID_F6_AEAT = "SEIZUREAEAT_";
+
+	public static final String SUCURSAL_CREACION_IMPUESTOS = "1";
 }

@@ -1,15 +1,10 @@
 package es.commerzbank.ice.embargos.repository;
 
 import es.commerzbank.ice.embargos.domain.entity.CuentaResultadoEmbargo;
-
-import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 public interface SeizureSummaryBankAccountRepository extends JpaRepository<CuentaResultadoEmbargo, Long>{
 
-	@Query(value = "select importe_neto from cuenta_resultado_embargo t, resultado_embargo r where r.cod_embargo = :codEmbargo and r.cod_resultado_embargo=t.cod_resultado_embargo order by r.cod_resultado_embargo desc", nativeQuery = true)
-	List<Long> getImporteEmbargo(@Param("codEmbargo") Long codEmbargo);
+//	@Query(value = "select importe_neto from cuenta_resultado_embargo t, resultado_embargo r where r.cod_embargo = :codEmbargo and r.cod_resultado_embargo=t.cod_resultado_embargo order by r.cod_resultado_embargo desc", nativeQuery = true)
+//	List<Long> getImporteEmbargo(@Param("codEmbargo") Long codEmbargo);
 }

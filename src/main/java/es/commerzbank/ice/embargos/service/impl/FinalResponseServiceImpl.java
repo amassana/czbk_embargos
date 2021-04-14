@@ -1,8 +1,11 @@
 package es.commerzbank.ice.embargos.service.impl;
 
 import es.commerzbank.ice.comun.lib.domain.entity.Tarea;
+import es.commerzbank.ice.comun.lib.repository.TaskRepo;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
 import es.commerzbank.ice.embargos.domain.dto.FinalResponseBankAccountDTO;
@@ -23,18 +26,31 @@ import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.util.JRLoader;
+import org.apache.commons.codec.Charsets;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MimeTypeUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.net.SocketTimeoutException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.*;
 
 @Service
@@ -75,6 +91,12 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 
 	@Autowired
 	private CommunicatingEntityMapper communicatingEntityMapper;
+
+	@Autowired
+	private TaskRepo taskRepo;
+
+	@Autowired
+	private GeneralParametersService generalParametersService;
 
 	@Override
 	public List<FinalResponseDTO> getAllByControlFichero(ControlFichero controlFichero) {
@@ -372,6 +394,141 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 					logger.error("Error mientras se recuperaba la tareas de F6 " + tarea.getCodTarea(), e);
 				}
 			}
+		}
+
+		return result;
+	}
+
+	@Override
+	public boolean jobTransferToTax(String authorization, String user) throws ICEException {
+		// TODO: OBTENER EL IMPORTE DE LA TABLA resultado_embargo del campo total_neto
+
+		try {
+			List<Tarea> tareas = taskService.getTareasPendientesByExternalIdLike(EmbargosConstants.EXTERNAL_ID_F6_AEAT);
+
+			if (tareas!=null && tareas.size()>0) {
+				logger.info("Se han encontrado "+ tareas.size() +" tareas de F6 AEAT pendientes cuya fecha de expiración es hoy o anterior.");
+				String uri = generalParametersService.loadStringParameter(ValueConstants.PARAMETRO_TSP_DOMINIO) + generalParametersService.loadStringParameter(EmbargosConstants.ENDPOINT_EMBARGOS_TO_TAX);
+
+				for (Tarea tarea : tareas) {
+					try {
+						if (tarea.getExternalId() == null) {
+							logger.error("Tarea " + tarea.getCodTarea() + " sin identificador externo");
+							continue;
+						}
+
+						String[] partes = tarea.getExternalId().split("_");
+
+						if (partes.length != 2) {
+							logger.error(
+									"Formato de identificador externo de la tarea " + tarea.getCodTarea() + " no reconocido: "
+											+ tarea.getExternalId());
+							continue;
+						}
+
+						String codControlFichero = partes[1];
+
+						Optional<ControlFichero> controlFicheroOptF4 = fileControlRepository.findById(Long.parseLong(codControlFichero));
+						if (!controlFicheroOptF4.isPresent())
+						{
+							logger.error("ControlFichero F4 " + codControlFichero + " no encontrado");
+							continue;
+						}
+						ControlFichero controlFicheroF4 = controlFicheroOptF4.get();
+
+						ControlFichero controlFicheroF3 = null;
+						if (controlFicheroF4!=null && controlFicheroF4.getControlFicheroOrigen()!=null) {
+							controlFicheroF3 = controlFicheroF4.getControlFicheroOrigen();
+
+							// Calcula los datos para realizar el cierre
+							logger.info("Calculando los datos para realizar el cierre para el fichero: " + controlFicheroF3.getCodControlFichero());
+
+							FicheroFinal ficheroFinal = finalResponseGenerationService.calcFinalResult(controlFicheroF3, user);
+
+							List<ResultadoEmbargo> resultadoEmbargos = finalResponseRepository.findAllByControlFichero(ficheroFinal.getControlFichero());
+
+							for (ResultadoEmbargo resultadoEmbargo : resultadoEmbargos)
+							{
+								logger.info("Traspasando el resultado embargo cod " + resultadoEmbargo.getCodResultadoEmbargo() + " embargo "+
+										resultadoEmbargo.getEmbargo().getNumeroEmbargo() +" a impuesto");
+
+								for (CuentaResultadoEmbargo cuentaResultadoEmbargo : resultadoEmbargo.getCuentaResultadoEmbargos())
+								{
+									if (BigDecimal.ZERO.compareTo(cuentaResultadoEmbargo.getImporteNeto()) < 0) {
+										logger.info("Cargando en " + cuentaResultadoEmbargo.getCodCuentaResultadoEmbargo() + " cuenta " +
+												cuentaResultadoEmbargo.getCuentaTraba().getCuenta() +" importe "+ cuentaResultadoEmbargo.getImporteNeto());
+										boolean result = transferEmbargoToTax(resultadoEmbargo, cuentaResultadoEmbargo, uri, authorization, user);
+										if (!result) {
+											logger.error("Error cargando en " + cuentaResultadoEmbargo.getCodCuentaResultadoEmbargo() + " cuenta " +
+													cuentaResultadoEmbargo.getCuentaTraba().getCuenta() +" importe "+ cuentaResultadoEmbargo.getImporteNeto());
+										}
+									}
+								}
+							}
+
+							tarea.setEstado(ValueConstants.STATUS_TASK_FINISH);
+							tarea.setfTarea(new Timestamp(new Date().getTime()));
+							taskRepo.save(tarea);
+						}
+						else {
+							logger.error("ControlFichero F3 origen de " + codControlFichero + " no encontrado");
+						}
+					}
+					catch (Exception e)
+					{
+						logger.error("Error mientras se recuperaba la tareas de F6 AEAT "+ tarea.getCodTarea(), e);
+					}
+				}
+			}
+			else {
+				logger.info("No se han encontrado tareas de F6 AEAT pendientes.");
+			}
+
+		} catch (Exception e) {
+			logger.error("ERROR in jobTransferToTax: ", e);
+		}
+
+		return true;
+	}
+
+	private boolean transferEmbargoToTax(ResultadoEmbargo resultadoEmbargo, CuentaResultadoEmbargo cuentaResultadoEmbargo,
+										 String uri, String authorization, String user)
+	{
+		boolean result = false;
+
+		HttpClient httpClient = HttpClients.custom().build();
+		HttpPost request = new HttpPost(uri);
+
+		String message = "{\"user\": \"" + user +
+				"\", \"nombre\": \"" + resultadoEmbargo.getEmbargo().getRazonSocialInterna() +
+				"\", \"cuenta\": \"" + cuentaResultadoEmbargo.getCuentaTraba().getCuenta() +
+				"\", \"nif\": \"" + resultadoEmbargo.getEmbargo().getNif() +
+				"\", \"sucursal\": \"" + EmbargosConstants.SUCURSAL_CREACION_IMPUESTOS +
+				"\", \"importe\": \"" + cuentaResultadoEmbargo.getImporteNeto() +
+				"\", \"numEmbargo\": \"" + resultadoEmbargo.getEmbargo().getNumeroEmbargo() + "\"}";
+
+		request.setEntity(new StringEntity(message, ContentType.create(MimeTypeUtils.APPLICATION_JSON_VALUE, Charsets.UTF_8)));
+
+		try {
+			request.setHeader("Content-Type", "application/json");
+			request.setHeader("Authorization", authorization);
+
+			HttpResponse response = null;
+			try {
+				response = httpClient.execute(request);
+			} catch (ConnectTimeoutException | SocketTimeoutException ex) {
+				logger.error("Error comunicacions timeout ", ex);
+			} catch (IOException ex) {
+				logger.error("Error comunicacions ", ex);
+			}
+
+			int statusCode = response.getStatusLine().getStatusCode();
+			if (statusCode == HttpStatus.SC_OK) {
+				result = true;
+			}
+
+		} catch (Exception e) {
+			logger.error("ERROR transferEmbargoToTax para cod cuenta resultado " + cuentaResultadoEmbargo.getCodCuentaResultadoEmbargo(), e);
 		}
 
 		return result;

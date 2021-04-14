@@ -1,23 +1,18 @@
 package es.commerzbank.ice.embargos.event;
 
-import org.quartz.DisallowConcurrentExecution;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.PersistJobDataAfterExecution;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import es.commerzbank.ice.comun.lib.domain.dto.User;
 import es.commerzbank.ice.comun.lib.domain.entity.Usuario;
 import es.commerzbank.ice.comun.lib.repository.UsuarioRepo;
 import es.commerzbank.ice.comun.lib.security.Token;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.mapper.UserMapper;
-import es.commerzbank.ice.embargos.service.SeizureService;
+import es.commerzbank.ice.embargos.service.FinalResponseService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import org.quartz.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 
 @Component
@@ -34,7 +29,7 @@ public class JobTransferToTax implements Job {
 	private GeneralParametersService generalParametersService;
 	
 	@Autowired
-	private SeizureService seizureService;
+	private FinalResponseService finalResponseService;
 	
 	@Autowired
     private UsuarioRepo usersRepository;
@@ -52,7 +47,7 @@ public class JobTransferToTax implements Job {
 			if (usuario!=null) user = UserMapper.toUser(usuario);
 			if (user!=null) token = Token.buildJWToken(user, user.getPerfil());
 			
-			if (token!=null) seizureService.jobTransferToTax(token, userStr);
+			if (token!=null) finalResponseService.jobTransferToTax(token, userStr);
 			else logger.error("JobTransferToTax - No se ha podido generar el token para el usuario " + userStr);
 
 			logger.debug("Fin JobTransferToTax con quartz");
