@@ -969,7 +969,7 @@ public abstract class Cuaderno63Mapper {
 			}
 		}
 
-		if (cuentaLevantamiento == null) return null;
+		if (cuentaLevantamiento == null) return "0";
 
 		return cuentaLevantamiento.getActuacion();
 	}
