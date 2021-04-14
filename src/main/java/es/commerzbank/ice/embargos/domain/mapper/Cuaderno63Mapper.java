@@ -813,14 +813,11 @@ public abstract class Cuaderno63Mapper {
 		levantamiento.setImporteLevantado(importeLevantado);
 	}
 
+	@Mappings({
+			@Mapping(target = "fase", constant = ""+EmbargosConstants.COD_FASE_6),
+			@Mapping(target = "fechaAbonoAlOrganismo", source = "fechaObtencionFicheroOrganismo"), // Nota: este mapeo se saca de 3 ejemplos remitidos por commerz
+	})
 	public abstract CabeceraEmisorFase6 generateCabeceraEmisorFase6(CabeceraEmisorFase3 cabeceraEmisorFase3);
-
-	@AfterMapping
-	public void setCabeceraEmisorFase6AfterMapping(@MappingTarget CabeceraEmisorFase6 cabeceraEmisorFase6, Date fechaAbonoOrganismo) {
-		cabeceraEmisorFase6.setFase(EmbargosConstants.COD_FASE_6);
-		// Nota: este mapeo se saca de 3 ejemplos remitidos por commerz
-		cabeceraEmisorFase6.setFechaAbonoAlOrganismo(cabeceraEmisorFase6.getFechaObtencionFicheroOrganismo());
-	}
 
 	@Mappings({
 			@Mapping(source = "numeroRegistrosFichero", target = "numeroRegistrosFichero"),
@@ -850,6 +847,26 @@ public abstract class Cuaderno63Mapper {
 			@Mapping(target = "importeTotalRetencionesEfectuadas", source = "traba.importeTrabado"),
 			@Mapping(target = "totalImporteALevantar", source = "resultadoEmbargo.totalLevantado"),
 			@Mapping(target = "importeTotalNetoEmbargadoAlDeudor", source = "resultadoEmbargo.totalNeto"),
+			// tomar los siguientes como defaults, se sobreescriben en el after mapping cuando hay valor
+			@Mapping(target = "ibanCuenta1", constant = "000000000000000000000000"),
+			@Mapping(target = "codigoResultadoRetencionIban1", constant = "00"),
+			@Mapping(target = "ibanCuenta2", constant = "000000000000000000000000"),
+			@Mapping(target = "codigoResultadoRetencionIban2", constant = "00"),
+			@Mapping(target = "ibanCuenta3", constant = "000000000000000000000000"),
+			@Mapping(target = "codigoResultadoRetencionIban3", constant = "00"),
+			@Mapping(target = "ibanCuenta4", constant = "000000000000000000000000"),
+			@Mapping(target = "codigoResultadoRetencionIban4", constant = "00"),
+			@Mapping(target = "ibanCuenta5", constant = "000000000000000000000000"),
+			@Mapping(target = "codigoResultadoRetencionIban5", constant = "00"),
+			@Mapping(target = "ibanCuenta6", constant = "000000000000000000000000"),
+			@Mapping(target = "codigoResultadoRetencionIban6", constant = "00"),
+			@Mapping(target = "codigoResultadoLevantamiento", constant = "0"),
+			@Mapping(target = "resultadoLevantamientoIban1", constant = "0"),
+			@Mapping(target = "resultadoLevantamientoIban2", constant = "0"),
+			@Mapping(target = "resultadoLevantamientoIban3", constant = "0"),
+			@Mapping(target = "resultadoLevantamientoIban4", constant = "0"),
+			@Mapping(target = "resultadoLevantamientoIban5", constant = "0"),
+			@Mapping(target = "resultadoLevantamientoIban6", constant = "0"),
 	})
 	public abstract ResultadoFinalEmbargoFase6 generateResultadoFinalEmbargoFase6(
 			OrdenEjecucionEmbargoFase3 ordenEjecucionEmbargoFase3,
