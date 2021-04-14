@@ -135,6 +135,12 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	        	throw new ICEException("ERROR: el CRC del fichero de Embargos no coincide con el guardado en ControlFichero.");
 	        }
 	        
+	        //Comprobar que el fichero está en el estado adecuado
+	        if (controlFicheroEmbargo.getEstadoCtrlfichero().getId().getCodEstado()!=EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_TO_SEND  &&
+	        		controlFicheroEmbargo.getEstadoCtrlfichero().getId().getCodEstado()!=EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_RECEIVED) {
+	        	throw new ICEException("ERROR estado no adecuado");
+	        }
+	        
 	        //Se actualiza el estado de controlFicheroEmbargo a Pendiente de envio:
 	        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
 	        		EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_TO_SEND,
