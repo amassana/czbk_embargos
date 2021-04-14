@@ -379,7 +379,12 @@ public class SeizureController {
 			response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.OK);
 		} catch (Exception e) {
 
-			response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.INTERNAL_SERVER_ERROR);
+			if (e.getMessage()!=null && e.getMessage().equals("ERROR estado no adecuado")) {
+				response = new ResponseEntity<>(resultFileControlDTO, HttpStatus.CONFLICT);
+			}
+			else {
+				response = new ResponseEntity<>(resultFileControlDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
 
 			logger.error("ERROR in doAccounting: ", e);
 		}

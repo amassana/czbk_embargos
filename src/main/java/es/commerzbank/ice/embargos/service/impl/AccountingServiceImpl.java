@@ -107,7 +107,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 				logger.error(generateMessageCtrlFicheroCannotSendAccounting(controlFichero));
 				
-				return;
+				throw new ICEException("ERROR estado no adecuado");
 			}
 
 			boolean contabilizado = sendSeizureCGPJ(controlFichero, userName);
@@ -125,7 +125,7 @@ public class AccountingServiceImpl implements AccountingService{
 
 				logger.error(generateMessageCtrlFicheroCannotSendAccounting(controlFichero));
 
-				return;
+				throw new ICEException("ERROR estado no adecuado");
 			}
 			
 			boolean contabilizado = sendSeizureAEATCuaderno63(controlFichero, userName);
@@ -144,7 +144,7 @@ public class AccountingServiceImpl implements AccountingService{
 			
 				logger.error(generateMessageCtrlFicheroCannotSendAccounting(controlFichero));
 				
-				return;
+				throw new ICEException("ERROR estado no adecuado");
 			}
 
 			boolean contabilizado = sendSeizureAEATCuaderno63(controlFichero, userName);

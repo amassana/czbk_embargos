@@ -127,6 +127,11 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        	throw new ICEException("ERROR: el CRC del fichero de Embargos no coincide con el guardado en ControlFichero.");
 	        }     
 	        
+	        //Comprobar que el fichero está en el estado adecuado
+	        if (controlFicheroPeticion.getEstadoCtrlfichero().getId().getCodEstado()!=EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_INFORMACION_NORMA63_RECEIVED) {
+	        	throw new ICEException("ERROR estado no adecuado");
+	        }
+	        
 	        //Se actualiza el estado de controlFicheroPeticion a TRAMITANDO:
 			/*
 	        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
