@@ -109,7 +109,7 @@ WHERE
 			<staticText>
 				<reportElement x="111" y="60" width="113" height="20" uuid="0a46d10f-1fc4-42f1-901e-651c44158ceb"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Serif" size="12" isBold="true"/>
+					<font fontName="Serif" size="12" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Commerzbank AG.]]></text>
 			</staticText>
@@ -141,21 +141,21 @@ WHERE
 				<text><![CDATA[Nombre Beneficiario:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="36" y="169" width="64" height="20" uuid="5d8f85b9-6c5a-4573-a752-8cdee28a2fe2"/>
+				<reportElement x="36" y="150" width="64" height="20" uuid="5d8f85b9-6c5a-4573-a752-8cdee28a2fe2"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Concepto:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="36" y="190" width="64" height="20" uuid="77b86710-c512-4002-9d18-dbeba9ac7914"/>
+				<reportElement x="36" y="170" width="64" height="20" uuid="77b86710-c512-4002-9d18-dbeba9ac7914"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Propósito:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="36" y="210" width="130" height="20" uuid="590cff65-c304-4f7a-a417-b4458ba55da8"/>
+				<reportElement x="36" y="190" width="130" height="20" uuid="590cff65-c304-4f7a-a417-b4458ba55da8"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
@@ -176,7 +176,7 @@ WHERE
 				<textFieldExpression><![CDATA[$F{IBAN}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="162" y="130" width="374" height="38" uuid="d6ad5c76-a9da-422a-94b7-334528556e5d"/>
+				<reportElement x="162" y="130" width="374" height="20" uuid="d6ad5c76-a9da-422a-94b7-334528556e5d"/>
 				<box topPadding="3"/>
 				<textElement verticalAlignment="Top">
 					<font fontName="Serif" size="12"/>
@@ -205,21 +205,21 @@ WHERE
 				<textFieldExpression><![CDATA[$P{CUENTA_RECAUDACION}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="105" y="169" width="373" height="20" uuid="d9319ebd-b275-42d5-92f0-ee4e37ef0834"/>
+				<reportElement x="105" y="150" width="373" height="20" uuid="d9319ebd-b275-42d5-92f0-ee4e37ef0834"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Ejecución embargo por Editran Banco " + $P{CODIGO_ENTIDAD}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="101" y="190" width="82" height="20" uuid="015a4206-62ea-44c8-8562-fac39cac7e59"/>
+				<reportElement x="101" y="170" width="82" height="20" uuid="015a4206-62ea-44c8-8562-fac39cac7e59"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12" isBold="false"/>
 				</textElement>
 				<text><![CDATA[OTHR]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="166" y="210" width="82" height="20" uuid="49f8baeb-cede-4572-b1f5-dc97182300cb"/>
+				<reportElement x="166" y="190" width="82" height="20" uuid="49f8baeb-cede-4572-b1f5-dc97182300cb"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12" isBold="false"/>
 				</textElement>
