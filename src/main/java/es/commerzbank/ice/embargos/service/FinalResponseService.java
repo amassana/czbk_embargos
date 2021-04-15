@@ -6,7 +6,6 @@ import es.commerzbank.ice.embargos.domain.dto.FinalResponsePendingDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.FicheroFinal;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public interface FinalResponseService {
@@ -15,7 +14,8 @@ public interface FinalResponseService {
 
 	FinalResponseDTO AddBankAccountList(Long codeFileControl, Long codeFinalResponse);
 
-	byte[] generarAnexo(BigDecimal cod_usuario, BigDecimal cod_traba, Integer num_anexo) throws Exception;
+	//byte[] generarAnexo(Long codeFileControlFaseBigDecimal cod_usuario, BigDecimal cod_traba, Integer num_anexo) throws Exception;
+	byte[] generarAnexo(Long codeFileControl, Long codRepresentative) throws Exception;
 	byte[] generarRespuestaFinalEmbargo(Integer cod_file_control) throws Exception;
 	byte[] generatePaymentLetterCGPJ(String cod_traba) throws Exception;
 	byte[] generatePaymentLetterN63(String cod_control_fichero) throws Exception;

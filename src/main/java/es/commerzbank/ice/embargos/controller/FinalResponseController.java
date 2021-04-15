@@ -21,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @CrossOrigin("*")
@@ -145,7 +144,9 @@ public class FinalResponseController {
 	*/
 
 	@GetMapping("/anexoTGSS/{codeFileControl}")
-	public ResponseEntity<InputStreamResource> reportAnexoTGSS(@PathVariable("codeFileControl") Long codeFileControl)
+	public ResponseEntity<InputStreamResource> reportAnexoTGSS(
+			@PathVariable("codeFileControl") Long codeFileControl,
+			@RequestParam(name = "codRepresentative", required = true) Long codRepresentative)
 	{
 		ResponseEntity<InputStreamResource> response = null;
 
@@ -156,7 +157,7 @@ public class FinalResponseController {
 
 			downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
-			downloadReportFile.writeFile(finalResponseService.generarAnexo(BigDecimal.ONE, BigDecimal.ONE, 1));
+			downloadReportFile.writeFile(finalResponseService.generarAnexo(codeFileControl, codRepresentative));
 
 			response = downloadReportFile.returnToDownloadFile();
 

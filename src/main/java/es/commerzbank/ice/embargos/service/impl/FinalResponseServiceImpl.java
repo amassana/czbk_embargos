@@ -138,7 +138,7 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 
 		return response;
 	}
-
+/*
 	@Override
 	public byte[] generarAnexo(BigDecimal cod_usuario, BigDecimal cod_traba, Integer num_anexo) throws Exception {
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
@@ -163,6 +163,45 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 
 			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 	
+
+			InputStream anexo1Input = anexoJasperFile.getInputStream();
+			JasperPrint fillReport = JasperFillManager.fillReport(anexo1Input, parameters, conn_embargos);
+
+			List<JRPrintPage> pages = fillReport.getPages();
+
+			if (pages.size() == 0)
+				return null;
+
+			return JasperExportManager.exportReportToPdf(fillReport);
+
+		} catch (SQLException e) {
+			throw new Exception("DB exception while generating the report", e);
+		}
+	}
+*/
+	@Override
+	public byte[] generarAnexo(Long codeFileControl, Long codRepresentative) throws Exception {
+		HashMap<String, Object> parameters = new HashMap<String, Object>();
+
+		try (Connection conn_embargos = oracleDataSourceEmbargos.getEmbargosConnection()) {
+
+			Resource anexoJasperFile = ResourcesUtil.getFromJasperFolder("TGSSAnexo3.jasper");
+
+			Resource importeAbonadoSubReport = ResourcesUtil.getFromJasperFolder("importe_abonado.jasper");
+
+			Resource logoImage = ResourcesUtil.getImageLogoCommerceResource();
+
+			File image = logoImage.getFile();
+
+			InputStream importeAbonadoInputStream = importeAbonadoSubReport.getInputStream();
+			JasperReport importeAbonadoReport = (JasperReport) JRLoader.loadObject(importeAbonadoInputStream);
+
+			parameters.put("IMAGE_PARAM", image.toString());
+			parameters.put("REPORT_IMPORTE_ABONADO", importeAbonadoReport);
+			parameters.put("COD_APODERADO", codRepresentative);
+			parameters.put("COD_CONTROL_FICHERO", codeFileControl);
+
+			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 
 			InputStream anexo1Input = anexoJasperFile.getInputStream();
 			JasperPrint fillReport = JasperFillManager.fillReport(anexo1Input, parameters, conn_embargos);

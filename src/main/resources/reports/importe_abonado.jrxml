@@ -6,17 +6,21 @@
 	<scriptlet name="NumberToLetter" class="es.commerzbank.ice.comun.lib.util.jasper.NumberToLetterConverter">
 		<scriptletDescription><![CDATA[es.commerzbank.ice.comun.lib.util.jasper.NumberToLetterConverter]]></scriptletDescription>
 	</scriptlet>
-	<parameter name="COD_TRABA" class="java.lang.String"/>
+	<parameter name="COD_CONTROL_FICHERO" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT sum(cl.importe) - sum(t.importe_trabado) AS importe, t.FECHA_TRABA FROM 
- TRABAS t,  LEVANTAMIENTO_TRABA lt, CUENTA_LEVANTAMIENTO cl
-WHERE t.COD_TRABA = $P{COD_TRABA} AND cl.COD_LEVANTAMIENTO = lt.COD_LEVANTAMIENTO AND lt.COD_TRABA = $P{COD_TRABA} group by FECHA_TRABA]]>
+		<![CDATA[SELECT
+	FF.IMPORTE AS importe,
+	FF.F_VALOR AS fecha
+FROM
+	FICHERO_FINAL ff
+WHERE
+	COD_CONTROL_FICHERO = $P{COD_CONTROL_FICHERO}]]>
 	</queryString>
 	<field name="IMPORTE" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="IMPORTE"/>
 	</field>
-	<field name="FECHA_TRABA" class="java.math.BigDecimal">
-		<property name="com.jaspersoft.studio.field.label" value="FECHA_TRABA"/>
+	<field name="FECHA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="FECHA"/>
 	</field>
 	<detail>
 		<band height="76" splitType="Stretch">
@@ -97,7 +101,7 @@ WHERE t.COD_TRABA = $P{COD_TRABA} AND cl.COD_LEVANTAMIENTO = lt.COD_LEVANTAMIENT
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHA_TRABA}.toString()))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHA}.toString()))]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

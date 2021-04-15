@@ -193,10 +193,10 @@ public class FinalResponseGenerationServiceImpl
         ficheroFinal.setImporte(importeNetoFichero);
         ficheroFinal.setImporteLevantado(importeLevantadoFichero);
 
+        ficheroFinal.setFValor(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMdd));
+
         ficheroFinal.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
         ficheroFinal.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
-
-        // ficheroFinal.setFValor(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMdd));
 
         //Se inicializa el estado de contabilizacion del fichero final:
         EstadoContabilizacion estadoContabilizacion = new EstadoContabilizacion();

@@ -3,12 +3,12 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="anexo3" pageWidth="595" pageHeight="842" columnWidth="495" leftMargin="50" rightMargin="50" topMargin="20" bottomMargin="20" uuid="8023237a-e493-4f98-b614-121eb503aa39">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceBankDAdapterEmbargos.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<parameter name="COD_TRABA" class="java.math.BigDecimal"/>
-	<parameter name="COD_USUARIO" class="java.math.BigDecimal"/>
+	<parameter name="COD_CONTROL_FICHERO"/>
+	<parameter name="COD_APODERADO" class="java.math.BigDecimal"/>
 	<parameter name="REPORT_IMPORTE_ABONADO" class="java.lang.Object"/>
 	<parameter name="IMAGE_PARAM" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT a.CARGO, a.NOMBRE FROM APODERADOS a WHERE a.ID = $P{COD_USUARIO}]]>
+		<![CDATA[SELECT a.CARGO, a.NOMBRE FROM APODERADOS a WHERE a.ID = $P{COD_APODERADO}]]>
 	</queryString>
 	<field name="CARGO" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="CARGO"/>
@@ -119,8 +119,8 @@
 		<band height="136" splitType="Stretch">
 			<subreport>
 				<reportElement x="9" y="-30" width="444" height="125" uuid="c9d042c8-1bdd-44a1-87b5-d7f09029e04e"/>
-				<subreportParameter name="COD_TRABA">
-					<subreportParameterExpression><![CDATA[$P{COD_TRABA}]]></subreportParameterExpression>
+				<subreportParameter name="COD_CONTROL_FICHERO">
+					<subreportParameterExpression><![CDATA[$P{COD_CONTROL_FICHERO}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="IMAGE_PARAM">
 					<subreportParameterExpression><![CDATA[$P{IMAGE_PARAM}]]></subreportParameterExpression>
