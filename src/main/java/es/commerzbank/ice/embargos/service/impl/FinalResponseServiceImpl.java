@@ -296,6 +296,8 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
+		String cuentaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);
+
 		try (Connection conn_embargos = oracleDataSourceEmbargos.getEmbargosConnection()) {
 
 			Resource transOrder = ResourcesUtil.getFromJasperFolder("paymentLetterN63.jasper");
@@ -306,6 +308,7 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 			parameters.put("IMAGE_PARAM", logoFile.toString());
 			parameters.put("COD_CONTROL_FICHERO", cod_control_fichero);
 			parameters.put("CODIGO_ENTIDAD", CODIGO_NRBE_COMMERZBANK);
+			parameters.put("CUENTA_RECAUDACION", cuentaRecaudacion);
 
 			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 

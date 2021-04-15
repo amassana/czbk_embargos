@@ -5,10 +5,20 @@
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<parameter name="IMAGE_PARAM" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="COD_CONTROL_FICHERO" class="java.lang.String"/>
-	<parameter name="CODIGO_ENTIDAD" />
+	<parameter name="CODIGO_ENTIDAD" class="java.lang.String"/>
+	<parameter name="CUENTA_RECAUDACION" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT ff.IMPORTE, ec.BIC, ec.IBAN, ec.DES_ENTIDAD, ec.CUENTA FROM FICHERO_FINAL ff INNER JOIN CONTROL_FICHERO cf ON ff.COD_CONTROL_FICHERO = cf.COD_CONTROL_FICHERO INNER JOIN ENTIDADES_COMUNICADORAS ec ON cf.COD_ENTIDAD_PRESENTADORA = ec.COD_ENTIDAD_PRESENTADORA
-WHERE ff.COD_CONTROL_FICHERO = $P{COD_CONTROL_FICHERO}]]>
+		<![CDATA[SELECT
+	ff.IMPORTE
+,	ec.BIC
+,	ec.IBAN
+,	ec.DES_ENTIDAD
+FROM
+	FICHERO_FINAL ff
+	INNER JOIN CONTROL_FICHERO cf ON ff.COD_CONTROL_FICHERO = cf.COD_CONTROL_FICHERO
+	INNER JOIN ENTIDADES_COMUNICADORAS ec ON cf.COD_ENTIDAD_PRESENTADORA = ec.COD_ENTIDAD_PRESENTADORA
+WHERE
+	ff.COD_CONTROL_FICHERO = $P{COD_CONTROL_FICHERO}]]>
 	</queryString>
 	<field name="IMPORTE" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="IMPORTE"/>
@@ -21,9 +31,6 @@ WHERE ff.COD_CONTROL_FICHERO = $P{COD_CONTROL_FICHERO}]]>
 	</field>
 	<field name="DES_ENTIDAD" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="DES_ENTIDAD"/>
-	</field>
-	<field name="CUENTA" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="CUENTA"/>
 	</field>
 	<variable name="TodayDate" class="java.lang.String">
 		<variableExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new Date())]]></variableExpression>
@@ -145,7 +152,7 @@ WHERE ff.COD_CONTROL_FICHERO = $P{COD_CONTROL_FICHERO}]]>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Proposito:]]></text>
+				<text><![CDATA[Propósito:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="36" y="210" width="130" height="20" uuid="590cff65-c304-4f7a-a417-b4458ba55da8"/>
@@ -181,7 +188,7 @@ WHERE ff.COD_CONTROL_FICHERO = $P{COD_CONTROL_FICHERO}]]>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{IMPORTE}  + " EUR"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTE})  + " EUR"]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="112" y="20" width="234" height="20" uuid="91156232-0757-41ae-b67d-f76b5f5db0a1"/>
@@ -195,15 +202,15 @@ WHERE ff.COD_CONTROL_FICHERO = $P{COD_CONTROL_FICHERO}]]>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{CUENTA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{CUENTA_RECAUDACION}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="105" y="169" width="220" height="20" uuid="e2b56a42-0e10-4777-8b4c-b4f28d2f4ea7"/>
+			<textField>
+				<reportElement x="105" y="169" width="373" height="20" uuid="d9319ebd-b275-42d5-92f0-ee4e37ef0834"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Ejecución embargo por Editran Banco 0159]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA["Ejecución embargo por Editran Banco " + $P{CODIGO_ENTIDAD}]]></textFieldExpression>
+			</textField>
 			<staticText>
 				<reportElement x="101" y="190" width="82" height="20" uuid="015a4206-62ea-44c8-8562-fac39cac7e59"/>
 				<textElement verticalAlignment="Middle">
