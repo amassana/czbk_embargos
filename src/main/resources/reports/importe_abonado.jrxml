@@ -81,7 +81,7 @@ WHERE
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{IMPORTE}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTE})]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="115" y="16" width="364" height="34" uuid="1917c9a5-4c91-4a6d-af32-5fad0870da0e">
