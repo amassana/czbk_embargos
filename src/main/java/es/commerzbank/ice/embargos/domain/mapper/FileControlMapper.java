@@ -175,7 +175,7 @@ public abstract class FileControlMapper {
 			fileControlDTO.setIsCuaderno63(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getEntidadesComunicadora().getIndNorma63()));
 			fileControlDTO.setIsAEAT(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getEntidadesComunicadora().getIndFormatoAeat()));
 			fileControlDTO.setIsTGSS(
-					fileControlDTO.getIsAEAT() &&
+					fileControlDTO.getIsCuaderno63() &&
 					EmbargosConstants.PREFIJO_FICHERO_TGSS.equals(controlFichero.getEntidadesComunicadora().getPrefijoFicheros()));
 		}
 		
