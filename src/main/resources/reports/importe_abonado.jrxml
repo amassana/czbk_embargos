@@ -6,7 +6,7 @@
 	<scriptlet name="NumberToLetter" class="es.commerzbank.ice.comun.lib.util.jasper.NumberToLetterConverter">
 		<scriptletDescription><![CDATA[es.commerzbank.ice.comun.lib.util.jasper.NumberToLetterConverter]]></scriptletDescription>
 	</scriptlet>
-	<parameter name="COD_CONTROL_FICHERO" class="java.lang.String"/>
+	<parameter name="COD_CONTROL_FICHERO" class="java.lang.Long"/>
 	<queryString>
 		<![CDATA[SELECT
 	FF.IMPORTE AS importe,
