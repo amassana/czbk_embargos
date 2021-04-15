@@ -6,6 +6,7 @@
 	<parameter name="COD_CONTROL_FICHERO" class="java.lang.Long" />
 	<parameter name="COD_APODERADO" class="java.lang.Long" />
 	<parameter name="REPORT_IMPORTE_ABONADO" class="java.lang.Object"/>
+	<parameter name="CODIGO_ENTIDAD" />
 	<parameter name="IMAGE_PARAM" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT a.CARGO, a.NOMBRE FROM APODERADOS a WHERE a.ID = $P{COD_APODERADO}]]>
@@ -111,7 +112,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Serif" size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[0159]]></text>
+				<text><![CDATA[$P{CODIGO_ENTIDAD}]]></text>
 			</staticText>
 		</band>
 	</columnHeader>

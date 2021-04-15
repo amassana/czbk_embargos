@@ -53,6 +53,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 
+import static es.commerzbank.ice.embargos.utils.EmbargosConstants.CODIGO_NRBE_COMMERZBANK;
+
 @Service
 @Transactional(transactionManager = "transactionManager")
 public class FinalResponseServiceImpl implements FinalResponseService {
@@ -200,6 +202,7 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 			parameters.put("REPORT_IMPORTE_ABONADO", importeAbonadoReport);
 			parameters.put("COD_APODERADO", codRepresentative);
 			parameters.put("COD_CONTROL_FICHERO", codeFileControl);
+			parameters.put("CODIGO_ENTIDAD", CODIGO_NRBE_COMMERZBANK);
 
 			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 
@@ -302,6 +305,7 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 
 			parameters.put("IMAGE_PARAM", logoFile.toString());
 			parameters.put("COD_CONTROL_FICHERO", cod_control_fichero);
+			parameters.put("CODIGO_ENTIDAD", CODIGO_NRBE_COMMERZBANK);
 
 			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 

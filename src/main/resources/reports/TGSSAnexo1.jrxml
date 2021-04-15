@@ -3,9 +3,10 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="anexo1" pageWidth="595" pageHeight="842" columnWidth="495" leftMargin="50" rightMargin="50" topMargin="20" bottomMargin="20" uuid="8023237a-e493-4f98-b614-121eb503aa39">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceBankDAdapterEmbargos.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<parameter name="COD_TRABA" class="java.math.BigDecimal"/>
-	<parameter name="COD_USUARIO" class="java.math.BigDecimal"/>
+	<parameter name="COD_CONTROL_FICHERO" class="java.lang.Long" />
+	<parameter name="COD_APODERADO" class="java.lang.Long" />
 	<parameter name="REPORT_IMPORTE_ABONADO" class="java.lang.Object"/>
+	<parameter name="CODIGO_ENTIDAD" />
 	<parameter name="IMAGE_PARAM" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT a.CARGO, a.NOMBRE FROM APODERADOS a WHERE a.ID = $P{COD_USUARIO}]]>
@@ -111,7 +112,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Serif" size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[0159]]></text>
+				<text><![CDATA[$P{CODIGO_ENTIDAD}]]></text>
 			</staticText>
 			<subreport>
 				<reportElement x="9" y="85" width="444" height="125" uuid="7a01ddef-f726-43ed-bc4d-f15caae8f86f"/>
