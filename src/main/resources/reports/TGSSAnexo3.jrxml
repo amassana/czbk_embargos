@@ -3,8 +3,8 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="anexo3" pageWidth="595" pageHeight="842" columnWidth="495" leftMargin="50" rightMargin="50" topMargin="20" bottomMargin="20" uuid="8023237a-e493-4f98-b614-121eb503aa39">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceBankDAdapterEmbargos.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<parameter name="COD_CONTROL_FICHERO"/>
-	<parameter name="COD_APODERADO" class="java.math.BigDecimal"/>
+	<parameter name="COD_CONTROL_FICHERO" />
+	<parameter name="COD_APODERADO" />
 	<parameter name="REPORT_IMPORTE_ABONADO" class="java.lang.Object"/>
 	<parameter name="IMAGE_PARAM" class="java.lang.String"/>
 	<queryString>
