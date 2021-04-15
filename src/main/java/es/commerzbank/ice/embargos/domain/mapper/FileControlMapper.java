@@ -1,19 +1,5 @@
 package es.commerzbank.ice.embargos.domain.mapper;
 
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.io.FileUtils;
-import org.mapstruct.AfterMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
-
 import es.commerzbank.ice.embargos.domain.dto.FileControlCsvDTO;
 import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
@@ -23,6 +9,14 @@ import es.commerzbank.ice.embargos.domain.entity.TipoFichero;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.EmbargosUtils;
 import es.commerzbank.ice.embargos.utils.ICEDateUtils;
+import org.mapstruct.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Mapper(componentModel="spring")
 public abstract class FileControlMapper {
@@ -174,19 +168,15 @@ public abstract class FileControlMapper {
 		//Indicador de procesado (se pasa de String a Boolean):
 		boolean isProcessed = controlFichero.getIndProcesado()!=null && EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndProcesado());
 		fileControlDTO.setIsProcessed(isProcessed);
-		
-		//Indicador para saber si el fichero es de Cuaderno63 y de TGSS:
-		if (controlFichero.getEntidadesComunicadora() != null) {
-			
-			if (controlFichero.getEntidadesComunicadora().getIndNorma63() != null) {
-				boolean isCuaderno63 = EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getEntidadesComunicadora().getIndNorma63());
-				fileControlDTO.setIsCuaderno63(isCuaderno63);
-			}
-			
-			if (controlFichero.getEntidadesComunicadora().getPrefijoFicheros() != null) {
-				boolean isTGSS = EmbargosConstants.PREFIJO_FICHERO_TGSS.equals(controlFichero.getEntidadesComunicadora().getPrefijoFicheros());
-				fileControlDTO.setIsTGSS(isTGSS);
-			}
+
+		if (controlFichero.getEntidadesComunicadora() != null)
+		{
+			fileControlDTO.setIsCGPJ(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getEntidadesComunicadora().getIndCgpj()));
+			fileControlDTO.setIsCuaderno63(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getEntidadesComunicadora().getIndNorma63()));
+			fileControlDTO.setIsAEAT(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getEntidadesComunicadora().getIndFormatoAeat()));
+			fileControlDTO.setIsTGSS(
+					fileControlDTO.getIsAEAT() &&
+					EmbargosConstants.PREFIJO_FICHERO_TGSS.equals(controlFichero.getEntidadesComunicadora().getPrefijoFicheros()));
 		}
 		
 		//Fecha de ultima modificacion:

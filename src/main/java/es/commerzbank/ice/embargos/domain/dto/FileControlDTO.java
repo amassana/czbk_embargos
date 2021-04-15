@@ -16,6 +16,8 @@ public class FileControlDTO {
 	private Date modifiedDate;
 	private String modifiedUser;
 	private Boolean isTGSS;
+	private Boolean isAEAT;
+	private Boolean isCGPJ;
 	private Boolean isCuaderno63;
 	private String rutaFichero;
 	private Date createdDate;
@@ -131,5 +133,16 @@ public class FileControlDTO {
 	public void setResponseGenerationDate(Date responseGenerationDate) {
 		this.responseGenerationDate = responseGenerationDate;
 	}
-		
+	public Boolean getIsAEAT() {
+		return isAEAT;
+	}
+	public void setIsAEAT(Boolean isAEAT) {
+		this.isAEAT = isAEAT;
+	}
+	public Boolean getIsCGPJ() {
+		return isCGPJ;
+	}
+	public void setIsCGPJ(Boolean isCGPJ) {
+		this.isCGPJ = isCGPJ;
+	}
 }
