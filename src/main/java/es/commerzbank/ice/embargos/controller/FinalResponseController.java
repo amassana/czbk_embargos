@@ -193,13 +193,6 @@ public class FinalResponseController {
 		}
 	}
 
-	@GetMapping("/ordenTransferencia/{codeFileControl}")
-	@ApiOperation(value = "Devuelve el informe de pago de la transferencia")
-	public ResponseEntity<InputStreamResource> reportOrdenTransferencia(@PathVariable("codeFileControl") Long codeFileControl) {
-		// TODO
-		return null;
-	}
-
 	//@GetMapping("/cgpj/{cod_traba}/report")
 	@GetMapping("/cgpj/transferencias")
 	@ApiOperation(value = "Devuelve el fichero de solicitud de ejecucion")
@@ -224,7 +217,6 @@ public class FinalResponseController {
 		}
 	}
 	
-	//@GetMapping("/transferOrder/{cod_control_fichero}/report")
 	@GetMapping("/ordenTransferencia/{cod_control_fichero}")
 	@ApiOperation(value = "Devuelve un fichero de orden de tansferencia")
 	public ResponseEntity<InputStreamResource> reportCartaPagoNorma63(
