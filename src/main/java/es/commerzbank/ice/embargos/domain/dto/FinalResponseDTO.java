@@ -1,5 +1,6 @@
 package es.commerzbank.ice.embargos.domain.dto;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class FinalResponseDTO {
@@ -8,8 +9,11 @@ public class FinalResponseDTO {
 	private String nif;
 	private String holder;
 	private List<FinalResponseBankAccountDTO> list;
-	
-	
+	private BigDecimal requestedSeizureAmount;
+	private BigDecimal seizedAmount;
+	private BigDecimal liftedAmount;
+	private BigDecimal netAmount;
+
 	public Long getCodeFinalResponse() {
 		return codeFinalResponse;
 	}
@@ -39,5 +43,37 @@ public class FinalResponseDTO {
 	}
 	public void setList(List<FinalResponseBankAccountDTO> list) {
 		this.list = list;
+	}
+
+	public BigDecimal getRequestedSeizureAmount() {
+		return requestedSeizureAmount;
+	}
+
+	public void setRequestedSeizureAmount(BigDecimal requestedSeizureAmount) {
+		this.requestedSeizureAmount = requestedSeizureAmount;
+	}
+
+	public BigDecimal getSeizedAmount() {
+		return seizedAmount;
+	}
+
+	public void setSeizedAmount(BigDecimal seizedAmount) {
+		this.seizedAmount = seizedAmount;
+	}
+
+	public BigDecimal getLiftedAmount() {
+		return liftedAmount;
+	}
+
+	public void setLiftedAmount(BigDecimal liftedAmount) {
+		this.liftedAmount = liftedAmount;
+	}
+
+	public BigDecimal getNetAmount() {
+		return netAmount;
+	}
+
+	public void setNetAmount(BigDecimal netAmount) {
+		this.netAmount = netAmount;
 	}
 }

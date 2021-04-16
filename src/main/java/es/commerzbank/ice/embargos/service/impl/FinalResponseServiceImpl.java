@@ -130,8 +130,6 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 
 			for (CuentaResultadoEmbargo cuenta : cuentas) {
 				FinalResponseBankAccountDTO account = bankAccountMapper.toBankAccount(cuenta);
-				if (account.getAmountLocked()!=null && account.getAmountTransfer()!=null)
-					account.setAmountRaised(account.getAmountLocked() - account.getAmountTransfer());
 				list.add(account);
 			}
 

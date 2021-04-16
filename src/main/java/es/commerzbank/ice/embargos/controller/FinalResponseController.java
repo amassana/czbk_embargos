@@ -216,7 +216,7 @@ public class FinalResponseController {
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@GetMapping("/ordenTransferencia/{cod_control_fichero}")
 	@ApiOperation(value = "Devuelve un fichero de orden de tansferencia")
 	public ResponseEntity<InputStreamResource> reportCartaPagoNorma63(
