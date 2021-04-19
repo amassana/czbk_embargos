@@ -42,8 +42,8 @@ public class JobImportacionApuntesContables implements Job
 							accountingService.embargoCallback(Long.valueOf(apunteContable.getExtraInfo2()));
 						else if (EmbargosConstants.APUNTES_CONTABLES_TIPO_LEVANTAMIENTO.equals(apunteContable.getExtraInfo1()))
 							accountingService.levantamientoCallback((Long.valueOf(apunteContable.getExtraInfo2())));
-						else if (EmbargosConstants.APUNTES_CONTABLES_TIPO_TESORERIA.equals(apunteContable.getExtraInfo1()))
-							accountingService.transferenciaFinalOrganismoCallback((Long.valueOf(apunteContable.getExtraInfo2())));
+						else if (EmbargosConstants.APUNTES_CONTABLES_TIPO_FINAL.equals(apunteContable.getExtraInfo1()))
+							accountingService.ficheroFinalCallback((Long.valueOf(apunteContable.getExtraInfo2())));
 						else
 							logger.error("No se ha tratado el apunte contable");
 					}

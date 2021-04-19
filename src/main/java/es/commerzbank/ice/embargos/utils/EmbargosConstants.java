@@ -133,6 +133,7 @@ public class EmbargosConstants {
 	public static final long COD_ESTADO_CONTABILIZACION_PENDIENTE_ENVIO_A_CONTABILIDAD = 1;
 	public static final long COD_ESTADO_CONTABILIZACION_ENVIADA_A_CONTABILIDAD = 2;
 	public static final long COD_ESTADO_CONTABILIZACION_CONTABILIZADA  = 3;
+	public static final long COD_ESTADO_CONTABILIZACION_CONTABILIZACION_AUTOMATICA_ABORTADA = 4;
 	
 	/** Stream names del cuaderno 63 **/
 	public static final String STREAM_NAME_CUADERNO63_FASE1 = "fase1";
@@ -323,13 +324,13 @@ public class EmbargosConstants {
 	 */
 
 	public static final String ACCOUNTING_EMBARGOS_PATTERN = "'CONTABLE_EMBARGOS_'yyyyMMdd_HHmmss'.CON'";
-	public static final String ACCOUNTING_EMBARGO_F6 = "TGSS";
+	public static final String ACCOUNTING_EMBARGO_F6 = "FIN_CICLO";
 	public static final String ACCOUNTING_EMBARGOS_TRABAS = "TRABAS";
 	public static final String ACCOUNTING_EMBARGOS_LEVANTAMIENTOS = "LEVANTAMIENTOS";
 	
 	public static final String APUNTES_CONTABLES_TIPO_TRABA = "TRABA";
 	public static final String APUNTES_CONTABLES_TIPO_LEVANTAMIENTO = "LEVANTAMIENTO";
-	public static final String APUNTES_CONTABLES_TIPO_TESORERIA = "TESORERIA";
+	public static final String APUNTES_CONTABLES_TIPO_FINAL = "FINAL";
 	
 	public static final String EXTERNAL_ID_F6_N63 = "SEIZUREN63_";
 	public static final String EXTERNAL_ID_F6_AEAT = "SEIZUREAEAT_";

@@ -203,7 +203,12 @@ public class FinalResponseGenerationServiceImpl
         if (ficheroFase6.getEntidadesComunicadora() != null &&
                 ficheroFase6.getEntidadesComunicadora().getCuenta() != null &&
                 !ficheroFase6.getEntidadesComunicadora().getCuenta().trim().isEmpty()) {
-            estadoContabilizacion.setCodEstado(EmbargosConstants.COD_ESTADO_CONTABILIZACION_PENDIENTE_ENVIO_A_CONTABILIDAD);
+            if (BigDecimal.ZERO.compareTo(importeNetoFichero) <= 0) {
+                estadoContabilizacion.setCodEstado(EmbargosConstants.COD_ESTADO_CONTABILIZACION_NOTAPPLY);
+            }
+            else {
+                estadoContabilizacion.setCodEstado(EmbargosConstants.COD_ESTADO_CONTABILIZACION_PENDIENTE_ENVIO_A_CONTABILIDAD);
+            }
         } else {
             estadoContabilizacion.setCodEstado(EmbargosConstants.COD_ESTADO_CONTABILIZACION_NOTAPPLY);
         }

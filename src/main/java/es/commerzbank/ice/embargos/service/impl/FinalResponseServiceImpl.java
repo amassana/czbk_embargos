@@ -54,6 +54,7 @@ import java.sql.Timestamp;
 import java.util.*;
 
 import static es.commerzbank.ice.embargos.utils.EmbargosConstants.CODIGO_NRBE_COMMERZBANK;
+import static es.commerzbank.ice.embargos.utils.EmbargosConstants.COD_ESTADO_CONTABILIZACION_PENDIENTE_ENVIO_A_CONTABILIDAD;
 
 @Service
 @Transactional(transactionManager = "transactionManager")
@@ -535,6 +536,13 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 		}
 
 		return true;
+	}
+
+	@Override
+	public List<FicheroFinal> listPendingAccounting() {
+		EstadoContabilizacion estadoContabilizacion = new EstadoContabilizacion();
+		estadoContabilizacion.setCodEstado(COD_ESTADO_CONTABILIZACION_PENDIENTE_ENVIO_A_CONTABILIDAD);
+		return finalFileRepository.findByEstadoContabilizacionEquals(estadoContabilizacion);
 	}
 
 	private boolean transferEmbargoToTax(ResultadoEmbargo resultadoEmbargo, CuentaResultadoEmbargo cuentaResultadoEmbargo,
