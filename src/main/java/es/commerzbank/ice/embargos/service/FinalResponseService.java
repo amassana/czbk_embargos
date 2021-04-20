@@ -26,4 +26,6 @@ public interface FinalResponseService {
 	List<FinalResponsePendingDTO> listPendingCyclesNorma63() throws Exception;
 
 	boolean jobTransferToTax(String authorization, String user) throws ICEException;
+
+    List<FicheroFinal> listPendingAccounting();
 }

@@ -1,7 +1,6 @@
 package es.commerzbank.ice.embargos.controller;
 
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
-import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
 import es.commerzbank.ice.embargos.domain.dto.FinalResponseDTO;
 import es.commerzbank.ice.embargos.domain.dto.FinalResponsePendingDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
@@ -268,7 +267,7 @@ public class FinalResponseController {
 		return response;
 	}
 	
-	
+	/*
     @PostMapping(value = "/{codeFileControl}/accounting")
     @ApiOperation(value="Envio a contabilidad si la entidad ordenante asociada al Fichero final tiene cuenta en Commerzbank.")
     public ResponseEntity<FileControlDTO> sendAccountingFinalFile(Authentication authentication,
@@ -302,4 +301,5 @@ public class FinalResponseController {
 		return response;
     	
     }
+    */
 }
