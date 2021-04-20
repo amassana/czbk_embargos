@@ -335,4 +335,6 @@ public class EmbargosConstants {
 	public static final String EXTERNAL_ID_F6_AEAT = "SEIZUREAEAT_";
 
 	public static final String SUCURSAL_CREACION_IMPUESTOS = "1";
+	
+	public static final String DETAIL_PAYMENT_UNDO_ACCOUNTING = "Retroceso";
 }

@@ -1,5 +1,9 @@
 package es.commerzbank.ice.embargos.service;
 
+import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
+import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
+import es.commerzbank.ice.embargos.domain.entity.Traba;
+
 public interface AccountingService {
 
 	void embargoContabilizar(Long codeFileControl, String userName) throws Exception;
@@ -11,5 +15,5 @@ public interface AccountingService {
 	void transferenciaFinalOrganismoCallback(Long codControlFicheroFinal);
 	void levantamientoCallback(Long codCuentaLevantamiento) throws Exception;
 
-	// boolean undoAccounting(Long codeFileControl, Long idSeizure, String numAccount, String userName) throws Exception;
+	boolean undoAccounting(ControlFichero controlFichero, Traba traba, CuentaTraba cuentaTraba, String userName) throws Exception;
 }

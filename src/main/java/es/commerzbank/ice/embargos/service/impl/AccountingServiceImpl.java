@@ -6,7 +6,6 @@ import es.commerzbank.ice.comun.lib.repository.OfficeCRepo;
 import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
-import es.commerzbank.ice.datawarehouse.service.AccountService;
 import es.commerzbank.ice.embargos.domain.dto.AccountStatusLiftingDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizureStatusDTO;
 import es.commerzbank.ice.embargos.domain.entity.*;
@@ -70,8 +69,8 @@ public class AccountingServiceImpl implements AccountingService{
 	@Autowired
 	private FinalFileRepository finalFileRepository;
 	
-	@Autowired
-	private AccountService accountService;
+	//@Autowired
+	//private AccountService accountService;
 	
 	@Autowired
 	private OfficeCRepo officeCRepo;
@@ -96,7 +95,7 @@ public class AccountingServiceImpl implements AccountingService{
 		boolean isAEAT = fileFormat!=null && fileFormat.equals(FILE_FORMAT_AEAT);
 		boolean isCuaderno63 = fileFormat!=null && fileFormat.equals(FILE_FORMAT_NORMA63);
 		
-		boolean isAccountingSent = false;
+		//boolean isAccountingSent = false;
 		
 		long codEstadoCtrlFichero = controlFichero.getEstadoCtrlfichero().getId().getCodEstado();
 		
@@ -433,105 +432,67 @@ public class AccountingServiceImpl implements AccountingService{
 
 		return Pair.of(reference1, reference2);
 	}
-/*
+
 	@Override
-	public boolean undoAccounting(Long codeFileControl, Long idSeizure, String numAccount, String userName) throws Exception{
+	public boolean undoAccounting(ControlFichero controlFichero, Traba traba, CuentaTraba cuentaTraba, String userName) throws Exception{
 
 		logger.info("undoAccounting - start");
 
-		//Solo se puede retroceder cuando este contabilizado (se haya realizado el callback) y una vez realizado
-		//el retroceso, se cambiara el estado a anterior a contabilizado.
-		
-		//Se obtiene la cuenta Traba en estado Contabilizada:
-		EstadoTraba estadoTraba = new EstadoTraba();
-		estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA);
-		
-		CuentaTraba cuentaTraba = seizedBankAccountRepository.findByCodCuentaTrabaAndCuentaAndEstadoTraba(codeFileControl, idSeizure, estadoTraba);
-		
-		if(cuentaTraba == null) {
-			throw new ICEException("No se ha encontrado la cuentaTraba [codeFileControl: " + codeFileControl + "; idSeizure: " + idSeizure + "; estadoTraba: "+ estadoTraba);
-		}
-		
-		//Preparacion de parametros para enviar a contabilizar:
-
 		String oficinaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA);
 		String cuentaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);
-
-		Traba traba = cuentaTraba.getTraba();
+		String cuentaIntercambioDivisas = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_INTERCAMBIO_DIVISAS);
+		Long sucursal = getCodSucursal(oficinaRecaudacion);
+		
 		Embargo embargo = traba.getEmbargo();
 
-		String reference1 = embargo.getNumeroEmbargo();
-		String reference2 = "";
-		String detailPayment = embargo.getDatregcomdet();
+		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion(), sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_EMBARGOS_LEVANTAMIENTOS);
 
-		//Llamada a contabilizar para deshacer la contabilizacion, poniendo como debitAccount la cuenta
-		//de recaudacion y la creditAccount la cuenta del cliente:
-		contabilizarCuentaTraba(cuentaTraba, cuentaRecaudacion, cuentaTraba.getCuenta(),
-				oficinaRecaudacion, reference1, reference2, detailPayment, codeFileControl, embargo.getNombre(),
-				embargo.getNif());
-
-		//Cambio de estado de la cuentaTraba:
-
-		estadoTraba = new EstadoTraba();
-		estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_MODIFICADA);
-		cuentaTraba.setEstadoTraba(estadoTraba);
-
-		seizedBankAccountRepository.save(cuentaTraba);
-
-		//Cambio de estado de la traba a "MODIFICADA";
-		SeizureStatusDTO seizureStatusDTO = new SeizureStatusDTO();
-		seizureStatusDTO.setCode(Long.toString(EmbargosConstants.COD_ESTADO_TRABA_MODIFICADA));
-
-		boolean isStatusTrabaUpdated = seizureService.updateSeizureStatus(traba.getCodTraba(), seizureStatusDTO, userName);
-
-		if(!isStatusTrabaUpdated) {
-			throw new ICEException("No se ha actualizado el estado de la Traba con codTraba: " + traba.getCodTraba());
-		}
-
-		//Cambio de estado de Control Fichero de Embargos:
-		Long codEstado = null;
-
-		ControlFichero controlFichero = embargo.getControlFichero();
-
-		//Dependiendo del tipo de fichero:
-		String fileFormat = EmbargosUtils.determineFileFormatByTipoFichero(controlFichero.getTipoFichero().getCodTipoFichero());
-
-		boolean isCGPJ = fileFormat!=null && fileFormat.equals(EmbargosConstants.FILE_FORMAT_CGPJ);
-		boolean isAEAT = fileFormat!=null && fileFormat.equals(EmbargosConstants.FILE_FORMAT_AEAT);
-		boolean isCuaderno63 = fileFormat!=null && fileFormat.equals(EmbargosConstants.FILE_FORMAT_NORMA63);
-
-		//Se cambia el estado de Control Fichero a Generado:
-		if (isCGPJ) {
-			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_GENERATED;
-		}else if (isAEAT) {
-			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_GENERATED;
-		}else if (isCuaderno63) {
-			codEstado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_GENERATED;
-		} else {
-
-			throw new ICEException("Formato de fichero no encontrado para el codigo de tipo de fichero "
-							+ controlFichero.getTipoFichero().getCodTipoFichero() +".");
-		}
-
-		boolean isStatusFileControlUpdated = fileControlService.updateFileControlStatus(codeFileControl, codEstado, userName);
-
-		if(!isStatusFileControlUpdated) {
-			throw new ICEException("No se ha actualizado el estado del Control Fichero con codeFileControl: " + codeFileControl);
-		}
-
+		undoApunteContable(cuentaTraba, cuentaRecaudacion, cuentaTraba.getCuenta(),
+				oficinaRecaudacion, embargo.getNumeroEmbargo(), "", EmbargosConstants.DETAIL_PAYMENT_UNDO_ACCOUNTING, cuentaIntercambioDivisas,
+				fileControlFicheroComunes.getCodControlFichero(), embargo.getNombre(), embargo.getNif());
 
 		logger.info("undoAccounting - end");
 		return true;
 	}
 
-	 else {
-		liftingService.updateLiftingBankAccountingStatus(cuentaLevantamiento, EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_CONTABILIZADO, userName);
+	private void undoApunteContable(
+			CuentaTraba cuentaTraba, String debitAccount, String creditAccount,
+			String oficinaCuentaRecaudacion, String reference1, String reference2, String detailPayment, String cuentaIntercambioDivisas,
+			Long codFileControlFicheroComunes, String nombre, String nif)
+			throws Exception {
+		
+		if (cuentaTraba.getImporte()!=null && BigDecimal.ZERO.compareTo(cuentaTraba.getImporte()) < 0)
+		{
+			AccountingNote accountingNote = new AccountingNote();
+
+			accountingNote.setCodFileControl(codFileControlFicheroComunes);
+
+			accountingNote.setActualDate(new Date());
+			accountingNote.setAplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
+			accountingNote.setCodOffice(oficinaCuentaRecaudacion);
+			accountingNote.setAmount(cuentaTraba.getImporte().doubleValue());
+			accountingNote.setCodCurrency(cuentaTraba.getDivisa());
+			accountingNote.setDebitAccount(debitAccount);
+			accountingNote.setCreditAccount(creditAccount);
+			accountingNote.setDebitValueDate(new Date());
+			accountingNote.setCreditValueDate(new Date());
+			accountingNote.setExecutionDate(new Date());
+			accountingNote.setReference1(reference1);
+			accountingNote.setReference2(reference2);
+			accountingNote.setDetailPayment(detailPayment);
+			accountingNote.setChange(cuentaTraba.getCambio());
+			accountingNote.setEsCredito(true);
+			// estos sobran?
+			accountingNote.setName(nombre);
+			accountingNote.setNif(nif);
+
+			accountingNote.setExtraInfo1(EmbargosConstants.APUNTES_CONTABLES_TIPO_LEVANTAMIENTO);
+			accountingNote.setExtraInfo2(String.valueOf(cuentaTraba.getCodCuentaTraba()));
+
+			accountingNoteService.contabilizar(accountingNote, cuentaIntercambioDivisas);
+		}
 	}
-
-	//Se actualiza el estado de la Cuenta Levantamiento a "Enviada a contabilidad":
-		liftingService.updateLiftingBankAccountingStatus(cuentaLevantamiento, EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION, userName);
-*/
-
+	
 	@Override
 	@Transactional(transactionManager="transactionManager")
 	public void levantamientoContabilizar(Long codeFileControl, String userName) throws Exception {
