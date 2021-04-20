@@ -422,25 +422,50 @@ public class SeizureController {
     	
     	logger.debug("SeizureController - undoAccounting - start");
     	ResponseEntity<String> response = null;
-    	boolean result = false;
+    	boolean result = true;
 
 		try {
 
 			String userName = authentication.getName();
 		
 			// Se obtiene el ControlFichero
-		    ControlFichero controlFichero = fileControlRepository.getOne(codeFileControl);
+			Optional<ControlFichero> controlFicheroOpt = fileControlRepository.findById(codeFileControl);
 		       
 		    // Comprobar que el fichero está en el estado adecuado
-		    if (controlFichero!=null &&
-		    	controlFichero.getEstadoCtrlfichero().getId().getCodEstado()!=EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_ACCOUNTING_RESPONSE  &&
-	        	controlFichero.getEstadoCtrlfichero().getId().getCodEstado()!=EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_TO_SEND) {
+		    if (controlFicheroOpt.isPresent() &&
+		    	controlFicheroOpt.get().getEstadoCtrlfichero().getId().getCodEstado()!=EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_ACCOUNTING_RESPONSE  &&
+	        	controlFicheroOpt.get().getEstadoCtrlfichero().getId().getCodEstado()!=EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_TO_SEND) {
 		    	
 	        	logger.debug("El fichero NO está en el estado adecuado");
 	        	response = new ResponseEntity<>(HttpStatus.CONFLICT);
 	        }
-		    else if (controlFichero!=null) {
+			else if (controlFicheroOpt.isPresent()) {
 		    	
+		    	ControlFichero controlFichero = controlFicheroOpt.get();
+		        
+		        Long estadoTrabaActual = null; 
+		        Optional<Traba> trabaOpt = seizedRepository.findById(idSeizure);
+		        Traba traba = null;
+		        
+				if (trabaOpt.isPresent()) {
+					traba = trabaOpt.get();
+					estadoTrabaActual = traba.getEstadoTraba().getCodEstado();
+				}
+		        
+				Optional<CuentaTraba> cuentaTrabaOpt = seizedBankAccountRepository.findById(idAccount);
+				CuentaTraba cuentaTraba = null;
+				
+				if (cuentaTrabaOpt.isPresent()) {
+					cuentaTraba = cuentaTrabaOpt.get();
+				}
+				
+				//Si el estado del caso, antes del cambio, era Contabilizado, deshacer el movimiento contable
+				if (estadoTrabaActual!=null && estadoTrabaActual.equals(Long.valueOf(EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA)) &&
+					traba!=null && cuentaTraba!=null) {
+					
+					result = accountingService.undoAccounting(controlFichero, traba, cuentaTraba, userName);					
+				}
+				
 		    	//Se actualiza el estado de controlFichero a Recibido
 		        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
 		        		EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_RECEIVED,
@@ -451,17 +476,9 @@ public class SeizureController {
 		        controlFichero.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 	            
 		        fileControlService.saveFileControlTransaction(controlFichero);
-		        
+				
 		        //Se actualiza el estado del idSeizure a Pendiente
-		        Long estadoTrabaActual = null; 
-		        Optional<Traba> trabaOpt = seizedRepository.findById(idSeizure);
-		        Traba traba = null;
-		        
-				if (trabaOpt.isPresent()) {
-					traba = trabaOpt.get();
-					
-					estadoTrabaActual = traba.getEstadoTraba().getCodEstado();
-					
+				if (traba!=null) {
 					EstadoTraba estadoTraba = new EstadoTraba();
 					estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE);
 
@@ -475,11 +492,7 @@ public class SeizureController {
 				}
 		        
 		        //Se actualiza el estado de la cuenta a Pendiente
-				Optional<CuentaTraba> cuentaTrabaOpt = seizedBankAccountRepository.findById(idAccount);
-				CuentaTraba cuentaTraba = null;
-				
-				if (cuentaTrabaOpt.isPresent()) {
-					cuentaTraba = cuentaTrabaOpt.get();
+				if (cuentaTraba!=null) {
 					EstadoTraba estadoTraba = new EstadoTraba();
 					estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE);
 
@@ -490,13 +503,6 @@ public class SeizureController {
 					cuentaTraba.setFUltimaModificacion(fechaActualBigDec);
 					
 					seizedBankAccountRepository.save(cuentaTraba);					
-				}
-				
-				//Si el estado del caso, antes del cambio, era Contabilizado, deshacer el movimiento contable
-				if (estadoTrabaActual!=null && estadoTrabaActual.equals(Long.valueOf(EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA)) &&
-					traba!=null && cuentaTraba!=null) {
-					
-					accountingService.undoAccounting(controlFichero, traba, cuentaTraba, userName);					
 				}
 				
 				if (result) {
