@@ -374,8 +374,8 @@ ORDER BY
 			</textField>
 		</band>
 	</pageFooter>
-	<summary>
-		<band height="100" splitType="Stretch">
+	<lastPageFooter>
+		<band height="100">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField pattern="#,##0.00#" isBlankWhenNull="true">
 				<reportElement x="477" y="0" width="116" height="20" uuid="289aea83-2059-456d-aad6-a21b13a94e45"/>
@@ -385,7 +385,7 @@ ORDER BY
 				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($V{IMPORTE_TOTAL}) +" EUROS"]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement x="0" y="30" width="200" height="70" uuid="ef2fcd63-e0d4-4159-8884-1b12bf84d957">
+				<reportElement x="-19" y="30" width="200" height="70" uuid="ef2fcd63-e0d4-4159-8884-1b12bf84d957">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<subreportParameter name="TIPO_ENTIDAD">
@@ -398,7 +398,7 @@ ORDER BY
 				<subreportExpression><![CDATA[$P{SUBREPORT_LEYENDA}]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement x="200" y="30" width="200" height="70" uuid="1234b329-b466-4e05-94bb-d0a84d08d242">
+				<reportElement x="181" y="30" width="200" height="70" uuid="1234b329-b466-4e05-94bb-d0a84d08d242">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<subreportParameter name="TIPO_ENTIDAD">
@@ -427,7 +427,7 @@ ORDER BY
 				<text><![CDATA[TOTAL TRABADO]]></text>
 			</staticText>
 			<subreport>
-				<reportElement x="401" y="30" width="200" height="70" uuid="a32e3eba-355b-4eda-b2e3-43109e6f7a2f">
+				<reportElement x="381" y="30" width="200" height="70" uuid="a32e3eba-355b-4eda-b2e3-43109e6f7a2f">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<subreportParameter name="TIPO_ENTIDAD">
@@ -440,7 +440,7 @@ ORDER BY
 				<subreportExpression><![CDATA[$P{SUBREPORT_LEYENDA}]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement x="601" y="30" width="200" height="70" uuid="deaecf37-0834-400c-8974-740999a7b8f6">
+				<reportElement x="581" y="30" width="229" height="70" uuid="deaecf37-0834-400c-8974-740999a7b8f6">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<subreportParameter name="TIPO_ENTIDAD">
@@ -453,5 +453,5 @@ ORDER BY
 				<subreportExpression><![CDATA[$P{SUBREPORT_LEYENDA}]]></subreportExpression>
 			</subreport>
 		</band>
-	</summary>
+	</lastPageFooter>
 </jasperReport>
