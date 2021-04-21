@@ -44,4 +44,8 @@
     <include file="2021/20210419_estado_contabilizacion_full.xml" relativeToChangelogFile="true" />
     <include file="2021/20210421_cuenta_resultado_embargo_importeLevantado.xml" relativeToChangelogFile="true" />
 
+    <changeSet id="entrega_20210421" author="aniol.massana">
+        <tagDatabase tag="entrega_20210421"/>
+    </changeSet>
+
 </databaseChangeLog>
