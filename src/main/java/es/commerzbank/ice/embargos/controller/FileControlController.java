@@ -107,7 +107,7 @@ public class FileControlController {
 		try {
 		
 			if (!Permissions.hasPermission(authentication, "ui.embargos")) {
-				logger.debug("FileControlController - fileSearch - forbidden");
+				logger.info("FileControlController - fileSearch - forbidden");
 				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 			}
 			
@@ -188,7 +188,7 @@ public class FileControlController {
 	@ApiOperation(value = "Tramitacion de un archivo.")
 	public ResponseEntity<FileControlDTO> tramitar (Authentication authentication,
 			 @PathVariable("codeFileControl") Long codeFileControl){
-		logger.debug("FileControlController - tramitar "+ codeFileControl);
+		logger.info("FileControlController - tramitar "+ codeFileControl);
 		ResponseEntity<FileControlDTO> response = null;
 		Boolean result = false;
 		
@@ -227,7 +227,7 @@ public class FileControlController {
 				response = new ResponseEntity<>(resultFileControlDTO, HttpStatus.BAD_REQUEST);
 			}
 
-			logger.debug("FileControlController - tramitar "+ codeFileControl +" "+ result);
+			logger.info("FileControlController - tramitar "+ codeFileControl +" "+ result);
 		
 		} catch (Exception e) {
 			
@@ -250,7 +250,7 @@ public class FileControlController {
 	public ResponseEntity<String> updateFileControl(Authentication authentication,
 																  @PathVariable("codeFileControl") Long codeFileControl,
 																  @RequestBody FileControlDTO fileControl){
-		logger.debug("FileControlController - updateFileControl "+ codeFileControl);
+		logger.info("FileControlController - updateFileControl "+ codeFileControl);
 		ResponseEntity<String> response = null;
 		boolean result = true;
 		
@@ -273,7 +273,7 @@ public class FileControlController {
 			logger.error("ERROR in updateFileControl: ", e);
 		}
 		
-		logger.debug("FileControlController - updateFileControl - end");
+		logger.info("FileControlController - updateFileControl - end");
 		return response;
 	}
 
@@ -282,7 +282,7 @@ public class FileControlController {
 	public ResponseEntity<String> updateFileControlStatus(Authentication authentication,
 	  		@PathVariable("codeFileControl") Long codeFileControl,
 	  		@RequestBody FileControlStatusDTO fileControlStatus){
-		logger.debug("FileControlController - updateFileControlStatus - "+ codeFileControl +" "+ fileControlStatus.getCode());
+		logger.info("FileControlController - updateFileControlStatus - "+ codeFileControl +" "+ fileControlStatus.getCode());
 		ResponseEntity<String> response = null;
 		boolean result = false;
 

@@ -32,12 +32,12 @@ public class CommunicatingEntityController {
 	        produces = { "application/json" }, 
 	        consumes = { "application/json" })
 	public ResponseEntity<Void> create(Authentication authentication, @RequestBody CommunicatingEntity communicatingEntity) {
-		logger.debug("CommunicatingEntityController - create - start");
+		logger.info("CommunicatingEntityController - create - start");
 		ResponseEntity<Void> response = null;
 		boolean result = true;
 		
 		if (!Permissions.hasPermission(authentication, "ui.impuestos")) {
-			logger.debug("CommunicatingEntityController - create - forbidden");
+			logger.info("CommunicatingEntityController - create - forbidden");
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		
@@ -53,7 +53,7 @@ public class CommunicatingEntityController {
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
-		logger.debug("CommunicatingEntityController - create - end");
+		logger.info("CommunicatingEntityController - create - end");
 		return response;
 	}
 	
@@ -61,12 +61,12 @@ public class CommunicatingEntityController {
 	        produces = { "application/json" }, 
 	        consumes = { "application/json" })
 	public ResponseEntity<Void> update(Authentication authentication,  @RequestBody CommunicatingEntity communicatingEntity) {
-		logger.debug("CommunicatingEntityController - update - start");
+		logger.info("CommunicatingEntityController - update - start");
 		ResponseEntity<Void> response = null;
 		boolean result = true;
 		
 		if (!Permissions.hasPermission(authentication, "ui.impuestos")) {
-			logger.debug("CommunicatingEntityController - update - forbidden");
+			logger.info("CommunicatingEntityController - update - forbidden");
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		
@@ -82,19 +82,19 @@ public class CommunicatingEntityController {
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
-		logger.debug("CommunicatingEntityController - update - end");
+		logger.info("CommunicatingEntityController - update - end");
 		return response;
 	}
 	
 	@DeleteMapping(value = "/{idCommunicatingEntity}",
 	        produces = { "application/json" })
 	public ResponseEntity<Void> delete(Authentication authentication, @PathVariable("idCommunicatingEntity") Long idCommunicatingEntity) {
-		logger.debug("CommunicatingEntityController - delete - start");
+		logger.info("CommunicatingEntityController - delete - start");
 		ResponseEntity<Void> response = null;
 		boolean result = true;
 		
 		if (!Permissions.hasPermission(authentication, "ui.impuestos")) {
-			logger.debug("CommunicatingEntityController - delete - forbidden");
+			logger.info("CommunicatingEntityController - delete - forbidden");
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		
@@ -110,7 +110,7 @@ public class CommunicatingEntityController {
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
-		logger.debug("CommunicatingEntityController - delete - end");
+		logger.info("CommunicatingEntityController - delete - end");
 		return response;
 	}
 	
@@ -121,7 +121,7 @@ public class CommunicatingEntityController {
 		CommunicatingEntity result = null;
 		
 		if (!Permissions.hasPermission(authentication, "ui.impuestos")) {
-			logger.debug("CommunicatingEntityController - view - forbidden");
+			logger.info("CommunicatingEntityController - view - forbidden");
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		

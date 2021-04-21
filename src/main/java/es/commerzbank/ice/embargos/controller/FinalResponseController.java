@@ -243,7 +243,7 @@ public class FinalResponseController {
 	@PostMapping(value = "/{codeFileControl}/generateFinalResponse", produces = { "application/json" })
 	public ResponseEntity<Void> createNorma63(Authentication authentication,
 											  @PathVariable("codeFileControl") Long codeFileControl) {
-		logger.debug("SeizureSummaryController - createNorma63 - start "+ codeFileControl);
+		logger.info("SeizureSummaryController - createNorma63 - start "+ codeFileControl);
 		ResponseEntity<Void> response = null;
 
 		if (codeFileControl != null) {
@@ -262,7 +262,7 @@ public class FinalResponseController {
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
-		logger.debug("SeizureSummaryController - createNorma63 - end");
+		logger.info("SeizureSummaryController - createNorma63 - end");
 
 		return response;
 	}

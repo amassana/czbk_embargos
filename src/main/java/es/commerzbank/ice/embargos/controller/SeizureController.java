@@ -360,7 +360,7 @@ public class SeizureController {
     public ResponseEntity<FileControlDTO> sendAccounting(Authentication authentication,
     										  @PathVariable("codeFileControl") Long codeFileControl)
 	{
-		logger.debug("SeizureController - Se contabilizan las trabas de "+ codeFileControl);
+		logger.info("SeizureController - Se contabilizan las trabas de "+ codeFileControl);
     	ResponseEntity<FileControlDTO> response = null;
 		//boolean result = false;
 
@@ -400,7 +400,7 @@ public class SeizureController {
     										  @PathVariable("idSeizure") Long idSeizure,
     										  @PathVariable("idAccount") Long idAccount) {
     	
-    	logger.debug("SeizureController - undoAccounting - start file {} seizure {} account {}", codeFileControl, idSeizure, idAccount);
+    	logger.info("SeizureController - undoAccounting - start file {} seizure {} account {}", codeFileControl, idSeizure, idAccount);
     	ResponseEntity<String> response = null;
 
 		try {
@@ -418,7 +418,7 @@ public class SeizureController {
 			logger.error("ERROR in undoAccounting: ", e);
 		}
 
-		logger.debug("SeizureController - undoAccounting - end");
+		logger.info("SeizureController - undoAccounting - end");
 		return response;
     }
     

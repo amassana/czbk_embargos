@@ -38,12 +38,12 @@ public class OrderingEntityController {
 	        produces = { "application/json" }, 
 	        consumes = { "application/json" })
 	public ResponseEntity<Void> create(Authentication authentication, @RequestBody OrderingEntity orderingEntity) {
-		logger.debug("OrderingEntityController - create - start");
+		logger.info("OrderingEntityController - create - start");
 		ResponseEntity<Void> response = null;
 		boolean result = true;
 		
 		if (!Permissions.hasPermission(authentication, "ui.impuestos")) {
-			logger.debug("OrderingEntityController - create - forbidden");
+			logger.info("OrderingEntityController - create - forbidden");
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		
@@ -59,7 +59,7 @@ public class OrderingEntityController {
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
-		logger.debug("OrderingEntityController - create - end");
+		logger.info("OrderingEntityController - create - end");
 		return response;
 	}
 	
@@ -67,12 +67,12 @@ public class OrderingEntityController {
 	        produces = { "application/json" }, 
 	        consumes = { "application/json" })
 	public ResponseEntity<Void> update(Authentication authentication,  @RequestBody OrderingEntity orderingEntity) {
-		logger.debug("OrderingEntityController - update - start");
+		logger.info("OrderingEntityController - update - start");
 		ResponseEntity<Void> response = null;
 		boolean result = true;
 		
 		if (!Permissions.hasPermission(authentication, "ui.impuestos")) {
-			logger.debug("OrderingEntityController - update - forbidden");
+			logger.info("OrderingEntityController - update - forbidden");
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		
@@ -88,19 +88,19 @@ public class OrderingEntityController {
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
-		logger.debug("OrderingEntityController - update - end");
+		logger.info("OrderingEntityController - update - end");
 		return response;
 	}
 	
 	@DeleteMapping(value = "/{idOrderingEntity}",
 	        produces = { "application/json" })
 	public ResponseEntity<Void> delete(Authentication authentication, @PathVariable("idOrderingEntity") Long idOrderingEntity) {
-		logger.debug("OrderingEntityController - delete - start");
+		logger.info("OrderingEntityController - delete - start");
 		ResponseEntity<Void> response = null;
 		boolean result = true;
 		
 		if (!Permissions.hasPermission(authentication, "ui.impuestos")) {
-			logger.debug("OrderingEntityController - delete - forbidden");
+			logger.info("OrderingEntityController - delete - forbidden");
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		
@@ -116,7 +116,7 @@ public class OrderingEntityController {
 			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
-		logger.debug("OrderingEntityController - delete - end");
+		logger.info("OrderingEntityController - delete - end");
 		return response;
 	}
 	
@@ -127,7 +127,7 @@ public class OrderingEntityController {
 		OrderingEntity result = null;
 		
 		if (!Permissions.hasPermission(authentication, "ui.impuestos")) {
-			logger.debug("OrderingEntityController - view - forbidden");
+			logger.info("OrderingEntityController - view - forbidden");
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		
