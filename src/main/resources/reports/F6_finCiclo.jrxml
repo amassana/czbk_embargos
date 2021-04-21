@@ -392,7 +392,7 @@ ORDER BY
 					<subreportParameterExpression><![CDATA[$F{TIPO_ENTIDAD}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="QUE_PARTE">
-					<subreportParameterExpression><![CDATA["1"]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[1]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_LEYENDA}]]></subreportExpression>
@@ -405,7 +405,7 @@ ORDER BY
 					<subreportParameterExpression><![CDATA[$F{TIPO_ENTIDAD}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="QUE_PARTE">
-					<subreportParameterExpression><![CDATA["2"]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[2]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_LEYENDA}]]></subreportExpression>
@@ -434,7 +434,7 @@ ORDER BY
 					<subreportParameterExpression><![CDATA[$F{TIPO_ENTIDAD}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="QUE_PARTE">
-					<subreportParameterExpression><![CDATA["3"]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[3]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_LEYENDA}]]></subreportExpression>
@@ -447,7 +447,7 @@ ORDER BY
 					<subreportParameterExpression><![CDATA[$F{TIPO_ENTIDAD}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="QUE_PARTE">
-					<subreportParameterExpression><![CDATA["4"]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[4]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_LEYENDA}]]></subreportExpression>
