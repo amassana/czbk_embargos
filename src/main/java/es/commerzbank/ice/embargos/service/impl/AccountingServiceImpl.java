@@ -681,8 +681,7 @@ public class AccountingServiceImpl
 		}
 		
 		if (entidadComunicadora.getCuenta() == null || entidadComunicadora.getCuenta().trim().isEmpty()) {
-			logger.info("Could not be sent to accounting: account not found for the Entidad Comunicadora with NIF: " + entidadComunicadora.getNifEntidad());
-			return;
+			throw new ICEException("Could not be sent to accounting: account not found for the Entidad Comunicadora with NIF: " + entidadComunicadora.getNifEntidad());
 		}
 		
 		//Obtencion de datos para setear:

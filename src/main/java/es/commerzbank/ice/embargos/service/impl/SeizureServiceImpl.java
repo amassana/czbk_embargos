@@ -459,7 +459,7 @@ public class SeizureServiceImpl
 
 		Long estadoTrabaActual = cuentaTraba.getEstadoTraba().getCodEstado();
 
-		if (!Long.valueOf(COD_ESTADO_TRABA_ENVIADA_A_CONTABILIDAD).equals(estadoTrabaActual) ||
+		if (!Long.valueOf(COD_ESTADO_TRABA_ENVIADA_A_CONTABILIDAD).equals(estadoTrabaActual) &&
 			!Long.valueOf(COD_ESTADO_TRABA_CONTABILIZADA).equals(estadoTrabaActual)) {
 			// No se puede invocar en este estado. Devolver conflict.
 			return false;
