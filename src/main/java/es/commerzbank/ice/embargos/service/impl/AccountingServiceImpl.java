@@ -480,8 +480,6 @@ public class AccountingServiceImpl
 	public void extornoContabilizar(ControlFichero controlFichero, Traba traba, CuentaTraba cuentaTraba, String userName)
 		throws Exception
 	{
-		logger.info("undoAccounting - start");
-
 		String oficinaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA);
 		String cuentaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);
 		String cuentaIntercambioDivisas = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_INTERCAMBIO_DIVISAS);
@@ -514,7 +512,7 @@ public class AccountingServiceImpl
 				oficinaRecaudacion, reference1, reference2, detail, cuentaIntercambioDivisas,
 				fileControlFicheroComunes.getCodControlFichero(), embargo.getNombre(), embargo.getNif());
 
-		logger.info("undoAccounting - end");
+		accountingNoteService.generacionFicheroContabilidad(fileControlFicheroComunes);
 	}
 
 	private void apunteContableExtorno(

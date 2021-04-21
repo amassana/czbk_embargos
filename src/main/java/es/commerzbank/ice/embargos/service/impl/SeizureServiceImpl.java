@@ -467,6 +467,7 @@ public class SeizureServiceImpl
 
 		//Si el estado del caso, antes del cambio, era Contabilizado, deshacer el movimiento contable
 		if (estadoTrabaActual != null && estadoTrabaActual.equals(Long.valueOf(COD_ESTADO_TRABA_CONTABILIZADA))) {
+			logger.info("Realizando extorno");
 			accountingService.extornoContabilizar(controlFichero, traba, cuentaTraba, userName);
 		}
 
