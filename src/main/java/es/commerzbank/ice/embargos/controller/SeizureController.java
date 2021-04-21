@@ -2,20 +2,11 @@ package es.commerzbank.ice.embargos.controller;
 
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.embargos.domain.dto.*;
-import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
-import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
-import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
-import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
-import es.commerzbank.ice.embargos.domain.entity.Traba;
-import es.commerzbank.ice.embargos.repository.FileControlRepository;
-import es.commerzbank.ice.embargos.repository.SeizedBankAccountRepository;
-import es.commerzbank.ice.embargos.repository.SeizedRepository;
 import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.embargos.utils.DownloadReportFile;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
-import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 import es.commerzbank.ice.embargos.utils.OfficeUtils;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -27,10 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin("*")
 @RestController
@@ -54,15 +43,6 @@ public class SeizureController {
 	@Autowired
 	private OfficeUtils officeUtils;
 
-	@Autowired
-	private FileControlRepository fileControlRepository;
-	
-	@Autowired
-	private SeizedRepository seizedRepository;
-	
-	@Autowired
-	private SeizedBankAccountRepository seizedBankAccountRepository;
-	
     @GetMapping(value = "/{codeFileControl}")
     @ApiOperation(value="Devuelve la lista de embargos para una petición de embargo.")
     public ResponseEntity<List<SeizureDTO>> getSeizureListByCodeFileControl(Authentication authentication,
@@ -420,110 +400,26 @@ public class SeizureController {
     										  @PathVariable("idSeizure") Long idSeizure,
     										  @PathVariable("idAccount") Long idAccount) {
     	
-    	logger.debug("SeizureController - undoAccounting - start");
+    	logger.debug("SeizureController - undoAccounting - start file {} seizure {} account {}", codeFileControl, idSeizure, idAccount);
     	ResponseEntity<String> response = null;
-    	boolean result = true;
 
 		try {
-
 			String userName = authentication.getName();
-		
-			// Se obtiene el ControlFichero
-			Optional<ControlFichero> controlFicheroOpt = fileControlRepository.findById(codeFileControl);
-		       
-		    // Comprobar que el fichero está en el estado adecuado
-		    if (controlFicheroOpt.isPresent() &&
-		    	controlFicheroOpt.get().getEstadoCtrlfichero().getId().getCodEstado()!=EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_ACCOUNTING_RESPONSE  &&
-	        	controlFicheroOpt.get().getEstadoCtrlfichero().getId().getCodEstado()!=EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_TO_SEND) {
-		    	
-	        	logger.debug("El fichero NO está en el estado adecuado");
-	        	response = new ResponseEntity<>(HttpStatus.CONFLICT);
-	        }
-			else if (controlFicheroOpt.isPresent()) {
-		    	
-		    	ControlFichero controlFichero = controlFicheroOpt.get();
-		        
-		        Long estadoTrabaActual = null; 
-		        Optional<Traba> trabaOpt = seizedRepository.findById(idSeizure);
-		        Traba traba = null;
-		        
-				if (trabaOpt.isPresent()) {
-					traba = trabaOpt.get();
-					estadoTrabaActual = traba.getEstadoTraba().getCodEstado();
-				}
-		        
-				Optional<CuentaTraba> cuentaTrabaOpt = seizedBankAccountRepository.findById(idAccount);
-				CuentaTraba cuentaTraba = null;
-				
-				if (cuentaTrabaOpt.isPresent()) {
-					cuentaTraba = cuentaTrabaOpt.get();
-				}
-				
-				//Si el estado del caso, antes del cambio, era Contabilizado, deshacer el movimiento contable
-				if (estadoTrabaActual!=null && estadoTrabaActual.equals(Long.valueOf(EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA)) &&
-					traba!=null && cuentaTraba!=null) {
-					
-					result = accountingService.undoAccounting(controlFichero, traba, cuentaTraba, userName);					
-				}
-				
-		    	//Se actualiza el estado de controlFichero a Recibido
-		        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
-		        		EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_RECEIVED,
-		        		EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT);
-		        controlFichero.setEstadoCtrlfichero(estadoCtrlfichero);
-		        	        
-		        controlFichero.setUsuarioUltModificacion(userName);
-		        controlFichero.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
-	            
-		        fileControlService.saveFileControlTransaction(controlFichero);
-				
-		        //Se actualiza el estado del idSeizure a Pendiente
-				if (traba!=null) {
-					EstadoTraba estadoTraba = new EstadoTraba();
-					estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE);
 
-					traba.setEstadoTraba(estadoTraba);
+			boolean result = seizureService.undoAccounting(codeFileControl, idSeizure, idAccount, userName);
 
-					BigDecimal fechaActualBigDec = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
-					traba.setUsuarioUltModificacion(userName);
-					traba.setFUltimaModificacion(fechaActualBigDec);
-					
-					seizedRepository.save(traba);
-				}
-		        
-		        //Se actualiza el estado de la cuenta a Pendiente
-				if (cuentaTraba!=null) {
-					EstadoTraba estadoTraba = new EstadoTraba();
-					estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE);
-
-					cuentaTraba.setEstadoTraba(estadoTraba);
-					
-					BigDecimal fechaActualBigDec = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
-					cuentaTraba.setUsuarioUltModificacion(userName);
-					cuentaTraba.setFUltimaModificacion(fechaActualBigDec);
-					
-					seizedBankAccountRepository.save(cuentaTraba);					
-				}
-				
-				if (result) {
-					response = new ResponseEntity<>(HttpStatus.OK);
-				} else {
-					response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-				}
-		    }
-		    else {
-		    	logger.debug("El fichero NO existe");
-	        	response = new ResponseEntity<>(HttpStatus.CONFLICT);	
-		    }
-		    
-		} catch (Exception e) {
+			if (result)
+				response = new ResponseEntity<>(HttpStatus.OK);
+			else
+				response = new ResponseEntity<>(HttpStatus.CONFLICT);
+		}
+		catch (Exception e) {
 			response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			logger.error("ERROR in undoAccounting: ", e);
 		}
 
 		logger.debug("SeizureController - undoAccounting - end");
 		return response;
-    	
     }
     
 

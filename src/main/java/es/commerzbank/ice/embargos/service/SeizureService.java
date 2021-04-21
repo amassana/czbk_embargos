@@ -27,4 +27,6 @@ public interface SeizureService {
 
     void generateSeizureLetters(ControlFichero controlFichero) throws Exception;
 	boolean updateAccountSeizureStatus(Long idAccount, Long idSeizure, AccountStatusSeizedDTO accountStatusSeized, String userModif);
+
+	boolean undoAccounting(Long codeFileControl, Long idSeizure, Long idAccount, String userName) throws Exception;
 }
