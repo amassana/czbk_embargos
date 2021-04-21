@@ -1,10 +1,9 @@
 package es.commerzbank.ice.embargos.domain.entity;
 
-import java.io.Serializable;
-import javax.persistence.*;
-
 import es.commerzbank.ice.embargos.domain.entity.listener.CuentaResultadoEmbargoListener;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 
@@ -27,6 +26,9 @@ public class CuentaResultadoEmbargo implements Serializable {
 
 	@Column(name="IMPORTE_NETO")
 	private BigDecimal importeNeto;
+
+	@Column(name="IMPORTE_LEVANTADO")
+	private BigDecimal importeLevantado;
 
 	@Column(name="F_ULTIMA_MODIFICACION", precision=14)
 	private BigDecimal fUltimaModificacion;
@@ -121,4 +123,11 @@ public class CuentaResultadoEmbargo implements Serializable {
 		this.usuarioUltModificacion = usuarioUltModificacion;
 	}
 
+	public BigDecimal getImporteLevantado() {
+		return importeLevantado;
+	}
+
+	public void setImporteLevantado(BigDecimal importeLevantado) {
+		this.importeLevantado = importeLevantado;
+	}
 }

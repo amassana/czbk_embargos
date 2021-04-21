@@ -132,6 +132,7 @@ public class FinalResponseGenerationServiceImpl
                 BigDecimal importeNetoCuenta = importeTrabadoCuenta.subtract(importeLevantadoCuenta);
 
                 cuentaResultadoEmbargo.setImporteNeto(importeNetoCuenta);
+                cuentaResultadoEmbargo.setImporteLevantado(importeLevantadoCuenta);
 
                 // Se calcula el estado en función de los importes finales
                 EstadoResultadoEmbargo estadoResultadoEmbargo = new EstadoResultadoEmbargo();
