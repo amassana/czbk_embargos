@@ -8,13 +8,15 @@ import es.commerzbank.ice.embargos.domain.entity.FicheroFinal;
 public interface AccountingService {
 
 	void embargoContabilizar(Long codeFileControl, String userName) throws Exception;
-	void levantamientoContabilizar(Long codeFileControl, String userName) throws Exception;
-	void ficheroFinalContabilizar(FicheroFinal ficheroFinal, String userName) throws Exception;
-	//es.commerzbank.ice.comun.lib.domain.entity.ControlFichero sendAccountingLiftingBankAccount(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, String userName) throws ICEException, Exception;
-
 	void embargoCallback(Long codCuentaTraba);
-	void ficheroFinalCallback(Long codFicheroFinal);
+
+	void levantamientoContabilizar(Long codeFileControl, String userName) throws Exception;
 	void levantamientoCallback(Long codCuentaLevantamiento) throws Exception;
 
-	boolean undoAccounting(ControlFichero controlFichero, Traba traba, CuentaTraba cuentaTraba, String userName) throws Exception;
+	void ficheroFinalContabilizar(FicheroFinal ficheroFinal, String userName) throws Exception;
+	void ficheroFinalCallback(Long codFicheroFinal);
+	//es.commerzbank.ice.comun.lib.domain.entity.ControlFichero sendAccountingLiftingBankAccount(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, String userName) throws ICEException, Exception;
+
+	void extornoContabilizar(ControlFichero controlFichero, Traba traba, CuentaTraba cuentaTraba, String userName) throws Exception;
+	void extornoCallback(Long codCuentaTraba);
 }

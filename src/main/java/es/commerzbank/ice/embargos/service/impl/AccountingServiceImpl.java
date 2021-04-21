@@ -32,7 +32,9 @@ import static es.commerzbank.ice.embargos.utils.EmbargosConstants.*;
 
 @Service
 @Transactional(transactionManager="transactionManager")
-public class AccountingServiceImpl implements AccountingService{
+public class AccountingServiceImpl
+	implements AccountingService
+{
 	
 	private static final Logger logger = LoggerFactory.getLogger(AccountingServiceImpl.class);
 	
@@ -475,28 +477,47 @@ public class AccountingServiceImpl implements AccountingService{
 	}
 
 	@Override
-	public boolean undoAccounting(ControlFichero controlFichero, Traba traba, CuentaTraba cuentaTraba, String userName) throws Exception{
-
+	public void extornoContabilizar(ControlFichero controlFichero, Traba traba, CuentaTraba cuentaTraba, String userName)
+		throws Exception
+	{
 		logger.info("undoAccounting - start");
 
 		String oficinaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA);
 		String cuentaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);
 		String cuentaIntercambioDivisas = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_INTERCAMBIO_DIVISAS);
 		Long sucursal = getCodSucursal(oficinaRecaudacion);
+
+		String fileFormat = EmbargosUtils.determineFileFormatByTipoFichero(controlFichero.getTipoFichero().getCodTipoFichero());
+		boolean isCGPJ = fileFormat!=null && fileFormat.equals(FILE_FORMAT_CGPJ);
 		
 		Embargo embargo = traba.getEmbargo();
 
 		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion(), sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_EMBARGOS_LEVANTAMIENTOS);
 
-		undoApunteContable(cuentaTraba, cuentaRecaudacion, cuentaTraba.getCuenta(),
-				oficinaRecaudacion, embargo.getNumeroEmbargo(), "", EmbargosConstants.DETAIL_PAYMENT_UNDO_ACCOUNTING, cuentaIntercambioDivisas,
+		String detail = null;
+		String reference1 = null;
+		String reference2 = null;
+
+		if (isCGPJ) {
+			Pair<String, String> references = generateReferencesForCGPJ(embargo.getNumeroEmbargo());
+			reference1 = references.getLeft();
+			reference2 = references.getRight();
+			detail = EmbargosConstants.DETAIL_PAYMENT_UNDO_ACCOUNTING;
+		}
+		else {
+			reference1 = embargo.getNumeroEmbargo();
+			reference2 = "";
+			detail = EmbargosConstants.DETAIL_PAYMENT_UNDO_ACCOUNTING +" "+ embargo.getDatregcomdet();
+		}
+
+		apunteContableExtorno(cuentaTraba, cuentaRecaudacion, cuentaTraba.getCuenta(),
+				oficinaRecaudacion, reference1, reference2, detail, cuentaIntercambioDivisas,
 				fileControlFicheroComunes.getCodControlFichero(), embargo.getNombre(), embargo.getNif());
 
 		logger.info("undoAccounting - end");
-		return true;
 	}
 
-	private void undoApunteContable(
+	private void apunteContableExtorno(
 			CuentaTraba cuentaTraba, String debitAccount, String creditAccount,
 			String oficinaCuentaRecaudacion, String reference1, String reference2, String detailPayment, String cuentaIntercambioDivisas,
 			Long codFileControlFicheroComunes, String nombre, String nif)
@@ -527,11 +548,17 @@ public class AccountingServiceImpl implements AccountingService{
 			accountingNote.setName(nombre);
 			accountingNote.setNif(nif);
 
-			accountingNote.setExtraInfo1(EmbargosConstants.APUNTES_CONTABLES_TIPO_LEVANTAMIENTO);
+			accountingNote.setExtraInfo1(EmbargosConstants.APUNTES_CONTABLES_TIPO_EXTORNO);
 			accountingNote.setExtraInfo2(String.valueOf(cuentaTraba.getCodCuentaTraba()));
 
 			accountingNoteService.contabilizar(accountingNote, cuentaIntercambioDivisas);
 		}
+	}
+
+	@Override
+	@Transactional(transactionManager="transactionManager")
+	public void extornoCallback(Long codCuentaTraba) {
+		logger.info("Callback extorno "+ codCuentaTraba +" recibido - sin acción");
 	}
 	
 	@Override

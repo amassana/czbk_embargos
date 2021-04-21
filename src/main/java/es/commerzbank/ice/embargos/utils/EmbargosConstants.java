@@ -330,6 +330,7 @@ public class EmbargosConstants {
 	
 	public static final String APUNTES_CONTABLES_TIPO_TRABA = "TRABA";
 	public static final String APUNTES_CONTABLES_TIPO_LEVANTAMIENTO = "LEVANTAMIENTO";
+	public static final String APUNTES_CONTABLES_TIPO_EXTORNO = "EXTORNO";
 	public static final String APUNTES_CONTABLES_TIPO_FINAL = "FINAL";
 	
 	public static final String EXTERNAL_ID_F6_N63 = "SEIZUREN63_";
@@ -337,5 +338,5 @@ public class EmbargosConstants {
 
 	public static final String SUCURSAL_CREACION_IMPUESTOS = "1";
 	
-	public static final String DETAIL_PAYMENT_UNDO_ACCOUNTING = "Retroceso";
+	public static final String DETAIL_PAYMENT_UNDO_ACCOUNTING = "Extorno";
 }
