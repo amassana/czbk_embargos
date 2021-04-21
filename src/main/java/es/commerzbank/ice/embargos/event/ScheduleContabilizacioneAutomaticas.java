@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,6 +36,7 @@ public class ScheduleContabilizacioneAutomaticas
           COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT);
 
   @Scheduled(cron = "*/60 * * * * ?")
+  @Transactional(transactionManager="transactionManager")
   public void contabilizacionesAutomaticas() {
     List<ControlFichero> ficherosLevantamientoPendientesContabilizar = fileControlService.listByStatus(COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_AUTOMATIC_ACCOUNTING, codTipoFichero);
 
