@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="leyendaActuaciones" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="847831ee-2e52-4a67-bcb6-888b478b5de8">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="leyendaActuaciones" pageWidth="200" pageHeight="595" orientation="Landscape" columnWidth="200" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="847831ee-2e52-4a67-bcb6-888b478b5de8">
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="Embargos"/>
     <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
     <property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="530"/>
@@ -47,7 +47,7 @@ AND		RN <= ((select CEIL(count(*)/4) from cuenta_traba_actuacion WHERE tipo_enti
                 <textFieldExpression><![CDATA[$F{COD_EXTERNO_ACTUACION}]]></textFieldExpression>
             </textField>
             <textField isBlankWhenNull="true">
-                <reportElement x="40" y="0" width="170" height="14" uuid="b0847408-a2c9-48a6-a9d8-3f84abf70d6a">
+                <reportElement x="40" y="0" width="160" height="14" uuid="b0847408-a2c9-48a6-a9d8-3f84abf70d6a">
                     <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="642a7aec-f048-48fa-99fc-fbe2cb965521"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
