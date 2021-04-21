@@ -36,7 +36,7 @@ AND		RN <= ((select CEIL(count(*)/4) from cuenta_traba_actuacion WHERE tipo_enti
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
             <property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
             <textField isBlankWhenNull="true">
-                <reportElement x="0" y="0" width="80" height="14" uuid="cae159c1-1a60-4be7-9aae-8d2d82d859b9">
+                <reportElement x="0" y="0" width="30" height="14" uuid="cae159c1-1a60-4be7-9aae-8d2d82d859b9">
                     <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="642a7aec-f048-48fa-99fc-fbe2cb965521"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
@@ -47,7 +47,7 @@ AND		RN <= ((select CEIL(count(*)/4) from cuenta_traba_actuacion WHERE tipo_enti
                 <textFieldExpression><![CDATA[$F{COD_EXTERNO_ACTUACION}]]></textFieldExpression>
             </textField>
             <textField isBlankWhenNull="true">
-                <reportElement x="90" y="0" width="401" height="14" uuid="b0847408-a2c9-48a6-a9d8-3f84abf70d6a">
+                <reportElement x="40" y="0" width="170" height="14" uuid="b0847408-a2c9-48a6-a9d8-3f84abf70d6a">
                     <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="642a7aec-f048-48fa-99fc-fbe2cb965521"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
