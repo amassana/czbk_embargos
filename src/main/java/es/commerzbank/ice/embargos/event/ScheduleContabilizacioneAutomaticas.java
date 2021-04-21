@@ -57,7 +57,7 @@ public class ScheduleContabilizacioneAutomaticas
 
     for (FicheroFinal ficheroActual : ficherosFinalesPendientesContabilizar) {
       try {
-        logger.info("Contabilizando el final de ciclo "+ ficheroActual.getControlFichero().getCodControlFichero() +" "+ ficheroActual.getControlFichero().getNombreFichero());
+        logger.info("Contabilizando el final de ciclo "+ ficheroActual.getControlFichero().getCodControlFichero() +" "+ ficheroActual.getControlFichero().getNombreFichero() +" importe "+ ficheroActual.getImporte());
         accountingService.ficheroFinalContabilizar(ficheroActual, USER_AUTOMATICO);
       } catch (Exception e) {
         logger.error("No se ha podido contabilizar el final de ciclo "+ ficheroActual.getControlFichero().getNombreFichero() +". Se cambia el estado a Contabilización manual abortada", e);
