@@ -6,10 +6,7 @@
     <property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="530"/>
     <property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="456"/>
     <parameter name="TIPO_ENTIDAD" class="java.lang.String"/>
-    <parameter name="QUE_MITAD" class="java.lang.String"/>
-    <parameter name="CONDICION_QUE_MITAD" class="java.lang.String" isForPrompting="false">
-        <defaultValueExpression><![CDATA["PRIMERA".equals($P{QUE_MITAD}) ? " <= " : " > "]]></defaultValueExpression>
-    </parameter>
+    <parameter name="QUE_PARTE" class="java.lang.Integer"/>
     <queryString>
         <![CDATA[SELECT
 	cod_externo_actuacion
@@ -25,7 +22,8 @@ WHERE
     tipo_entidad = $P{TIPO_ENTIDAD}
 ORDER BY
     cod_externo_actuacion)
-WHERE RN $P!{CONDICION_QUE_MITAD} (select CEIL(count(*)/2) from cuenta_traba_actuacion WHERE tipo_entidad = $P{TIPO_ENTIDAD})]]>
+WHERE	((select CEIL(count(*)/4) from cuenta_traba_actuacion WHERE tipo_entidad = $P{TIPO_ENTIDAD}) * ($P{QUE_PARTE} - 1)) < RN
+AND		RN <= ((select CEIL(count(*)/4) from cuenta_traba_actuacion WHERE tipo_entidad = $P{TIPO_ENTIDAD}) * $P{QUE_PARTE})]]>
     </queryString>
     <field name="COD_EXTERNO_ACTUACION" class="java.lang.String">
         <property name="com.jaspersoft.studio.field.label" value="COD_EXTERNO_ACTUACION"/>

@@ -4,12 +4,12 @@ import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.embargos.domain.dto.FinalResponseDTO;
 import es.commerzbank.ice.embargos.domain.dto.FinalResponsePendingDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
-import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.FinalResponseService;
 import es.commerzbank.ice.embargos.utils.DownloadReportFile;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.OfficeUtils;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,9 +39,9 @@ public class FinalResponseController {
 
 	@Autowired
 	private GeneralParametersService generalParametersService;
-	
+
 	@Autowired
-	private FileControlRepository fileControlRepository;
+	private OfficeUtils officeUtils;
 	
 	@GetMapping(value = "/{codeFileControl}")
 	@ApiOperation(value = "Devuelve la lista de casos de levamtamientos")
@@ -172,6 +172,7 @@ public class FinalResponseController {
 	@GetMapping("/{fileControl}/report")
 	@ApiOperation(value = "Devuelve el fichero de respuesta final de embargos")
 	public ResponseEntity<InputStreamResource> reportFinalCiclo(
+			Authentication authentication,
 			@PathVariable("fileControl") Integer codFileControl) {
 
 		try {
@@ -181,7 +182,9 @@ public class FinalResponseController {
 
 			downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
-			downloadReportFile.writeFile(finalResponseService.generarRespuestaFinalEmbargo(codFileControl));
+			String oficina = officeUtils.getLocalidadUsuario(authentication);
+
+			downloadReportFile.writeFile(finalResponseService.generarRespuestaFinalEmbargo(codFileControl, oficina));
 
 			return downloadReportFile.returnToDownloadFile();
 
