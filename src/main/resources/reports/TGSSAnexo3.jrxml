@@ -3,10 +3,10 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="anexo3" pageWidth="595" pageHeight="842" columnWidth="495" leftMargin="50" rightMargin="50" topMargin="20" bottomMargin="20" uuid="8023237a-e493-4f98-b614-121eb503aa39">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceBankDAdapterEmbargos.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<parameter name="COD_CONTROL_FICHERO" class="java.lang.Long" />
-	<parameter name="COD_APODERADO" class="java.lang.Long" />
+	<parameter name="COD_CONTROL_FICHERO" class="java.lang.Long"/>
+	<parameter name="COD_APODERADO" class="java.lang.Long"/>
 	<parameter name="REPORT_IMPORTE_ABONADO" class="java.lang.Object"/>
-	<parameter name="CODIGO_ENTIDAD" />
+	<parameter name="CODIGO_ENTIDAD" class="java.lang.String"/>
 	<parameter name="IMAGE_PARAM" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT a.CARGO, a.NOMBRE FROM APODERADOS a WHERE a.ID = $P{COD_APODERADO}]]>
@@ -107,13 +107,13 @@
 				</textElement>
 				<text><![CDATA[COMMERZBANK AG SUCURSAL EN ESPAÑA]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="153" y="29" width="30" height="19" uuid="bbadd394-f04a-4012-9a08-b9b3ea8da5de"/>
+			<textField>
+				<reportElement x="153" y="29" width="280" height="19" uuid="b8ea5c50-72b0-470a-9cbc-64aef9558ce2"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Serif" size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[$P{CODIGO_ENTIDAD}]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[$P{CODIGO_ENTIDAD}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
