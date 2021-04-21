@@ -64,6 +64,7 @@ public class FinalResponseGenerationServiceImpl
         ficheroFase6.setResultadoEmbargos(resultadosEmbargos);
         ficheroFase6.setUsuarioUltModificacion(user);
         ficheroFase6.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+        ficheroFase6.setFechaCreacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMdd));
         fileControlRepository.save(ficheroFase6);
 
         List<Embargo> embargos = seizureRepository.findAllByControlFichero(ficheroFase3);
