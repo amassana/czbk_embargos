@@ -7,7 +7,6 @@ import es.commerzbank.ice.comun.lib.service.FestiveService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
-import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
 import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.AEATMapper;
@@ -17,11 +16,7 @@ import es.commerzbank.ice.embargos.formats.aeat.diligencias.EntidadTransmisoraFa
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.FinEntidadCreditoFase3;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.FinEntidadTransmisoraFase3;
 import es.commerzbank.ice.embargos.formats.aeat.trabas.*;
-import es.commerzbank.ice.embargos.repository.CommunicatingEntityRepository;
-import es.commerzbank.ice.embargos.repository.FileControlRepository;
-import es.commerzbank.ice.embargos.repository.SeizedBankAccountRepository;
-import es.commerzbank.ice.embargos.repository.SeizedRepository;
-import es.commerzbank.ice.embargos.repository.SeizureRepository;
+import es.commerzbank.ice.embargos.repository.*;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.SeizureService;
 import es.commerzbank.ice.embargos.service.files.AEATSeizedService;
@@ -95,7 +90,7 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	
 	@Override
 	@Transactional(transactionManager = "transactionManager", rollbackFor = Exception.class)
-	public void tramitarTrabas(Long codControlFicheroEmbargo, String usuarioTramitador) throws IOException, ICEException {
+	public void tramitarTrabas(Long codControlFicheroEmbargo, String usuarioTramitador) throws Exception {
 		logger.info("AEATSeizureServiceImpl - tramitarTrabas - start");
 		
 		BeanReader beanReader = null;
@@ -109,7 +104,8 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 		ControlFichero controlFicheroTrabas = null;
 		
 		try {
-		
+			boolean tieneTrabasRealizadas = false;
+
 			// create a StreamFactory
 	        StreamFactory factory = StreamFactory.newInstance();
 	        // load the mapping file
@@ -271,14 +267,42 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	        BigDecimal importeTotalTrabado = new BigDecimal(0);
 
 			//- Se guarda la fecha maxima de respuesta fase6 (now + dias de margen)
-			int diasRespuestaF6 = entidadComunicadora.getDiasRespuestaF6() != null ? entidadComunicadora.getDiasRespuestaF6().intValue() : 0;
-			FestiveService.ValueDateCalculationParameters parameters = new FestiveService.ValueDateCalculationParameters();
-			parameters.numBusinessDays = diasRespuestaF6;
-			parameters.location = 1L;
-			parameters.fromDate = LocalDate.now();
-			LocalDate finalDate = festiveService.dateCalculation(parameters, ValueConstants.COD_LOCALIDAD_MADRID);
-			Date lastDateResponse = Date.from(finalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-	        
+			//- La fecha base es la fecha de contabilización. Se toma la menor fecha de contabilización (por si hubiera cambios de estado y similares)
+
+			LocalDate fechaTraba = null;
+			for (Embargo embargo : embargoList) {
+				Traba traba = embargo.getTrabas().get(0);
+
+				if (traba.getEstadoTraba().getCodEstado() != EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA)
+					continue;
+
+				tieneTrabasRealizadas = true;
+
+				if (traba.getFechaTraba() == null)
+					continue;
+
+				LocalDate fechaTrabaActual = es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils.numericDateToLocalDate(traba.getFechaTraba());
+
+				if (fechaTraba == null) {
+					fechaTraba = fechaTrabaActual;
+				}
+
+				if (fechaTrabaActual.isBefore(fechaTraba)) {
+					fechaTraba = fechaTrabaActual;
+				}
+			}
+
+			Date lastDateResponse = null;
+
+			if (tieneTrabasRealizadas) {
+				// Para la Agencia Tributaria la el paso de Embargos a Impuestos se produce
+				// 21 días naturales desde el día siguiente a la realización de la traba (cuando se adeuda la traba).
+				int diasRespuestaF6 = entidadComunicadora.getDiasRespuestaF6() != null ? entidadComunicadora.getDiasRespuestaF6().intValue() : 0;
+				lastDateResponse = Date.from(fechaTraba.plusDays(diasRespuestaF6 + 1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+			}  else {
+				lastDateResponse = new Date();
+			}
+
 	        for (Embargo embargo : embargoList) {
 	        	
 	    		Traba traba = null;
@@ -395,25 +419,28 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 			fileWriterHelper.transferToOutbox(ficheroSalida, outboxGenerated, fileNameTrabas);
 
 			//CALENDARIO:
-	        // - Se agrega la tarea al calendario:
-	        TaskAndEvent task = new TaskAndEvent();
-	        task.setDescription("Fase 6 programada " + controlFicheroEmbargo.getNombreFichero());
-	        task.setDate(lastDateResponse);
-	        task.setCodCalendar(1L);
-	        task.setType("T");
-	        Element office = new Element();
-	        office.setCode(1L);
-	        task.setOffice(office);
-	        //
-	        task.setAction("0");
-	        task.setStatus("P");
-	        task.setIndActive(true);
-	        task.setExternalId(EmbargosConstants.EXTERNAL_ID_F6_AEAT + controlFicheroTrabas.getCodControlFichero());
-	        task.setApplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
-	        Long codTarea = taskService.addCalendarTask(task);
-	        
-	        // - Se guarda el codigo de tarea del calendario:
-	        controlFicheroTrabas.setCodTarea(BigDecimal.valueOf(codTarea));
+			// - Se agrega la tarea al calendario:
+			if (tieneTrabasRealizadas) {
+				TaskAndEvent task = new TaskAndEvent();
+				task.setDescription("Fase 6 programada " + controlFicheroEmbargo.getNombreFichero());
+				task.setDate(lastDateResponse);
+				task.setCodCalendar(1L);
+				task.setType("T");
+				Element office = new Element();
+				office.setCode(1L);
+				task.setOffice(office);
+				//
+				task.setAction("0");
+				task.setStatus("P");
+				task.setIndActive(true);
+				task.setExternalId(EmbargosConstants.EXTERNAL_ID_F6_AEAT + controlFicheroTrabas.getCodControlFichero());
+				task.setApplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
+				Long codTarea = taskService.addCalendarTask(task);
+
+				// - Se guarda el codigo de tarea del calendario:
+				controlFicheroTrabas.setCodTarea(BigDecimal.valueOf(codTarea));
+			}
+
 	        controlFicheroTrabas.setControlFicheroOrigen(controlFicheroEmbargo);
 	        controlFicheroTrabas.setUsuarioUltModificacion(usuarioTramitador);
 	        controlFicheroTrabas.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));

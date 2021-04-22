@@ -22,7 +22,7 @@ public interface FileControlService {
 	
 	boolean tramitarTrabasCuaderno63(Long codeFileControl, String usuarioTramitador) throws IOException, ICEException;
 	
-	boolean tramitarTrabasAEAT(Long codeFileControl, String usuarioTramitador) throws IOException, ICEException;
+	boolean tramitarTrabasAEAT(Long codeFileControl, String usuarioTramitador) throws Exception;
 	
 	boolean updateFileControl(Long codeFileControl, FileControlDTO fileControlDTO, String userModif);
 	

@@ -8,7 +8,6 @@ import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
 import es.commerzbank.ice.comun.lib.util.ICEException;
-import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.embargos.domain.entity.*;
@@ -236,12 +235,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 
 			//- Se guarda la fecha maxima de respuesta (now + dias de margen)
 			int diasRespuestaF1 = entidadComunicadora.getDiasRespuestaF1() != null ? entidadComunicadora.getDiasRespuestaF1().intValue() : 0;
-			FestiveService.ValueDateCalculationParameters parameters = new FestiveService.ValueDateCalculationParameters();
-			parameters.numBusinessDays = diasRespuestaF1;
-			parameters.location = 1L;
-			parameters.fromDate = LocalDate.now();
-			LocalDate finalDate = festiveService.dateCalculation(parameters, ValueConstants.COD_LOCALIDAD_MADRID);
-			Date lastDateResponse = Date.from(finalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+			Date lastDateResponse = Date.from(LocalDate.now().plusDays(diasRespuestaF1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
 			
 			//Date lastDateResponse = DateUtils.convertToDate(LocalDate.now().plusDays(diasRespuestaF1));
 			BigDecimal limitResponseDate = ICEDateUtils.dateToBigDecimal(lastDateResponse, ICEDateUtils.FORMAT_yyyyMMdd);

@@ -188,7 +188,7 @@ public class FileControlServiceImpl
 	}
 
 	@Override
-	public boolean tramitarTrabasAEAT(Long codeFileControl, String usuarioTramitador) throws IOException, ICEException {
+	public boolean tramitarTrabasAEAT(Long codeFileControl, String usuarioTramitador) throws Exception {
 		logger.info("FileControlServiceImpl - tramitarTrabasAEAT - codigo "+ codeFileControl);
 		
 		aeatSeizedService.tramitarTrabas(codeFileControl, usuarioTramitador);

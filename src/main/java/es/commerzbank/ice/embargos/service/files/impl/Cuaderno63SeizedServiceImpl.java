@@ -1,25 +1,27 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
 import es.commerzbank.ice.comun.lib.domain.dto.Element;
 import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
 import es.commerzbank.ice.comun.lib.file.exchange.FileWriterHelper;
-import org.apache.commons.io.FileUtils;
+import es.commerzbank.ice.comun.lib.service.FestiveService;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.service.TaskService;
+import es.commerzbank.ice.comun.lib.util.ICEException;
+import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
+import es.commerzbank.ice.embargos.domain.entity.*;
+import es.commerzbank.ice.embargos.domain.mapper.Cuaderno63Mapper;
+import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
+import es.commerzbank.ice.embargos.formats.cuaderno63.fase3.CabeceraEmisorFase3;
+import es.commerzbank.ice.embargos.formats.cuaderno63.fase3.FinFicheroFase3;
+import es.commerzbank.ice.embargos.formats.cuaderno63.fase4.CabeceraEmisorFase4;
+import es.commerzbank.ice.embargos.formats.cuaderno63.fase4.ComunicacionResultadoRetencionFase4;
+import es.commerzbank.ice.embargos.formats.cuaderno63.fase4.FinFicheroFase4;
+import es.commerzbank.ice.embargos.repository.*;
+import es.commerzbank.ice.embargos.service.FileControlService;
+import es.commerzbank.ice.embargos.service.SeizureService;
+import es.commerzbank.ice.embargos.service.files.Cuaderno63SeizedService;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 import org.beanio.BeanReader;
 import org.beanio.BeanWriter;
 import org.beanio.StreamFactory;
@@ -28,39 +30,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import es.commerzbank.ice.comun.lib.service.FestiveService;
-import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
-import es.commerzbank.ice.comun.lib.service.TaskService;
-import es.commerzbank.ice.comun.lib.util.ICEException;
-import es.commerzbank.ice.comun.lib.util.ValueConstants;
-import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
-import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
-import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
-import es.commerzbank.ice.embargos.domain.entity.Embargo;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
-import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
-import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
-import es.commerzbank.ice.embargos.domain.entity.Traba;
-import es.commerzbank.ice.embargos.domain.mapper.Cuaderno63Mapper;
-import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
-import es.commerzbank.ice.embargos.formats.cuaderno63.fase3.CabeceraEmisorFase3;
-import es.commerzbank.ice.embargos.formats.cuaderno63.fase3.FinFicheroFase3;
-import es.commerzbank.ice.embargos.formats.cuaderno63.fase4.CabeceraEmisorFase4;
-import es.commerzbank.ice.embargos.formats.cuaderno63.fase4.ComunicacionResultadoRetencionFase4;
-import es.commerzbank.ice.embargos.formats.cuaderno63.fase4.FinFicheroFase4;
-import es.commerzbank.ice.embargos.repository.CommunicatingEntityRepository;
-import es.commerzbank.ice.embargos.repository.FileControlRepository;
-import es.commerzbank.ice.embargos.repository.SeizedBankAccountRepository;
-import es.commerzbank.ice.embargos.repository.SeizedRepository;
-import es.commerzbank.ice.embargos.repository.SeizureRepository;
-import es.commerzbank.ice.embargos.service.FileControlService;
-import es.commerzbank.ice.embargos.service.SeizureService;
-import es.commerzbank.ice.embargos.service.files.Cuaderno63SeizedService;
-import es.commerzbank.ice.embargos.utils.EmbargosConstants;
-import es.commerzbank.ice.embargos.utils.ICEDateUtils;
+import java.io.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
@@ -371,12 +350,7 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	        
 			//- Se guarda la fecha maxima de respuesta fase6 (now + dias de margen)
 			int diasRespuestaF6 = entidadComunicadora.getDiasRespuestaF6() != null ? entidadComunicadora.getDiasRespuestaF6().intValue() : 0;
-			FestiveService.ValueDateCalculationParameters parameters = new FestiveService.ValueDateCalculationParameters();
-			parameters.numBusinessDays = diasRespuestaF6;
-			parameters.location = 1L;
-			parameters.fromDate = LocalDate.now();
-			LocalDate finalDate = festiveService.dateCalculation(parameters, ValueConstants.COD_LOCALIDAD_MADRID);
-			Date lastDateResponse = Date.from(finalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+			Date lastDateResponse = Date.from(LocalDate.now().plusDays(diasRespuestaF6).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
 			
 			//CALENDARIO:
 	        // - Se agrega la tarea al calendario:

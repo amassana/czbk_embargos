@@ -6,5 +6,5 @@ import es.commerzbank.ice.comun.lib.util.ICEException;
 
 public interface AEATSeizedService {
 
-	public void tramitarTrabas(Long codControlFicheroPeticion, String usuarioTramitador) throws IOException, ICEException;
+	public void tramitarTrabas(Long codControlFicheroPeticion, String usuarioTramitador) throws Exception;
 }
