@@ -490,7 +490,7 @@ public class AccountingServiceImpl
 		
 		Embargo embargo = traba.getEmbargo();
 
-		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion(), sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_EMBARGOS_LEVANTAMIENTOS);
+		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion(), sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_EMBARGOS_EXTORNO);
 
 		String detail = null;
 		String reference1 = null;
@@ -671,6 +671,12 @@ public class AccountingServiceImpl
 	public void ficheroFinalContabilizar(FicheroFinal ficheroFinal, String userName)
 		throws Exception
 	{
+		if (BigDecimal.ZERO.compareTo(ficheroFinal.getImporte()) >= 0)
+		{	// protección adicional, aunque no debería entrar aquí por el estado de contabilización
+			logger.info("Fichero final "+ ficheroFinal.getControlFichero().getCodControlFichero() +" sin importe a contabilizar.");
+			return;
+		}
+
 		ControlFichero controlFichero = ficheroFinal.getControlFichero();
 
 		EntidadesComunicadora entidadComunicadora = controlFichero.getEntidadesComunicadora();
