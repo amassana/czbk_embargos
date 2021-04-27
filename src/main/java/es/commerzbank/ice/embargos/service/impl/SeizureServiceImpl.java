@@ -503,16 +503,31 @@ public class SeizureServiceImpl
 
 		seizedRepository.save(traba);
 
-		//Se actualiza el estado de la cuenta a Pendiente
-		EstadoTraba estadoCuentaTraba = new EstadoTraba();
-		estadoCuentaTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE);
+		// Se cambia el estado a Pendiente para permitir su edición.
+		// Se retroceden también las cuentas trabas que estuvieran en estado finalizado (es decir, no contabilizadas)
+		// para permitir al usuario modificar su acción o contabilizar de ellas.
+		for (CuentaTraba cuentaTrabaActual : traba.getCuentaTrabas()) {
+			boolean retroceder = false;
 
-		cuentaTraba.setEstadoTraba(estadoCuentaTraba);
+			if (cuentaTrabaActual.getCodCuentaTraba() == cuentaTraba.getCodCuentaTraba())
+				retroceder = true;
+			else if (cuentaTrabaActual.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_FINALIZADA)
+				retroceder = true;
+			else if (BigDecimal.ZERO.compareTo(cuentaTrabaActual.getImporte()) == 0)
+				retroceder = true;
 
-		cuentaTraba.setUsuarioUltModificacion(userName);
-		cuentaTraba.setFUltimaModificacion(fechaActualBigDec);
+			if (retroceder) {
+				EstadoTraba estadoCuentaTraba = new EstadoTraba();
+				estadoCuentaTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE);
 
-		seizedBankAccountRepository.save(cuentaTraba);
+				cuentaTrabaActual.setEstadoTraba(estadoCuentaTraba);
+
+				cuentaTrabaActual.setUsuarioUltModificacion(userName);
+				cuentaTrabaActual.setFUltimaModificacion(fechaActualBigDec);
+
+				seizedBankAccountRepository.save(cuentaTrabaActual);
+			}
+		}
 
 		return true;
 	}
