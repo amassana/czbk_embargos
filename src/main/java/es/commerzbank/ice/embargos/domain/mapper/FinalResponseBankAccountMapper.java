@@ -13,14 +13,15 @@ public abstract class FinalResponseBankAccountMapper {
 		@Mapping(source = "cuentaEmbargo.iban", target = "iban"),
 		@Mapping(source = "cuentaTraba.importe", target = "seizedAmount"),
 		@Mapping(source = "importeNeto", target = "netAmount"),
-		@Mapping(source = "importeNeto", target = "liftedAmount")
+		@Mapping(source = "importeLevantado", target = "liftedAmount")
 	})
 	public abstract FinalResponseBankAccountDTO toBankAccount(CuentaResultadoEmbargo cuenta);
 
 	@AfterMapping
 	public void toBankAccount(@MappingTarget FinalResponseBankAccountDTO finalResponseBankAccountDTO) {
+		/*
 		if (finalResponseBankAccountDTO.getNetAmount() != null && finalResponseBankAccountDTO.getSeizedAmount() != null) {
 			finalResponseBankAccountDTO.setLiftedAmount(finalResponseBankAccountDTO.getNetAmount().subtract(finalResponseBankAccountDTO.getSeizedAmount()));
-		}
+		}*/
 	}
 }
