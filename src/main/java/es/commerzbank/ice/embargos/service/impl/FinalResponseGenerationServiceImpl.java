@@ -117,6 +117,7 @@ public class FinalResponseGenerationServiceImpl
                 }
 
                 BigDecimal importeTrabadoCuenta = cuentaResultadoEmbargo.getCuentaTraba() == null ?
+                        BigDecimal.ZERO : cuentaResultadoEmbargo.getCuentaTraba().getImporte() == null ?
                         BigDecimal.ZERO : cuentaResultadoEmbargo.getCuentaTraba().getImporte();
 
                 // Se calcula el total levantado - pueden haber varios levantamientos.
