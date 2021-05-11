@@ -298,7 +298,7 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 				// Para la Agencia Tributaria la el paso de Embargos a Impuestos se produce
 				// 21 días naturales desde el día siguiente a la realización de la traba (cuando se adeuda la traba).
 				int diasRespuestaF6 = entidadComunicadora.getDiasRespuestaF6() != null ? entidadComunicadora.getDiasRespuestaF6().intValue() : 0;
-				lastDateResponse = Date.from(fechaTraba.plusDays(diasRespuestaF6 + 1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+				lastDateResponse = Date.from(fechaTraba.plusDays(diasRespuestaF6).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
 			}  else {
 				lastDateResponse = new Date();
 			}
