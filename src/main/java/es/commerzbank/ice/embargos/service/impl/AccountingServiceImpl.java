@@ -331,7 +331,7 @@ public class AccountingServiceImpl
 
 				if (fileControlFicheroComunes == null) {
 					fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName,
-							EmbargosConstants.ID_APLICACION_EMBARGOS, descripcion, sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_EMBARGOS_TRABAS);
+							EmbargosConstants.ID_APLICACION_EMBARGOS, descripcion, sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_EMBARGOS_TRABAS, ACCOUNTING_EMBARGOS_EXTENSION);
 				}
 
 				logger.info(logMessage + "se contabilizará la cantidad "+ cuentaTraba.getImporte());
@@ -490,7 +490,7 @@ public class AccountingServiceImpl
 		
 		Embargo embargo = traba.getEmbargo();
 
-		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion(), sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_EMBARGOS_EXTORNO);
+		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion(), sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_EMBARGOS_EXTORNO, ACCOUNTING_EMBARGOS_EXTENSION);
 
 		String detail = null;
 		String reference1 = null;
@@ -574,7 +574,7 @@ public class AccountingServiceImpl
 		String cuentaIntercambioDivisas = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_INTERCAMBIO_DIVISAS);
 		Long sucursal = getCodSucursal(oficinaRecaudacion);
 
-		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, fileControlOpt.get().getDescripcion(), sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_EMBARGOS_LEVANTAMIENTOS);
+		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, fileControlOpt.get().getDescripcion(), sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_EMBARGOS_LEVANTAMIENTOS, ACCOUNTING_EMBARGOS_EXTENSION);
 
 		AccountStatusLiftingDTO status = new AccountStatusLiftingDTO();
 		status.setCode(String.valueOf(COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION));
@@ -697,7 +697,7 @@ public class AccountingServiceImpl
 		String reference2 = null;
 		String detailPayment = EmbargosConstants.LITERAL_DETAILPAYMENT_FASE6_EMB_TRANSFERRED_TO + entidadComunicadora.getDesEntidad();
 
-		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion(), sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_EMBARGO_F6);
+		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion(), sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_EMBARGO_F6, ACCOUNTING_EMBARGOS_EXTENSION);
 		Long codFileControlFicheroComunes = fileControlFicheroComunes.getCodControlFichero();
 
 		apunteContableFicheroFinal(

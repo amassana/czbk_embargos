@@ -323,7 +323,8 @@ public class EmbargosConstants {
 	 ACCOUNTING
 	 */
 
-	public static final String ACCOUNTING_EMBARGOS_PATTERN = "'CONTABLE_EMBARGOS_'yyyyMMdd_HHmmss'.CON'";
+	public static final String ACCOUNTING_EMBARGOS_PATTERN = "'CONTABLE_EMBARGOS_'yyyyMMdd_HHmmss";
+	public static final String ACCOUNTING_EMBARGOS_EXTENSION = "CON";
 	public static final String ACCOUNTING_EMBARGO_F6 = "FIN_CICLO";
 	public static final String ACCOUNTING_EMBARGOS_TRABAS = "TRABAS";
 	public static final String ACCOUNTING_EMBARGOS_LEVANTAMIENTOS = "LEVANTAMIENTOS";
