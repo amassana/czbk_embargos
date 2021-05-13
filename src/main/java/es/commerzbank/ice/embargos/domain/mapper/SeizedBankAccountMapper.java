@@ -1,13 +1,5 @@
 package es.commerzbank.ice.embargos.domain.mapper;
 
-import java.math.BigDecimal;
-
-import org.mapstruct.AfterMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
-
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.embargos.domain.dto.SeizedBankAccountDTO;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
@@ -16,6 +8,9 @@ import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
 import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.ICEDateUtils;
+import org.mapstruct.*;
+
+import java.math.BigDecimal;
 
 @Mapper(componentModel="spring")
 public abstract class  SeizedBankAccountMapper {
@@ -73,11 +68,12 @@ public abstract class  SeizedBankAccountMapper {
 			
 			//cuentaTraba.getTraba().setEstadoTraba(estadoTraba);
 			cuentaTraba.setEstadoTraba(estadoTraba);
-		}	
+		}
+		/* front borra la currency. se ignora.
 		if (seizedBankAccountDTO.getBankAccountCurrency()!=null) {
 
 			cuentaTraba.setDivisa(seizedBankAccountDTO.getBankAccountCurrency());
-		}
+		}*/
 		if (seizedBankAccountDTO.getBankAccountStatus()!=null) {
 			
 			cuentaTraba.setEstadoCuenta(seizedBankAccountDTO.getBankAccountStatus());	
