@@ -1,7 +1,7 @@
 package es.commerzbank.ice.embargos.service.impl;
 
 
-import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
+import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
 import es.commerzbank.ice.embargos.domain.dto.CGPJFiltersDTO;
 import es.commerzbank.ice.embargos.domain.dto.CGPJPetitionDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero_;
@@ -23,7 +23,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.time.LocalDate;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,8 +66,8 @@ public class CGPJServiceImpl
                 }
 
                 if (filters.getStartDate() != null || filters.getEndDate() != null) {
-                    LocalDate start = DateUtils.instanttoLocalDate(filters.getStartDate());
-                    LocalDate end = DateUtils.instanttoLocalDate(filters.getEndDate());
+                    BigDecimal start = ICEDateUtils.instantDateToBigDecimal(filters.getStartDate());
+                    BigDecimal end = ICEDateUtils.instantDateToBigDecimal(filters.getEndDate());
 
                     if (start != null && end != null) {
                         predicates.add(criteriaBuilder.between(
