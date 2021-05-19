@@ -61,8 +61,14 @@ public class CGPJServiceImpl
             public Predicate toPredicate(Root<Peticion> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicates = new ArrayList<>();
 
-                if (filters.getStatus() != null) {
-                    predicates.add(criteriaBuilder.equal(root.join(Peticion_.estadoIntPeticion).get(EstadoIntPeticion_.codEstadoIntPeticion), filters.getStatus().getCode()));
+                if (filters.getStatuses() != null) {
+                    CriteriaBuilder.In<Long> inClause = criteriaBuilder.in(root.join(Peticion_.estadoIntPeticion).get(EstadoIntPeticion_.codEstadoIntPeticion));
+
+                    for (Long status : filters.getStatuses()) {
+                        inClause.value(status);
+                    }
+
+                    predicates.add(inClause);
                 }
 
                 if (filters.getStartDate() != null || filters.getEndDate() != null) {

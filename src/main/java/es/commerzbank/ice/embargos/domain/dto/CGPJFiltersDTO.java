@@ -4,16 +4,9 @@ import java.time.Instant;
 
 public class CGPJFiltersDTO
 {
-	private IntegradorRequestStatusDTO status;
+	public Long [] statuses;
 	private Instant startDate;
 	private Instant endDate;
-
-	public IntegradorRequestStatusDTO getStatus() {
-		return status;
-	}
-	public void setStatus(IntegradorRequestStatusDTO status) {
-		this.status = status;
-	}
 
 	public Instant getStartDate() {
 		return startDate;
@@ -26,5 +19,13 @@ public class CGPJFiltersDTO
 	}
 	public void setEndDate(Instant endDate) {
 		this.endDate = endDate;
+	}
+
+	public Long[] getStatuses() {
+		return statuses;
+	}
+
+	public void setStatuses(Long[] statuses) {
+		this.statuses = statuses;
 	}
 }
