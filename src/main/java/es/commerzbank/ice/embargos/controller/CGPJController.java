@@ -91,4 +91,26 @@ public class CGPJController {
             return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
+    // TODO informe real
+    @GetMapping(value = "/informePeticion/{codPeticion}")
+    public ResponseEntity<InputStreamResource> informePeticion(@PathVariable("codPeticion") String codPeticion) {
+        File temporaryFile = null;
+
+        try {
+            ResponseEntity<InputStreamResource> response = null;
+
+            temporaryFile = service.informeSEPA(codPeticion);
+
+            response = reportHelper.asResponseEntity("cgpj-sepa-"+ codPeticion, temporaryFile, ReportHelper.PDF_EXTENSION);
+
+            return response;
+        }
+        catch (Exception e)
+        {
+            logger.error("Error in informeSEPA", e);
+
+            return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
