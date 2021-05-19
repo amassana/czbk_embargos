@@ -4,10 +4,8 @@ package es.commerzbank.ice.embargos.service.impl;
 import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
 import es.commerzbank.ice.embargos.domain.dto.CGPJFiltersDTO;
 import es.commerzbank.ice.embargos.domain.dto.CGPJPetitionDTO;
-import es.commerzbank.ice.embargos.domain.entity.ControlFichero_;
-import es.commerzbank.ice.embargos.domain.entity.EstadoIntPeticion_;
-import es.commerzbank.ice.embargos.domain.entity.Peticion;
-import es.commerzbank.ice.embargos.domain.entity.Peticion_;
+import es.commerzbank.ice.embargos.domain.dto.IntegradorRequestStatusDTO;
+import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.PetitionMapper;
 import es.commerzbank.ice.embargos.repository.PetitionRepository;
 import es.commerzbank.ice.embargos.service.CGPJService;
@@ -37,6 +35,9 @@ public class CGPJServiceImpl
 
     @Autowired
     private PetitionMapper petitionMapper;
+
+    @Autowired
+    private es.commerzbank.ice.embargos.repository.CGPJInternalRequestStatusRepository CGPJInternalRequestStatusRepository;
 
     @Override
     public Page<CGPJPetitionDTO> filter(CGPJFiltersDTO filters, Pageable pageable)
@@ -88,5 +89,21 @@ public class CGPJServiceImpl
                 return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
+    }
+
+    @Override
+    public List<IntegradorRequestStatusDTO> listStatus()
+    {
+        List<EstadoIntPeticion> statuses = CGPJInternalRequestStatusRepository.findAll();
+        List<IntegradorRequestStatusDTO> list = new ArrayList<>();
+
+        for (EstadoIntPeticion status : statuses)
+        {
+            IntegradorRequestStatusDTO integradorRequestStatusDTO = petitionMapper.toEstadoIntPeticion(status);
+
+            list.add(integradorRequestStatusDTO);
+        }
+
+        return list;
     }
 }

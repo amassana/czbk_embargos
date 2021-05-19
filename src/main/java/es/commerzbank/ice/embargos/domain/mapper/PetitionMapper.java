@@ -1,7 +1,9 @@
 package es.commerzbank.ice.embargos.domain.mapper;
 
 import es.commerzbank.ice.embargos.domain.dto.CGPJPetitionDTO;
+import es.commerzbank.ice.embargos.domain.dto.IntegradorRequestStatusDTO;
 import es.commerzbank.ice.embargos.domain.dto.PetitionDTO;
+import es.commerzbank.ice.embargos.domain.entity.EstadoIntPeticion;
 import es.commerzbank.ice.embargos.domain.entity.Peticion;
 import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 import org.mapstruct.*;
@@ -30,4 +32,10 @@ public abstract class PetitionMapper {
 			CGPJPetitionDTO.getFileControl().setCreatedDate(ICEDateUtils.bigDecimalToDate(peticion.getControlFichero().getFechaCreacion(), ICEDateUtils.FORMAT_yyyyMMdd));
 		}
 	}
+
+	@Mappings({
+			@Mapping (target = "code", source = "codEstadoIntPeticion"),
+			@Mapping (target = "description", source = "desEstadoIntPeticion"),
+	})
+	public abstract IntegradorRequestStatusDTO toEstadoIntPeticion(EstadoIntPeticion status);
 }
