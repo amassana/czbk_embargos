@@ -3,12 +3,12 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="solicitud_ejecucion" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1e578dd3-5128-48f4-8dd5-ab5a52f6c583">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceBankDAdapterEmbargos.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<parameter name="IMAGE_PARAM" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="COD_TRABA" class="java.lang.String"/>
+	<parameter name="IMAGE_PARAM" isForPrompting="false" />
+	<parameter name="COD_SOLICITUD_EJECUCION" />
 	<queryString>
 		<![CDATA[SELECT se.ORDENANTE, se.BIC, se.IBAN, se.BENEFICIARIO, se.CONCEPTO, se.PROPOSITOTR, se.TIPOTR, se.IMPORTE_RESPUESTA
 FROM SOLICITUDES_EJECUCION se
-WHERE se.COD_TRABA = $P{COD_TRABA}]]>
+WHERE se.COD_SOLICITUD_EJECUCION = $P{COD_SOLICITUD_EJECUCION}]]>
 	</queryString>
 	<field name="ORDENANTE" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="ORDENANTE"/>

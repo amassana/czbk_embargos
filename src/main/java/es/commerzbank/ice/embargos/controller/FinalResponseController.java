@@ -195,30 +195,6 @@ public class FinalResponseController {
 		}
 	}
 
-	//@GetMapping("/cgpj/{cod_traba}/report")
-	@GetMapping("/cgpj/transferencias")
-	@ApiOperation(value = "Devuelve el fichero de solicitud de ejecucion")
-	public ResponseEntity<InputStreamResource> reportCartaPagoCGPJ(
-			@PathVariable("cod_traba") String cod_solicitud_ejecucion) {
-
-		try {
-			DownloadReportFile downloadReportFile = new DownloadReportFile();
-			
-			downloadReportFile.setTempFileName("payment-letter-CGPJ");
-
-			downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
-
-			downloadReportFile.writeFile(finalResponseService.generatePaymentLetterCGPJ(cod_solicitud_ejecucion));
-
-			return downloadReportFile.returnToDownloadFile();
-
-		} catch (Exception e) {
-			logger.error("Error in generatePaymentLetterCGPJ", e);
-
-			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
 	@GetMapping("/ordenTransferencia/{cod_control_fichero}")
 	@ApiOperation(value = "Devuelve un fichero de orden de tansferencia")
 	public ResponseEntity<InputStreamResource> reportCartaPagoNorma63(

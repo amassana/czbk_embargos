@@ -17,7 +17,6 @@ public interface FinalResponseService {
 	//byte[] generarAnexo(Long codeFileControlFaseBigDecimal cod_usuario, BigDecimal cod_traba, Integer num_anexo) throws Exception;
 	byte[] generarAnexo(Long codeFileControl, Long codRepresentative) throws Exception;
 	byte[] generarRespuestaFinalEmbargo(Integer codControlFichero, String oficina) throws Exception;
-	byte[] generatePaymentLetterCGPJ(String cod_traba) throws Exception;
 	byte[] generatePaymentLetterN63(String cod_control_fichero) throws Exception;
 
 	boolean updateFinalFileAccountingStatus(FicheroFinal ficheroFinal, Long codEstadoContabilizacion, String userName);

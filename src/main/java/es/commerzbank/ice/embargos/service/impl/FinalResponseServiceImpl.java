@@ -257,40 +257,6 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 	}
 
 	@Override
-	public byte[] generatePaymentLetterCGPJ(String cod_traba) throws Exception {
-		// TODO Auto-generated method stub
-		HashMap<String, Object> parameters = new HashMap<String, Object>();
-
-		try (Connection conn_embargos = oracleDataSourceEmbargos.getEmbargosConnection()) {
-
-			Resource transOrder = ResourcesUtil.getFromJasperFolder("paymentLetterCGPJ.jasper");
-			Resource imageLogo = ResourcesUtil.getImageLogoCommerceResource();
-
-			File logoFile = imageLogo.getFile();
-
-			parameters.put("IMAGE_PARAM", logoFile.toString());
-			parameters.put("COD_TRABA", cod_traba);
-
-			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
-
-			InputStream isOrdenTransferencia = transOrder.getInputStream();
-			JasperPrint transOrderJP = JasperFillManager.fillReport(isOrdenTransferencia, parameters, conn_embargos);
-
-			List<JRPrintPage> pages = transOrderJP.getPages();
-
-			if (pages.size() == 0)
-				return null;
-
-			return JasperExportManager.exportReportToPdf(transOrderJP);
-
-		} catch (Exception e) {
-			throw new Exception("DB exception while generating the report", e);
-		}
-
-	}
-	
-
-	@Override
 	public byte[] generatePaymentLetterN63(String cod_control_fichero) throws Exception {
 
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
