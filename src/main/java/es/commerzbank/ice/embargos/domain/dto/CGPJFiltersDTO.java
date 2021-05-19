@@ -1,48 +1,30 @@
 package es.commerzbank.ice.embargos.domain.dto;
 
-import java.util.Date;
+import java.time.Instant;
 
-public class CGPJFiltersDTO {
+public class CGPJFiltersDTO
+{
+	private IntegradorRequestStatusDTO status;
+	private Instant startDate;
+	private Instant endDate;
 
-	private Long [] fileType;
-	private FileControlStatusDTO status;
-	private Boolean isPending;
-	private Date startDate;
-	private Date endDate;
-	
-	public Long [] getFileType() {
-		return fileType;
-	}
-	public void setFileType(Long [] fileType) {
-		this.fileType = fileType;
-	}
-	public FileControlStatusDTO getStatus() {
+	public IntegradorRequestStatusDTO getStatus() {
 		return status;
 	}
-	public void setStatus(FileControlStatusDTO status) {
+	public void setStatus(IntegradorRequestStatusDTO status) {
 		this.status = status;
 	}
 
-	public Date getStartDate() {
+	public Instant getStartDate() {
 		return startDate;
 	}
-	public void setStartDate(Date startDate) {
+	public void setStartDate(Instant startDate) {
 		this.startDate = startDate;
 	}
-	public Date getEndDate() {
+	public Instant getEndDate() {
 		return endDate;
 	}
-	public void setEndDate(Date endDate) {
+	public void setEndDate(Instant endDate) {
 		this.endDate = endDate;
 	}
-	public Boolean getIsPending() {
-		return isPending;
-	}
-	public void setIsPending(Boolean isPending) {
-		this.isPending = isPending;
-	}
-	
-
-	
-	
 }

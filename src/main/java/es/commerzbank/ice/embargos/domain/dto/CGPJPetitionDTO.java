@@ -3,7 +3,15 @@ package es.commerzbank.ice.embargos.domain.dto;
 public class CGPJPetitionDTO {
 	private String petitionCode;
 	private IntegradorRequestStatusDTO status;
-	private FileControlDTO fileControlDTO;
+	private FileControlDTO fileControl;
+
+	public FileControlDTO getFileControl() {
+		return fileControl;
+	}
+
+	public void setFileControl(FileControlDTO fileControl) {
+		this.fileControl = fileControl;
+	}
 
 	public String getPetitionCode() {
 		return petitionCode;
@@ -19,13 +27,5 @@ public class CGPJPetitionDTO {
 
 	public void setStatus(IntegradorRequestStatusDTO status) {
 		this.status = status;
-	}
-
-	public FileControlDTO getFileControlDTO() {
-		return fileControlDTO;
-	}
-
-	public void setFileControlDTO(FileControlDTO fileControlDTO) {
-		this.fileControlDTO = fileControlDTO;
 	}
 }
