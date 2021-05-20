@@ -40,4 +40,7 @@ public interface FileControlRepository
 	Optional<ControlFichero> findByNumCrc(String numCRC);
 
 	List<ControlFichero> findByIndEnvioCarta(String indEnvioCarta);
+
+	@Query(value = "select * from CONTROL_FICHERO cf where cf.COD_ESTADO is null and cf.COD_TIPO_FICHERO = 12", nativeQuery = true)
+	List<ControlFichero> findPendingCGPJ();
 }

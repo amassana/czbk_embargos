@@ -2,10 +2,7 @@ package es.commerzbank.ice.embargos.config;
 
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
-import es.commerzbank.ice.embargos.event.JobImportacionApuntesContables;
-import es.commerzbank.ice.embargos.event.JobNorma63FinalFile;
-import es.commerzbank.ice.embargos.event.JobTaskPendingDate;
-import es.commerzbank.ice.embargos.event.JobTransferToTax;
+import es.commerzbank.ice.embargos.event.*;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import org.quartz.JobDetail;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,6 +118,26 @@ public class JobConfig {
         CronTriggerFactoryBean trigger = new CronTriggerFactoryBean();
         trigger.setName(jobNorma63FinalFileFactoryBean.getKey().getName() + "Trigger");
         trigger.setJobDetail(jobNorma63FinalFileFactoryBean);
+        trigger.setCronExpression(cronExpression);
+        return trigger;
+    }
+
+    @Bean
+    public JobDetailFactoryBean jobImportCGPJFactoryBean() {
+        JobDetailFactoryBean jobDetailFactory = new JobDetailFactoryBean();
+        jobDetailFactory.setJobClass(JobImportCGPJ.class);
+        jobDetailFactory.setName(JobImportCGPJ.class.getSimpleName());
+        jobDetailFactory.setDescription("Job de importación de solicitudes del cgpj");
+        jobDetailFactory.setDurability(true);
+        return jobDetailFactory;
+    }
+
+    @Bean
+    public CronTriggerFactoryBean triggerImportCGPJ(JobDetail jobImportCGPJFactoryBean) {
+        String cronExpression = "7 */1 * ? * * *";
+        CronTriggerFactoryBean trigger = new CronTriggerFactoryBean();
+        trigger.setName(jobImportCGPJFactoryBean.getKey().getName() + "Trigger");
+        trigger.setJobDetail(jobImportCGPJFactoryBean);
         trigger.setCronExpression(cronExpression);
         return trigger;
     }

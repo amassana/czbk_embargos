@@ -91,7 +91,7 @@ public class CGPJController {
             return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     // TODO informe real
     @GetMapping(value = "/informePeticion/{codPeticion}")
     public ResponseEntity<InputStreamResource> informePeticion(@PathVariable("codPeticion") String codPeticion) {

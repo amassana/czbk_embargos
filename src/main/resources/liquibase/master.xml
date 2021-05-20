@@ -6,7 +6,6 @@
     </changeSet>
 
     <include file="initial/initial.xml" relativeToChangelogFile="true" />
-    <!-- include file="initial/initial_cgpj.xml" relativeToChangelogFile="true" /-->
 
     <changeSet id="tag_initial" author="Aniol">
         <tagDatabase tag="after_initialization_2021"/>
@@ -54,5 +53,8 @@
     <changeSet id="entrega_20210429" author="aniol.massana">
         <tagDatabase tag="entrega_20210429"/>
     </changeSet>
+
+    <include file="initial/initial_cgpj.xml" relativeToChangelogFile="true" />
+    <include file="2021/20210520_estado_ctrlfichero_cgpj_importado.xml" relativeToChangelogFile="true" />
 
 </databaseChangeLog>

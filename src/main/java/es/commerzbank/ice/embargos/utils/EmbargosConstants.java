@@ -112,6 +112,9 @@ public class EmbargosConstants {
 	
 	public static final long COD_ESTADO_CONTROL_FICHERO_GENERADO_SCHEDULED = 2;
 
+
+	public static final long COD_ESTADO_CTRLFICHERO_CGPJ_IMPORTADO = 20;
+
 	/** Estados de la Traba **/
 	public static final long COD_ESTADO_TRABA_PENDIENTE = 1;
 	public static final long COD_ESTADO_TRABA_MODIFICADA = 2;
