@@ -22,6 +22,9 @@ public class FileControlDTO {
 	private String rutaFichero;
 	private Date createdDate;
 	private Date responseGenerationDate;
+	private Boolean hasSeizures;
+	private Boolean hasLiftings;
+	private Boolean hasExecutions;
 	
 	public String getCode() {
 		return code;
@@ -144,5 +147,29 @@ public class FileControlDTO {
 	}
 	public void setIsCGPJ(Boolean isCGPJ) {
 		this.isCGPJ = isCGPJ;
+	}
+
+	public Boolean getHasSeizures() {
+		return hasSeizures;
+	}
+
+	public void setHasSeizures(Boolean hasSeizures) {
+		this.hasSeizures = hasSeizures;
+	}
+
+	public Boolean getHasLiftings() {
+		return hasLiftings;
+	}
+
+	public void setHasLiftings(Boolean hasLiftings) {
+		this.hasLiftings = hasLiftings;
+	}
+
+	public Boolean getHasExecutions() {
+		return hasExecutions;
+	}
+
+	public void setHasExecutions(Boolean hasExecutions) {
+		this.hasExecutions = hasExecutions;
 	}
 }

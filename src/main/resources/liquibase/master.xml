@@ -56,5 +56,6 @@
 
     <include file="2021/20210520_estado_ctrlfichero_cgpj_importado.xml" relativeToChangelogFile="true" />
     <include file="initial/initial_cgpj.xml" relativeToChangelogFile="true" />
+    <include file="2021/20210521_ficheroControl_indicadores_consejo.xml" relativeToChangelogFile="true" />
 
 </databaseChangeLog>

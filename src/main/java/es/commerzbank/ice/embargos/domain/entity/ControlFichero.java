@@ -78,6 +78,15 @@ public class ControlFichero implements Serializable {
 	
 	@Column(name="IND_ENVIO_CARTA", length=1)
 	private String indEnvioCarta;
+
+	@Column(name="IND_TIENE_TRABAS", length=1)
+	private String indTieneTrabas;
+
+	@Column(name="IND_TIENE_LEVANTAMIENTOS", length=1)
+	private String indTieneLevantamientos;
+
+	@Column(name="IND_TIENE_EJECUCIONES", length=1)
+	private String indTieneEjecuciones;
 	
 	//bi-directional many-to-one association to ApunteContable
 	@OneToMany(mappedBy="controlFichero")
@@ -642,5 +651,29 @@ public class ControlFichero implements Serializable {
 		resultadoEmbargo.setControlFichero(this);
 
 		return resultadoEmbargo;
+	}
+
+	public String getIndTieneTrabas() {
+		return indTieneTrabas;
+	}
+
+	public void setIndTieneTrabas(String indTieneTrabas) {
+		this.indTieneTrabas = indTieneTrabas;
+	}
+
+	public String getIndTieneLevantamientos() {
+		return indTieneLevantamientos;
+	}
+
+	public void setIndTieneLevantamientos(String indTieneLevantamientos) {
+		this.indTieneLevantamientos = indTieneLevantamientos;
+	}
+
+	public String getIndTieneEjecuciones() {
+		return indTieneEjecuciones;
+	}
+
+	public void setIndTieneEjecuciones(String indTieneEjecuciones) {
+		this.indTieneEjecuciones = indTieneEjecuciones;
 	}
 }

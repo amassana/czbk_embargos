@@ -192,6 +192,9 @@ public abstract class FileControlMapper {
 		if (controlFichero.getFechaGeneracionRespuesta()!=null) {
 			fileControlDTO.setResponseGenerationDate(ICEDateUtils.bigDecimalToDate(controlFichero.getFechaGeneracionRespuesta(), ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 		}
+
+		fileControlDTO.setHasSeizures(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneTrabas()));
+		fileControlDTO.setHasLiftings(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneLevantamientos()));
+		fileControlDTO.setHasExecutions(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneEjecuciones()));
 	}
-	
 }

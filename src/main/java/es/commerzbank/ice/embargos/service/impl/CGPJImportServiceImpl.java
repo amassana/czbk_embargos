@@ -15,6 +15,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import static es.commerzbank.ice.embargos.utils.EmbargosConstants.IND_FLAG_NO;
+import static es.commerzbank.ice.embargos.utils.EmbargosConstants.IND_FLAG_SI;
+
 @Service
 public class CGPJImportServiceImpl
     implements CGPJImportService
@@ -59,6 +62,8 @@ public class CGPJImportServiceImpl
 
         controlFichero.setEstadoCtrlfichero(estadoCtrlfichero);
 
+        controlFichero.setIndTieneTrabas(controlFichero.getEmbargos() != null && controlFichero.getEmbargos().size() > 0 ? IND_FLAG_SI : IND_FLAG_NO);
+
         fileControlRepository.saveAndFlush(controlFichero);
     }
 
@@ -77,7 +82,7 @@ public class CGPJImportServiceImpl
 
         embargo.setRazonSocialInterna(EmbargosUtils.determineRazonSocialInternaFromCustomer(customerDTO));
 
-        traba.setRevisado(EmbargosConstants.IND_FLAG_NO);
+        traba.setRevisado(IND_FLAG_NO);
 
         int counter = 1;
         embargo.setCuentaEmbargos(new ArrayList<>());
