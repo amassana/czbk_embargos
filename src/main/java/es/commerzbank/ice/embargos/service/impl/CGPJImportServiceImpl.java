@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Transactional(transactionManager="transactionManager")
 public class CGPJImportServiceImpl
     implements CGPJImportService
 {
@@ -27,11 +26,6 @@ public class CGPJImportServiceImpl
 
     @Autowired
     private CustomerService customerService;
-
-    @Override
-    public List<ControlFichero> listPending() {
-        return fileControlRepository.findPendingCGPJ();
-    }
 
     @Autowired
     private SeizureRepository seizureRepository;
@@ -47,6 +41,11 @@ public class CGPJImportServiceImpl
 
     @Autowired
     private es.commerzbank.ice.embargos.domain.mapper.CGPJMapper CGPJMapper;
+
+    @Override
+    public List<ControlFichero> listPending() {
+        return fileControlRepository.findPendingCGPJ();
+    }
 
     @Override
     public void importCGPJ(ControlFichero controlFichero)

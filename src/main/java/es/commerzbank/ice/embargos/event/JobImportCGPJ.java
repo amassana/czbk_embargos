@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Component
@@ -20,6 +21,7 @@ public class JobImportCGPJ implements Job {
 	private CGPJImportService cgpjImportService;
 
 	@Override
+	@Transactional(transactionManager="transactionManager")
     public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		try {
 			logger.debug("Inicio Import CGPJ");
