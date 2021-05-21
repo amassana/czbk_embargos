@@ -7,5 +7,5 @@ import java.util.List;
 public interface CGPJImportService {
     List<ControlFichero> listPending();
 
-    void importCGPJ(ControlFichero controlFichero);
+    void importCGPJ(ControlFichero controlFichero) throws Exception;
 }
