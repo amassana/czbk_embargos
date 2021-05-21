@@ -8,10 +8,8 @@ import es.commerzbank.ice.embargos.service.CGPJImportService;
 import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.EmbargosUtils;
-import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -82,21 +80,17 @@ public class CGPJImportServiceImpl
         traba.setRevisado(EmbargosConstants.IND_FLAG_NO);
 
         int counter = 1;
-        BigDecimal fechaUltmaModif = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
-        String usuarioModif = EmbargosConstants.USER_AUTOMATICO;
         embargo.setCuentaEmbargos(new ArrayList<>());
         traba.setCuentaTrabas(new ArrayList<>());
 
         for (AccountDTO accountDTO : customerDTO.getBankAccounts())
         {
             CuentaEmbargo cuentaEmbargo = CGPJMapper.generateCuentaEmbargo(accountDTO, BigDecimal.valueOf(counter));
-
             embargo.addCuentaEmbargo(cuentaEmbargo);
-
             seizureBankAccountRepository.save(cuentaEmbargo);
 
             CuentaTraba cuentaTraba = CGPJMapper.generateCuentaTraba(accountDTO, BigDecimal.valueOf(counter));
-
+            traba.addCuentaTraba(cuentaTraba);
             seizedBankAccountRepository.save(cuentaTraba);
 
             counter++;
