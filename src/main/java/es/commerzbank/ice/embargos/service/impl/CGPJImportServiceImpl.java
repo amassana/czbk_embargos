@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional(transactionManager="transactionManager")
 public class CGPJImportServiceImpl
     implements CGPJImportService
 {
@@ -44,8 +45,10 @@ public class CGPJImportServiceImpl
     @Autowired
     private SeizedBankAccountRepository seizedBankAccountRepository;
 
+    @Autowired
+    private es.commerzbank.ice.embargos.domain.mapper.CGPJMapper CGPJMapper;
+
     @Override
-    @Transactional(transactionManager="transactionManager")
     public void importCGPJ(ControlFichero controlFichero)
             throws Exception
     {
@@ -67,8 +70,6 @@ public class CGPJImportServiceImpl
     {
         CustomerDTO customerDTO = customerService.findCustomerByNif(embargo.getNif(), false);
 
-        embargo.setRazonSocialInterna(EmbargosUtils.determineRazonSocialInternaFromCustomer(customerDTO));
-
         if (embargo.getTrabas() == null)
             throw new Exception ("Se esperaba una traba asociada al embargo " + embargo.getCodEmbargo());
 
@@ -76,6 +77,8 @@ public class CGPJImportServiceImpl
             throw new Exception ("Se han encontrado "+ embargo.getTrabas().size() +" trabas asociadas al embargo " + embargo.getCodEmbargo());
 
         Traba traba = embargo.getTrabas().get(0);
+
+        embargo.setRazonSocialInterna(EmbargosUtils.determineRazonSocialInternaFromCustomer(customerDTO));
 
         traba.setRevisado(EmbargosConstants.IND_FLAG_NO);
 
@@ -87,32 +90,13 @@ public class CGPJImportServiceImpl
 
         for (AccountDTO accountDTO : customerDTO.getBankAccounts())
         {
-            CuentaEmbargo cuentaEmbargo = new CuentaEmbargo();
-
-            cuentaEmbargo.setCuenta(accountDTO.getAccountNum());
-            cuentaEmbargo.setUsuarioUltModificacion(usuarioModif);
-            cuentaEmbargo.setFUltimaModificacion(fechaUltmaModif);
-            cuentaEmbargo.setNumeroOrdenCuenta(BigDecimal.valueOf(counter));
-            cuentaEmbargo.setIban(accountDTO.getIban());
+            CuentaEmbargo cuentaEmbargo = CGPJMapper.generateCuentaEmbargo(accountDTO, BigDecimal.valueOf(counter));
 
             embargo.addCuentaEmbargo(cuentaEmbargo);
 
             seizureBankAccountRepository.save(cuentaEmbargo);
 
-            CuentaTraba cuentaTraba = new CuentaTraba();
-
-            cuentaTraba.setCuenta(accountDTO.getAccountNum());
-            cuentaTraba.setUsuarioUltModificacion(usuarioModif);
-            cuentaTraba.setFUltimaModificacion(fechaUltmaModif);
-            cuentaTraba.setNumeroOrdenCuenta(BigDecimal.valueOf(counter));
-            EstadoTraba estadoTraba = new EstadoTraba();
-            estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE);
-            cuentaTraba.setEstadoTraba(estadoTraba);
-            cuentaTraba.setIban(accountDTO.getIban());
-            cuentaTraba.setEstadoCuenta(accountDTO.getStatus());
-            cuentaTraba.setDivisa(accountDTO.getDivisa());
-            cuentaTraba.setOrigenEmb(EmbargosConstants.IND_FLAG_YES);
-            cuentaTraba.setAgregarATraba(EmbargosConstants.IND_FLAG_YES);
+            CuentaTraba cuentaTraba = CGPJMapper.generateCuentaTraba(accountDTO, BigDecimal.valueOf(counter));
 
             seizedBankAccountRepository.save(cuentaTraba);
 
