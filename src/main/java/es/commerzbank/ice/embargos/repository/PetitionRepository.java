@@ -37,7 +37,7 @@ WHERE ct.COD_ESTADO = 1
       "SELECT new es.commerzbank.ice.embargos.domain.dto.AccountingPendingDTO(st.peticion.codPeticion, st.codSolicitudTraba, e.nif, e.nombre, " +
 			  "ct.iban, 'TRABA', ct.importe, ct.cambio, ct.divisa) FROM " +
 			  "SolicitudesTraba st " +
-			  "INNER JOIN st.traba " +
+			  "INNER JOIN st.traba t " +
 			  "INNER JOIN t.embargo e " +
 			  "INNER JOIN t.cuentaTrabas ct " +
 			  "WHERE ct.estadoTraba.codEstado = 1 AND t.revisado = '"+ EmbargosConstants.IND_FLAG_SI +"'")
