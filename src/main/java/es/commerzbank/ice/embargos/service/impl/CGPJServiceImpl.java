@@ -6,6 +6,7 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
 import es.commerzbank.ice.comun.lib.util.jasper.ReportHelper;
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
+import es.commerzbank.ice.embargos.domain.dto.AccountingPendingDTO;
 import es.commerzbank.ice.embargos.domain.dto.CGPJFiltersDTO;
 import es.commerzbank.ice.embargos.domain.dto.CGPJPetitionDTO;
 import es.commerzbank.ice.embargos.domain.dto.IntegradorRequestStatusDTO;
@@ -153,6 +154,11 @@ public class CGPJServiceImpl
         }
 
         return temporaryFile;
+    }
+
+    @Override
+    public Page<AccountingPendingDTO> accountingPending(Pageable pageable) {
+        return petitionRepository.findAccountingPending(pageable);
     }
 
     private JasperPrint imprimirSEPASolicitud(SolicitudesEjecucion solicitudEjecucion)

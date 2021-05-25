@@ -1,5 +1,6 @@
 package es.commerzbank.ice.embargos.service;
 
+import es.commerzbank.ice.embargos.domain.dto.AccountingPendingDTO;
 import es.commerzbank.ice.embargos.domain.dto.CGPJFiltersDTO;
 import es.commerzbank.ice.embargos.domain.dto.CGPJPetitionDTO;
 import es.commerzbank.ice.embargos.domain.dto.IntegradorRequestStatusDTO;
@@ -15,4 +16,6 @@ public interface CGPJService {
     List<IntegradorRequestStatusDTO> listStatus();
 
     File informeSEPA(String codPeticion) throws Exception;
+
+    Page<AccountingPendingDTO> accountingPending(Pageable pageable);
 }

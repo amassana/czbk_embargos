@@ -3,6 +3,7 @@ package es.commerzbank.ice.embargos.controller;
 import es.commerzbank.ice.comun.lib.util.jasper.ReportHelper;
 import es.commerzbank.ice.embargos.domain.dto.CGPJFiltersDTO;
 import es.commerzbank.ice.embargos.domain.dto.CGPJPetitionDTO;
+import es.commerzbank.ice.embargos.domain.dto.AccountingPendingDTO;
 import es.commerzbank.ice.embargos.domain.dto.IntegradorRequestStatusDTO;
 import es.commerzbank.ice.embargos.service.CGPJService;
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.util.List;
+import java.util.Random;
 
 @CrossOrigin("*")
 @RestController
@@ -71,7 +73,7 @@ public class CGPJController {
         return response;
     }
 
-    @GetMapping(value = "/informeSEPA/{codPeticion}")
+    @GetMapping(value = "/{codPeticion}/informeSEPA")
     public ResponseEntity<InputStreamResource> informeSEPA(@PathVariable("codPeticion") String codPeticion) {
         File temporaryFile = null;
 
@@ -93,7 +95,7 @@ public class CGPJController {
     }
 
     // TODO informe real
-    @GetMapping(value = "/informePeticion/{codPeticion}")
+    @GetMapping(value = "/{codPeticion}/informePeticion")
     public ResponseEntity<InputStreamResource> informePeticion(@PathVariable("codPeticion") String codPeticion) {
         File temporaryFile = null;
 
@@ -112,5 +114,32 @@ public class CGPJController {
 
             return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    // TODO informe real
+    @PostMapping(value = "/pendientesContabilizar")
+    public ResponseEntity<Page<AccountingPendingDTO>> pendientesContabilizar(Pageable pageable)
+    {
+        return new ResponseEntity<>(service.accountingPending(pageable), HttpStatus.OK);
+    }
+
+    // TODO informe real
+    @PostMapping(value = "/contabilizar")
+    public ResponseEntity<Void> contabilizar(@RequestBody List<AccountingPendingDTO> contabilizar) {
+        Random random = new Random();
+        if (random.nextBoolean()) {
+            return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
+    // TODO informe real
+    @PostMapping(value = "/responder")
+    public ResponseEntity<Void> responder(@RequestBody List<Long> contabilizar) {
+        Random random = new Random();
+        if (random.nextBoolean()) {
+            return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 }
