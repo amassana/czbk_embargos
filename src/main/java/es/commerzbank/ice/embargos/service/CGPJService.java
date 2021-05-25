@@ -19,5 +19,7 @@ public interface CGPJService {
 
     List<AccountingPendingDTO> accountingPending();
 
-    boolean reply(List<String> codPeticion);
+    long contabilizar(List<AccountingPendingDTO> pendientes, String username) throws Exception;
+
+    boolean reply(List<String> codPeticion, String username);
 }

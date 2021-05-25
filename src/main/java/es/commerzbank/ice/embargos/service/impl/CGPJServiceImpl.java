@@ -13,9 +13,12 @@ import es.commerzbank.ice.embargos.domain.dto.IntegradorRequestStatusDTO;
 import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.PetitionMapper;
 import es.commerzbank.ice.embargos.repository.PetitionRepository;
+import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.CGPJService;
 import es.commerzbank.ice.embargos.utils.ResourcesUtil;
-import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +63,9 @@ public class CGPJServiceImpl
 
     @Autowired
     private ReportHelper reportHelper;
+
+    @Autowired
+    private AccountingService accountingService;
 
     @Override
     public Page<CGPJPetitionDTO> filter(CGPJFiltersDTO filters, Pageable pageable)
@@ -168,7 +174,12 @@ public class CGPJServiceImpl
     }
 
     @Override
-    public boolean reply(List<String> codPeticiones) {
+    public long contabilizar(List<AccountingPendingDTO> pendientes, String username) throws Exception {
+        return accountingService.CGPJContabilizar(pendientes, username);
+    }
+
+    @Override
+    public boolean reply(List<String> codPeticiones, String username) {
         boolean allReplied = true;
 
         EstadoIntPeticion estadoInterno = new EstadoIntPeticion();

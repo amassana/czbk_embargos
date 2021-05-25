@@ -1,9 +1,9 @@
 package es.commerzbank.ice.embargos.controller;
 
 import es.commerzbank.ice.comun.lib.util.jasper.ReportHelper;
+import es.commerzbank.ice.embargos.domain.dto.AccountingPendingDTO;
 import es.commerzbank.ice.embargos.domain.dto.CGPJFiltersDTO;
 import es.commerzbank.ice.embargos.domain.dto.CGPJPetitionDTO;
-import es.commerzbank.ice.embargos.domain.dto.AccountingPendingDTO;
 import es.commerzbank.ice.embargos.domain.dto.IntegradorRequestStatusDTO;
 import es.commerzbank.ice.embargos.service.CGPJService;
 import org.slf4j.Logger;
@@ -14,11 +14,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.util.List;
-import java.util.Random;
 
 @CrossOrigin("*")
 @RestController
@@ -135,23 +135,31 @@ public class CGPJController {
         return response;
     }
 
-    // TODO informe real
     @PostMapping(value = "/contabilizar")
-    public ResponseEntity<Void> contabilizar(@RequestBody List<AccountingPendingDTO> contabilizar) {
-        Random random = new Random();
-        if (random.nextBoolean()) {
-            return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<Long> contabilizar(Authentication authentication, @RequestBody List<AccountingPendingDTO> pendientes) {
+        ResponseEntity<Long> response;
+
+        try
+        {
+            Long codControlFichero = service.contabilizar(pendientes, authentication.getName());
+            response = new ResponseEntity<>(codControlFichero, HttpStatus.OK);
         }
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        catch (Exception e)
+        {
+            response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            logger.error("CGPJ: error al contabilizar", e);
+        }
+
+        return response;
     }
 
     @PostMapping(value = "/responder")
-    public ResponseEntity<Boolean> responder(@RequestBody List<String> peticiones) {
+    public ResponseEntity<Boolean> responder(Authentication authentication, @RequestBody List<String> peticiones) {
         ResponseEntity<Boolean> response;
 
         try
         {
-            boolean allReplied = service.reply(peticiones);
+            boolean allReplied = service.reply(peticiones, authentication.getName());
             response = new ResponseEntity<>(allReplied, HttpStatus.OK);
         }
         catch (Exception e)

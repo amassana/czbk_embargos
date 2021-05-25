@@ -1,9 +1,12 @@
 package es.commerzbank.ice.embargos.service;
 
+import es.commerzbank.ice.embargos.domain.dto.AccountingPendingDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
 import es.commerzbank.ice.embargos.domain.entity.Traba;
 import es.commerzbank.ice.embargos.domain.entity.FicheroFinal;
+
+import java.util.List;
 
 public interface AccountingService {
 
@@ -17,6 +20,8 @@ public interface AccountingService {
 	void ficheroFinalCallback(Long codFicheroFinal);
 	//es.commerzbank.ice.comun.lib.domain.entity.ControlFichero sendAccountingLiftingBankAccount(CuentaLevantamiento cuentaLevantamiento, Embargo embargo, String userName) throws ICEException, Exception;
 
-	void extornoContabilizar(ControlFichero controlFichero, Traba traba, CuentaTraba cuentaTraba, String userName) throws Exception;
+    long CGPJContabilizar(List<AccountingPendingDTO> pendientes, String userName) throws Exception;
+
+    void extornoContabilizar(ControlFichero controlFichero, Traba traba, CuentaTraba cuentaTraba, String userName) throws Exception;
 	void extornoCallback(Long codCuentaTraba);
 }
