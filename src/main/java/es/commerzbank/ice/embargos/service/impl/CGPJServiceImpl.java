@@ -157,8 +157,8 @@ public class CGPJServiceImpl
     }
 
     @Override
-    public Page<AccountingPendingDTO> accountingPending(Pageable pageable) {
-        return petitionRepository.findAccountingPending(pageable);
+    public List<AccountingPendingDTO> accountingPending() {
+        return petitionRepository.findAccountingPending();
     }
 
     private JasperPrint imprimirSEPASolicitud(SolicitudesEjecucion solicitudEjecucion)

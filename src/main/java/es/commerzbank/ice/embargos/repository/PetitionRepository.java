@@ -3,11 +3,11 @@ package es.commerzbank.ice.embargos.repository;
 import es.commerzbank.ice.embargos.domain.dto.AccountingPendingDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.Peticion;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 public interface PetitionRepository
 	extends JpaRepository<Peticion, String>, JpaSpecificationExecutor<Peticion>
@@ -37,5 +37,5 @@ WHERE ct.COD_ESTADO = 1
 			  "ct.iban, 'TRABA', ct.importe, ct.cambio, ct.divisa) FROM CuentaTraba ct "
           + "INNER JOIN ct.traba t INNER JOIN t.embargo e " +
 			  "WHERE ct.estadoTraba.codEstado = 1")
-	  Page<AccountingPendingDTO> findAccountingPending(Pageable pageable);
+	  List<AccountingPendingDTO> findAccountingPending();
 }

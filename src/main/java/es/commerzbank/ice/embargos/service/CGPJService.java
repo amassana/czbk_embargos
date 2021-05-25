@@ -17,5 +17,5 @@ public interface CGPJService {
 
     File informeSEPA(String codPeticion) throws Exception;
 
-    Page<AccountingPendingDTO> accountingPending(Pageable pageable);
+    List<AccountingPendingDTO> accountingPending();
 }

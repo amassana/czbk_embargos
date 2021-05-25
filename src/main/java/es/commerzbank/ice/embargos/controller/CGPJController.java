@@ -116,11 +116,10 @@ public class CGPJController {
         }
     }
 
-    // TODO informe real
-    @PostMapping(value = "/pendientesContabilizar")
-    public ResponseEntity<Page<AccountingPendingDTO>> pendientesContabilizar(Pageable pageable)
+    @GetMapping(value = "/pendientesContabilizar")
+    public ResponseEntity<List<AccountingPendingDTO>> pendientesContabilizar()
     {
-        return new ResponseEntity<>(service.accountingPending(pageable), HttpStatus.OK);
+        return new ResponseEntity<>(service.accountingPending(), HttpStatus.OK);
     }
 
     // TODO informe real
