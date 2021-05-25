@@ -196,5 +196,17 @@ public abstract class FileControlMapper {
 		fileControlDTO.setHasSeizures(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneTrabas()));
 		fileControlDTO.setHasLiftings(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneLevantamientos()));
 		fileControlDTO.setHasExecutions(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneEjecuciones()));
+
+		if (fileControlDTO.getIsCGPJ()) {
+			try {
+				String [] parts = fileControlDTO.getFileName().split("_");
+				fileControlDTO.setRequestName(parts[0].substring(0, 16));
+			} catch (Exception e) {
+				fileControlDTO.setRequestName(fileControlDTO.getFileName());
+			}
+		}
+		else {
+			fileControlDTO.setRequestName(fileControlDTO.getFileName());
+		}
 	}
 }

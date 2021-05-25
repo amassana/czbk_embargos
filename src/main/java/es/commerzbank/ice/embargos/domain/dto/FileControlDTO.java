@@ -8,6 +8,7 @@ public class FileControlDTO {
 	private Long codeFileType;
 	private FileControlStatusDTO status;
 	private String fileName;
+	private String requestName;
 	private Boolean isProcessed;
 	private String fileTarget;
 	private Date deliveryDate;
@@ -171,5 +172,13 @@ public class FileControlDTO {
 
 	public void setHasExecutions(Boolean hasExecutions) {
 		this.hasExecutions = hasExecutions;
+	}
+
+	public String getRequestName() {
+		return requestName;
+	}
+
+	public void setRequestName(String requestName) {
+		this.requestName = requestName;
 	}
 }
