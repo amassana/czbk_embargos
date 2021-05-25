@@ -16,6 +16,8 @@ public class AccountingPendingDTO {
     private BigDecimal importeDivisa;
     private String divisa;
 
+    public AccountingPendingDTO() {;}
+
     public AccountingPendingDTO(String codPeticion, String codSolicitud, String NIF, String nombre, String iban, String tipo,
                                 BigDecimal importe, BigDecimal cambio, String divisa) {
         this.codPeticion = codPeticion;
