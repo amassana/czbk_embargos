@@ -15,7 +15,7 @@ public class AccountingPendingDTO {
     private String divisa;
 
     public AccountingPendingDTO(String codPeticion, String codSolicitud, String NIF, String nombre, String iban, String tipo,
-                                BigDecimal importe, BigDecimal cambio, BigDecimal importeDivisa, String divisa) {
+                                BigDecimal importe, BigDecimal cambio, String divisa) {
         this.codPeticion = codPeticion;
         this.codSolicitud = codSolicitud;
         this.NIF = NIF;
@@ -24,7 +24,7 @@ public class AccountingPendingDTO {
         this.tipo = tipo;
         this.importe = importe;
         this.cambio = cambio;
-        this.importeDivisa = importeDivisa;
+        this.importeDivisa = cambio != null && importe != null ? importe.multiply(cambio) : null;
         this.divisa = divisa;
     }
 
