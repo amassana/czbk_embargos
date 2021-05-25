@@ -133,7 +133,6 @@ public class CGPJController {
         }
 
         return response;
-        return new ResponseEntity<>(, HttpStatus.OK);
     }
 
     // TODO informe real
