@@ -35,8 +35,7 @@ WHERE ct.COD_ESTADO = 1
 	  @Query(
       "SELECT new es.commerzbank.ice.embargos.domain.dto.AccountingPendingDTO('st.COD_PETICION', 'st.COD_SOLICITUD_TRABA', e.nif, e.nombre, " +
 			  "ct.iban, 'TRABA', ct.importe, ct.cambio, ct.divisa) FROM CuentaTraba ct "
-          + "INNER JOIN ct.traba t INNER JOIN t.embargo e INNER JOIN cial.marketJet market "
-          + "LEFT JOIN market.nameTranslations translation ON translation.languageId = :currentLanguageId LEFT JOIN cial.crmClientJet client " +
+          + "INNER JOIN ct.traba t INNER JOIN t.embargo e " +
 			  "WHERE ct.estadoTraba.codEstado = 1")
 	  Page<AccountingPendingDTO> findAccountingPending(Pageable pageable);
 }
