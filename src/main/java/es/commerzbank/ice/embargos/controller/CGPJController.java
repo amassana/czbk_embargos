@@ -119,7 +119,21 @@ public class CGPJController {
     @GetMapping(value = "/pendientesContabilizar")
     public ResponseEntity<List<AccountingPendingDTO>> pendientesContabilizar()
     {
-        return new ResponseEntity<>(service.accountingPending(), HttpStatus.OK);
+        ResponseEntity<List<AccountingPendingDTO>> response;
+
+        try
+        {
+            List<AccountingPendingDTO> pending = service.accountingPending();
+            response = new ResponseEntity<>(pending, HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            logger.error("CGPJ: error al obtener la lista de entradas pendientes de contabilizar", e);
+        }
+
+        return response;
+        return new ResponseEntity<>(, HttpStatus.OK);
     }
 
     // TODO informe real
@@ -144,7 +158,7 @@ public class CGPJController {
         catch (Exception e)
         {
             response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            logger.error("responder", e);
+            logger.error("Error al responder CGPJ", e);
         }
 
         return response;
