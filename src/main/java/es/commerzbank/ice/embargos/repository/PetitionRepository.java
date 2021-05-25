@@ -3,6 +3,7 @@ package es.commerzbank.ice.embargos.repository;
 import es.commerzbank.ice.embargos.domain.dto.AccountingPendingDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.Peticion;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -33,9 +34,12 @@ WHERE ct.COD_ESTADO = 1
 	 */
 
 	  @Query(
-      "SELECT new es.commerzbank.ice.embargos.domain.dto.AccountingPendingDTO('st.COD_PETICION', 'st.COD_SOLICITUD_TRABA', e.nif, e.nombre, " +
-			  "ct.iban, 'TRABA', ct.importe, ct.cambio, ct.divisa) FROM CuentaTraba ct "
-          + "INNER JOIN ct.traba t INNER JOIN t.embargo e " +
-			  "WHERE ct.estadoTraba.codEstado = 1")
+      "SELECT new es.commerzbank.ice.embargos.domain.dto.AccountingPendingDTO(st.peticion.codPeticion, st.codSolicitudTraba, e.nif, e.nombre, " +
+			  "ct.iban, 'TRABA', ct.importe, ct.cambio, ct.divisa) FROM " +
+			  "SolicitudesTraba st " +
+			  "INNER JOIN st.traba " +
+			  "INNER JOIN t.embargo e " +
+			  "INNER JOIN t.cuentaTrabas ct " +
+			  "WHERE ct.estadoTraba.codEstado = 1 AND t.revisado = '"+ EmbargosConstants.IND_FLAG_SI +"'")
 	  List<AccountingPendingDTO> findAccountingPending();
 }

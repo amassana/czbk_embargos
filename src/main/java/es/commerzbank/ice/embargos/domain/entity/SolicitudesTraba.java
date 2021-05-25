@@ -1,7 +1,7 @@
 package es.commerzbank.ice.embargos.domain.entity;
 
-import java.io.Serializable;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 
@@ -25,8 +25,9 @@ public class SolicitudesTraba implements Serializable {
 	@Column(name="APELLIDO2_TITULAR", length=40)
 	private String apellido2Titular;
 
-	@Column(name="COD_TRABA")
-	private BigDecimal codTraba;
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "COD_TRABA", referencedColumnName = "COD_TRABA")
+	private Traba traba;
 
 	@Column(name="CODIGO_CERTIFICADO", length=64)
 	private String codigoCertificado;
@@ -132,12 +133,12 @@ public class SolicitudesTraba implements Serializable {
 		this.apellido2Titular = apellido2Titular;
 	}
 
-	public BigDecimal getCodTraba() {
-		return this.codTraba;
+	public Traba getTraba() {
+		return traba;
 	}
 
-	public void setCodTraba(BigDecimal codTraba) {
-		this.codTraba = codTraba;
+	public void setTraba(Traba traba) {
+		this.traba = traba;
 	}
 
 	public String getCodigoCertificado() {

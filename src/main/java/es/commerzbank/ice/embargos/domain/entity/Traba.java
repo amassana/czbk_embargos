@@ -1,10 +1,9 @@
 package es.commerzbank.ice.embargos.domain.entity;
 
-import java.io.Serializable;
-import javax.persistence.*;
-
 import es.commerzbank.ice.embargos.domain.entity.listener.TrabaListener;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 

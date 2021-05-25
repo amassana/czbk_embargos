@@ -1,5 +1,7 @@
 package es.commerzbank.ice.embargos.domain.dto;
 
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+
 import java.math.BigDecimal;
 
 public class AccountingPendingDTO {
@@ -23,9 +25,11 @@ public class AccountingPendingDTO {
         this.iban = iban;
         this.tipo = tipo;
         this.importe = importe;
-        this.cambio = cambio;
-        this.importeDivisa = cambio != null && importe != null ? importe.multiply(cambio) : null;
         this.divisa = divisa;
+        if (!EmbargosConstants.ISO_MONEDA_EUR.equals(divisa)) {
+            this.cambio = cambio;
+            this.importeDivisa = cambio != null && importe != null ? importe.multiply(cambio) : null;
+        }
     }
 
     public String getCodSolicitud() {
