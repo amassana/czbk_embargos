@@ -200,7 +200,7 @@ public abstract class FileControlMapper {
 		if (fileControlDTO.getIsCGPJ()) {
 			try {
 				String [] parts = fileControlDTO.getFileName().split("_");
-				fileControlDTO.setRequestName(parts[0].substring(0, 16));
+				fileControlDTO.setRequestName(parts[3].substring(0, 16));
 			} catch (Exception e) {
 				fileControlDTO.setRequestName(fileControlDTO.getFileName());
 			}
