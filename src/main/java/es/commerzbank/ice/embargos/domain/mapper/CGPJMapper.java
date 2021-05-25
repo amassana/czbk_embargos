@@ -31,7 +31,7 @@ public abstract class CGPJMapper {
             @Mapping(source = "accountDTO.iban", target = "iban"),
             @Mapping(source = "accountDTO.status", target = "estadoCuenta"),
             @Mapping(source = "accountDTO.divisa", target = "divisa"),
-            @Mapping(constant = EmbargosConstants.IND_FLAG_YES, target = "origenEmb"),
+            @Mapping(constant = EmbargosConstants.IND_FLAG_NO, target = "origenEmb"),
             @Mapping(constant = EmbargosConstants.IND_FLAG_YES, target = "agregarATraba"),
     })
     public abstract CuentaTraba generateCuentaTraba(AccountDTO accountDTO, BigDecimal counter);
