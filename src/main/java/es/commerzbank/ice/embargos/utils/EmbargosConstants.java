@@ -344,4 +344,6 @@ public class EmbargosConstants {
 	public static final String SUCURSAL_CREACION_IMPUESTOS = "1";
 	
 	public static final String DETAIL_PAYMENT_UNDO_ACCOUNTING = "Extorno";
+
+	public static final Long CGPJ_ESTADO_INTERNO_PENDIENTE_ENVIAR = 3L;
 }

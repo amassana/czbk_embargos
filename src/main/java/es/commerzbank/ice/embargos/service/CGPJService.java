@@ -18,4 +18,6 @@ public interface CGPJService {
     File informeSEPA(String codPeticion) throws Exception;
 
     List<AccountingPendingDTO> accountingPending();
+
+    boolean reply(List<String> codPeticion);
 }

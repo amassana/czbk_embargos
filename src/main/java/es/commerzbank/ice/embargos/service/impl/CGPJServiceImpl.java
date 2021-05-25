@@ -16,6 +16,8 @@ import es.commerzbank.ice.embargos.repository.PetitionRepository;
 import es.commerzbank.ice.embargos.service.CGPJService;
 import es.commerzbank.ice.embargos.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -35,11 +37,15 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.*;
 
+import static es.commerzbank.ice.embargos.utils.EmbargosConstants.CGPJ_ESTADO_INTERNO_PENDIENTE_ENVIAR;
+
 @Service
 @Transactional(transactionManager="transactionManager")
 public class CGPJServiceImpl
         implements CGPJService
 {
+    private static final Logger logger = LoggerFactory.getLogger(CGPJServiceImpl.class);
+
     @Autowired
     private PetitionRepository petitionRepository;
 
@@ -159,6 +165,32 @@ public class CGPJServiceImpl
     @Override
     public List<AccountingPendingDTO> accountingPending() {
         return petitionRepository.findAccountingPending();
+    }
+
+    @Override
+    public boolean reply(List<String> codPeticiones) {
+        boolean allReplied = true;
+
+        EstadoIntPeticion estadoInterno = new EstadoIntPeticion();
+        estadoInterno.setCodEstadoIntPeticion(CGPJ_ESTADO_INTERNO_PENDIENTE_ENVIAR);
+
+        for (String codPeticion : codPeticiones) {
+            Optional<Peticion> peticionOpt = petitionRepository.findById(codPeticion);
+
+            if (!peticionOpt.isPresent()) {
+                logger.error("Peticion de respuesta "+ codPeticion +" no encontrado. skipping...");
+                allReplied = false;
+                continue;
+            }
+
+            Peticion peticion = peticionOpt.get();
+
+            peticion.setEstadoIntPeticion(estadoInterno);
+
+            petitionRepository.save(peticion);
+        }
+
+        return allReplied;
     }
 
     private JasperPrint imprimirSEPASolicitud(SolicitudesEjecucion solicitudEjecucion)

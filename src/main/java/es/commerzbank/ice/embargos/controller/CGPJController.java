@@ -132,13 +132,21 @@ public class CGPJController {
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
-    // TODO informe real
     @PostMapping(value = "/responder")
-    public ResponseEntity<Void> responder(@RequestBody List<Long> contabilizar) {
-        Random random = new Random();
-        if (random.nextBoolean()) {
-            return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<Boolean> responder(@RequestBody List<String> peticiones) {
+        ResponseEntity<Boolean> response;
+
+        try
+        {
+            boolean allReplied = service.reply(peticiones);
+            response = new ResponseEntity<>(allReplied, HttpStatus.OK);
         }
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        catch (Exception e)
+        {
+            response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            logger.error("responder", e);
+        }
+
+        return response;
     }
 }
