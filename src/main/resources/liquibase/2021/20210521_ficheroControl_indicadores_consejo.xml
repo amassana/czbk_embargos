@@ -7,4 +7,11 @@
             <column name="IND_TIENE_EJECUCIONES" type="VARCHAR(1)"></column>
         </addColumn>
     </changeSet>
+
+    <changeSet author="aniol.massana" id="20210521_ficheroControl_subestados">
+        <addColumn tableName="CONTROL_FICHERO">
+            <column name="COD_SUBESTADO_TRABA" type="VARCHAR(1)"></column>
+            <column name="COD_SUBESTADO_LEVANTAMIENTO" type="VARCHAR(1)"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
