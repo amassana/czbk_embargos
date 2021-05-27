@@ -197,15 +197,18 @@ public abstract class FileControlMapper {
 		fileControlDTO.setHasLiftings(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneLevantamientos()));
 		fileControlDTO.setHasExecutions(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneEjecuciones()));
 
-		if (fileControlDTO.getIsCGPJ()) {
-			try {
-				String [] parts = fileControlDTO.getFileName().split("_");
-				fileControlDTO.setRequestName(parts[3].substring(0, 16));
-			} catch (Exception e) {
+		try {
+			if (EmbargosConstants.COD_TIPO_FICHERO_PETICION_CGPJ == controlFichero.getTipoFichero().getCodTipoFichero()) {
+				try {
+					String[] parts = fileControlDTO.getFileName().split("_");
+					fileControlDTO.setRequestName(parts[3].substring(0, 16));
+				} catch (Exception e) {
+					fileControlDTO.setRequestName(fileControlDTO.getFileName());
+				}
+			} else {
 				fileControlDTO.setRequestName(fileControlDTO.getFileName());
 			}
-		}
-		else {
+		} catch (Exception e) {
 			fileControlDTO.setRequestName(fileControlDTO.getFileName());
 		}
 	}

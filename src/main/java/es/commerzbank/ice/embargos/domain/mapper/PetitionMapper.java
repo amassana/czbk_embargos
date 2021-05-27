@@ -5,11 +5,14 @@ import es.commerzbank.ice.embargos.domain.dto.IntegradorRequestStatusDTO;
 import es.commerzbank.ice.embargos.domain.dto.PetitionDTO;
 import es.commerzbank.ice.embargos.domain.entity.EstadoIntPeticion;
 import es.commerzbank.ice.embargos.domain.entity.Peticion;
-import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel="spring")
 public abstract class PetitionMapper {
+
+	@Autowired
+	private FileControlMapper fileControlMapper;
 
 	@Mappings({
 		@Mapping (source = "codPeticion", target = "codePetition"),
@@ -29,7 +32,8 @@ public abstract class PetitionMapper {
 	protected void toCGPJPetitionDTOAfterMapping(Peticion peticion, @MappingTarget CGPJPetitionDTO CGPJPetitionDTO)
 	{
 		if (peticion.getControlFichero() != null && peticion.getControlFichero().getFechaCreacion()!=null) {
-			CGPJPetitionDTO.getFileControl().setCreatedDate(ICEDateUtils.bigDecimalToDate(peticion.getControlFichero().getFechaCreacion(), ICEDateUtils.FORMAT_yyyyMMdd));
+			CGPJPetitionDTO.setFileControl(fileControlMapper.toFileControlDTO(peticion.getControlFichero()));
+			//CGPJPetitionDTO.getFileControl().setCreatedDate(ICEDateUtils.bigDecimalToDate(peticion.getControlFichero().getFechaCreacion(), ICEDateUtils.FORMAT_yyyyMMdd));
 		}
 	}
 
