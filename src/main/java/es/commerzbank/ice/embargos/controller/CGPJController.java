@@ -135,6 +135,27 @@ public class CGPJController {
         return response;
     }
 
+    @PostMapping(value = "/precontable")
+    public ResponseEntity<InputStreamResource> precontable(@RequestBody List<AccountingPendingDTO> pendientes) {
+        File temporaryFile = null;
+
+        try {
+            ResponseEntity<InputStreamResource> response = null;
+
+            temporaryFile = service.informeSEPA("");
+
+            response = reportHelper.asResponseEntity("precontable", temporaryFile, ReportHelper.PDF_EXTENSION);
+
+            return response;
+        }
+        catch (Exception e)
+        {
+            logger.error("Error in informeSEPA", e);
+
+            return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping(value = "/contabilizar")
     public ResponseEntity<Long> contabilizar(Authentication authentication, @RequestBody List<AccountingPendingDTO> pendientes) {
         ResponseEntity<Long> response;
