@@ -258,7 +258,7 @@ public class LiftingServiceImpl
 					Long estado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_ACCOUNTED;
 
 					fileControlService.updateFileControlStatus(levantamiento.getControlFichero().getCodControlFichero(), estado,
-							userName);
+							userName, "LEVANTAMIENTOS");
 				}
 
 				response = true;

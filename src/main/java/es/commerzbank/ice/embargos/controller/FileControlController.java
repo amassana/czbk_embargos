@@ -197,7 +197,7 @@ public class FileControlController {
 		try {
 			
 			//Dependiendo del tipo de fichero se realizara una tramitacion u otra:
-			FileControlDTO fileControlDTO = fileControlService.getByCodeFileControl(codeFileControl);
+			FileControlDTO fileControlDTO = fileControlService.getByCodeFileControl(codeFileControl, null);
 			
 			if (fileControlDTO!=null && fileControlDTO.getCodeFileType()!=null) {
 				
@@ -219,7 +219,7 @@ public class FileControlController {
 			}
 			
 			//Se obtiene el fileControl que se va a retornar:
-			resultFileControlDTO = fileControlService.getByCodeFileControl(codeFileControl);
+			resultFileControlDTO = fileControlService.getByCodeFileControl(codeFileControl, null);
 			
 			if (result) {
 				response = new ResponseEntity<>(resultFileControlDTO, HttpStatus.OK);
@@ -292,7 +292,7 @@ public class FileControlController {
 				
 				String userModif = authentication.getName();
 				
-				result = fileControlService.updateFileControlStatus(codeFileControl, fileControlStatus.getCode(), userModif);
+				result = fileControlService.updateFileControlStatus(codeFileControl, fileControlStatus.getCode(), userModif, null);
 			}
 			
 			
@@ -315,14 +315,14 @@ public class FileControlController {
 	@GetMapping(value = "/{codeFileControl}")
 	@ApiOperation(value="Devuelve el detalle de un CONTROL_FICHERO.")
 	public ResponseEntity<FileControlDTO> getByCodeFileControl(Authentication authentication,
-			 @PathVariable("codeFileControl") Long codeFileControl)
+			 @PathVariable("codeFileControl") Long codeFileControl, @RequestParam(required = false) String type)
 	{
 		ResponseEntity<FileControlDTO> response = null;
 		FileControlDTO result = null;
 		
 		try {
 		
-			result = fileControlService.getByCodeFileControl(codeFileControl);
+			result = fileControlService.getByCodeFileControl(codeFileControl, type);
 			response = new ResponseEntity<>(result, HttpStatus.OK);
 		
 		} catch (Exception e) {
@@ -343,7 +343,7 @@ public class FileControlController {
 		FileControlDTO result = null;
 		
 		try {
-			result = fileControlService.getByCodeFileControl(codeFileControl);
+			result = fileControlService.getByCodeFileControl(codeFileControl, null);
 			if (result != null) {
 				try {
 					File file = new File(result.getRutaFichero());

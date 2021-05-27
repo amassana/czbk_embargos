@@ -147,7 +147,7 @@ public abstract class FileControlMapper {
 		@Mapping(source = "controlFichero.controlFicheroRespuesta.codControlFichero", target = "codeFileResponse"),
 		@Mapping(source = "controlFichero.usuarioUltModificacion", target = "modifiedUser")
 	})
-	public abstract FileControlDTO toFileControlDTO (ControlFichero controlFichero);
+	public abstract FileControlDTO toFileControlDTO (ControlFichero controlFichero, String type);
 	
 	@Mappings({
 		@Mapping(source = "status.code", target = "codeStatus"),
@@ -158,7 +158,7 @@ public abstract class FileControlMapper {
 	public abstract ArrayList<FileControlCsvDTO> toFileControlCsvDTO (List<FileControlDTO> controlFichero);
 	
 	@AfterMapping
-	protected void setFileControlDTOAfterMapping(ControlFichero controlFichero, @MappingTarget FileControlDTO fileControlDTO) {
+	protected void setFileControlDTOAfterMapping(ControlFichero controlFichero, @MappingTarget FileControlDTO fileControlDTO, String type) {
 		
 		//Delivery date:
 		if (controlFichero.getFechaMaximaRespuesta()!=null) {
@@ -202,6 +202,11 @@ public abstract class FileControlMapper {
 				try {
 					String[] parts = fileControlDTO.getFileName().split("_");
 					fileControlDTO.setRequestName(parts[3].substring(0, 16));
+
+					if ("TRABAS".equals(type))
+						fileControlDTO.getStatus().setCode(controlFichero.getCodSubestadoTraba());
+					else if ("LEVANTAMIENTOS".equals(type))
+						fileControlDTO.getStatus().setCode(controlFichero.getCodSubestadoLevantamiento());
 				} catch (Exception e) {
 					fileControlDTO.setRequestName(fileControlDTO.getFileName());
 				}

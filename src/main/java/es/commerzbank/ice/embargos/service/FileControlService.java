@@ -14,7 +14,7 @@ public interface FileControlService {
 
 	Page<FileControlDTO> fileSearch(FileControlFiltersDTO fileControlFiltersDTO, Pageable pageable) throws Exception;
 	
-	FileControlDTO getByCodeFileControl(Long codeFileControl);
+	FileControlDTO getByCodeFileControl(Long codeFileControl, String type);
 	
 	List<FileControlDTO> getAuditByCodeFileControl(Long codeFileControl);
 	
@@ -26,7 +26,7 @@ public interface FileControlService {
 	
 	boolean updateFileControl(Long codeFileControl, FileControlDTO fileControlDTO, String userModif);
 	
-	boolean updateFileControlStatus(Long codeFileControl, Long codFileControlStatus, String userModif);
+	boolean updateFileControlStatus(Long codeFileControl, Long codFileControlStatus, String userModif, String tipoDatos) throws Exception;
 	
 	//void updateFileControlStatusTransaction(ControlFichero controlFichero, Long codEstado);
 	

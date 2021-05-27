@@ -1,12 +1,18 @@
 package es.commerzbank.ice.embargos.service.impl;
 
-import java.io.File;
-import java.io.InputStream;
-import java.sql.Connection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-
+import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
+import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
+import es.commerzbank.ice.embargos.domain.dto.PetitionCaseDTO;
+import es.commerzbank.ice.embargos.domain.dto.PetitionDTO;
+import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
+import es.commerzbank.ice.embargos.domain.entity.EstadoIntPeticion;
+import es.commerzbank.ice.embargos.domain.entity.Peticion;
+import es.commerzbank.ice.embargos.domain.mapper.PetitionMapper;
+import es.commerzbank.ice.embargos.repository.PetitionRepository;
+import es.commerzbank.ice.embargos.service.FileControlService;
+import es.commerzbank.ice.embargos.service.InformationPetitionService;
+import es.commerzbank.ice.embargos.service.PetitionService;
+import es.commerzbank.ice.embargos.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,19 +21,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
-import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
-import es.commerzbank.ice.embargos.domain.dto.PetitionCaseDTO;
-import es.commerzbank.ice.embargos.domain.dto.PetitionDTO;
-import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
-import es.commerzbank.ice.embargos.domain.entity.Peticion;
-import es.commerzbank.ice.embargos.domain.mapper.PetitionMapper;
-import es.commerzbank.ice.embargos.repository.PetitionRepository;
-import es.commerzbank.ice.embargos.service.FileControlService;
-import es.commerzbank.ice.embargos.service.InformationPetitionService;
-import es.commerzbank.ice.embargos.service.PetitionService;
-import es.commerzbank.ice.embargos.utils.ResourcesUtil;
-import net.sf.jasperreports.engine.util.JRLoader;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 @Service
 @Transactional(transactionManager="transactionManager")
@@ -68,7 +66,7 @@ public class PetitionServiceImpl implements PetitionService{
 			
 			petitionDTO.setInformationPetitionList(peticionInformacionList);
 			
-			FileControlDTO fileControlDTO = fileControlService.getByCodeFileControl(codeFileControl);
+			FileControlDTO fileControlDTO = fileControlService.getByCodeFileControl(codeFileControl, null);
 			petitionDTO.setFileControl(fileControlDTO);
 		
 		}
@@ -156,6 +154,11 @@ public class PetitionServiceImpl implements PetitionService{
 		}
 	}
 
-	
-
+	@Override
+	public void changeStatus(Peticion peticion, Long cgpjEstadoInternoProcesado) {
+		EstadoIntPeticion estadoInterno = new EstadoIntPeticion();
+		estadoInterno.setCodEstadoIntPeticion(cgpjEstadoInternoProcesado);
+		peticion.setEstadoIntPeticion(estadoInterno);
+		petitionRepository.save(peticion);
+	}
 }

@@ -393,12 +393,12 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 					FinalResponsePendingDTO finalResponsePendingDTO = new FinalResponsePendingDTO();
 					finalResponsePendingDTO.setLastDateResponse(tarea.getfTarea());
 					if (controlFicheroF4 != null) {
-						finalResponsePendingDTO.setFileControlDTOF4(fileControlMapper.toFileControlDTO(controlFicheroF4));
+						finalResponsePendingDTO.setFileControlDTOF4(fileControlMapper.toFileControlDTO(controlFicheroF4, null));
 						if (controlFicheroF4.getEntidadesComunicadora() != null)
 							finalResponsePendingDTO.setCommunicatingEntity(communicatingEntityMapper.toCommunicatingEntity(controlFicheroF4.getEntidadesComunicadora()));
 					}
 					if (controlFicheroF3 != null)
-						finalResponsePendingDTO.setFileControlDTOF3(fileControlMapper.toFileControlDTO(controlFicheroF3));
+						finalResponsePendingDTO.setFileControlDTOF3(fileControlMapper.toFileControlDTO(controlFicheroF3, null));
 
 					result.add(finalResponsePendingDTO);
 				} catch (Exception e) {

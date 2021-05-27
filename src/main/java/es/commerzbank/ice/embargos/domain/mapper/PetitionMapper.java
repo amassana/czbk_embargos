@@ -32,7 +32,7 @@ public abstract class PetitionMapper {
 	protected void toCGPJPetitionDTOAfterMapping(Peticion peticion, @MappingTarget CGPJPetitionDTO CGPJPetitionDTO)
 	{
 		if (peticion.getControlFichero() != null && peticion.getControlFichero().getFechaCreacion()!=null) {
-			CGPJPetitionDTO.setFileControl(fileControlMapper.toFileControlDTO(peticion.getControlFichero()));
+			CGPJPetitionDTO.setFileControl(fileControlMapper.toFileControlDTO(peticion.getControlFichero(), null));
 			//CGPJPetitionDTO.getFileControl().setCreatedDate(ICEDateUtils.bigDecimalToDate(peticion.getControlFichero().getFechaCreacion(), ICEDateUtils.FORMAT_yyyyMMdd));
 		}
 	}

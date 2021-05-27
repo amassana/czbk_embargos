@@ -373,7 +373,7 @@ public class SeizureController {
 			accountingService.embargoContabilizar(codeFileControl, userName);
 			
 			//Se obtiene el fileControl que se va a retornar:
-			resultFileControlDTO = fileControlService.getByCodeFileControl(codeFileControl);
+			resultFileControlDTO = fileControlService.getByCodeFileControl(codeFileControl, null);
 
 			response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.OK);
 		} catch (Exception e) {

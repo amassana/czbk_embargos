@@ -1,25 +1,6 @@
 package es.commerzbank.ice.embargos.domain.entity.listener;
 
-import java.lang.reflect.Type;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Optional;
-
-import javax.persistence.PostPersist;
-import javax.persistence.PostUpdate;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-
+import com.google.gson.*;
 import es.commerzbank.ice.embargos.config.AutowireEmbHelper;
 import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
 import es.commerzbank.ice.embargos.domain.entity.AuditoriaEmb;
@@ -32,6 +13,17 @@ import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.repository.FileControlStatusRepository;
 import es.commerzbank.ice.embargos.service.AuditoriaEmbService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.persistence.PostPersist;
+import javax.persistence.PostUpdate;
+import java.lang.reflect.Type;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 public class ControlFicheroListener {
 
@@ -91,7 +83,7 @@ public class ControlFicheroListener {
 			auditoria.setUsuario(controlFichero.getUsuarioUltModificacion());
 			auditoria.setFecha(LocalDateTime.now());
 			
-			FileControlDTO fileControlDTO = fileControlMapper.toFileControlDTO(controlFichero);
+			FileControlDTO fileControlDTO = fileControlMapper.toFileControlDTO(controlFichero, null);
 			
 			Gson gson = new GsonBuilder().registerTypeAdapter(ZonedDateTime.class, new JsonSerializer<ZonedDateTime>() {
 				@Override

@@ -15,8 +15,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static es.commerzbank.ice.embargos.utils.EmbargosConstants.IND_FLAG_NO;
-import static es.commerzbank.ice.embargos.utils.EmbargosConstants.IND_FLAG_SI;
+import static es.commerzbank.ice.embargos.utils.EmbargosConstants.*;
 
 @Service
 public class CGPJImportServiceImpl
@@ -62,7 +61,10 @@ public class CGPJImportServiceImpl
 
         controlFichero.setEstadoCtrlfichero(estadoCtrlfichero);
 
-        controlFichero.setIndTieneTrabas(controlFichero.getEmbargos() != null && controlFichero.getEmbargos().size() > 0 ? IND_FLAG_SI : IND_FLAG_NO);
+        if (controlFichero.getEmbargos() != null && controlFichero.getEmbargos().size() > 0) {
+            controlFichero.setIndTieneTrabas(IND_FLAG_SI);
+            controlFichero.setCodSubestadoTraba(COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_RECEIVED);
+        }
 
         fileControlRepository.saveAndFlush(controlFichero);
     }

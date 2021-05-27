@@ -5,7 +5,10 @@ import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
 import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
 import es.commerzbank.ice.embargos.domain.dto.FileControlFiltersDTO;
-import es.commerzbank.ice.embargos.domain.entity.*;
+import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
+import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
+import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlficheroPK;
+import es.commerzbank.ice.embargos.domain.entity.HControlFichero;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlAuditMapper;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
 import es.commerzbank.ice.embargos.domain.specification.FileControlSpecification;
@@ -14,6 +17,7 @@ import es.commerzbank.ice.embargos.repository.FileControlRepository;
 import es.commerzbank.ice.embargos.repository.FileControlStatusRepository;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.InformationPetitionService;
+import es.commerzbank.ice.embargos.service.PetitionService;
 import es.commerzbank.ice.embargos.service.files.AEATSeizedService;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63InformationService;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63SeizedService;
@@ -78,6 +82,9 @@ public class FileControlServiceImpl
 	@Autowired
 	private OfficeCService officeCService;
 
+	@Autowired
+	private PetitionService petitionService;
+
 	@Override
 	public Page<FileControlDTO> fileSearch(FileControlFiltersDTO fileControlFiltersDTO, Pageable pageable) throws Exception{
 		List<FileControlDTO> fileSearchResponseDTOList = new ArrayList<>();
@@ -102,7 +109,7 @@ public class FileControlServiceImpl
 									
 		for (ControlFichero controlFichero : controlFicheroList) {
 		
-			FileControlDTO fileSearchResponseDTO = fileControlMapper.toFileControlDTO(controlFichero);
+			FileControlDTO fileSearchResponseDTO = fileControlMapper.toFileControlDTO(controlFichero, null);
 			
 			fileSearchResponseDTOList.add(fileSearchResponseDTO);
 		
@@ -118,14 +125,14 @@ public class FileControlServiceImpl
 	}*/
 
 	@Override
-	public FileControlDTO getByCodeFileControl(Long codeFileControl) {
+	public FileControlDTO getByCodeFileControl(Long codeFileControl, String type) {
 		Optional<ControlFichero> controlFicheroOpt = fileControlRepository.findById(codeFileControl);
 		
 		if(!controlFicheroOpt.isPresent()) {
 			return null;
 		}
 
-		return fileControlMapper.toFileControlDTO(controlFicheroOpt.get());
+		return fileControlMapper.toFileControlDTO(controlFicheroOpt.get(), type);
 	}
 
 	@Override
@@ -239,7 +246,7 @@ public class FileControlServiceImpl
 	}
 	
 	@Override
-	public boolean updateFileControlStatus(Long codeFileControl, Long codFileControlStatus, String userModif) {
+	public boolean updateFileControlStatus(Long codeFileControl, Long codFileControlStatus, String userModif, String tipoDatos) throws Exception {
 		logger.info("FileControlServiceImpl - updateFileControlStatus - codigo "+ codeFileControl +" estado "+ codFileControlStatus);
 		Optional<ControlFichero> fileControlOpt = fileControlRepository.findById(codeFileControl);
 		
@@ -247,35 +254,40 @@ public class FileControlServiceImpl
 			return false;
 		}
 		
-		if(codFileControlStatus!=null) {
+		if (codFileControlStatus != null) {
 			
 			ControlFichero controlFichero = fileControlOpt.get();
-			
+
 			EstadoCtrlficheroPK estadoCtrlficheroPK = new EstadoCtrlficheroPK();
 			estadoCtrlficheroPK.setCodEstado(codFileControlStatus);
 			estadoCtrlficheroPK.setCodTipoFichero(controlFichero.getTipoFichero().getCodTipoFichero());
-			
+
 			Optional<EstadoCtrlfichero> estadoCtrlficheroOpt = fileControlStatusRepository.findById(estadoCtrlficheroPK);
-			
-			if(!estadoCtrlficheroOpt.isPresent()) {
+
+			if (!estadoCtrlficheroOpt.isPresent()) {
 				return false;
 			}
-			
+
 			EstadoCtrlfichero estadoCtrlFichero = estadoCtrlficheroOpt.get();
-			
-			controlFichero.setEstadoCtrlfichero(estadoCtrlFichero);
+
+			if (controlFichero.getTipoFichero().getCodTipoFichero() == EmbargosConstants.COD_TIPO_FICHERO_PETICION_CGPJ) {
+				changeCGPJStatus(controlFichero, codFileControlStatus, tipoDatos);
+			}
+			else {
+				controlFichero.setEstadoCtrlfichero(estadoCtrlFichero);
+
+				//Indicador procesado: al cambiar de estado, determinar si el flag indProcesado tiene que cambiar:
+				String indProcesado = determineIndProcesadoFromEstadoControlFichero(estadoCtrlFichero);
+				controlFichero.setIndProcesado(indProcesado);
+			}
 
 			// Determinar envío carta
 			controlFichero.setIndEnvioCarta(determineIndEnvioCarta(estadoCtrlFichero));
 
-			//Indicador procesado: al cambiar de estado, determinar si el flag indProcesado tiene que cambiar:
-			String indProcesado = determineIndProcesadoFromEstadoControlFichero(estadoCtrlFichero);
-			controlFichero.setIndProcesado(indProcesado);
-			
 			//Usuario y fecha ultima modificacion:
 			controlFichero.setUsuarioUltModificacion(userModif);
 			controlFichero.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
-			
+
 			fileControlRepository.save(controlFichero);
 		
 		} else {			
@@ -283,8 +295,28 @@ public class FileControlServiceImpl
 		}
 		
 		logger.info("FileControlServiceImpl - updateFileControlStatus - end");
+
 		return true;
-		
+	}
+
+	private void changeCGPJStatus(ControlFichero controlFichero, Long codFileControlStatus, String tipoDatos) throws Exception {
+		if ("TRABAS".equals(tipoDatos))
+			controlFichero.setCodSubestadoTraba(codFileControlStatus);
+		else if ("LEVANTAMIENTOS".equals(tipoDatos))
+			controlFichero.setCodSubestadoLevantamiento(codFileControlStatus);
+
+		if ((!EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneTrabas()) ||
+				(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneTrabas()) && codFileControlStatus == EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_TO_SEND))
+			&&
+				(!EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneLevantamientos())
+						||
+						(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneLevantamientos()) && codFileControlStatus == EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_ACCOUNTED))) {
+			if (controlFichero.getPeticiones() == null || controlFichero.getPeticiones().size() != 1) {
+				throw new Exception("No se puede cambiar el estado del fichero por no tener una petición asociada");
+			}
+
+			petitionService.changeStatus(controlFichero.getPeticiones().get(0), EmbargosConstants.CGPJ_ESTADO_INTERNO_PROCESADO);
+		}
 	}
 
 	private String determineIndEnvioCarta(EstadoCtrlfichero estadoControlFichero) {

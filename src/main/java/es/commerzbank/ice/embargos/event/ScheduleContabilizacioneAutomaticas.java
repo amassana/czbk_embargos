@@ -47,7 +47,7 @@ public class ScheduleContabilizacioneAutomaticas
       } catch (Exception e) {
         logger.error("No se ha podido contabilizar el fichero de levantamiento "+ ficheroActual.getCodControlFichero() +". Se cambia el estado a Recibido", e);
         try {
-          fileControlService.updateFileControlStatus(ficheroActual.getCodControlFichero(), COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED, USER_AUTOMATICO);
+          fileControlService.updateFileControlStatus(ficheroActual.getCodControlFichero(), COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED, USER_AUTOMATICO, null);
         }
         catch (Exception e2) {
           logger.error("Error cambiando de estado el fichero: "+ e2.getMessage());

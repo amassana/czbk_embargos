@@ -268,7 +268,7 @@ public class LiftingController {
 			accountingService.levantamientoContabilizar(codeFileControl, userName);
 
 			//Se obtiene el fileControl que se va a retornar del Fichero Final:
-			resultFileControlDTO = fileControlService.getByCodeFileControl(codeFileControl);
+			resultFileControlDTO = fileControlService.getByCodeFileControl(codeFileControl, null);
 
 			response = new ResponseEntity<>(resultFileControlDTO,HttpStatus.OK);
 		} catch (Exception e) {

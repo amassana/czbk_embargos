@@ -14,10 +14,10 @@ public interface SeizureService {
 	List<SeizureActionDTO> getSeizureActions(Long codeFileControl);
 	List<SeizureStatusDTO> getSeizureStatusList();
 	boolean updateSeizedBankAccountList(Long codeFileControl, Long idSeizure, SeizureSaveDTO seizureSave, String userModif) throws Exception;
-	boolean updateSeizedBankStatus(CuentaTraba cuentaTraba, Long codEstado, String userModif);
+	boolean updateSeizedBankStatus(CuentaTraba cuentaTraba, Long codEstado, String userModif) throws Exception;
 	// boolean updateSeizedBankStatusTransaction(CuentaTraba cuentaTraba, Long codEstado, String userModif);
-	boolean updateSeizureStatus(Long idSeizure, SeizureStatusDTO seizureStatusDTO, String userModif);
-	boolean updateSeizureStatusTransaction(Long idSeizure, SeizureStatusDTO seizureStatusDTO, String userModif);
+	boolean updateSeizureStatus(Long idSeizure, SeizureStatusDTO seizureStatusDTO, String userModif) throws Exception;
+	boolean updateSeizureStatusTransaction(Long idSeizure, SeizureStatusDTO seizureStatusDTO, String userModif) throws Exception;
 	List<SeizureDTO> getAuditSeizure(Long codFileControl, Long idSeizure);
 	List<SeizedBankAccountDTO> getAuditSeizedBankAccounts(Long codFileControl, Long idSeizure, Long codAudit);
 	
@@ -26,7 +26,7 @@ public interface SeizureService {
 	byte[] reportSeizureResponseF4(Integer codControlFichero, String oficina) throws Exception;
 
     void generateSeizureLetters(ControlFichero controlFichero) throws Exception;
-	boolean updateAccountSeizureStatus(Long idAccount, Long idSeizure, AccountStatusSeizedDTO accountStatusSeized, String userModif);
+	boolean updateAccountSeizureStatus(Long idAccount, Long idSeizure, AccountStatusSeizedDTO accountStatusSeized, String userModif) throws Exception;
 
 	boolean undoAccounting(Long codeFileControl, Long idSeizure, Long idAccount, String userName) throws Exception;
 }

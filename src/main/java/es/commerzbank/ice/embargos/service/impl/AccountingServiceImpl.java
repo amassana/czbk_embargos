@@ -124,10 +124,10 @@ public class AccountingServiceImpl
 
 			if (contabilizado)
 				fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(),
-					COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_ACCOUNTING_RESPONSE, userName);
+					COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_ACCOUNTING_RESPONSE, userName, null);
 			else
 				fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(),
-					COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_TO_SEND, userName);
+					COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_TO_SEND, userName, null);
 		}
 		else if (isCuaderno63)
 		{
@@ -143,10 +143,10 @@ public class AccountingServiceImpl
 
 			if (contabilizado)
 				fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(),
-					COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_ACCOUNTING_RESPONSE, userName);
+					COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_ACCOUNTING_RESPONSE, userName, null);
 			else
 				fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(),
-					COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_TO_SEND, userName);
+					COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_TO_SEND, userName, null);
 		} else {
 			logger.info("sendAccountingSeizure - end");
 			return;
@@ -243,7 +243,7 @@ public class AccountingServiceImpl
 					logger.error("No se ha encontrado la solicitud de traba "+ pendiente.getCodSolicitud());
 					continue;
 				}
-				
+
 				// TODO què fer
 			}
 		}
@@ -566,7 +566,7 @@ public class AccountingServiceImpl
 
 		accountingNoteService.generacionFicheroContabilidad(fileControlFicheroComunes);
 
-		fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(), COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_ACCOUNTING_RESPONSE, username);
+		fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(), COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_ACCOUNTING_RESPONSE, username, null);
 	}
 
 	private es.commerzbank.ice.comun.lib.domain.entity.ControlFichero contabilizarLevantamiento (

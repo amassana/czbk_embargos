@@ -271,7 +271,7 @@ public class SeizureServiceImpl
 	
 	
 	@Override
-	public boolean updateSeizedBankStatus(CuentaTraba cuentaTraba, Long codEstado, String userModif) {
+	public boolean updateSeizedBankStatus(CuentaTraba cuentaTraba, Long codEstado, String userModif) throws Exception {
 		Traba traba = cuentaTraba.getTraba();
 		
 		BigDecimal fechaActualBigDec = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
@@ -331,7 +331,7 @@ public class SeizureServiceImpl
 	
 	@Override
 	public boolean updateSeizureStatus(Long idSeized, SeizureStatusDTO seizureStatusDTO,
-			String userModif) {
+			String userModif) throws Exception {
 		Optional<Traba> trabaOpt = seizedRepository.findById(idSeized);
 
 		if (!trabaOpt.isPresent()) {
@@ -396,7 +396,7 @@ public class SeizureServiceImpl
 
 			if (isAllTrabasContabilizadas) {
 				fileControlService.updateFileControlStatus(embargo.getControlFichero().getCodControlFichero(), estado,
-						userModif);
+						userModif, "TRABAS");
 			}
 
 			seizedRepository.save(traba);
@@ -410,7 +410,7 @@ public class SeizureServiceImpl
 	
 	@Override
 	public boolean updateSeizureStatusTransaction(Long idSeized, SeizureStatusDTO seizureStatusDTO,
-			String userModif) {
+			String userModif) throws Exception {
 		
 		return updateSeizureStatus(idSeized, seizureStatusDTO, userModif);
 		
@@ -418,7 +418,7 @@ public class SeizureServiceImpl
 	
 	@Override
 	public boolean updateAccountSeizureStatus(Long idAccount, Long idSeizure, AccountStatusSeizedDTO accountStatusSeized,
-			String userModif) {
+			String userModif) throws Exception {
 		
 		Optional<CuentaTraba> cuentaTrabaOpt = seizedBankAccountRepository.findById(idAccount);
 

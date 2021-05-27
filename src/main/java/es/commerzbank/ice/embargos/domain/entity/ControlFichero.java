@@ -87,7 +87,13 @@ public class ControlFichero implements Serializable {
 
 	@Column(name="IND_TIENE_EJECUCIONES", length=1)
 	private String indTieneEjecuciones;
-	
+
+	@Column(name="COD_SUBESTADO_TRABA", length=1)
+	private Long codSubestadoTraba;
+
+	@Column(name="COD_SUBESTADO_LEVANTAMIENTO", length=1)
+	private Long codSubestadoLevantamiento;
+
 	//bi-directional many-to-one association to ApunteContable
 	@OneToMany(mappedBy="controlFichero")
 	private List<ApunteContable> apunteContables;
@@ -675,5 +681,21 @@ public class ControlFichero implements Serializable {
 
 	public void setIndTieneEjecuciones(String indTieneEjecuciones) {
 		this.indTieneEjecuciones = indTieneEjecuciones;
+	}
+
+	public Long getCodSubestadoTraba() {
+		return codSubestadoTraba;
+	}
+
+	public void setCodSubestadoTraba(Long codSubestadoTraba) {
+		this.codSubestadoTraba = codSubestadoTraba;
+	}
+
+	public Long getCodSubestadoLevantamiento() {
+		return codSubestadoLevantamiento;
+	}
+
+	public void setCodSubestadoLevantamiento(Long codSubestadoLevantamiento) {
+		this.codSubestadoLevantamiento = codSubestadoLevantamiento;
 	}
 }
