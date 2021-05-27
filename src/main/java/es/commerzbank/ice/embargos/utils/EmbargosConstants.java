@@ -332,6 +332,7 @@ public class EmbargosConstants {
 	public static final String ACCOUNTING_EMBARGOS_TRABAS = "TRABAS";
 	public static final String ACCOUNTING_EMBARGOS_LEVANTAMIENTOS = "LEVANTAMIENTOS";
 	public static final String ACCOUNTING_EMBARGOS_EXTORNO = "EXTORNO";
+	public static final String ACCOUNTING_EMBARGOS_CGPJ = "CGPJ";
 	
 	public static final String APUNTES_CONTABLES_TIPO_TRABA = "TRABA";
 	public static final String APUNTES_CONTABLES_TIPO_LEVANTAMIENTO = "LEVANTAMIENTO";

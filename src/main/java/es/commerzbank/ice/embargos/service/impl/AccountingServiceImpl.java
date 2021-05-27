@@ -188,10 +188,10 @@ public class AccountingServiceImpl
 			String detailPayment = embargo.getDatregcomdet();
 
 			fileControlFicheroComunes = contabilizarTraba(
-					fileControlFicheroComunes,
+					fileControlFicheroComunes, ACCOUNTING_EMBARGOS_TRABAS,
 					embargo,
 					traba,
-					userName, sucursal, controlFichero.getDescripcion(),
+					userName, sucursal,
 					cuentaRecaudacion, oficinaRecaudacion, reference1, reference2, detailPayment, cuentaIntercambioDivisas);
 		}
 		
@@ -231,9 +231,8 @@ public class AccountingServiceImpl
 				Pair<String,String> references = generateReferencesForCGPJ(embargo.getNumeroEmbargo());
 				String detailPayment = "";//embargo.getDatregcomdet();
 
-				// TODO no existe detalle para el CPGJ??
-				fileControlFicheroComunes = contabilizarTraba(fileControlFicheroComunes, embargo, traba,
-						userName, sucursal, "", cuentaRecaudacion, oficinaRecaudacion,
+				fileControlFicheroComunes = contabilizarTraba(fileControlFicheroComunes, ACCOUNTING_EMBARGOS_CGPJ, embargo, traba,
+						userName, sucursal, cuentaRecaudacion, oficinaRecaudacion,
 						references.getLeft(), references.getRight(), detailPayment, cuentaIntercambioDivisas);
 
 			}
@@ -244,7 +243,7 @@ public class AccountingServiceImpl
 					logger.error("No se ha encontrado la solicitud de traba "+ pendiente.getCodSolicitud());
 					continue;
 				}
-
+				
 				// TODO què fer
 			}
 		}
@@ -257,10 +256,10 @@ public class AccountingServiceImpl
 	}
 
 	private es.commerzbank.ice.comun.lib.domain.entity.ControlFichero contabilizarTraba(
-			es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes,
+			es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes, String contentType,
 			Embargo embargo,
 			Traba traba,
-			String userName, Long sucursal, String descripcion,
+			String userName, Long sucursal,
 			String cuentaRecaudacion, String oficinaCuentaRecaudacion,
 			String reference1, String reference2, String detailPayment, String cuentaIntercambioDivisas
 	) throws Exception
@@ -316,7 +315,7 @@ public class AccountingServiceImpl
 
 				if (fileControlFicheroComunes == null) {
 					fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName,
-							EmbargosConstants.ID_APLICACION_EMBARGOS, descripcion, sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_EMBARGOS_TRABAS, ACCOUNTING_EMBARGOS_EXTENSION);
+							EmbargosConstants.ID_APLICACION_EMBARGOS, null, sucursal, ACCOUNTING_EMBARGOS_PATTERN, contentType, ACCOUNTING_EMBARGOS_EXTENSION);
 				}
 
 				logger.info(logMessage + "se contabilizará la cantidad "+ cuentaTraba.getImporte());
@@ -475,7 +474,7 @@ public class AccountingServiceImpl
 		
 		Embargo embargo = traba.getEmbargo();
 
-		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion(), sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_EMBARGOS_EXTORNO, ACCOUNTING_EMBARGOS_EXTENSION);
+		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, null, sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_EMBARGOS_EXTORNO, ACCOUNTING_EMBARGOS_EXTENSION);
 
 		String detail = null;
 		String reference1 = null;
@@ -546,7 +545,7 @@ public class AccountingServiceImpl
 	
 	@Override
 	@Transactional(transactionManager="transactionManager")
-	public void levantamientoContabilizar(Long codeFileControl, String userName) throws Exception {
+	public void levantamientoContabilizar(Long codeFileControl, String username) throws Exception {
 		Optional<ControlFichero> fileControlOpt = fileControlRepository.findById(codeFileControl);
 
 		if(!fileControlOpt.isPresent())
@@ -559,54 +558,70 @@ public class AccountingServiceImpl
 		String cuentaIntercambioDivisas = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_INTERCAMBIO_DIVISAS);
 		Long sucursal = getCodSucursal(oficinaRecaudacion);
 
-		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, fileControlOpt.get().getDescripcion(), sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_EMBARGOS_LEVANTAMIENTOS, ACCOUNTING_EMBARGOS_EXTENSION);
-
-		AccountStatusLiftingDTO status = new AccountStatusLiftingDTO();
-		status.setCode(String.valueOf(COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION));
+		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = null;
 
 		for (LevantamientoTraba levantamiento : controlFichero.getLevantamientoTrabas()) {
-			for (CuentaLevantamiento cuentaLevantamiento : levantamiento.getCuentaLevantamientos()) {
-				if (cuentaLevantamiento.getEstadoLevantamiento().getCodEstado() != COD_ESTADO_LEVANTAMIENTO_PENDIENTE) {
-					logger.info("cuenta levantamiento "+ cuentaLevantamiento.getCodCuentaLevantamiento() + " no pendiente - ignorando");
-					continue;
-				}
-
-				logger.info("cuenta levantamiento "+ cuentaLevantamiento.getCodCuentaLevantamiento() + " se contabilizará la cantidad "+ cuentaLevantamiento.getImporte());
-
-				Traba traba = levantamiento.getTraba();
-				Embargo embargo = traba.getEmbargo();
-
-				CuentaTraba cuentaTraba = null;
-				for (CuentaTraba cuentaTrabaActual : traba.getCuentaTrabas()) {
-					if (cuentaLevantamiento.getCuenta().equals(cuentaTrabaActual.getCuenta())) {
-						cuentaTraba = cuentaTrabaActual;
-						break;
-					}
-				}
-				if (cuentaTraba == null) {
-					throw new Exception("No se encuentra la cuenta traba cuya cuenta sea igual a la cuenta de levantamiento "+ cuentaLevantamiento.getCodCuentaLevantamiento() +" "+ cuentaLevantamiento.getCuenta());
-				}
-				else {
-					BigDecimal cambioInverso = cuentaTraba.getCambio() == null ? null : BigDecimal.ONE.divide(cuentaTraba.getCambio(), cuentaTraba.getCambio().scale(), RoundingMode.HALF_UP);
-
-					if (!cuentaLevantamiento.getCuenta().endsWith(EmbargosConstants.ISO_MONEDA_EUR) && cambioInverso == null) {
-						throw new Exception("No se encuentra el cambio de divisa a aplicar para la cuenta de levantamiento "+ cuentaLevantamiento.getCodCuentaLevantamiento() +" "+ cuentaLevantamiento.getCuenta());
-					}
-
-					apunteContableLevantamiento(cuentaLevantamiento, cuentaRecaudacion, cuentaLevantamiento.getCuenta(),
-							oficinaRecaudacion, embargo.getNumeroEmbargo(), "", embargo.getDatregcomdet(), cuentaIntercambioDivisas,
-							fileControlFicheroComunes.getCodControlFichero(), embargo.getNombre(), embargo.getNif(), cambioInverso);
-
-					liftingService.updateAccountLiftingStatus(cuentaLevantamiento.getCodCuentaLevantamiento(), status, USER_AUTOMATICO);
-				}
-			}
-
-			liftingService.changeStatus(levantamiento.getCodLevantamiento(), COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION, USER_AUTOMATICO);
+			fileControlFicheroComunes = contabilizarLevantamiento(username, ACCOUNTING_EMBARGOS_LEVANTAMIENTOS, fileControlFicheroComunes, levantamiento, cuentaRecaudacion, cuentaIntercambioDivisas, oficinaRecaudacion, sucursal);
 		}
 
 		accountingNoteService.generacionFicheroContabilidad(fileControlFicheroComunes);
 
-		fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(), COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_ACCOUNTING_RESPONSE, userName);
+		fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(), COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_ACCOUNTING_RESPONSE, username);
+	}
+
+	private es.commerzbank.ice.comun.lib.domain.entity.ControlFichero contabilizarLevantamiento (
+			String username, String contentType,
+			es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes,
+			LevantamientoTraba levantamiento, String cuentaRecaudacion,
+			String cuentaIntercambioDivisas, String oficinaRecaudacion, Long sucursal)
+			throws Exception
+	{
+		for (CuentaLevantamiento cuentaLevantamiento : levantamiento.getCuentaLevantamientos()) {
+			if (cuentaLevantamiento.getEstadoLevantamiento().getCodEstado() != COD_ESTADO_LEVANTAMIENTO_PENDIENTE) {
+				logger.info("cuenta levantamiento "+ cuentaLevantamiento.getCodCuentaLevantamiento() + " no pendiente - ignorando");
+				continue;
+			}
+
+			logger.info("cuenta levantamiento "+ cuentaLevantamiento.getCodCuentaLevantamiento() + " se contabilizará la cantidad "+ cuentaLevantamiento.getImporte());
+
+			Traba traba = levantamiento.getTraba();
+			Embargo embargo = traba.getEmbargo();
+
+			CuentaTraba cuentaTraba = null;
+			for (CuentaTraba cuentaTrabaActual : traba.getCuentaTrabas()) {
+				if (cuentaLevantamiento.getCuenta().equals(cuentaTrabaActual.getCuenta())) {
+					cuentaTraba = cuentaTrabaActual;
+					break;
+				}
+			}
+			if (cuentaTraba == null) {
+				throw new Exception("No se encuentra la cuenta traba cuya cuenta sea igual a la cuenta de levantamiento "+ cuentaLevantamiento.getCodCuentaLevantamiento() +" "+ cuentaLevantamiento.getCuenta());
+			}
+			else {
+				BigDecimal cambioInverso = cuentaTraba.getCambio() == null ? null : BigDecimal.ONE.divide(cuentaTraba.getCambio(), cuentaTraba.getCambio().scale(), RoundingMode.HALF_UP);
+
+				if (!cuentaLevantamiento.getCuenta().endsWith(EmbargosConstants.ISO_MONEDA_EUR) && cambioInverso == null) {
+					throw new Exception("No se encuentra el cambio de divisa a aplicar para la cuenta de levantamiento "+ cuentaLevantamiento.getCodCuentaLevantamiento() +" "+ cuentaLevantamiento.getCuenta());
+				}
+
+				if (fileControlFicheroComunes == null) {
+					fileControlFicheroComunes = accountingNoteService.crearControlFichero(username, EmbargosConstants.ID_APLICACION_EMBARGOS, null, sucursal, ACCOUNTING_EMBARGOS_PATTERN, contentType, ACCOUNTING_EMBARGOS_EXTENSION);
+				}
+
+				apunteContableLevantamiento(cuentaLevantamiento, cuentaRecaudacion, cuentaLevantamiento.getCuenta(),
+						oficinaRecaudacion, embargo.getNumeroEmbargo(), "", embargo.getDatregcomdet(), cuentaIntercambioDivisas,
+						fileControlFicheroComunes.getCodControlFichero(), embargo.getNombre(), embargo.getNif(), cambioInverso);
+
+				AccountStatusLiftingDTO status = new AccountStatusLiftingDTO();
+				status.setCode(String.valueOf(COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION));
+
+				liftingService.updateAccountLiftingStatus(cuentaLevantamiento.getCodCuentaLevantamiento(), status, USER_AUTOMATICO);
+			}
+		}
+
+		liftingService.changeStatus(levantamiento.getCodLevantamiento(), COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION, USER_AUTOMATICO);
+
+		return fileControlFicheroComunes;
 	}
 
 	private void apunteContableLevantamiento(
@@ -682,7 +697,7 @@ public class AccountingServiceImpl
 		String reference2 = null;
 		String detailPayment = EmbargosConstants.LITERAL_DETAILPAYMENT_FASE6_EMB_TRANSFERRED_TO + entidadComunicadora.getDesEntidad();
 
-		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, controlFichero.getDescripcion(), sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_EMBARGO_F6, ACCOUNTING_EMBARGOS_EXTENSION);
+		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, null, sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_EMBARGO_F6, ACCOUNTING_EMBARGOS_EXTENSION);
 		Long codFileControlFicheroComunes = fileControlFicheroComunes.getCodControlFichero();
 
 		apunteContableFicheroFinal(
