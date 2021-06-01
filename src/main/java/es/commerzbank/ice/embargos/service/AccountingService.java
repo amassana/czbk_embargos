@@ -11,7 +11,7 @@ import java.util.List;
 public interface AccountingService {
 
 	void embargoContabilizar(Long codeFileControl, String userName) throws Exception;
-	void embargoCallback(Long codCuentaTraba);
+	void embargoCallback(Long codCuentaTraba) throws Exception;
 
 	void levantamientoContabilizar(Long codeFileControl, String userName) throws Exception;
 	void levantamientoCallback(Long codCuentaLevantamiento) throws Exception;

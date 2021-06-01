@@ -713,7 +713,7 @@ public class AccountingServiceImpl
 
 	@Override
 	@Transactional(transactionManager="transactionManager")
-	public void embargoCallback(Long codCuentaTraba) {
+	public void embargoCallback(Long codCuentaTraba) throws Exception {
 		Optional<CuentaTraba> opt = seizedBankAccountRepository.findById(codCuentaTraba);
 
 		if (!opt.isPresent()) {
