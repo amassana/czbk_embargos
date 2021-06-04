@@ -5,3 +5,6 @@
 "3007","Importe no válido"
 "3008","Cliente sin saldo con otras posiciones"
 "3009","Otros tipos de error no especificados"
+"3002","No cliente: No es cliente"
+"3003","Nif no válido: Identificación (NIF) no válida"
+"3004","Identificación discordante con resto de datos: NIF-Titular"
