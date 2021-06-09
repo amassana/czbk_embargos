@@ -17,6 +17,7 @@ import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.CGPJService;
 import es.commerzbank.ice.embargos.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.slf4j.Logger;
@@ -211,7 +212,7 @@ public class CGPJServiceImpl
 
         try (Connection conn_embargos = oracleDataSourceEmbargos.getEmbargosConnection()) {
 
-            Resource transOrder = ResourcesUtil.getFromJasperFolder("paymentLetterCGPJ.jasper");
+            Resource transOrder = ResourcesUtil.getFromJasperFolder("CGPJ_cartaPago.jasper");
             Resource imageLogo = ResourcesUtil.getImageLogoCommerceResource();
 
             File logoFile = imageLogo.getFile();
@@ -223,6 +224,32 @@ public class CGPJServiceImpl
 
             InputStream isOrdenTransferencia = transOrder.getInputStream();
             return JasperFillManager.fillReport(isOrdenTransferencia, parameters, conn_embargos);
+        } catch (Exception e) {
+            throw new Exception("DB exception while generating the report", e);
+        }
+    }
+
+    @Override
+    public byte[] informePeticion(String codPeticion)
+        throws Exception
+    {
+        HashMap<String, Object> parameters = new HashMap<>();
+
+        try (Connection conn_embargos = oracleDataSourceEmbargos.getEmbargosConnection()) {
+
+            Resource informe = ResourcesUtil.getFromJasperFolder("CGPJ_listado.jasper");
+            Resource imageLogo = ResourcesUtil.getImageLogoCommerceResource();
+
+            File logoFile = imageLogo.getFile();
+
+            parameters.put("IMAGE_PARAM", logoFile.toString());
+            parameters.put("COD_PETICION", codPeticion);
+
+            parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
+
+            InputStream isInforme = informe.getInputStream();
+            JasperPrint reporteLleno =  JasperFillManager.fillReport(isInforme, parameters, conn_embargos);
+            return JasperExportManager.exportReportToPdf(reporteLleno);
         } catch (Exception e) {
             throw new Exception("DB exception while generating the report", e);
         }

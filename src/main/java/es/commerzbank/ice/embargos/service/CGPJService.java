@@ -17,6 +17,8 @@ public interface CGPJService {
 
     File informeSEPA(String codPeticion) throws Exception;
 
+    byte[] informePeticion(String codPeticion) throws Exception;
+
     List<AccountingPendingDTO> accountingPending();
 
     long contabilizar(List<AccountingPendingDTO> pendientes, String username) throws Exception;

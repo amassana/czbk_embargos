@@ -1,11 +1,14 @@
 package es.commerzbank.ice.embargos.controller;
 
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.jasper.ReportHelper;
 import es.commerzbank.ice.embargos.domain.dto.AccountingPendingDTO;
 import es.commerzbank.ice.embargos.domain.dto.CGPJFiltersDTO;
 import es.commerzbank.ice.embargos.domain.dto.CGPJPetitionDTO;
 import es.commerzbank.ice.embargos.domain.dto.IntegradorRequestStatusDTO;
 import es.commerzbank.ice.embargos.service.CGPJService;
+import es.commerzbank.ice.embargos.utils.DownloadReportFile;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +35,9 @@ public class CGPJController {
 
     @Autowired
     private ReportHelper reportHelper;
+
+    @Autowired
+    private GeneralParametersService generalParametersService;
 
     @PostMapping(value = "/filter")
     public ResponseEntity<Page<CGPJPetitionDTO>> filter(@RequestBody CGPJFiltersDTO filters, Pageable pageable)
@@ -94,23 +100,23 @@ public class CGPJController {
         }
     }
 
-    // TODO informe real
     @GetMapping(value = "/{codPeticion}/informePeticion")
     public ResponseEntity<InputStreamResource> informePeticion(@PathVariable("codPeticion") String codPeticion) {
-        File temporaryFile = null;
-
         try {
-            ResponseEntity<InputStreamResource> response = null;
+            DownloadReportFile downloadReportFile = new DownloadReportFile();
 
-            temporaryFile = service.informeSEPA(codPeticion);
+            downloadReportFile.setTempFileName("informePeticion");
 
-            response = reportHelper.asResponseEntity("cgpj-sepa-"+ codPeticion, temporaryFile, ReportHelper.PDF_EXTENSION);
+            downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
-            return response;
-        }
-        catch (Exception e)
-        {
-            logger.error("Error in informeSEPA", e);
+            byte[] data = service.informePeticion(codPeticion);
+
+            downloadReportFile.writeFile(data);
+
+            return downloadReportFile.returnToDownloadFile();
+
+        } catch (Exception e) {
+            logger.error("Error in f1PettitionRequest", e);
 
             return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
