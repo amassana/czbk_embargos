@@ -13,6 +13,7 @@ import es.commerzbank.ice.embargos.domain.dto.IntegradorRequestStatusDTO;
 import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.PetitionMapper;
 import es.commerzbank.ice.embargos.repository.PetitionRepository;
+import es.commerzbank.ice.embargos.repository.SolicitudTrabaRepository;
 import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.CGPJService;
 import es.commerzbank.ice.embargos.utils.ResourcesUtil;
@@ -53,6 +54,9 @@ public class CGPJServiceImpl
 
     @Autowired
     private PetitionRepository petitionRepository;
+
+    @Autowired
+    private SolicitudTrabaRepository solicitudTrabaRepository;
 
     @Autowired
     private PetitionMapper petitionMapper;
@@ -219,6 +223,8 @@ public class CGPJServiceImpl
                         break;
                     }
                 }
+                
+                solicitudTrabaRepository.save(solicitudTraba);
             }
 
             peticion.setEstadoIntPeticion(estadoInterno);
