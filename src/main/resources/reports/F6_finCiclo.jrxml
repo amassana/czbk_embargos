@@ -38,6 +38,7 @@ INNER JOIN trabas t ON t.COD_TRABA = re.COD_TRABA
 WHERE
 	cf.cod_control_fichero = $P{COD_FILE_CONTROL}
 	and (ct.origen_emb = 'Y' or ct.agregar_a_traba = 'Y')
+	and (ct.importe is not null) -- si piden incluir estas cuentas, petará la conversión a decimal de null.
 ORDER BY
 	e.numero_embargo]]>
 	</queryString>
