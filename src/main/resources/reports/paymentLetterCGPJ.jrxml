@@ -31,7 +31,7 @@ WHERE se.COD_SOLICITUD_EJECUCION = $P{COD_SOLICITUD_EJECUCION}]]>
 	<field name="TIPOTR" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="TIPOTR"/>
 	</field>
-	<field name="IMPORTE_RESPUESTA" class="java.lang.String">
+	<field name="IMPORTE_RESPUESTA" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="IMPORTE_RESPUESTA"/>
 	</field>
 	<variable name="TodayDate" class="java.lang.String">
