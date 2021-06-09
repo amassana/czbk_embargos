@@ -6,7 +6,7 @@
 	<parameter name="IMAGE_PARAM" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="COD_SOLICITUD_EJECUCION" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT se.ORDENANTE, se.BIC, se.IBAN, se.BENEFICIARIO, se.CONCEPTO, se.PROPOSITOTR, se.TIPOTR, TO_NUMBER(REPLACE(se.IMPORTE_RESPUESTA, ',', '.')) AS IMPORTE_RESPUESTA
+		<![CDATA[SELECT se.ORDENANTE, se.BIC, se.IBAN, se.BENEFICIARIO, se.CONCEPTO, se.PROPOSITOTR, se.TIPOTR, se.IMPORTE_RESPUESTA
 FROM SOLICITUDES_EJECUCION se
 WHERE se.COD_SOLICITUD_EJECUCION = $P{COD_SOLICITUD_EJECUCION}]]>
 	</queryString>
@@ -31,7 +31,7 @@ WHERE se.COD_SOLICITUD_EJECUCION = $P{COD_SOLICITUD_EJECUCION}]]>
 	<field name="TIPOTR" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="TIPOTR"/>
 	</field>
-	<field name="IMPORTE_RESPUESTA" class="java.math.BigDecimal">
+	<field name="IMPORTE_RESPUESTA" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="IMPORTE_RESPUESTA"/>
 	</field>
 	<variable name="TodayDate" class="java.lang.String">
@@ -218,7 +218,7 @@ WHERE se.COD_SOLICITUD_EJECUCION = $P{COD_SOLICITUD_EJECUCION}]]>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTE_RESPUESTA}) + " EUR"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format(new java.math.BigDecimal($F{IMPORTE_RESPUESTA}.replaceAll(",","."))) + " EUR"]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="19" y="80" width="9" height="234" uuid="ea942b99-dd5d-465e-b95d-e42564b35b90"/>
