@@ -214,7 +214,7 @@ public class CGPJServiceImpl
             for (SolicitudesTraba solicitudTraba : solicitudesTraba) {
                 Traba t = solicitudTraba.getTraba();
                 for (CuentaTraba cuentaTraba : t.getCuentaTrabas()) {
-                    if (IND_FLAG_SI.equals(cuentaTraba.getAgregarATraba())) {
+                    if (IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba())) {
                         solicitudTraba.setEstadoIntTraba(estadoIntTraba);
                         solicitudTraba.setImporteRespuesta(decimalFormat.format(cuentaTraba.getImporte()));
                         EstadoRespTraba estadoRespTraba = new EstadoRespTraba();
@@ -223,7 +223,7 @@ public class CGPJServiceImpl
                         break;
                     }
                 }
-                
+
                 solicitudTrabaRepository.save(solicitudTraba);
             }
 
