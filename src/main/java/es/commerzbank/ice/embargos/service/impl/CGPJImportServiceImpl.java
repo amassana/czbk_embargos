@@ -48,11 +48,14 @@ public class CGPJImportServiceImpl
     }
 
     @Override
-    public void importCGPJ(ControlFichero controlFichero)
+    public void importCGPJ(ControlFichero controlFichero, Peticion peticion)
             throws Exception
     {
+        controlFichero.setIndTieneTrabas(IND_FLAG_NO);
+        controlFichero.setIndTieneEjecuciones(IND_FLAG_NO);
+
         importEmbargos(controlFichero);
-        importEjecuciones(controlFichero);
+        importEjecuciones(controlFichero, peticion);
 
         EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
                 EmbargosConstants.COD_ESTADO_CTRLFICHERO_CGPJ_IMPORTADO,
@@ -122,15 +125,9 @@ public class CGPJImportServiceImpl
         seizedRepository.save(traba);
     }
 
-    private void importEjecuciones(ControlFichero controlFichero) {
-        controlFichero.setIndTieneEjecuciones(IND_FLAG_NO);
-
-        if (controlFichero.getPeticiones() != null && controlFichero.getPeticiones().size() == 1) {
-            Peticion peticion = controlFichero.getPeticiones().get(0);
-
-            if (peticion.getSolicitudesEjecucions() != null && peticion.getSolicitudesEjecucions().size() > 0) {
-                controlFichero.setIndTieneEjecuciones(IND_FLAG_SI);
-            }
+    private void importEjecuciones(ControlFichero controlFichero, Peticion peticion) {
+        if (peticion.getSolicitudesEjecucions() != null && peticion.getSolicitudesEjecucions().size() > 0) {
+            controlFichero.setIndTieneEjecuciones(IND_FLAG_SI);
         }
     }
 }

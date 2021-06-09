@@ -1,6 +1,7 @@
 package es.commerzbank.ice.embargos.event;
 
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
+import es.commerzbank.ice.embargos.domain.entity.Peticion;
 import es.commerzbank.ice.embargos.service.CGPJImportService;
 import org.quartz.*;
 import org.slf4j.Logger;
@@ -27,8 +28,9 @@ public class JobImportCGPJ implements Job {
 			logger.debug("Inicio Import CGPJ");
 
 			for (ControlFichero controlFichero : cgpjImportService.listPending()) {
-				logger.info("Importando CGPJ "+ controlFichero.getCodControlFichero());
-				cgpjImportService.importCGPJ(controlFichero);
+				Peticion peticion = controlFichero.getPeticiones().get(0);
+				logger.info("Importando CGPJ "+ peticion.getCodPeticion());
+				cgpjImportService.importCGPJ(controlFichero, peticion);
 				logger.info("Fin importación CGPJ "+ controlFichero.getCodControlFichero());
 			}
 
