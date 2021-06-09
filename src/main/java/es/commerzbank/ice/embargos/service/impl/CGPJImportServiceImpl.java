@@ -51,22 +51,36 @@ public class CGPJImportServiceImpl
     public void importCGPJ(ControlFichero controlFichero)
             throws Exception
     {
+        importEmbargos(controlFichero);
+        importEjecuciones(controlFichero);
+
+        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
+                EmbargosConstants.COD_ESTADO_CTRLFICHERO_CGPJ_IMPORTADO,
+                EmbargosConstants.COD_TIPO_FICHERO_PETICION_CGPJ);
+
+        controlFichero.setEstadoCtrlfichero(estadoCtrlfichero);
+
+        /*
+        if (controlFichero.getLevantamientoTrabas().size() > 0) {
+            controlFichero.setIndTieneLevantamientos(IND_FLAG_SI);
+            controlFichero.setCodSubestadoTraba(COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_ACCOUNTED);
+        }
+        */
+
+        fileControlRepository.saveAndFlush(controlFichero);
+    }
+
+    private void importEmbargos(ControlFichero controlFichero)
+        throws Exception
+    {
         for (Embargo embargo : controlFichero.getEmbargos()) {
             importEmbargo(embargo);
         }
 
-        EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
-                    EmbargosConstants.COD_ESTADO_CTRLFICHERO_CGPJ_IMPORTADO,
-                    EmbargosConstants.COD_TIPO_FICHERO_PETICION_CGPJ);
-
-        controlFichero.setEstadoCtrlfichero(estadoCtrlfichero);
-
-        if (controlFichero.getEmbargos() != null && controlFichero.getEmbargos().size() > 0) {
+        if (controlFichero.getEmbargos().size() > 0) {
             controlFichero.setIndTieneTrabas(IND_FLAG_SI);
             controlFichero.setCodSubestadoTraba(COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_RECEIVED);
         }
-
-        fileControlRepository.saveAndFlush(controlFichero);
     }
 
     private void importEmbargo(Embargo embargo)
@@ -106,5 +120,17 @@ public class CGPJImportServiceImpl
         seizureRepository.save(embargo);
 
         seizedRepository.save(traba);
+    }
+
+    private void importEjecuciones(ControlFichero controlFichero) {
+        controlFichero.setIndTieneEjecuciones(IND_FLAG_NO);
+
+        if (controlFichero.getPeticiones() != null && controlFichero.getPeticiones().size() == 1) {
+            Peticion peticion = controlFichero.getPeticiones().get(0);
+
+            if (peticion.getSolicitudesEjecucions() != null && peticion.getSolicitudesEjecucions().size() > 0) {
+                controlFichero.setIndTieneEjecuciones(IND_FLAG_SI);
+            }
+        }
     }
 }
