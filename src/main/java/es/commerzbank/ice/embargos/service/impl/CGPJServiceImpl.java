@@ -39,9 +39,10 @@ import java.io.File;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.text.DecimalFormat;
 import java.util.*;
 
-import static es.commerzbank.ice.embargos.utils.EmbargosConstants.CGPJ_ESTADO_INTERNO_PENDIENTE_ENVIAR;
+import static es.commerzbank.ice.embargos.utils.EmbargosConstants.*;
 
 @Service
 @Transactional(transactionManager="transactionManager")
@@ -184,7 +185,14 @@ public class CGPJServiceImpl
         boolean allReplied = true;
 
         EstadoIntPeticion estadoInterno = new EstadoIntPeticion();
-        estadoInterno.setCodEstadoIntPeticion(CGPJ_ESTADO_INTERNO_PENDIENTE_ENVIAR);
+        estadoInterno.setCodEstadoIntPeticion(CGPJ_ESTADO_INTERNO_SOLICITUD_PENDIENTE_ENVIAR);
+
+        EstadoIntTraba estadoIntTraba = new EstadoIntTraba();
+        estadoIntTraba.setCodEstadoIntTraba(CGPJ_ESTADO_INTERNO_TRABA_PROCESADA);
+
+        Locale locale = Locale.forLanguageTag("es");
+        DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat.getInstance(locale);
+        decimalFormat.applyPattern("#,##0.00");
 
         for (String codPeticion : codPeticiones) {
             Optional<Peticion> peticionOpt = petitionRepository.findById(codPeticion);
@@ -196,6 +204,22 @@ public class CGPJServiceImpl
             }
 
             Peticion peticion = peticionOpt.get();
+
+            List<SolicitudesTraba> solicitudesTraba = peticion.getSolicitudesTrabas();
+
+            for (SolicitudesTraba solicitudTraba : solicitudesTraba) {
+                Traba t = solicitudTraba.getTraba();
+                for (CuentaTraba cuentaTraba : t.getCuentaTrabas()) {
+                    if (IND_FLAG_SI.equals(cuentaTraba.getAgregarATraba())) {
+                        solicitudTraba.setEstadoIntTraba(estadoIntTraba);
+                        solicitudTraba.setImporteRespuesta(decimalFormat.format(cuentaTraba.getImporte()));
+                        EstadoRespTraba estadoRespTraba = new EstadoRespTraba();
+                        estadoRespTraba.setCodEstadoRespTraba(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
+                        solicitudTraba.setEstadoRespTraba(estadoRespTraba);
+                        break;
+                    }
+                }
+            }
 
             peticion.setEstadoIntPeticion(estadoInterno);
 
@@ -239,7 +263,7 @@ public class CGPJServiceImpl
 
             Resource informe = ResourcesUtil.getFromJasperFolder("CGPJ_listado.jasper");
             Resource imageLogo = ResourcesUtil.getImageLogoCommerceResource();
-            
+
             parameters.put("img_param", imageLogo.getFile().toString());
             parameters.put("COD_PETICION", codPeticion);
 

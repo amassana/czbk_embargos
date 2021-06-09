@@ -347,5 +347,7 @@ public class EmbargosConstants {
 	public static final String DETAIL_PAYMENT_UNDO_ACCOUNTING = "Extorno";
 
 	public static final Long CGPJ_ESTADO_INTERNO_PROCESADO = 2L;
-	public static final Long CGPJ_ESTADO_INTERNO_PENDIENTE_ENVIAR = 3L;
+	public static final Long CGPJ_ESTADO_INTERNO_SOLICITUD_PENDIENTE_ENVIAR = 3L;
+
+	public static final Long CGPJ_ESTADO_INTERNO_TRABA_PROCESADA = 3L;
 }
