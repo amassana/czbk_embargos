@@ -239,10 +239,8 @@ public class CGPJServiceImpl
 
             Resource informe = ResourcesUtil.getFromJasperFolder("CGPJ_listado.jasper");
             Resource imageLogo = ResourcesUtil.getImageLogoCommerceResource();
-
-            File logoFile = imageLogo.getFile();
-
-            parameters.put("IMAGE_PARAM", logoFile.toString());
+            
+            parameters.put("img_param", imageLogo.getFile().toString());
             parameters.put("COD_PETICION", codPeticion);
 
             parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
