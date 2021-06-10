@@ -240,10 +240,10 @@ public class EmailServiceImpl implements EmailService {
 		if (content == null || content.size() == 0)
 			return;
 
-		logger.info("ClientEmailServiceImpl - sendCGPJPending - start");
-
 		if (!generalParametersService.loadBooleanParameter(ValueConstants.EMAIL_SMTP_ENABLED, true))
 			return;
+
+		logger.info("ClientEmailServiceImpl - sendCGPJPending - start");
 
 		ICEEmail iceEmail = new ICEEmail();
 
@@ -259,9 +259,9 @@ public class EmailServiceImpl implements EmailService {
 		List<String> paragraphTextList = new ArrayList<>();
 
 		if (content.size() == 1)
-			paragraphTextList.add("Hay 1 petición del consejo pendiente de respuesta");
+			paragraphTextList.add("Hay 1 petición del consejo pendiente de responder");
 		else
-			paragraphTextList.add("Hay "+ content.size() +" peticiones del consejo pendientes de respuesta");
+			paragraphTextList.add("Hay "+ content.size() +" peticiones del consejo pendientes de responder");
 
 		iceEmail.setParagraphTextList(paragraphTextList);
 
