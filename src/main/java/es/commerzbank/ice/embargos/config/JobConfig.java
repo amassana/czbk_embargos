@@ -141,4 +141,24 @@ public class JobConfig {
         trigger.setCronExpression(cronExpression);
         return trigger;
     }
+
+    @Bean
+    public JobDetailFactoryBean jobPendingCGPJFactoryBean() {
+        JobDetailFactoryBean jobDetailFactory = new JobDetailFactoryBean();
+        jobDetailFactory.setJobClass(JobCGPJPending.class);
+        jobDetailFactory.setName(JobCGPJPending.class.getSimpleName());
+        jobDetailFactory.setDescription("Job de email pendientes cgpj");
+        jobDetailFactory.setDurability(true);
+        return jobDetailFactory;
+    }
+
+    @Bean
+    public CronTriggerFactoryBean triggerPendientesCGPJ(JobDetail jobPendingCGPJFactoryBean) {
+        String cronExpression = "0 57 * ? * * *";
+        CronTriggerFactoryBean trigger = new CronTriggerFactoryBean();
+        trigger.setName(jobPendingCGPJFactoryBean.getKey().getName() + "Trigger");
+        trigger.setJobDetail(jobPendingCGPJFactoryBean);
+        trigger.setCronExpression(cronExpression);
+        return trigger;
+    }
 }
