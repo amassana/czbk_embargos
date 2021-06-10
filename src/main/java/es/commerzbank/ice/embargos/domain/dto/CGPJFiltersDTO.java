@@ -7,6 +7,7 @@ public class CGPJFiltersDTO
 	public Long [] statuses;
 	private Instant startDate;
 	private Instant endDate;
+	private Instant fileLoadTimestampMax;
 
 	public Instant getStartDate() {
 		return startDate;
@@ -27,5 +28,13 @@ public class CGPJFiltersDTO
 
 	public void setStatuses(Long[] statuses) {
 		this.statuses = statuses;
+	}
+
+	public Instant getFileLoadTimestampMax() {
+		return fileLoadTimestampMax;
+	}
+
+	public void setFileLoadTimestampMax(Instant fileLoadTimestampMax) {
+		this.fileLoadTimestampMax = fileLoadTimestampMax;
 	}
 }

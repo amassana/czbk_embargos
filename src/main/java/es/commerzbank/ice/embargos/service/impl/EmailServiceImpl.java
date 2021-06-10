@@ -1,22 +1,22 @@
 package es.commerzbank.ice.embargos.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import es.commerzbank.ice.comun.lib.domain.dto.ICEEmail;
+import es.commerzbank.ice.comun.lib.service.ClientEmailService;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.comun.lib.util.ValueConstants;
+import es.commerzbank.ice.embargos.domain.dto.CGPJPetitionDTO;
+import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
+import es.commerzbank.ice.embargos.domain.entity.ErrorTraba;
+import es.commerzbank.ice.embargos.service.EmailService;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import es.commerzbank.ice.comun.lib.domain.dto.ICEEmail;
-import es.commerzbank.ice.comun.lib.service.ClientEmailService;
-import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
-import es.commerzbank.ice.comun.lib.util.ICEException;
-import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
-import es.commerzbank.ice.embargos.domain.entity.ErrorTraba;
-import es.commerzbank.ice.embargos.service.EmailService;
-import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class EmailServiceImpl implements EmailService {
@@ -231,5 +231,49 @@ public class EmailServiceImpl implements EmailService {
 
 		logger.info("EmailServiceImpl - sendEmailUnreadFiles - end");
 		
+	}
+
+	@Override
+	public void sendCGPJPending(List<CGPJPetitionDTO> content, String emailAddressesTo, String emailAddressFrom, String emailDefaultFooterText)
+			throws ICEException
+	{
+		if (content == null || content.size() == 0)
+			return;
+
+		logger.info("ClientEmailServiceImpl - sendCGPJPending - start");
+
+		if (!generalParametersService.loadBooleanParameter(ValueConstants.EMAIL_SMTP_ENABLED, true))
+			return;
+
+		ICEEmail iceEmail = new ICEEmail();
+
+		List<String> recipientsTo = new ArrayList<>();
+
+		recipientsTo.add(emailAddressesTo);
+		iceEmail.setRecipientsTo(recipientsTo);
+
+		iceEmail.setEmailAddressFrom(emailAddressFrom);
+
+		iceEmail.setSubject("Peticiones CGPJ Pendientes");
+
+		List<String> paragraphTextList = new ArrayList<>();
+
+		if (content.size() == 1)
+			paragraphTextList.add("Hay 1 petición del consejo pendiente de respuesta");
+		else
+			paragraphTextList.add("Hay "+ content.size() +" peticiones del consejo pendientes de respuesta");
+
+		iceEmail.setParagraphTextList(paragraphTextList);
+
+		iceEmail.setFooterText(emailDefaultFooterText);
+
+		try {
+			clientEmailService.sendEmailWithAttachment(iceEmail);
+		} catch (Exception e) {
+			logger.error("ERROR al enviar el email de 'Peticiones del Consejo pendientes'", e);
+		}
+
+		logger.info("ClientEmailServiceImpl - sendCGPJPending - end");
+
 	}
 }

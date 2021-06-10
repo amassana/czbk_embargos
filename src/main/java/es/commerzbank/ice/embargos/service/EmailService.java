@@ -3,6 +3,7 @@ package es.commerzbank.ice.embargos.service;
 import java.util.List;
 
 import es.commerzbank.ice.comun.lib.util.ICEException;
+import es.commerzbank.ice.embargos.domain.dto.CGPJPetitionDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.ErrorTraba;
 
@@ -17,4 +18,7 @@ public interface EmailService {
 	public void sendEmailUnreadFiles(List<ControlFichero> listFicheros) throws ICEException;
 	
 	public void sendEmailFileResult(String nombreFichero) throws ICEException;
+
+    void sendCGPJPending(List<CGPJPetitionDTO> content, String emailAddressesTo, String emailAddressFrom, String emailDefaultFooterText)
+            throws ICEException;
 }

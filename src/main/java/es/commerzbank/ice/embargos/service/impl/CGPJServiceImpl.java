@@ -120,6 +120,12 @@ public class CGPJServiceImpl
                     }
                 }
 
+                if (filters.getFileLoadTimestampMax() != null) {
+                    BigDecimal data = ICEDateUtils.instantDateTimeToBigDecimal(filters.getFileLoadTimestampMax());
+
+                    predicates.add(criteriaBuilder.lessThanOrEqualTo(root.join(Peticion_.controlFichero).get(ControlFichero_.FECHA_INCORPORACION), data));
+                }
+
                 return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
