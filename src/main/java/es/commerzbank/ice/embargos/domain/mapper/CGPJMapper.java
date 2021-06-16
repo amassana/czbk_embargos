@@ -50,7 +50,7 @@ public abstract class CGPJMapper {
             @Mapping(constant = "", target = "actuacion"),
             @Mapping(constant = "1", target = "numeroOrdenCuenta"),
             @Mapping(constant = "cuentaTraba.cambio", target = "cambio"),
-            @Mapping(constant = EmbargosConstants.IND_FLAG_NO, target = "indConabilizado"),
+            @Mapping(constant = EmbargosConstants.IND_FLAG_NO, target = "indContabilizado"),
             @Mapping(constant = "cuentaTraba.iban", target = "iban"),
             @Mapping(constant = "cuentaTraba.codDivisa", target = "codDivisa"),
             @Mapping(constant = "cuentaTraba.estadoCuenta", target = "estadoCuenta"),
