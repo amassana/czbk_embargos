@@ -197,6 +197,9 @@ public class CGPJServiceImpl
         EstadoIntPeticion estadoInterno = new EstadoIntPeticion();
         estadoInterno.setCodEstadoIntPeticion(CGPJ_ESTADO_INTERNO_SOLICITUD_PENDIENTE_ENVIAR);
 
+        EstadoPrimarioResp estadoPrimarioResp = new EstadoPrimarioResp();
+        estadoPrimarioResp.setCodEstadoPrimarioResp(COD_ESTADO_PRIMARIO_RESPUESTA_PROCESADA_TOTALMENTE);
+
         EstadoIntTraba estadoIntTraba = new EstadoIntTraba();
         estadoIntTraba.setCodEstadoIntTraba(CGPJ_ESTADO_INTERNO_TRABA_PROCESADA);
 
@@ -234,6 +237,7 @@ public class CGPJServiceImpl
                 }
 
                 peticion.setEstadoIntPeticion(estadoInterno);
+                peticion.setEstadoPrimarioResp(estadoPrimarioResp);
 
                 petitionRepository.save(peticion);
             }
