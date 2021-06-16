@@ -63,6 +63,7 @@ public class CGPJImportServiceImpl
             throws Exception
     {
         controlFichero.setIndTieneTrabas(IND_FLAG_NO);
+        controlFichero.setIndTieneLevantamientos(IND_FLAG_NO);
         controlFichero.setIndTieneEjecuciones(IND_FLAG_NO);
 
         importEmbargos(controlFichero);
@@ -142,6 +143,7 @@ public class CGPJImportServiceImpl
         for (SolicitudesLevantamiento solicitudLevantamiento : peticion.getSolicitudesLevantamientos()) {
             importLevantamiento(solicitudLevantamiento);
         }
+        
         if (peticion.getSolicitudesLevantamientos().size() > 0) {
             controlFichero.setIndTieneLevantamientos(IND_FLAG_SI);
 
@@ -181,18 +183,6 @@ public class CGPJImportServiceImpl
             if (levantamiento.getImporteLevantado() != null)
                 continue;
 
-            levantamiento.setImporteLevantado(CGPJUtils.parse(solicitudLevantamiento.getImporteSolicitud()));
-
-            if (solicitudLevantamiento.getEstadoIntLevantamiento().getCodEstadoIntLevantamiento() == CGPJ_ESTADO_INTERNO_LEVANTAMIENTO_INICIAL
-            || solicitudLevantamiento.getEstadoIntLevantamiento().getCodEstadoIntLevantamiento() == CGPJ_ESTADO_INTERNO_LEVANTAMIENTO_PENDIENTE_CONTABILIZAR) {
-                EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
-                estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE);
-                levantamiento.setEstadoLevantamiento(estadoLevantamiento);
-            }
-            else {
-                ; // TODO debería haber un estado levantamiento adecuado para este caso; ahora Pendiente - Pendiente de contabilización - Contabilizado
-            }
-
             // Se busca la cuenta traba asociada
             CuentaTraba cuentaTraba = null;
             BigDecimal importe = CGPJUtils.parse(solicitudLevantamiento.getImporteSolicitud());
@@ -221,6 +211,19 @@ public class CGPJImportServiceImpl
             CuentaLevantamiento cuentaLevantamiento = CGPJMapper.generateCuentaLevantamiento(levantamiento, solicitudLevantamiento, cuentaTraba);
 
             liftingRepository.save(levantamiento);
+
+            levantamiento.setImporteLevantado(CGPJUtils.parse(solicitudLevantamiento.getImporteSolicitud()));
+
+            if (solicitudLevantamiento.getEstadoIntLevantamiento().getCodEstadoIntLevantamiento() == CGPJ_ESTADO_INTERNO_LEVANTAMIENTO_INICIAL
+                    || solicitudLevantamiento.getEstadoIntLevantamiento().getCodEstadoIntLevantamiento() == CGPJ_ESTADO_INTERNO_LEVANTAMIENTO_PENDIENTE_CONTABILIZAR) {
+                EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
+                estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE);
+                levantamiento.setEstadoLevantamiento(estadoLevantamiento);
+            }
+            else {
+                ; // TODO debería haber un estado levantamiento adecuado para este caso; ahora Pendiente - Pendiente de contabilización - Contabilizado
+            }
+
             liftingBankAccountRepository.save(cuentaLevantamiento);
 
             break;  // no procesamos otros levantamientos, ya está importado
