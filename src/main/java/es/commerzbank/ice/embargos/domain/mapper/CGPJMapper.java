@@ -49,12 +49,14 @@ public abstract class CGPJMapper {
             @Mapping(source = "cuentaTraba.cuenta", target = "cuenta"),
             @Mapping(constant = "", target = "actuacion"),
             @Mapping(constant = "1", target = "numeroOrdenCuenta"),
-            @Mapping(constant = "cuentaTraba.cambio", target = "cambio"),
-            @Mapping(constant = EmbargosConstants.IND_FLAG_NO, target = "indConabilizado"),
-            @Mapping(constant = "cuentaTraba.iban", target = "iban"),
-            @Mapping(constant = "cuentaTraba.codDivisa", target = "codDivisa"),
-            @Mapping(constant = "cuentaTraba.estadoCuenta", target = "estadoCuenta"),
-            @Mapping(constant = "cuentaTraba.fechaValor", target = "fechaValor"),
+            @Mapping(source = "cuentaTraba.cambio", target = "cambio"),
+            @Mapping(constant = EmbargosConstants.IND_FLAG_NO, target = "indContabilizado"),
+            @Mapping(source = "cuentaTraba.iban", target = "iban"),
+            @Mapping(source = "cuentaTraba.divisa", target = "codDivisa"),
+            @Mapping(source = "cuentaTraba.estadoCuenta", target = "estadoCuenta"),
+            @Mapping(source = "cuentaTraba.fechaValor", target = "fechaValor"),
+            @Mapping(constant = "", target = "FUltimaModificacion"),    // se setean abajo
+            @Mapping(constant = "", target = "usuarioUltModificacion"),    // se setean abajo
     })
     public abstract CuentaLevantamiento generateCuentaLevantamiento(
             LevantamientoTraba levantamientoTraba, SolicitudesLevantamiento solicitudLevantamiento, CuentaTraba cuentaTraba)
