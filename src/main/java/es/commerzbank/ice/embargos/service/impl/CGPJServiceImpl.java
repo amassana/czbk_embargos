@@ -200,8 +200,6 @@ public class CGPJServiceImpl
         EstadoIntTraba estadoIntTraba = new EstadoIntTraba();
         estadoIntTraba.setCodEstadoIntTraba(CGPJ_ESTADO_INTERNO_TRABA_PROCESADA);
 
-
-
         for (String codPeticion : codPeticiones) {
             Optional<Peticion> peticionOpt = petitionRepository.findById(codPeticion);
 
@@ -211,29 +209,38 @@ public class CGPJServiceImpl
                 continue;
             }
 
-            Peticion peticion = peticionOpt.get();
+            try {
+                logger.info("Marcando como pendiente de envío la petición "+ codPeticion);
 
-            List<SolicitudesTraba> solicitudesTraba = peticion.getSolicitudesTrabas();
+                Peticion peticion = peticionOpt.get();
 
-            for (SolicitudesTraba solicitudTraba : solicitudesTraba) {
-                Traba traba = solicitudTraba.getTraba();
-                for (CuentaTraba cuentaTraba : traba.getCuentaTrabas()) {
-                    if (IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba())) {
-                        solicitudTraba.setEstadoIntTraba(estadoIntTraba);
-                        solicitudTraba.setImporteRespuesta(CGPJUtils.format(cuentaTraba.getImporte()));
-                        EstadoRespTraba estadoRespTraba = new EstadoRespTraba();
-                        estadoRespTraba.setCodEstadoRespTraba(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
-                        solicitudTraba.setEstadoRespTraba(estadoRespTraba);
-                        break;
+                List<SolicitudesTraba> solicitudesTraba = peticion.getSolicitudesTrabas();
+
+                for (SolicitudesTraba solicitudTraba : solicitudesTraba) {
+                    Traba traba = solicitudTraba.getTraba();
+                    for (CuentaTraba cuentaTraba : traba.getCuentaTrabas()) {
+                        if (IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba())) {
+                            solicitudTraba.setTienePosiciones(IND_FLAG_NO); // TODO si null peta pq el integrador mira al responder si vale S o N
+                            solicitudTraba.setEstadoIntTraba(estadoIntTraba);
+                            solicitudTraba.setImporteRespuesta(CGPJUtils.format(cuentaTraba.getImporte()));
+                            EstadoRespTraba estadoRespTraba = new EstadoRespTraba();
+                            estadoRespTraba.setCodEstadoRespTraba(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
+                            solicitudTraba.setEstadoRespTraba(estadoRespTraba);
+                            break;
+                        }
                     }
+
+                    solicitudTrabaRepository.save(solicitudTraba);
                 }
 
-                solicitudTrabaRepository.save(solicitudTraba);
+                peticion.setEstadoIntPeticion(estadoInterno);
+
+                petitionRepository.save(peticion);
             }
-
-            peticion.setEstadoIntPeticion(estadoInterno);
-
-            petitionRepository.save(peticion);
+            catch (Exception e) {
+                logger.error("Excepción procesando la respuesta de la Peticion "+ codPeticion +". Se responden las demás", e);
+                allReplied = false;
+            }
         }
 
         return allReplied;
