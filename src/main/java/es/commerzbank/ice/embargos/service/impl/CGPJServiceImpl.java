@@ -16,6 +16,7 @@ import es.commerzbank.ice.embargos.repository.PetitionRepository;
 import es.commerzbank.ice.embargos.repository.SolicitudTrabaRepository;
 import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.CGPJService;
+import es.commerzbank.ice.embargos.utils.CGPJUtils;
 import es.commerzbank.ice.embargos.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -40,7 +41,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.text.DecimalFormat;
 import java.util.*;
 
 import static es.commerzbank.ice.embargos.utils.EmbargosConstants.*;
@@ -200,9 +200,7 @@ public class CGPJServiceImpl
         EstadoIntTraba estadoIntTraba = new EstadoIntTraba();
         estadoIntTraba.setCodEstadoIntTraba(CGPJ_ESTADO_INTERNO_TRABA_PROCESADA);
 
-        Locale locale = Locale.forLanguageTag("es");
-        DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat.getInstance(locale);
-        decimalFormat.applyPattern("#,##0.00");
+
 
         for (String codPeticion : codPeticiones) {
             Optional<Peticion> peticionOpt = petitionRepository.findById(codPeticion);
@@ -218,11 +216,11 @@ public class CGPJServiceImpl
             List<SolicitudesTraba> solicitudesTraba = peticion.getSolicitudesTrabas();
 
             for (SolicitudesTraba solicitudTraba : solicitudesTraba) {
-                Traba t = solicitudTraba.getTraba();
-                for (CuentaTraba cuentaTraba : t.getCuentaTrabas()) {
+                Traba traba = solicitudTraba.getTraba();
+                for (CuentaTraba cuentaTraba : traba.getCuentaTrabas()) {
                     if (IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba())) {
                         solicitudTraba.setEstadoIntTraba(estadoIntTraba);
-                        solicitudTraba.setImporteRespuesta(decimalFormat.format(cuentaTraba.getImporte()));
+                        solicitudTraba.setImporteRespuesta(CGPJUtils.format(cuentaTraba.getImporte()));
                         EstadoRespTraba estadoRespTraba = new EstadoRespTraba();
                         estadoRespTraba.setCodEstadoRespTraba(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
                         solicitudTraba.setEstadoRespTraba(estadoRespTraba);

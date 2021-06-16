@@ -1,14 +1,14 @@
 package es.commerzbank.ice.embargos.domain.mapper;
 
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
-import es.commerzbank.ice.embargos.domain.entity.CuentaEmbargo;
-import es.commerzbank.ice.embargos.domain.entity.CuentaTraba;
-import es.commerzbank.ice.embargos.domain.entity.EstadoTraba;
+import es.commerzbank.ice.embargos.domain.entity.*;
+import es.commerzbank.ice.embargos.utils.CGPJUtils;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 import org.mapstruct.*;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 
 @Mapper(componentModel="spring")
 public abstract class CGPJMapper {
@@ -42,6 +42,35 @@ public abstract class CGPJMapper {
         estadoTraba.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE);
         cuentaTraba.setEstadoTraba(estadoTraba);
         cuentaTraba.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
-        cuentaTraba.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+    }
+
+    @Mappings({
+            @Mapping(source = "levantamientoTraba", target = "levantamientoTraba"),
+            @Mapping(source = "cuentaTraba.cuenta", target = "cuenta"),
+            @Mapping(constant = "", target = "actuacion"),
+            @Mapping(constant = "1", target = "numeroOrdenCuenta"),
+            @Mapping(constant = "cuentaTraba.cambio", target = "cambio"),
+            @Mapping(constant = EmbargosConstants.IND_FLAG_NO, target = "indConabilizado"),
+            @Mapping(constant = "cuentaTraba.iban", target = "iban"),
+            @Mapping(constant = "cuentaTraba.codDivisa", target = "codDivisa"),
+            @Mapping(constant = "cuentaTraba.estadoCuenta", target = "estadoCuenta"),
+            @Mapping(constant = "cuentaTraba.fechaValor", target = "fechaValor"),
+    })
+    public abstract CuentaLevantamiento generateCuentaLevantamiento(
+            LevantamientoTraba levantamientoTraba, SolicitudesLevantamiento solicitudLevantamiento, CuentaTraba cuentaTraba)
+            throws ParseException;
+
+    @AfterMapping
+    public void generateCuentaLevantamientoAfterMapping(
+            @MappingTarget CuentaLevantamiento cuentaLevantamiento,
+            LevantamientoTraba levantamientoTraba, SolicitudesLevantamiento solicitudLevantamiento) throws ParseException
+    {
+        cuentaLevantamiento.setImporte(CGPJUtils.parse(solicitudLevantamiento.getImporteSolicitud()));
+        EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
+        estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE);
+        cuentaLevantamiento.setEstadoLevantamiento(estadoLevantamiento);
+        cuentaLevantamiento.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
+        cuentaLevantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+
     }
 }
