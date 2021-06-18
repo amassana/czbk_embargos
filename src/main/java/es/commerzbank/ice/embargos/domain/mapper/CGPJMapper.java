@@ -75,4 +75,8 @@ public abstract class CGPJMapper {
         cuentaLevantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 
     }
+
+    public abstract CuentaTrabaCGPJCopy generateCuentaTrabaCGPJCopy(CuentaTraba cuentaTraba);
+
+    public abstract CuentaTraba generateCuentaTraba(CuentaTrabaCGPJCopy cuentaTrabaCGPJCopy);
 }

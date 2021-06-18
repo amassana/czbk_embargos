@@ -12,6 +12,7 @@ import es.commerzbank.ice.embargos.domain.dto.CGPJPetitionDTO;
 import es.commerzbank.ice.embargos.domain.dto.IntegradorRequestStatusDTO;
 import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.PetitionMapper;
+import es.commerzbank.ice.embargos.repository.CuentaTrabaCGPJCopyRepository;
 import es.commerzbank.ice.embargos.repository.PetitionRepository;
 import es.commerzbank.ice.embargos.repository.SolicitudTrabaRepository;
 import es.commerzbank.ice.embargos.service.AccountingService;
@@ -72,6 +73,12 @@ public class CGPJServiceImpl
 
     @Autowired
     private AccountingService accountingService;
+
+    @Autowired
+    private es.commerzbank.ice.embargos.domain.mapper.CGPJMapper CGPJMapper;
+
+    @Autowired
+    private CuentaTrabaCGPJCopyRepository cuentaTrabaCGPJCopyRepository;
 
     @Override
     public Page<CGPJPetitionDTO> filter(CGPJFiltersDTO filters, Pageable pageable)
@@ -221,23 +228,29 @@ public class CGPJServiceImpl
 
                 for (SolicitudesTraba solicitudTraba : solicitudesTraba) {
                     Traba traba = solicitudTraba.getTraba();
+                    BigDecimal importeRespuesta = BigDecimal.ZERO;
+
                     for (CuentaTraba cuentaTraba : traba.getCuentaTrabas()) {
                         if (IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba())) {
                             solicitudTraba.setTienePosiciones(IND_FLAG_NO); // TODO si null peta pq el integrador mira al responder si vale S o N
                             solicitudTraba.setEstadoIntTraba(estadoIntTraba);
-                            solicitudTraba.setImporteRespuesta(CGPJUtils.format(cuentaTraba.getImporte()));
+                            importeRespuesta = importeRespuesta.add(cuentaTraba.getImporte());
                             EstadoRespTraba estadoRespTraba = new EstadoRespTraba();
                             estadoRespTraba.setCodEstadoRespTraba(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
                             solicitudTraba.setEstadoRespTraba(estadoRespTraba);
-                            break;
+
+                            CuentaTrabaCGPJCopy cuentaTrabaCGPJCopy = CGPJMapper.generateCuentaTrabaCGPJCopy(cuentaTraba);
+                            cuentaTrabaCGPJCopyRepository.save(cuentaTrabaCGPJCopy);
                         }
                     }
+
+                    solicitudTraba.setImporteRespuesta(CGPJUtils.format(importeRespuesta));
 
                     solicitudTrabaRepository.save(solicitudTraba);
                 }
 
                 peticion.setEstadoIntPeticion(estadoInterno);
-                peticion.setEstadoPrimarioResp(estadoPrimarioResp);
+                peticion.setEstadoPrimarioResp(estadoPrimarioResp); // Todos en PROD son 0000
 
                 petitionRepository.save(peticion);
             }

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -52,6 +53,9 @@ public class CGPJImportServiceImpl
 
     @Autowired
     private SolicitudTrabaRepository solicitudTrabaRepository;
+
+    @Autowired
+    private CuentaTrabaCGPJCopyRepository cuentaTrabaCGPJCopyRepository;
 
     @Override
     public List<ControlFichero> listPending() {
@@ -141,9 +145,9 @@ public class CGPJImportServiceImpl
         throws Exception
     {
         for (SolicitudesLevantamiento solicitudLevantamiento : peticion.getSolicitudesLevantamientos()) {
-            importLevantamiento(solicitudLevantamiento);
+            importSolicitudLevantamiento(solicitudLevantamiento);
         }
-        
+
         if (peticion.getSolicitudesLevantamientos().size() > 0) {
             controlFichero.setIndTieneLevantamientos(IND_FLAG_SI);
 
@@ -158,7 +162,7 @@ public class CGPJImportServiceImpl
         }
     }
 
-    private void importLevantamiento(SolicitudesLevantamiento solicitudLevantamiento)
+    private void importSolicitudLevantamiento(SolicitudesLevantamiento solicitudLevantamiento)
         throws Exception
     {
         Optional<Traba> optTraba = seizedRepository.findById(solicitudLevantamiento.getCodTraba().longValue());
@@ -183,50 +187,79 @@ public class CGPJImportServiceImpl
             if (levantamiento.getImporteLevantado() != null)
                 continue;
 
-            // Se busca la cuenta traba asociada
-            CuentaTraba cuentaTraba = null;
-            BigDecimal importe = CGPJUtils.parse(solicitudLevantamiento.getImporteSolicitud());
+            importLevantamiento(solicitudLevantamiento, traba, levantamiento);
+
+            break;  // no procesamos otros levantamientos, ya está importado
+        }
+    }
+
+    private void importLevantamiento(SolicitudesLevantamiento solicitudLevantamiento, Traba traba, LevantamientoTraba levantamiento)
+            throws Exception
+    {
+        restaurarCuentaTraba(traba);
+        CuentaTraba cuentaTraba = findCuentaTraba(solicitudLevantamiento, traba);
+
+        if (cuentaTraba == null)
+            throw new Exception("No se puede seleccionar una cuenta traba a vincular a la cuenta levantada");
+
+        CuentaLevantamiento cuentaLevantamiento = CGPJMapper.generateCuentaLevantamiento(levantamiento, solicitudLevantamiento, cuentaTraba);
+
+        liftingRepository.save(levantamiento);
+
+        levantamiento.setImporteLevantado(CGPJUtils.parse(solicitudLevantamiento.getImporteSolicitud()));
+
+        if (solicitudLevantamiento.getEstadoIntLevantamiento().getCodEstadoIntLevantamiento() == CGPJ_ESTADO_INTERNO_LEVANTAMIENTO_INICIAL
+                || solicitudLevantamiento.getEstadoIntLevantamiento().getCodEstadoIntLevantamiento() == CGPJ_ESTADO_INTERNO_LEVANTAMIENTO_PENDIENTE_CONTABILIZAR) {
+            EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
+            estadoLevantamiento.setCodEstado(COD_ESTADO_LEVANTAMIENTO_PENDIENTE);
+            levantamiento.setEstadoLevantamiento(estadoLevantamiento);
+        }
+        else {
+            ; // TODO debería haber un estado levantamiento adecuado para este caso; ahora Pendiente - Pendiente de contabilización - Contabilizado
+        }
+
+        liftingBankAccountRepository.save(cuentaLevantamiento);
+    }
+
+    // El integrador parece borrar la tabla cuenta_traba al levantar. Se recupera su contenido capturado al hacer reply
+    private void restaurarCuentaTraba(Traba traba) {
+        List<CuentaTrabaCGPJCopy> backupCuentas = cuentaTrabaCGPJCopyRepository.findByTraba(traba);
+
+        for (CuentaTrabaCGPJCopy backup : backupCuentas) {
+            if (!seizedRepository.existsById(backup.getCodCuentaTraba())) {
+                CuentaTraba cuentaTraba = CGPJMapper.generateCuentaTraba(backup);
+                seizedBankAccountRepository.save(cuentaTraba);
+            }
+        }
+    }
+
+    private CuentaTraba findCuentaTraba(SolicitudesLevantamiento solicitudLevantamiento, Traba traba)
+        throws ParseException
+    {
+        BigDecimal importe = CGPJUtils.parse(solicitudLevantamiento.getImporteSolicitud());
+        CuentaTraba cuentaTraba = null;
+
+        // Primer criterio: una cuenta traba cuyo importe sea igual al importe a levantar.
+        for (CuentaTraba cuentaTrabaActual : traba.getCuentaTrabas()) {
+            if (IND_FLAG_YES.equals(cuentaTrabaActual.getAgregarATraba())) {
+                if (importe.compareTo(cuentaTrabaActual.getImporte()) == 0) {
+                    cuentaTraba = cuentaTrabaActual;
+                    break;
+                }
+            }
+        }
+        // si no hay una cuenta traba con importe igual, se coge la primera con importe mayor al que se levantará
+        if (cuentaTraba == null) {
             for (CuentaTraba cuentaTrabaActual : traba.getCuentaTrabas()) {
-                if (EmbargosConstants.IND_FLAG_YES.equals(cuentaTrabaActual.getAgregarATraba())) {
-                    if (importe.compareTo(cuentaTrabaActual.getImporte()) == 0) {
+                if (IND_FLAG_YES.equals(cuentaTrabaActual.getAgregarATraba())) {
+                    if (importe.compareTo(cuentaTrabaActual.getImporte()) < 0) {
                         cuentaTraba = cuentaTrabaActual;
                         break;
                     }
                 }
             }
-            if (cuentaTraba == null) { // si no hay una cuenta traba con importe igual, se coge la primera con importe mayor al que se levantará.
-                for (CuentaTraba cuentaTrabaActual : traba.getCuentaTrabas()) {
-                    if (EmbargosConstants.IND_FLAG_YES.equals(cuentaTrabaActual.getAgregarATraba())) {
-                        if (importe.compareTo(cuentaTrabaActual.getImporte()) < 0) {
-                            cuentaTraba = cuentaTrabaActual;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (cuentaTraba == null)
-                throw new Exception("No se puede seleccionar una cuenta traba a vincular a la cuenta levantada");
-
-            CuentaLevantamiento cuentaLevantamiento = CGPJMapper.generateCuentaLevantamiento(levantamiento, solicitudLevantamiento, cuentaTraba);
-
-            liftingRepository.save(levantamiento);
-
-            levantamiento.setImporteLevantado(CGPJUtils.parse(solicitudLevantamiento.getImporteSolicitud()));
-
-            if (solicitudLevantamiento.getEstadoIntLevantamiento().getCodEstadoIntLevantamiento() == CGPJ_ESTADO_INTERNO_LEVANTAMIENTO_INICIAL
-                    || solicitudLevantamiento.getEstadoIntLevantamiento().getCodEstadoIntLevantamiento() == CGPJ_ESTADO_INTERNO_LEVANTAMIENTO_PENDIENTE_CONTABILIZAR) {
-                EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
-                estadoLevantamiento.setCodEstado(EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE);
-                levantamiento.setEstadoLevantamiento(estadoLevantamiento);
-            }
-            else {
-                ; // TODO debería haber un estado levantamiento adecuado para este caso; ahora Pendiente - Pendiente de contabilización - Contabilizado
-            }
-
-            liftingBankAccountRepository.save(cuentaLevantamiento);
-
-            break;  // no procesamos otros levantamientos, ya está importado
         }
+
+        return cuentaTraba;
     }
 }

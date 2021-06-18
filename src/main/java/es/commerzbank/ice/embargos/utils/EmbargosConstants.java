@@ -185,6 +185,7 @@ public class EmbargosConstants {
 	public static final String CONTROL_FICHERO_DESCRIPCION_DEFAULT = "AUTOMATICO";
 	
 	public static final String COD_ESTADO_PRIMARIO_PETICION_ENVIANDO_PETICION_UNICA = "1000";
+	public static final String COD_ESTADO_PRIMARIO_RESPUESTA_PROCESADA_TOTALMENTE = "0000";
 	
 	public static final String IND_FLAG_NO = "N";
 	public static final String IND_FLAG_YES = "Y";
