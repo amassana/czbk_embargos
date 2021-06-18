@@ -44,6 +44,6 @@ WHERE ct.COD_ESTADO = 1
 					"ct.estadoTraba.codEstado = 1" +
 					" AND t.revisado = '"+ EmbargosConstants.IND_FLAG_SI +"'" +
 					" AND ct.importe > 0" +
-					" AND ct.agregar_a_traba = '"+ EmbargosConstants.IND_FLAG_YES +"'")
+					" AND ct.agregarATraba = '"+ EmbargosConstants.IND_FLAG_YES +"'")
 	List<AccountingPendingDTO> findAccountingPending();
 }
