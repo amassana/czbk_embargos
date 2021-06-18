@@ -55,7 +55,7 @@ public abstract class CGPJMapper {
             @Mapping(source = "cuentaTraba.divisa", target = "codDivisa"),
             @Mapping(source = "cuentaTraba.estadoCuenta", target = "estadoCuenta"),
             @Mapping(source = "cuentaTraba.fechaValor", target = "fechaValor"),
-            @Mapping(constant = "", target = "FUltimaModificacion"),    // se setean abajo
+            @Mapping(constant = "0", target = "FUltimaModificacion"),    // se setean abajo
             @Mapping(constant = "", target = "usuarioUltModificacion"),    // se setean abajo
     })
     public abstract CuentaLevantamiento generateCuentaLevantamiento(
