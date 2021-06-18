@@ -229,6 +229,7 @@ public class CGPJImportServiceImpl
             if (!seizedRepository.existsById(backup.getCodCuentaTraba())) {
                 CuentaTraba cuentaTraba = CGPJMapper.generateCuentaTraba(backup);
                 seizedBankAccountRepository.save(cuentaTraba);
+                traba.addCuentaTraba(cuentaTraba);
             }
         }
     }

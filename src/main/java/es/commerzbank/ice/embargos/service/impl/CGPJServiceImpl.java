@@ -239,8 +239,7 @@ public class CGPJServiceImpl
                             estadoRespTraba.setCodEstadoRespTraba(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
                             solicitudTraba.setEstadoRespTraba(estadoRespTraba);
 
-                            //CuentaTrabaCGPJCopy cuentaTrabaCGPJCopy = CGPJMapper.generateCuentaTrabaCGPJCopy(cuentaTraba);
-                            //cuentaTrabaCGPJCopyRepository.save(cuentaTrabaCGPJCopy);
+                            cuentaTrabaCGPJCopyRepository.cloneCuentaTraba(traba.getCodTraba());
                         }
                     }
 
