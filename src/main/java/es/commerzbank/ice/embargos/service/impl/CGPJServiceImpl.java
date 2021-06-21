@@ -356,7 +356,7 @@ public class CGPJServiceImpl
             parameters.put("img_param", imageLogo.getFile().toString());
 
             parameters.put("CUENTA_TRABA_EXPRESSION", SQLUtils.calcInExpression(pendientes.stream().filter(pending -> "TRABA".equals(pending.getTipo())).map(pending -> pending.getCodCuenta()).collect(Collectors.toList()), "ct.cod_cuenta_traba"));
-            parameters.put("CUENTA_LEVANTAMIENTO_EXPRESSION", SQLUtils.calcInExpression(pendientes.stream().filter(pending -> "LEVANTAMIENTO".equals(pending.getTipo())).map(pending -> pending.getCodCuenta()).collect(Collectors.toList()), "ct.cod_cuenta_traba"));
+            parameters.put("CUENTA_LEVANTAMIENTO_EXPRESSION", SQLUtils.calcInExpression(pendientes.stream().filter(pending -> "LEVANTAMIENTO".equals(pending.getTipo())).map(pending -> pending.getCodCuenta()).collect(Collectors.toList()), "cl.COD_CUENTA_LEVANTAMIENTO"));
             parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 
             InputStream isInforme = informe.getInputStream();
