@@ -306,11 +306,11 @@ public class FileControlServiceImpl
 			controlFichero.setCodSubestadoLevantamiento(codFileControlStatus);
 
 		if ((!EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneTrabas()) ||
-				(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneTrabas()) && codFileControlStatus == EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_TO_SEND))
+				(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneTrabas()) && controlFichero.getCodSubestadoTraba() == EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_TO_SEND))
 			&&
 				(!EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneLevantamientos())
 						||
-						(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneLevantamientos()) && codFileControlStatus == EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_ACCOUNTED))) {
+						(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneLevantamientos()) && controlFichero.getCodSubestadoLevantamiento() == EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_ACCOUNTED))) {
 			if (controlFichero.getPeticiones() == null || controlFichero.getPeticiones().size() != 1) {
 				throw new Exception("No se puede cambiar el estado del fichero por no tener una petición asociada");
 			}
