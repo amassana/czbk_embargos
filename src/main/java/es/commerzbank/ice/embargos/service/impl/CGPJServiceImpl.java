@@ -4,6 +4,7 @@ package es.commerzbank.ice.embargos.service.impl;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
+import es.commerzbank.ice.comun.lib.util.SQLUtils;
 import es.commerzbank.ice.comun.lib.util.jasper.ReportHelper;
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
 import es.commerzbank.ice.embargos.domain.dto.AccountingPendingDTO;
@@ -41,6 +42,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static es.commerzbank.ice.embargos.utils.EmbargosConstants.*;
 
@@ -330,6 +332,31 @@ public class CGPJServiceImpl
             parameters.put("img_param", imageLogo.getFile().toString());
             parameters.put("COD_PETICION", codPeticion);
 
+            parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
+
+            InputStream isInforme = informe.getInputStream();
+            JasperPrint reporteLleno =  JasperFillManager.fillReport(isInforme, parameters, conn_embargos);
+            return JasperExportManager.exportReportToPdf(reporteLleno);
+        } catch (Exception e) {
+            throw new Exception("DB exception while generating the report", e);
+        }
+    }
+
+    @Override
+    public byte[] informePrecontable(List<AccountingPendingDTO> pendientes)
+            throws Exception
+    {
+        HashMap<String, Object> parameters = new HashMap<>();
+
+        try (Connection conn_embargos = oracleDataSourceEmbargos.getEmbargosConnection()) {
+
+            Resource informe = ResourcesUtil.getFromJasperFolder("precontable.jasper");
+            Resource imageLogo = ResourcesUtil.getImageLogoCommerceResource();
+
+            parameters.put("img_param", imageLogo.getFile().toString());
+
+            parameters.put("CUENTA_TRABA_EXPRESSION", SQLUtils.calcInExpression(pendientes.stream().filter(pending -> "TRABA".equals(pending.getTipo())).map(pending -> Long.valueOf(pending.getCodCuenta())).collect(Collectors.toList()), "ct.cod_cuenta_traba"));
+            parameters.put("CUENTA_LEVANTAMIENTO_EXPRESSION", SQLUtils.calcInExpression(pendientes.stream().filter(pending -> "LEVANTAMIENTO".equals(pending.getTipo())).map(pending -> Long.valueOf(pending.getCodCuenta())).collect(Collectors.toList()), "ct.cod_cuenta_traba"));
             parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 
             InputStream isInforme = informe.getInputStream();

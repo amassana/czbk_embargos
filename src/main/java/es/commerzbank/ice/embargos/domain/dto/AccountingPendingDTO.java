@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 public class AccountingPendingDTO {
     private String codPeticion;
     private String codSolicitud;
+    private String codCuenta;
     private String NIF;
     private String nombre;
     private String iban;
@@ -18,10 +19,11 @@ public class AccountingPendingDTO {
 
     public AccountingPendingDTO() {;}
 
-    public AccountingPendingDTO(String codPeticion, String codSolicitud, String NIF, String nombre, String iban, String tipo,
+    public AccountingPendingDTO(String codPeticion, String codSolicitud, String codCuenta, String NIF, String nombre, String iban, String tipo,
                                 BigDecimal importe, BigDecimal cambio, String divisa) {
         this.codPeticion = codPeticion;
         this.codSolicitud = codSolicitud;
+        this.codCuenta = codCuenta;
         this.NIF = NIF;
         this.nombre = nombre;
         this.iban = iban;
@@ -112,5 +114,13 @@ public class AccountingPendingDTO {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getCodCuenta() {
+        return codCuenta;
+    }
+
+    public void setCodCuenta(String codCuenta) {
+        this.codCuenta = codCuenta;
     }
 }

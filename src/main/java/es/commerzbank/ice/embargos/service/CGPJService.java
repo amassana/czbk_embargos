@@ -24,4 +24,7 @@ public interface CGPJService {
     long contabilizar(List<AccountingPendingDTO> pendientes, String username) throws Exception;
 
     boolean reply(List<String> codPeticion, String username);
+
+    byte[] informePrecontable(List<AccountingPendingDTO> pendientes)
+            throws Exception;
 }

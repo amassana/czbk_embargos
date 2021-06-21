@@ -34,7 +34,7 @@ WHERE ct.COD_ESTADO = 1
 	 */
 
 	@Query(
-			"SELECT new es.commerzbank.ice.embargos.domain.dto.AccountingPendingDTO(st.peticion.codPeticion, st.codSolicitudTraba, e.nif, e.nombre, " +
+			"SELECT new es.commerzbank.ice.embargos.domain.dto.AccountingPendingDTO(st.peticion.codPeticion, st.codSolicitudTraba, ct.cod_cuenta_traba, e.nif, e.nombre, " +
 					"ct.iban, 'TRABA', ct.importe, ct.cambio, ct.divisa) FROM " +
 					"SolicitudesTraba st " +
 					"INNER JOIN st.traba t " +
@@ -48,7 +48,7 @@ WHERE ct.COD_ESTADO = 1
 	List<AccountingPendingDTO> findTrabasAccountingPending();
 
 	@Query(
-			"SELECT new es.commerzbank.ice.embargos.domain.dto.AccountingPendingDTO(sl.peticion.codPeticion, sl.codSolicitudLevantamiento, e.nif, e.nombre, " +
+			"SELECT new es.commerzbank.ice.embargos.domain.dto.AccountingPendingDTO(sl.peticion.codPeticion, sl.codSolicitudLevantamiento, cl.cod_cuenta_levantamiento, e.nif, e.nombre, " +
 					"cl.iban, 'LEVANTAMIENTO', cl.importe, cl.cambio, cl.codDivisa) FROM " +
 					"SolicitudesLevantamiento sl " +
 					"INNER JOIN sl.levantamientoTraba l " +

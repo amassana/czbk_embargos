@@ -116,7 +116,7 @@ public class CGPJController {
             return downloadReportFile.returnToDownloadFile();
 
         } catch (Exception e) {
-            logger.error("Error in f1PettitionRequest", e);
+            logger.error("Error in informePeticion", e);
 
             return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -146,13 +146,17 @@ public class CGPJController {
         File temporaryFile = null;
 
         try {
-            ResponseEntity<InputStreamResource> response = null;
+            DownloadReportFile downloadReportFile = new DownloadReportFile();
 
-            temporaryFile = service.informeSEPA("");
+            downloadReportFile.setTempFileName("precontable");
 
-            response = reportHelper.asResponseEntity("precontable", temporaryFile, ReportHelper.PDF_EXTENSION);
+            downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
-            return response;
+            byte[] data = service.informePrecontable(pendientes);
+
+            downloadReportFile.writeFile(data);
+
+            return downloadReportFile.returnToDownloadFile();
         }
         catch (Exception e)
         {
