@@ -185,7 +185,7 @@ public class AccountingServiceImpl
 
 			String reference1 = embargo.getNumeroEmbargo();
 			String reference2 = "";
-			String detailPayment = embargo.getDatregcomdet();
+			String detailPayment = "Embargo "+ controlFichero.getEntidadesComunicadora().getPrefijoFicheros();
 
 			fileControlFicheroComunes = contabilizarTraba(
 					fileControlFicheroComunes, ACCOUNTING_EMBARGOS_TRABAS,
@@ -229,7 +229,7 @@ public class AccountingServiceImpl
 
 				//- Generacion de las references para CGPJ:
 				Pair<String,String> references = generateReferencesForCGPJ(embargo.getNumeroEmbargo());
-				String detailPayment = "";//embargo.getDatregcomdet();
+				String detailPayment = "Embargo CGPJ";
 
 				fileControlFicheroComunes = contabilizarTraba(fileControlFicheroComunes, ACCOUNTING_EMBARGOS_CGPJ, embargo, traba,
 						userName, sucursal, cuentaRecaudacion, oficinaRecaudacion,
@@ -244,7 +244,11 @@ public class AccountingServiceImpl
 					continue;
 				}
 
-				// TODO què fer
+				String detailPayment = "Levantamiento embargo CGPJ";
+
+				fileControlFicheroComunes = contabilizarLevantamiento(userName, ACCOUNTING_EMBARGOS_CGPJ, fileControlFicheroComunes,
+						solicitudesLevantamientoOpt.get().getLevantamientoTraba(), cuentaRecaudacion, cuentaIntercambioDivisas,
+						oficinaRecaudacion, sucursal, detailPayment);
 			}
 		}
 		
@@ -479,17 +483,17 @@ public class AccountingServiceImpl
 		String detail = null;
 		String reference1 = null;
 		String reference2 = null;
+		detail = EmbargosConstants.DETAIL_PAYMENT_UNDO_ACCOUNTING +" "+ controlFichero.getEntidadesComunicadora().getPrefijoFicheros();
 
 		if (isCGPJ) {
 			Pair<String, String> references = generateReferencesForCGPJ(embargo.getNumeroEmbargo());
 			reference1 = references.getLeft();
 			reference2 = references.getRight();
-			detail = EmbargosConstants.DETAIL_PAYMENT_UNDO_ACCOUNTING;
+
 		}
 		else {
 			reference1 = embargo.getNumeroEmbargo();
 			reference2 = "";
-			detail = EmbargosConstants.DETAIL_PAYMENT_UNDO_ACCOUNTING +" "+ embargo.getDatregcomdet();
 		}
 
 		apunteContableExtorno(cuentaTraba, cuentaRecaudacion, cuentaTraba.getCuenta(),
@@ -560,8 +564,10 @@ public class AccountingServiceImpl
 
 		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = null;
 
+		String detailPayment = "Levantamiento embargo "+ controlFichero.getEntidadesComunicadora().getPrefijoFicheros();
+
 		for (LevantamientoTraba levantamiento : controlFichero.getLevantamientoTrabas()) {
-			fileControlFicheroComunes = contabilizarLevantamiento(username, ACCOUNTING_EMBARGOS_LEVANTAMIENTOS, fileControlFicheroComunes, levantamiento, cuentaRecaudacion, cuentaIntercambioDivisas, oficinaRecaudacion, sucursal);
+			fileControlFicheroComunes = contabilizarLevantamiento(username, ACCOUNTING_EMBARGOS_LEVANTAMIENTOS, fileControlFicheroComunes, levantamiento, cuentaRecaudacion, cuentaIntercambioDivisas, oficinaRecaudacion, sucursal, detailPayment);
 		}
 
 		accountingNoteService.generacionFicheroContabilidad(fileControlFicheroComunes);
@@ -573,7 +579,7 @@ public class AccountingServiceImpl
 			String username, String contentType,
 			es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes,
 			LevantamientoTraba levantamiento, String cuentaRecaudacion,
-			String cuentaIntercambioDivisas, String oficinaRecaudacion, Long sucursal)
+			String cuentaIntercambioDivisas, String oficinaRecaudacion, Long sucursal, String detailPayment)
 			throws Exception
 	{
 		for (CuentaLevantamiento cuentaLevantamiento : levantamiento.getCuentaLevantamientos()) {
@@ -609,7 +615,7 @@ public class AccountingServiceImpl
 				}
 
 				apunteContableLevantamiento(cuentaLevantamiento, cuentaRecaudacion, cuentaLevantamiento.getCuenta(),
-						oficinaRecaudacion, embargo.getNumeroEmbargo(), "", embargo.getDatregcomdet(), cuentaIntercambioDivisas,
+						oficinaRecaudacion, embargo.getNumeroEmbargo(), "", detailPayment, cuentaIntercambioDivisas,
 						fileControlFicheroComunes.getCodControlFichero(), embargo.getNombre(), embargo.getNif(), cambioInverso);
 
 				AccountStatusLiftingDTO status = new AccountStatusLiftingDTO();
