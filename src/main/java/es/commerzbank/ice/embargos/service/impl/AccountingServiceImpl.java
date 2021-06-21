@@ -14,7 +14,7 @@ import es.commerzbank.ice.embargos.repository.*;
 import es.commerzbank.ice.embargos.service.*;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.EmbargosUtils;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -183,16 +183,18 @@ public class AccountingServiceImpl
 			
 			Traba traba = embargo.getTrabas().get(0);
 
-			String reference1 = embargo.getNumeroEmbargo();
-			String reference2 = "";
-			String detailPayment = "Embargo "+ controlFichero.getEntidadesComunicadora().getPrefijoFicheros();
+			Triple<String, String, String> references = calcReferencesDetail(controlFichero.getEntidadesComunicadora().getPrefijoFicheros(), embargo.getNumeroEmbargo(), DETAIL_PAYMENT_SEIZE);
+
+			String reference1 = references.getLeft();
+			String reference2 = references.getMiddle();
+			String detail = references.getRight();
 
 			fileControlFicheroComunes = contabilizarTraba(
 					fileControlFicheroComunes, ACCOUNTING_EMBARGOS_TRABAS,
 					embargo,
 					traba,
 					userName, sucursal,
-					cuentaRecaudacion, oficinaRecaudacion, reference1, reference2, detailPayment, cuentaIntercambioDivisas);
+					cuentaRecaudacion, oficinaRecaudacion, reference1, reference2, detail, cuentaIntercambioDivisas);
 		}
 		
 		if (fileControlFicheroComunes != null) {
@@ -227,13 +229,15 @@ public class AccountingServiceImpl
 				Traba traba = solicitudesTrabaOpt.get().getTraba();
 				Embargo embargo = traba.getEmbargo();
 
-				//- Generacion de las references para CGPJ:
-				Pair<String,String> references = generateReferencesForCGPJ(embargo.getNumeroEmbargo());
-				String detailPayment = "Embargo CGPJ";
+				Triple<String, String, String> references = calcReferencesDetail(FILE_FORMAT_CGPJ, embargo.getNumeroEmbargo(), DETAIL_PAYMENT_SEIZE);
+
+				String reference1 = references.getLeft();
+				String reference2 = references.getMiddle();
+				String detail = references.getRight();
 
 				fileControlFicheroComunes = contabilizarTraba(fileControlFicheroComunes, ACCOUNTING_EMBARGOS_CGPJ, embargo, traba,
 						userName, sucursal, cuentaRecaudacion, oficinaRecaudacion,
-						references.getLeft(), references.getRight(), detailPayment, cuentaIntercambioDivisas);
+						reference1, reference2, detail, cuentaIntercambioDivisas);
 
 			}
 			else if ("LEVANTAMIENTO".equals(pendiente.getTipo())) {
@@ -244,11 +248,17 @@ public class AccountingServiceImpl
 					continue;
 				}
 
-				String detailPayment = "Levantamiento embargo CGPJ";
+				LevantamientoTraba levantamientoTraba = solicitudesLevantamientoOpt.get().getLevantamientoTraba();
+
+				Triple<String, String, String> references = calcReferencesDetail(FILE_FORMAT_CGPJ, levantamientoTraba.getTraba().getEmbargo().getNumeroEmbargo(), DETAIL_PAYMENT_LIFT);
+
+				String reference1 = references.getLeft();
+				String reference2 = references.getMiddle();
+				String detail = references.getRight();
 
 				fileControlFicheroComunes = contabilizarLevantamiento(userName, ACCOUNTING_EMBARGOS_CGPJ, fileControlFicheroComunes,
-						solicitudesLevantamientoOpt.get().getLevantamientoTraba(), cuentaRecaudacion, cuentaIntercambioDivisas,
-						oficinaRecaudacion, sucursal, detailPayment);
+						levantamientoTraba, cuentaRecaudacion, cuentaIntercambioDivisas,
+						oficinaRecaudacion, sucursal, reference1, reference2, detail);
 			}
 		}
 		
@@ -431,37 +441,41 @@ public class AccountingServiceImpl
 			accountingNoteService.contabilizar(accountingNote, cuentaIntercambioDivisas);
 		}
 	}
-	
-	private Pair<String,String> generateReferencesForCGPJ(String numeroEmbargo){
-		
-		//- Seteo de las references:
+
+	private Triple<String, String,String> calcReferencesDetail(String siglas, String numeroEmbargo, String tipo)
+	{
 		//En el caso del CGPJ el número de embargo tiene 19 caracteres entonces: 1:16 va al primer campo (IBS_REFERENCE_1) y
 		//del 17-19 pasa al inicio del siguiente campo (IBS_REFERENCE_2) seguido de los literales: Levant./Embarg y las cuatro
 		//letras que identifican el organismo emisor AEAT/CGPJ etc
 
-		StringBuilder sb1 = new StringBuilder();
-		StringBuilder sb2 = new StringBuilder();
+		String reference1, reference2, detail;
 
-		if (numeroEmbargo!=null) {
-			for (int i = 0; i < numeroEmbargo.length(); i++){
-				char c = numeroEmbargo.charAt(i);
+		String referenceLarge = numeroEmbargo == null ? "" : numeroEmbargo;
 
-				if (i < 16) {
-					sb1.append(c);
-				} else {
-					sb2.append(c);
-				}
-			}
+		if ("Levantamiento".equals(tipo)) {
+			referenceLarge += " "+ "Levant";
+		}
+		else {
+			referenceLarge += " "+ "Embarg";
+		}
+		referenceLarge += " "+ siglas; // se reutiliza el prefijo a solicitud de commerz
+
+		if (referenceLarge.length() > 32) {
+			reference1 = referenceLarge.substring(0, 16);
+			reference2 = referenceLarge.substring(16, 32);
+		}
+		else if (referenceLarge.length() > 16) {
+			reference1 = referenceLarge.substring(0, 16);
+			reference2 = referenceLarge.substring(16);
+		}
+		else {
+			reference1 = referenceLarge;
+			reference2 = "";
 		}
 
-		//TODO: organismoEmisor revisar
-		String organismoEmisor = EmbargosConstants.FILE_FORMAT_CGPJ;
+		detail = tipo + " " + siglas;
 
-		String reference1 = sb1.toString() ;
-		String reference2 = sb2.append(EmbargosConstants.SEPARADOR_ESPACIO).append(EmbargosConstants.LITERAL_EMBARG_IBS_REFERENCE2)
-				.append(EmbargosConstants.SEPARADOR_ESPACIO).append(organismoEmisor).toString();
-
-		return Pair.of(reference1, reference2);
+		return Triple.of(reference1, reference2, detail);
 	}
 
 	@Override
@@ -480,21 +494,11 @@ public class AccountingServiceImpl
 
 		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = accountingNoteService.crearControlFichero(userName, EmbargosConstants.ID_APLICACION_EMBARGOS, null, sucursal, ACCOUNTING_EMBARGOS_PATTERN, ACCOUNTING_EMBARGOS_EXTORNO, ACCOUNTING_EMBARGOS_EXTENSION);
 
-		String detail = null;
-		String reference1 = null;
-		String reference2 = null;
-		detail = EmbargosConstants.DETAIL_PAYMENT_UNDO_ACCOUNTING +" "+ controlFichero.getEntidadesComunicadora().getPrefijoFicheros();
+		Triple<String, String, String> references = calcReferencesDetail(controlFichero.getEntidadesComunicadora().getPrefijoFicheros(), embargo.getNumeroEmbargo(), DETAIL_PAYMENT_UNDO_ACCOUNTING);
 
-		if (isCGPJ) {
-			Pair<String, String> references = generateReferencesForCGPJ(embargo.getNumeroEmbargo());
-			reference1 = references.getLeft();
-			reference2 = references.getRight();
-
-		}
-		else {
-			reference1 = embargo.getNumeroEmbargo();
-			reference2 = "";
-		}
+		String reference1 = references.getLeft();
+		String reference2 = references.getMiddle();
+		String detail = references.getRight();
 
 		apunteContableExtorno(cuentaTraba, cuentaRecaudacion, cuentaTraba.getCuenta(),
 				oficinaRecaudacion, reference1, reference2, detail, cuentaIntercambioDivisas,
@@ -564,10 +568,14 @@ public class AccountingServiceImpl
 
 		es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes = null;
 
-		String detailPayment = "Levantamiento embargo "+ controlFichero.getEntidadesComunicadora().getPrefijoFicheros();
-
 		for (LevantamientoTraba levantamiento : controlFichero.getLevantamientoTrabas()) {
-			fileControlFicheroComunes = contabilizarLevantamiento(username, ACCOUNTING_EMBARGOS_LEVANTAMIENTOS, fileControlFicheroComunes, levantamiento, cuentaRecaudacion, cuentaIntercambioDivisas, oficinaRecaudacion, sucursal, detailPayment);
+			Triple<String, String, String> references = calcReferencesDetail(controlFichero.getEntidadesComunicadora().getPrefijoFicheros(), levantamiento.getTraba().getEmbargo().getNumeroEmbargo(), DETAIL_PAYMENT_LIFT);
+
+			String reference1 = references.getLeft();
+			String reference2 = references.getMiddle();
+			String detail = references.getRight();
+
+			fileControlFicheroComunes = contabilizarLevantamiento(username, ACCOUNTING_EMBARGOS_LEVANTAMIENTOS, fileControlFicheroComunes, levantamiento, cuentaRecaudacion, cuentaIntercambioDivisas, oficinaRecaudacion, sucursal, reference1, reference2, detail);
 		}
 
 		accountingNoteService.generacionFicheroContabilidad(fileControlFicheroComunes);
@@ -579,7 +587,8 @@ public class AccountingServiceImpl
 			String username, String contentType,
 			es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes,
 			LevantamientoTraba levantamiento, String cuentaRecaudacion,
-			String cuentaIntercambioDivisas, String oficinaRecaudacion, Long sucursal, String detailPayment)
+			String cuentaIntercambioDivisas, String oficinaRecaudacion, Long sucursal,
+			String reference1, String reference2, String detailPayment)
 			throws Exception
 	{
 		for (CuentaLevantamiento cuentaLevantamiento : levantamiento.getCuentaLevantamientos()) {
@@ -615,7 +624,7 @@ public class AccountingServiceImpl
 				}
 
 				apunteContableLevantamiento(cuentaLevantamiento, cuentaRecaudacion, cuentaLevantamiento.getCuenta(),
-						oficinaRecaudacion, embargo.getNumeroEmbargo(), "", detailPayment, cuentaIntercambioDivisas,
+						oficinaRecaudacion, reference1, reference2, detailPayment, cuentaIntercambioDivisas,
 						fileControlFicheroComunes.getCodControlFichero(), embargo.getNombre(), embargo.getNif(), cambioInverso);
 
 				AccountStatusLiftingDTO status = new AccountStatusLiftingDTO();
@@ -637,11 +646,6 @@ public class AccountingServiceImpl
 			throws Exception {
 		if (cuentaLevantamiento.getImporte()!=null && BigDecimal.ZERO.compareTo(cuentaLevantamiento.getImporte()) < 0)
 		{
-			/*
-			String reference1 = embargo.getNumeroEmbargo();
-			String reference2 = "";
-			String detailPayment = embargo.getDatregcomdet();
-*/
 			AccountingNote accountingNote = new AccountingNote();
 
 			accountingNote.setCodFileControl(codFileControlFicheroComunes);
