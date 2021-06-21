@@ -45,5 +45,18 @@ WHERE ct.COD_ESTADO = 1
 					" AND t.revisado = '"+ EmbargosConstants.IND_FLAG_SI +"'" +
 					" AND ct.importe > 0" +
 					" AND ct.agregarATraba = '"+ EmbargosConstants.IND_FLAG_YES +"'")
-	List<AccountingPendingDTO> findAccountingPending();
+	List<AccountingPendingDTO> findTrabasAccountingPending();
+
+	@Query(
+			"SELECT new es.commerzbank.ice.embargos.domain.dto.AccountingPendingDTO(sl.peticion.codPeticion, sl.codSolicitudLevantamiento, e.nif, e.nombre, " +
+					"cl.iban, 'LEVANTAMIENTO', cl.importe, cl.cambio, cl.cod_divisa) FROM " +
+					"SolicitudesLevantamiento sl " +
+					"INNER JOIN sl.levantamientoTraba l " +
+					"INNER JOIN l.traba " +
+					"INNER JOIN t.embargo e " +
+					"INNER JOIN l.cuentaLevantamientos cl " +
+					"WHERE " +
+					"cl.estadoTraba.codEstado = 1" +
+					" AND cl.importe > 0")
+	List<AccountingPendingDTO> findLevantamientosAccountingPending();
 }

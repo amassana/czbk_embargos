@@ -189,7 +189,12 @@ public class CGPJServiceImpl
 
     @Override
     public List<AccountingPendingDTO> accountingPending() {
-        return petitionRepository.findAccountingPending();
+        List pending = new ArrayList(100);
+        List trabas = petitionRepository.findTrabasAccountingPending();
+        pending.addAll(trabas);
+        List levantamientos = petitionRepository.findLevantamientosAccountingPending();
+        pending.addAll(levantamientos);
+        return pending;
     }
 
     @Override

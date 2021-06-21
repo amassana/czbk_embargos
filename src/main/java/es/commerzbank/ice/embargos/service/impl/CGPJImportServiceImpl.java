@@ -165,12 +165,7 @@ public class CGPJImportServiceImpl
     private void importSolicitudLevantamiento(SolicitudesLevantamiento solicitudLevantamiento)
         throws Exception
     {
-        Optional<Traba> optTraba = seizedRepository.findById(solicitudLevantamiento.getCodTraba().longValue());
-
-        if (!optTraba.isPresent())
-            throw new Exception ("Se esperaba una traba asociada a levantamiento " + solicitudLevantamiento.getCodSolicitudLevantamiento());
-
-        Traba traba = optTraba.get();
+        Traba traba = solicitudLevantamiento.getLevantamientoTraba().getTraba();
 
         Optional<SolicitudesTraba> optionalSolicitudesTraba = solicitudTrabaRepository.findByTraba(traba);
 
