@@ -52,7 +52,7 @@ WHERE ct.COD_ESTADO = 1
 					"cl.iban, 'LEVANTAMIENTO', cl.importe, cl.cambio, cl.cod_divisa) FROM " +
 					"SolicitudesLevantamiento sl " +
 					"INNER JOIN sl.levantamientoTraba l " +
-					"INNER JOIN l.traba " +
+					"INNER JOIN l.traba t " +
 					"INNER JOIN t.embargo e " +
 					"INNER JOIN l.cuentaLevantamientos cl " +
 					"WHERE " +
