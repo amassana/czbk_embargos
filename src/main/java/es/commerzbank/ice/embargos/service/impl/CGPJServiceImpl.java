@@ -12,9 +12,7 @@ import es.commerzbank.ice.embargos.domain.dto.CGPJPetitionDTO;
 import es.commerzbank.ice.embargos.domain.dto.IntegradorRequestStatusDTO;
 import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.PetitionMapper;
-import es.commerzbank.ice.embargos.repository.CuentaTrabaCGPJCopyRepository;
-import es.commerzbank.ice.embargos.repository.PetitionRepository;
-import es.commerzbank.ice.embargos.repository.SolicitudTrabaRepository;
+import es.commerzbank.ice.embargos.repository.*;
 import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.CGPJService;
 import es.commerzbank.ice.embargos.utils.CGPJUtils;
@@ -60,6 +58,9 @@ public class CGPJServiceImpl
     private SolicitudTrabaRepository solicitudTrabaRepository;
 
     @Autowired
+    private SolicitudLevantamientoRepository solicitudLevantamientoRepository;
+
+    @Autowired
     private PetitionMapper petitionMapper;
 
     @Autowired
@@ -79,6 +80,9 @@ public class CGPJServiceImpl
 
     @Autowired
     private CuentaTrabaCGPJCopyRepository cuentaTrabaCGPJCopyRepository;
+
+    @Autowired
+    private LiftingBankAccountRepository liftingBankAccountRepository;
 
     @Override
     public Page<CGPJPetitionDTO> filter(CGPJFiltersDTO filters, Pageable pageable)
@@ -215,6 +219,9 @@ public class CGPJServiceImpl
         EstadoIntTraba estadoIntTraba = new EstadoIntTraba();
         estadoIntTraba.setCodEstadoIntTraba(CGPJ_ESTADO_INTERNO_TRABA_PROCESADA);
 
+        EstadoIntLevantamiento estadoIntLevantamiento = new EstadoIntLevantamiento();
+        estadoIntLevantamiento.setCodEstadoIntLevantamiento(CGPJ_ESTADO_INTERNO_LEVANTAMIENTO_PROCESADO);
+
         for (String codPeticion : codPeticiones) {
             Optional<Peticion> peticionOpt = petitionRepository.findById(codPeticion);
 
@@ -229,9 +236,7 @@ public class CGPJServiceImpl
 
                 Peticion peticion = peticionOpt.get();
 
-                List<SolicitudesTraba> solicitudesTraba = peticion.getSolicitudesTrabas();
-
-                for (SolicitudesTraba solicitudTraba : solicitudesTraba) {
+                for (SolicitudesTraba solicitudTraba : peticion.getSolicitudesTrabas()) {
                     Traba traba = solicitudTraba.getTraba();
                     BigDecimal importeRespuesta = BigDecimal.ZERO;
 
@@ -249,8 +254,28 @@ public class CGPJServiceImpl
                     }
 
                     solicitudTraba.setImporteRespuesta(CGPJUtils.format(importeRespuesta));
+                    solicitudTraba.setUsuarioUltModificacion(username);
+
+                    solicitudTraba.setFUltimaModificacion(es.commerzbank.ice.embargos.utils.ICEDateUtils.actualDateToBigDecimal(es.commerzbank.ice.embargos.utils.ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 
                     solicitudTrabaRepository.save(solicitudTraba);
+                }
+
+                for (SolicitudesLevantamiento solicitudLevantamiento : peticion.getSolicitudesLevantamientos()) {
+                    LevantamientoTraba levantamiento = solicitudLevantamiento.getLevantamientoTraba();
+
+                    for (CuentaLevantamiento cuentaLevantamiento : levantamiento.getCuentaLevantamientos()) {
+                        cuentaLevantamiento.setIndContabilizado(IND_FLAG_SI);
+
+                        liftingBankAccountRepository.save(cuentaLevantamiento);
+                    }
+
+                    solicitudLevantamiento.setEstadoIntLevantamiento(estadoIntLevantamiento);
+
+                    solicitudLevantamiento.setUsuarioUltModificacion(username);
+                    solicitudLevantamiento.setFUltimaModificacion(es.commerzbank.ice.embargos.utils.ICEDateUtils.actualDateToBigDecimal(es.commerzbank.ice.embargos.utils.ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+
+                    solicitudLevantamientoRepository.save(solicitudLevantamiento);
                 }
 
                 peticion.setEstadoIntPeticion(estadoInterno);
