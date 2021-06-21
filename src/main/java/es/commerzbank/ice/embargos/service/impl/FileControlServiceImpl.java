@@ -300,22 +300,32 @@ public class FileControlServiceImpl
 	}
 
 	private void changeCGPJStatus(ControlFichero controlFichero, Long codFileControlStatus, String tipoDatos) throws Exception {
+
+		if (controlFichero.getPeticiones() == null || controlFichero.getPeticiones().size() != 1) {
+			throw new Exception("No se puede cambiar el estado del fichero por no tener una petición asociada");
+		}
+
 		if ("TRABAS".equals(tipoDatos))
 			controlFichero.setCodSubestadoTraba(codFileControlStatus);
 		else if ("LEVANTAMIENTOS".equals(tipoDatos))
 			controlFichero.setCodSubestadoLevantamiento(codFileControlStatus);
 
+		// caso contabilizado, se mira si se puede pasar a procesado
 		if ((!EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneTrabas()) ||
-				(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneTrabas()) && controlFichero.getCodSubestadoTraba() == EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_TO_SEND))
+			(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneTrabas()) && controlFichero.getCodSubestadoTraba() == EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_TO_SEND))
 			&&
-				(!EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneLevantamientos())
-						||
-						(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneLevantamientos()) && controlFichero.getCodSubestadoLevantamiento() == EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_ACCOUNTED))) {
-			if (controlFichero.getPeticiones() == null || controlFichero.getPeticiones().size() != 1) {
-				throw new Exception("No se puede cambiar el estado del fichero por no tener una petición asociada");
-			}
-
+			(!EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneLevantamientos()) ||
+			(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneLevantamientos()) && controlFichero.getCodSubestadoLevantamiento() == EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_ACCOUNTED)))
+		{
 			petitionService.changeStatus(controlFichero.getPeticiones().get(0), EmbargosConstants.CGPJ_ESTADO_INTERNO_PROCESADO);
+		}
+		// caso extorno, se revierte de procesado a inicial
+		else if (controlFichero.getPeticiones().get(0).getEstadoIntPeticion().getCodEstadoIntPeticion() == EmbargosConstants.CGPJ_ESTADO_INTERNO_PROCESADO
+				&&
+				(!EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneTrabas()) ||
+				(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneTrabas()) && controlFichero.getCodSubestadoTraba() == EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_RECEIVED)))
+		{
+			petitionService.changeStatus(controlFichero.getPeticiones().get(0), EmbargosConstants.CGPJ_ESTADO_INTERNO_INICIAL);
 		}
 	}
 

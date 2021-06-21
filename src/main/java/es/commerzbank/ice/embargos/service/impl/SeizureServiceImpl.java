@@ -485,12 +485,15 @@ public class SeizureServiceImpl
 			estadoCtrlfichero = new EstadoCtrlfichero(COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_RECEIVED, COD_TIPO_FICHERO_PETICION_CGPJ);
 		}
 
+		fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(), estadoCtrlfichero.getId().getCodEstado(), userName, "TRABAS");
+		/*
 		controlFichero.setEstadoCtrlfichero(estadoCtrlfichero);
 
 		controlFichero.setUsuarioUltModificacion(userName);
 		controlFichero.setFUltimaModificacion(fechaActualBigDec);
 
 		fileControlService.saveFileControlTransaction(controlFichero);
+		*/
 
 		//Se actualiza el estado del idSeizure a Pendiente
 		EstadoTraba estadoTraba = new EstadoTraba();
