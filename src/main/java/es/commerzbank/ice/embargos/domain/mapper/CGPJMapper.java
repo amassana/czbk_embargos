@@ -47,7 +47,7 @@ public abstract class CGPJMapper {
     @Mappings({
             @Mapping(source = "levantamientoTraba", target = "levantamientoTraba"),
             @Mapping(source = "cuentaTraba.cuenta", target = "cuenta"),
-            @Mapping(constant = "", target = "actuacion"),
+            @Mapping(constant = "01", target = "actuacion"), // existen otros valores mucho menos usados en bbdd histórico
             @Mapping(constant = "1", target = "numeroOrdenCuenta"),
             @Mapping(source = "cuentaTraba.cambio", target = "cambio"),
             @Mapping(constant = EmbargosConstants.IND_FLAG_NO, target = "indContabilizado"),
