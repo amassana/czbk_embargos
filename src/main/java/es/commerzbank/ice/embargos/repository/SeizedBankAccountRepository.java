@@ -23,7 +23,7 @@ public interface SeizedBankAccountRepository extends JpaRepository<CuentaTraba, 
 	@Transactional
 	@Modifying
 	@Query(nativeQuery = true,
-			"INSERT INTO cuenta_traba (COD_CUENTA_TRABA, COD_TRABA, COD_ESTADO) VALUES (:codCuentaTraba, :codTraba, :codEstado)")
+			value = "INSERT INTO cuenta_traba (COD_CUENTA_TRABA, COD_TRABA, COD_ESTADO) VALUES (:codCuentaTraba, :codTraba, :codEstado)")
 	void insertarCuentaTraba(	@Param("codCuentaTraba") Long codCuentaTraba,
 					 			@Param("codTraba") Long codTraba,
 					 			@Param("codEstado") Long codEstado);
