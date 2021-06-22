@@ -139,7 +139,8 @@ public class CGPJServiceImpl
                     predicates.add(criteriaBuilder.lessThanOrEqualTo(root.join(Peticion_.controlFichero).get(ControlFichero_.FECHA_INCORPORACION), data));
                 }
 
-                predicates.add(criteriaBuilder.isNotNull(root.join(Peticion_.controlFichero).get(ControlFichero_.ESTADO_CTRLFICHERO)));
+                predicates.add(criteriaBuilder.isNotNull(root.join(Peticion_.controlFichero)
+                                .join(ControlFichero_.estadoCtrlfichero).join(EstadoCtrlfichero_.id).get(EstadoCtrlficheroPK_.COD_ESTADO)));
 
                 return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
             }
