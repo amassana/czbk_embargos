@@ -230,6 +230,7 @@ public class CGPJImportServiceImpl
             }
             if (!found) {
                 CuentaTraba cuentaTraba = CGPJMapper.generateCuentaTraba(backup);
+                seizedBankAccountRepository.insertarCuentaTraba(cuentaTraba.getCodCuentaTraba(), cuentaTraba.getTraba().getCodTraba(), cuentaTraba.getEstadoTraba().getCodEstado());
                 seizedBankAccountRepository.save(cuentaTraba);
                 traba.addCuentaTraba(cuentaTraba);
             }
