@@ -90,7 +90,7 @@ WHERE
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Oredenante:]]></text>
+				<text><![CDATA[Ordeenante:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="36" y="0" width="50" height="20" uuid="5e7305ba-ca4a-4444-8b64-33fcfe062bf8"/>

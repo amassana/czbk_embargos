@@ -118,7 +118,7 @@ public class CGPJController {
         } catch (Exception e) {
             logger.error("Error in informePeticion", e);
 
-            return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -143,8 +143,6 @@ public class CGPJController {
 
     @PostMapping(value = "/precontable")
     public ResponseEntity<InputStreamResource> precontable(@RequestBody List<AccountingPendingDTO> pendientes) {
-        File temporaryFile = null;
-
         try {
             DownloadReportFile downloadReportFile = new DownloadReportFile();
 
@@ -160,9 +158,9 @@ public class CGPJController {
         }
         catch (Exception e)
         {
-            logger.error("Error in informeSEPA", e);
+            logger.error("Error in precontable", e);
 
-            return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
