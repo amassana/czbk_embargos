@@ -223,7 +223,7 @@ public class CGPJImportServiceImpl
         for (CuentaTrabaCGPJCopy backup : backupCuentas) {
             boolean found = false;
             for (CuentaTraba cuentaTraba : traba.getCuentaTrabas()) {
-                if (cuentaTraba.getCuenta().equals(backup.getCuenta())) {
+                if (cuentaTraba.getCodCuentaTraba() == backup.getCodCuentaTraba()) {
                     found = true;
                     break;
                 }
