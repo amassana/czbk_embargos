@@ -246,7 +246,8 @@ public class CGPJServiceImpl
                     BigDecimal importeRespuesta = BigDecimal.ZERO;
 
                     for (CuentaTraba cuentaTraba : traba.getCuentaTrabas()) {
-                        if (IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba())) {
+                        if (IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba()) &&
+                                cuentaTraba.getImporte() != null && BigDecimal.ZERO.compareTo(cuentaTraba.getImporte()) != 0) {
                             solicitudTraba.setTienePosiciones(IND_FLAG_NO); // TODO si null peta pq el integrador mira al responder si vale S o N
                             solicitudTraba.setEstadoIntTraba(estadoIntTraba);
                             importeRespuesta = importeRespuesta.add(cuentaTraba.getImporte());
