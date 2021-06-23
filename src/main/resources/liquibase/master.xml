@@ -59,4 +59,8 @@
     <include file="2021/20210521_ficheroControl_indicadores_consejo.xml" relativeToChangelogFile="true" />
     <include file="2021/20210617_consejo_CuentaTrabaCopy.xml" relativeToChangelogFile="true" />
 
+    <changeSet id="entrega_20210623" author="aniol.massana">
+        <tagDatabase tag="entrega_20210623"/>
+    </changeSet>
+
 </databaseChangeLog>
