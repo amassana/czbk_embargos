@@ -314,9 +314,9 @@ public class AccountingServiceImpl
 				//La cuentaTraba no se ha agregado a la Traba:
 				logger.info(logMessage + "no se encuentra agregada a la Traba y no se contabiliza.");
 
-			} else if (cuentaTraba.getEstadoCuenta()==null || !EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE.equals(cuentaTraba.getEstadoCuenta())){
-				//La cuentaTraba no esta activa:
-				logger.info(logMessage + "no esta activa y no se contabiliza.");
+			} else if (cuentaTraba.getEstadoCuenta()==null || BANK_ACCOUNT_STATUS_CANCELLED.equals(cuentaTraba.getEstadoCuenta())){
+				//La cuenta no esta cancelada:
+				logger.info(logMessage + "no esta cancelada y no se contabiliza.");
 
 			} else if (cuentaTraba.getImporte() == null) {
 				logger.info(logMessage + "El importe es nulo.");
