@@ -29,4 +29,6 @@ public interface SeizureService {
 	boolean updateAccountSeizureStatus(Long idAccount, Long idSeizure, AccountStatusSeizedDTO accountStatusSeized, String userModif) throws Exception;
 
 	boolean undoAccounting(Long codeFileControl, Long idSeizure, Long idAccount, String userName) throws Exception;
+
+    byte[] previewContable(Long codeFileControl) throws Exception;
 }

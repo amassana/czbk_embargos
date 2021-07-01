@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -298,7 +299,11 @@ public class AccountingServiceImpl
 					" cuenta "+ cuentaTraba.getCodCuentaTraba() +" "+ cuentaTraba.getCuenta() +" ";
 			boolean contabilizado = false;
 
-
+			/*
+			IMPORTANTE: SI SE MODIFICAN LAS CONDICIONES PARA CONTABILIZAR UN LEVANTAMIENTO, ACTUALIZARLAS EN CORRESPONDENCIA
+			EN EL MÉTODO levantamientoListaAContabilizar()
+			 */
+			
 			//Para contabilizar la cuentaTraba, se tienen que cumplir todos los casos siguientes:
 			// 1.- Estar en estado anterior a "Enviada a Contabilidad" -> corresponde al estado "Pendiente".
 			// 2.- Estar agregada a la Traba (tener activado el flag de agregarATraba).
@@ -583,6 +588,27 @@ public class AccountingServiceImpl
 		fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(), COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_ACCOUNTING_RESPONSE, username, null);
 	}
 
+	@Override
+	public List levantamientoListaAContabilizar(Long codeFileControl) throws Exception {
+		List<Long> pendientes = new ArrayList<>();
+
+		Optional<ControlFichero> fileControlOpt = fileControlRepository.findById(codeFileControl);
+
+		if(!fileControlOpt.isPresent())
+			throw new Exception ("FileControl "+ codeFileControl + " not found");
+
+		ControlFichero controlFichero = fileControlOpt.get();
+
+		for (LevantamientoTraba levantamiento : controlFichero.getLevantamientoTrabas()) {
+			for (CuentaLevantamiento cuentaLevantamiento : levantamiento.getCuentaLevantamientos()) {
+				if (cuentaLevantamiento.getEstadoLevantamiento().getCodEstado() == COD_ESTADO_LEVANTAMIENTO_PENDIENTE)
+					pendientes.add(cuentaLevantamiento.getCodCuentaLevantamiento());
+			}
+		}
+
+		return pendientes;
+	}
+
 	private es.commerzbank.ice.comun.lib.domain.entity.ControlFichero contabilizarLevantamiento (
 			String username, String contentType,
 			es.commerzbank.ice.comun.lib.domain.entity.ControlFichero fileControlFicheroComunes,
@@ -592,6 +618,10 @@ public class AccountingServiceImpl
 			throws Exception
 	{
 		for (CuentaLevantamiento cuentaLevantamiento : levantamiento.getCuentaLevantamientos()) {
+			/*
+			IMPORTANTE: SI SE MODIFICAN LAS CONDICIONES PARA CONTABILIZAR UN LEVANTAMIENTO, ACTUALIZARLAS EN CORRESPONDENCIA
+			EN EL MÉTODO levantamientoListaAContabilizar()
+			 */
 			if (cuentaLevantamiento.getEstadoLevantamiento().getCodEstado() != COD_ESTADO_LEVANTAMIENTO_PENDIENTE) {
 				logger.info("cuenta levantamiento "+ cuentaLevantamiento.getCodCuentaLevantamiento() + " no pendiente - ignorando");
 				continue;
@@ -741,6 +771,43 @@ public class AccountingServiceImpl
 		// Se cambia el estado de la Cuenta Traba a Contabilizada
 		// Se actualizará en cascada el estado de la traba y del fichero si es necesario
 		seizureService.updateSeizedBankStatus(cuentaTraba, EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA, USER_AUTOMATICO);
+	}
+
+	@Override
+	public List<Long> embargoListaAContabilizar(Long codeFileControl)
+			throws Exception
+	{
+		List<Long> pendientes = new ArrayList<>();
+
+		Optional<ControlFichero> fileControlOpt = fileControlRepository.findById(codeFileControl);
+		if(!fileControlOpt.isPresent()) {
+			throw new Exception("Control fichero "+ codeFileControl +" no encontrado");
+		}
+		ControlFichero controlFichero = fileControlOpt.get();
+
+		for (Embargo embargo : controlFichero.getEmbargos()) {
+
+			Traba traba = embargo.getTrabas().get(0);
+
+			for (CuentaTraba cuentaTraba : traba.getCuentaTrabas()) {
+				if (cuentaTraba.getEstadoTraba().getCodEstado() != EmbargosConstants.COD_ESTADO_TRABA_PENDIENTE) {
+					;
+				} else if (cuentaTraba.getAgregarATraba() == null || !(EmbargosConstants.IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba())
+						|| EmbargosConstants.IND_FLAG_SI.equals(cuentaTraba.getAgregarATraba()))) {
+					;
+				} else if (cuentaTraba.getEstadoCuenta() == null || BANK_ACCOUNT_STATUS_CANCELLED.equals(cuentaTraba.getEstadoCuenta())) {
+					;
+				} else if (cuentaTraba.getImporte() == null) {
+					;
+				} else if (cuentaTraba.getImporte() != null && cuentaTraba.getImporte().compareTo(BigDecimal.ZERO) <= 0) {
+					;
+				} else {
+					pendientes.add(cuentaTraba.getCodCuentaTraba());
+				}
+			}
+		}
+
+		return pendientes;
 	}
 
 	@Override

@@ -500,10 +500,29 @@ public class SeizureController {
 
 	}
 
-	//private String getPDFSavedPath() throws ICEException {
+	@GetMapping(value = "/{codeFileControl}/accounting-previewReport")
+	@ApiOperation(value="Informe preview contabilidad.")
+	public ResponseEntity<InputStreamResource> previewContable(@PathVariable("codeFileControl") Long codeFileControl)
+	{
+		try {
+			DownloadReportFile downloadReportFile = new DownloadReportFile();
 
-		//return generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP);
+			downloadReportFile.setTempFileName("precontable");
 
-	//}
+			downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
+
+			byte[] data = seizureService.previewContable(codeFileControl);
+
+			downloadReportFile.writeFile(data);
+
+			return downloadReportFile.returnToDownloadFile();
+		}
+		catch (Exception e)
+		{
+			logger.error("Error in precontable", e);
+
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 }

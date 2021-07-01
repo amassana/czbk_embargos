@@ -248,7 +248,32 @@ public class LiftingController {
 
 		return response;
 	}
-	
+
+	@GetMapping(value = "/{codeFileControl}/accounting-previewReport")
+	@ApiOperation(value="Informe preview contabilidad.")
+	public ResponseEntity<InputStreamResource> previewContable(@PathVariable("codeFileControl") Long codeFileControl)
+	{
+		try {
+			DownloadReportFile downloadReportFile = new DownloadReportFile();
+
+			downloadReportFile.setTempFileName("precontable");
+
+			downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
+
+			byte[] data = liftingService.previewContable(codeFileControl);
+
+			downloadReportFile.writeFile(data);
+
+			return downloadReportFile.returnToDownloadFile();
+		}
+		catch (Exception e)
+		{
+			logger.error("Error in precontable", e);
+
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 	@GetMapping(value = "/{codeFileControl}/accounting")
     @ApiOperation(value="Envio de datos a contabilidad.")
     public ResponseEntity<FileControlDTO> sendAccounting(Authentication authentication,

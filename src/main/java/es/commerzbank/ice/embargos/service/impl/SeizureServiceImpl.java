@@ -5,6 +5,7 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
+import es.commerzbank.ice.comun.lib.util.SQLUtils;
 import es.commerzbank.ice.comun.lib.util.jasper.ReportHelper;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.datawarehouse.service.AccountService;
@@ -533,6 +534,33 @@ public class SeizureServiceImpl
 		}
 
 		return true;
+	}
+
+	@Override
+	public byte[] previewContable(Long codeFileControl)
+			throws Exception
+	{
+		HashMap<String, Object> parameters = new HashMap<>();
+
+		try (Connection conn_embargos = oracleDataSourceEmbargos.getEmbargosConnection()) {
+
+			Resource informe = ResourcesUtil.getFromJasperFolder("precontable.jasper");
+			Resource imageLogo = ResourcesUtil.getImageLogoCommerceResource();
+
+			parameters.put("img_param", imageLogo.getFile().toString());
+
+			List<Long> pendientes = accountingService.embargoListaAContabilizar(codeFileControl);
+
+			parameters.put("CUENTA_TRABA_EXPRESSION", SQLUtils.calcInExpression(pendientes, "ct.cod_cuenta_traba"));
+			parameters.put("CUENTA_LEVANTAMIENTO_EXPRESSION", SQLUtils.calcInExpression(Collections.emptyList(), "cl.COD_CUENTA_LEVANTAMIENTO"));
+			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
+
+			InputStream isInforme = informe.getInputStream();
+			JasperPrint reporteLleno =  JasperFillManager.fillReport(isInforme, parameters, conn_embargos);
+			return JasperExportManager.exportReportToPdf(reporteLleno);
+		} catch (Exception e) {
+			throw new Exception("DB exception while generating the report", e);
+		}
 	}
 
 	@Override
