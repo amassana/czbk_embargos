@@ -136,7 +136,7 @@ $P!{CUENTA_LEVANTAMIENTO_EXPRESSION})]]>
 				<text><![CDATA[TITULAR]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="374" y="0" width="168" height="21" uuid="11d7a3d7-50f2-4a5f-b988-86502257df0a">
+				<reportElement x="374" y="0" width="145" height="21" uuid="11d7a3d7-50f2-4a5f-b988-86502257df0a">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6eebb496-2b1b-449a-b62e-eec1608c1e51"/>
 				</reportElement>
 				<box bottomPadding="2">
@@ -148,7 +148,7 @@ $P!{CUENTA_LEVANTAMIENTO_EXPRESSION})]]>
 				<text><![CDATA[IBAN]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="542" y="0" width="70" height="21" uuid="25a1460f-1012-4630-8de4-ebc73d740426">
+				<reportElement x="520" y="0" width="92" height="21" uuid="25a1460f-1012-4630-8de4-ebc73d740426">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6eebb496-2b1b-449a-b62e-eec1608c1e51"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -227,7 +227,7 @@ $P!{CUENTA_LEVANTAMIENTO_EXPRESSION})]]>
 				<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="542" y="2" width="70" height="15" uuid="7a5dcb85-6733-4c23-8136-c525fe7eb502">
+				<reportElement x="520" y="2" width="92" height="15" uuid="7a5dcb85-6733-4c23-8136-c525fe7eb502">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="642a7aec-f048-48fa-99fc-fbe2cb965521"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -249,7 +249,7 @@ $P!{CUENTA_LEVANTAMIENTO_EXPRESSION})]]>
 				<textFieldExpression><![CDATA[$F{NIF}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="374" y="2" width="168" height="15" uuid="c4624946-e65a-4507-ae4c-19a10ff06a45">
+				<reportElement x="374" y="2" width="146" height="15" uuid="c4624946-e65a-4507-ae4c-19a10ff06a45">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="642a7aec-f048-48fa-99fc-fbe2cb965521"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
