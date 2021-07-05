@@ -19,7 +19,7 @@
 ,	CAMBIO
 ,	DIVISA
 FROM (
-SELECT e.nif, e.nombre, ct.iban, 'TRABA' AS tipo, ct.importe, ct.cambio, ct.divisa
+SELECT 'TRABA' AS tipo, e.nif, e.nombre, ct.iban, ct.importe, ct.cambio, ct.divisa
 FROM
 trabas t
 INNER JOIN embargo e ON e.cod_embargo = t.cod_embargo
@@ -27,7 +27,7 @@ INNER JOIN CUENTA_TRABA ct ON ct.cod_traba = t.cod_traba
 WHERE
 $P!{CUENTA_TRABA_EXPRESSION}
 ) UNION
-(SELECT e.nif, e.nombre, cl.iban, 'LEVANTAMIENTO' AS tipo, cl.importe, cl.cambio, cl.cod_Divisa
+(SELECT 'LEVANTAMIENTO' AS tipo, e.nif, e.nombre, cl.iban, cl.importe, cl.cambio, cl.cod_Divisa
 FROM
 levantamiento_Traba l
 INNER JOIN trabas t ON t.cod_traba = l.cod_traba
