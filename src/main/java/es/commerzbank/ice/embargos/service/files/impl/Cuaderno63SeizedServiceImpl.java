@@ -324,7 +324,7 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	        controlFicheroEmbargo.setEstadoCtrlfichero(estadoCtrlfichero);
 
 	        // Se marca como pendiente el envío de cartas.
-			controlFichero.setIndEnvioCarta(EmbargosConstants.IND_FLAG_NO);
+			controlFicheroEmbargo.setIndEnvioCarta(EmbargosConstants.IND_FLAG_NO);
 	        
 	        controlFicheroEmbargo.setUsuarioUltModificacion(usuarioTramitador);
 	        controlFicheroEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
