@@ -457,18 +457,18 @@ public class LiftingServiceImpl
 
 	@Override
 	public void generateLiftingLetters(ControlFichero controlFichero) throws Exception {
-		List<Embargo> seizures = seizureRepository.findAllByControlFichero(controlFichero);
+		List<LevantamientoTraba> liftings = liftingRepository.findAllByControlFichero(controlFichero);
 
-		if (seizures != null && seizures.size() > 0)
+		if (liftings != null && liftings.size() > 0)
 		{
 			File temporaryFile = reportHelper.getTemporaryFile("cartas-levantamiento-"+ controlFichero.getCodControlFichero(), ReportHelper.PDF_EXTENSION);
 			PdfDocument outDoc = new PdfDocument(new PdfWriter(temporaryFile));
 
 			int pageCount = 1;
 
-			for (Embargo embargo : seizures)
+			for (LevantamientoTraba levantamiento : liftings)
 			{
-				JasperPrint filledReport = reportLiftingLetterInternal(embargo.getCodEmbargo());
+				JasperPrint filledReport = reportLiftingLetterInternal(levantamiento.getCodLevantamiento());
 
 				if (filledReport != null) {
 					reportHelper.dumpReport(outDoc, filledReport, pageCount);
