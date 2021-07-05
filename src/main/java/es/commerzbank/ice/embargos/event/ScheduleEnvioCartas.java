@@ -4,7 +4,6 @@ import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.LiftingService;
 import es.commerzbank.ice.embargos.service.SeizureService;
-import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,22 +37,10 @@ public class ScheduleEnvioCartas
       {
         try {
           logger.info("Enviando cartas para control fichero " + pendiente.getCodControlFichero());
+          
+          seizureService.generateSeizureLetters(pendiente);
 
-          if (pendiente.getTipoFichero().getCodTipoFichero() == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63 ||
-                  pendiente.getTipoFichero().getCodTipoFichero() == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT)
-          {
-            seizureService.generateSeizureLetters(pendiente);
-          }
-          else if (pendiente.getTipoFichero().getCodTipoFichero() == EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63 ||
-                  pendiente.getTipoFichero().getCodTipoFichero() == EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT)
-          {
-            liftingService.generateLiftingLetters(pendiente);
-          }
-          else if (pendiente.getTipoFichero().getCodTipoFichero() == EmbargosConstants.COD_TIPO_FICHERO_PETICION_CGPJ)
-          {
-            seizureService.generateSeizureLetters(pendiente);
-            liftingService.generateLiftingLetters(pendiente);
-          }
+          liftingService.generateLiftingLetters(pendiente);
 
           fileControlService.cartaEnviada(pendiente);
         }
