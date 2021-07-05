@@ -11,41 +11,31 @@
 	<parameter name="CUENTA_LEVANTAMIENTO_EXPRESSION" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT
-	COD_PETICION
-,	COD_SOLICITUD
+	TIPO
 ,	NIF
 ,	NOMBRE
 ,	IBAN
-,	TIPO
 ,	IMPORTE
 ,	CAMBIO
 ,	DIVISA
 FROM (
-SELECT st.cod_peticion AS cod_peticion, st.cod_Solicitud_Traba AS cod_solicitud, e.nif, e.nombre, ct.iban, 'TRABA' AS tipo, ct.importe, ct.cambio, ct.divisa
+SELECT e.nif, e.nombre, ct.iban, 'TRABA' AS tipo, ct.importe, ct.cambio, ct.divisa
 FROM
-Solicitudes_Traba st
-INNER JOIN trabas t ON t.cod_traba = st.cod_traba
+trabas t
 INNER JOIN embargo e ON e.cod_embargo = t.cod_embargo
 INNER JOIN CUENTA_TRABA ct ON ct.cod_traba = t.cod_traba
 WHERE
 $P!{CUENTA_TRABA_EXPRESSION}
 ) UNION
-(SELECT sl.cod_Peticion AS cod_peticion, sl.cod_Solicitud_Levantamiento AS cod_solicitud, e.nif, e.nombre,
-cl.iban, 'LEVANTAMIENTO' AS tipo, cl.importe, cl.cambio, cl.cod_Divisa FROM
-Solicitudes_Levantamiento sl
-INNER JOIN levantamiento_Traba l ON l.COD_TRABA = sl.COD_TRABA
+(SELECT e.nif, e.nombre, cl.iban, 'LEVANTAMIENTO' AS tipo, cl.importe, cl.cambio, cl.cod_Divisa
+FROM
+levantamiento_Traba l
 INNER JOIN trabas t ON t.cod_traba = l.cod_traba
 INNER JOIN embargo e ON e.COD_EMBARGO = t.COD_EMBARGO
 INNER JOIN cuenta_Levantamiento cl ON cl.COD_LEVANTAMIENTO = l.COD_LEVANTAMIENTO
 WHERE
 $P!{CUENTA_LEVANTAMIENTO_EXPRESSION})]]>
 	</queryString>
-	<field name="COD_PETICION" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="COD_PETICION"/>
-	</field>
-	<field name="COD_SOLICITUD" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="COD_SOLICITUD"/>
-	</field>
 	<field name="NIF" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="NIF"/>
 	</field>
