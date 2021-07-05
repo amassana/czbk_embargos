@@ -49,6 +49,11 @@ public class ScheduleEnvioCartas
           {
             liftingService.generateLiftingLetters(pendiente);
           }
+          else if (pendiente.getTipoFichero().getCodTipoFichero() == EmbargosConstants.COD_TIPO_FICHERO_PETICION_CGPJ)
+          {
+            seizureService.generateSeizureLetters(pendiente);
+            liftingService.generateLiftingLetters(pendiente);
+          }
 
           fileControlService.cartaEnviada(pendiente);
         }

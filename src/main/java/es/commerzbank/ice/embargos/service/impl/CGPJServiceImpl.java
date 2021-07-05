@@ -86,6 +86,9 @@ public class CGPJServiceImpl
     @Autowired
     private LiftingBankAccountRepository liftingBankAccountRepository;
 
+    @Autowired
+    private FileControlRepository fileControlRepository;
+
     @Override
     public Page<CGPJPetitionDTO> filter(CGPJFiltersDTO filters, Pageable pageable)
     {
@@ -283,6 +286,10 @@ public class CGPJServiceImpl
 
                     solicitudLevantamientoRepository.save(solicitudLevantamiento);
                 }
+
+                ControlFichero controlFicheroPeticion = peticion.getControlFichero();
+                controlFicheroPeticion.setIndEnvioCarta(IND_FLAG_NO);
+                fileControlRepository.save(controlFicheroPeticion);
 
                 peticion.setEstadoIntPeticion(estadoInterno);
                 peticion.setEstadoPrimarioResp(estadoPrimarioResp); // Todos en PROD son 0000
