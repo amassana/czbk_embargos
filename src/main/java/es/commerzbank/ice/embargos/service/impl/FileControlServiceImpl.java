@@ -281,7 +281,7 @@ public class FileControlServiceImpl
 				controlFichero.setIndProcesado(indProcesado);
 			}
 
-			// Determinar envío carta
+			// Determinar envío carta - aplica a levantamientos, embargos se hace al tramitar
 			controlFichero.setIndEnvioCarta(determineIndEnvioCarta(estadoCtrlFichero));
 
 			//Usuario y fecha ultima modificacion:
@@ -339,9 +339,10 @@ public class FileControlServiceImpl
 		// TODO pendiente CPGJ
 
 		if (
-				(codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_TO_SEND && codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63)
-			||	(codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_TO_SEND && codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT)
-			||	(codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_ACCOUNTED && codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63)
+				// para trabas se hace al tramitar, para evitar que retrocesos y recontabilziaciones reenvíen las cartas.
+			//	(codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_TO_SEND && codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63)
+			//||	(codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_TO_SEND && codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT)
+				(codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_ACCOUNTED && codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63)
 			||	(codEstadoCtrlFichero == EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_ACCOUNTED && codTipoFichero == EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT)
 		){
 			return EmbargosConstants.IND_FLAG_NO;

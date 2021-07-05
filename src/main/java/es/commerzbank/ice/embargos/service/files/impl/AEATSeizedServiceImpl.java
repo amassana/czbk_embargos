@@ -392,6 +392,9 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	        		EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_GENERATED,
 	        		EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT);
 	        controlFicheroEmbargo.setEstadoCtrlfichero(estadoCtrlfichero);
+
+			// Se marca como pendiente el envío de cartas.
+			controlFichero.setIndEnvioCarta(EmbargosConstants.IND_FLAG_NO);
 	        
 	        controlFicheroEmbargo.setUsuarioUltModificacion(usuarioTramitador);
 	        controlFicheroEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
