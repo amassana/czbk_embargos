@@ -337,7 +337,7 @@ public class LiftingServiceImpl
 
 			parameters.put("img_param", imageLogo.getFile().toString());
 
-			parameters.put("CUENTA_TRABA_EXPRESSION", SQLUtils.calcInExpression(Collections.emptyList(), "ct.cod_cuenta_traba"));
+			parameters.put("CUENTA_TRABA_EXPRESSION", SQLUtils.calcInExpression(new ArrayList<>(), "ct.cod_cuenta_traba"));
 
 			List<Long> pendientes = accountingService.levantamientoListaAContabilizar(codeFileControl);
 

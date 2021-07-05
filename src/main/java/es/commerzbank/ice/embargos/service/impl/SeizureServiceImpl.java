@@ -552,7 +552,7 @@ public class SeizureServiceImpl
 			List<Long> pendientes = accountingService.embargoListaAContabilizar(codeFileControl);
 
 			parameters.put("CUENTA_TRABA_EXPRESSION", SQLUtils.calcInExpression(pendientes, "ct.cod_cuenta_traba"));
-			parameters.put("CUENTA_LEVANTAMIENTO_EXPRESSION", SQLUtils.calcInExpression(Collections.emptyList(), "cl.COD_CUENTA_LEVANTAMIENTO"));
+			parameters.put("CUENTA_LEVANTAMIENTO_EXPRESSION", SQLUtils.calcInExpression(new ArrayList<>(), "cl.COD_CUENTA_LEVANTAMIENTO"));
 			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 
 			InputStream isInforme = informe.getInputStream();
