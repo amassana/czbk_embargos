@@ -25,7 +25,10 @@ public class LevantamientoHelperMapper {
         cuentaLevantamiento.setUsuarioUltModificacion(usuarioModif);
         cuentaLevantamiento.setFUltimaModificacion(fechaUltmaModif);
         
-        if (cuentaTraba != null) cuentaLevantamiento.setCambio(cuentaTraba.getCambio());
+        if (cuentaTraba != null) {
+            cuentaLevantamiento.setCambio(cuentaTraba.getCambio());
+            cuentaLevantamiento.setFechaValor(cuentaTraba.getFechaValor());
+        }
 
         if (cuenta!=null) {
         	cuentaLevantamiento.setCuenta(cuenta.getAccountNum());

@@ -5,6 +5,7 @@ import es.commerzbank.ice.comun.lib.domain.entity.Sucursal;
 import es.commerzbank.ice.comun.lib.repository.OfficeCRepo;
 import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
 import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.embargos.domain.dto.AccountStatusLiftingDTO;
 import es.commerzbank.ice.embargos.domain.dto.AccountingPendingDTO;
@@ -688,7 +689,7 @@ public class AccountingServiceImpl
 			accountingNote.setDebitAccount(debitAccount);
 			accountingNote.setCreditAccount(creditAccount);
 			accountingNote.setDebitValueDate(new Date());
-			accountingNote.setCreditValueDate(new Date());
+			accountingNote.setCreditValueDate(ICEDateUtils.bigDecimalToDate(cuentaLevantamiento.getFechaValor(), ICEDateUtils.FORMAT_yyyyMMdd));
 			accountingNote.setExecutionDate(new Date());
 			accountingNote.setReference1(reference1);
 			accountingNote.setReference2(reference2);
