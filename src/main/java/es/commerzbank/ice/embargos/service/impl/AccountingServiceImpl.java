@@ -283,7 +283,7 @@ public class AccountingServiceImpl
 			logger.info("La traba con id " + traba.getCodTraba()
 					+ " no se puede contabilizar ya que se encuentra en estado : [codEstado=" + traba.getEstadoTraba().getCodEstado()
 					+"; descEstado=" + traba.getEstadoTraba().getDesEstado() + "]");
-			return null;
+			return fileControlFicheroComunes;
 		}
 
 		//Se utiliza CopyOnWriteArrayList para evitar ConcurrentModificationException en el
@@ -303,7 +303,7 @@ public class AccountingServiceImpl
 			IMPORTANTE: SI SE MODIFICAN LAS CONDICIONES PARA CONTABILIZAR UN LEVANTAMIENTO, ACTUALIZARLAS EN CORRESPONDENCIA
 			EN EL MÉTODO levantamientoListaAContabilizar()
 			 */
-			
+
 			//Para contabilizar la cuentaTraba, se tienen que cumplir todos los casos siguientes:
 			// 1.- Estar en estado anterior a "Enviada a Contabilidad" -> corresponde al estado "Pendiente".
 			// 2.- Estar agregada a la Traba (tener activado el flag de agregarATraba).
