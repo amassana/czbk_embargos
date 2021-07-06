@@ -122,6 +122,7 @@ public class AEATFilePoller
         try {
             if (isIgnorableFile(processingFile)) {
                 LOG.info("El fichero no es de un tipo procesable: emb o lev y empieza por 9. Se descarta su proceso.");
+                aeatFolderPoller.moveToProcessed(processingFile, processedFile);
                 return;
             }
 
@@ -229,19 +230,13 @@ public class AEATFilePoller
         String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT);
         boolean result;
 
-        BufferedReader br = null;
-
-        try {
-            br = Files.newReader(processingFile, Charset.forName(encoding));
+        try (BufferedReader br = Files.newReader(processingFile, Charset.forName(encoding))) {
             String line = br.readLine();
 
             if (line == null)
-                throw new ICEException("a");
+                throw new ICEException("Could not read from the file "+ processingFile.getName());
 
             result = line.startsWith("9");
-        }
-        finally {
-            if (br != null) br.close();
         }
 
         return result;
