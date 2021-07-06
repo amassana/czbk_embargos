@@ -218,26 +218,32 @@ public class AEATFilePoller
         }
     }
 
+    // solo los .emb y .lev se deben chechear. el resto no son ignorables.
+    // si el primer carácter es un 9, se ignora
     private boolean isIgnorableFile(File processingFile) throws ICEException, IOException {
         String tipoFichero = FilenameUtils.getExtension(processingFile.getCanonicalPath()).toUpperCase();
 
-        // solo los .emb y .lev se deben chechear. el resto no son ignorables.
         if (!tipoFichero.equals(EmbargosConstants.TIPO_FICHERO_EMBARGOS) && !tipoFichero.equals(EmbargosConstants.TIPO_FICHERO_LEVANTAMIENTOS))
             return false;
 
         String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT);
+        boolean result;
 
-        // si el primer carácter es un 9, se ignora
-        try (BufferedReader br = Files.newReader(processingFile, Charset.forName(encoding))) {
+        BufferedReader br = null;
+
+        try {
+            br = Files.newReader(processingFile, Charset.forName(encoding));
             String line = br.readLine();
 
             if (line == null)
                 throw new ICEException("a");
 
-            if (line.startsWith("9"))
-                return true;
-
-            return false;
+            result = line.startsWith("9");
         }
+        finally {
+            if (br != null) br.close();
+        }
+
+        return result;
     }
 }
