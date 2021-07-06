@@ -1,15 +1,19 @@
 package es.commerzbank.ice.embargos.event;
 
+import com.google.common.io.Files;
 import es.commerzbank.ice.comun.lib.file.exchange.FileProcessor;
 import es.commerzbank.ice.comun.lib.file.exchange.FolderPoller;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.FileUtils;
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import es.commerzbank.ice.comun.lib.util.YAMLUtil;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.formats.aeat.diligencias.DiligenciaFase3;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
-import es.commerzbank.ice.embargos.service.files.*;
+import es.commerzbank.ice.embargos.service.files.AEATLiftingService;
+import es.commerzbank.ice.embargos.service.files.AEATSeizedResultService;
+import es.commerzbank.ice.embargos.service.files.AEATSeizureService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import org.apache.commons.io.FilenameUtils;
 import org.beanio.BeanReader;
@@ -24,11 +28,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
@@ -119,6 +120,11 @@ public class AEATFilePoller
     public void processFile(String originalName, File processingFile, File processedFile)
     {
         try {
+            if (isIgnorableFile(processingFile)) {
+                LOG.info("El fichero no es de un tipo procesable: emb o lev y empieza por 9. Se descarta su proceso.");
+                return;
+            }
+
             String md5 = FileUtils.getMD5(processingFile.getCanonicalPath());
             Optional<ControlFichero> existingFile = fileControlRepository.findByNumCrc(md5);
             if (existingFile.isPresent())
@@ -209,6 +215,29 @@ public class AEATFilePoller
             {
                 LOG.error(pollerName +": Error mientras se movía a la carpeta de errores "+ processingFile.getName(), e2);
             }
+        }
+    }
+
+    private boolean isIgnorableFile(File processingFile) throws ICEException, IOException {
+        String tipoFichero = FilenameUtils.getExtension(processingFile.getCanonicalPath()).toUpperCase();
+
+        // solo los .emb y .lev se deben chechear. el resto no son ignorables.
+        if (!tipoFichero.equals(EmbargosConstants.TIPO_FICHERO_EMBARGOS) && !tipoFichero.equals(EmbargosConstants.TIPO_FICHERO_LEVANTAMIENTOS))
+            return false;
+
+        String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT);
+
+        // si el primer carácter es un 9, se ignora
+        try (BufferedReader br = Files.newReader(processingFile, Charset.forName(encoding))) {
+            String line = br.readLine();
+
+            if (line == null)
+                throw new ICEException("a");
+
+            if (line.startsWith("9"))
+                return true;
+
+            return false;
         }
     }
 }
