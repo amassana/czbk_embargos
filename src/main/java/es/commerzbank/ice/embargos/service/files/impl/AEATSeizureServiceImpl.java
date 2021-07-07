@@ -205,7 +205,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 						String razonSocialInterna = EmbargosUtils.determineRazonSocialInternaFromCustomer(customerDTO);
 
 						FestiveService.ValueDateCalculationParameters parameters = new FestiveService.ValueDateCalculationParameters();
-						parameters.numBusinessDays = entidadComunicadora.getDiasRespuestaF3()!=null ? entidadComunicadora.getDiasRespuestaF3().intValue() : 0;;
+						parameters.numDaysToAdd = entidadComunicadora.getDiasRespuestaF3()!=null ? entidadComunicadora.getDiasRespuestaF3().intValue() : 0;;
 						parameters.location = 1L;
 						parameters.fromDate = LocalDate.now();
 						//parameters.fromDate = DateUtils.convertToLocalDate(diligenciaFase3.getFechaGeneracionDiligencia());
@@ -301,7 +301,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 			//- Se guarda la fecha maxima de respuesta (now + dias de margen)
 			int diasRespuestaF3 = entidadComunicadora.getDiasRespuestaF3()!=null ? entidadComunicadora.getDiasRespuestaF3().intValue() : 0;
 			FestiveService.ValueDateCalculationParameters parameters = new FestiveService.ValueDateCalculationParameters();
-			parameters.numBusinessDays = diasRespuestaF3;
+			parameters.numDaysToAdd = diasRespuestaF3;
 			parameters.location = 1L;
 			parameters.fromDate = DateUtils.convertToLocalDate(fechaInicioCiclo);
 			LocalDate finalDate = festiveService.dateCalculation(parameters, ValueConstants.COD_LOCALIDAD_MADRID);
