@@ -7,6 +7,7 @@ import es.commerzbank.ice.comun.lib.service.FestiveService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
+import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
 import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.Cuaderno63Mapper;
@@ -353,7 +354,13 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	        
 			//- Se guarda la fecha maxima de respuesta fase6 (now + dias de margen)
 			int diasRespuestaF6 = entidadComunicadora.getDiasRespuestaF6() != null ? entidadComunicadora.getDiasRespuestaF6().intValue() : 0;
-			Date lastDateResponse = Date.from(LocalDate.now().plusDays(diasRespuestaF6).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+			FestiveService.ValueDateCalculationParameters parameters = new FestiveService.ValueDateCalculationParameters();
+			parameters.numDaysToAdd = diasRespuestaF6;
+			parameters.location = 1L;
+			parameters.fromDate = LocalDate.now();
+			parameters.calculationType = FestiveService.CalculationType.FIRST_WORKING_DAY;
+			LocalDate finalDate = festiveService.dateCalculation(parameters, ValueConstants.COD_LOCALIDAD_MADRID);
+			Date lastDateResponse = Date.from(finalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
 			
 			//CALENDARIO:
 	        // - Se agrega la tarea al calendario:

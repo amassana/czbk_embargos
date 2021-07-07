@@ -183,11 +183,9 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 					parameters.numDaysToAdd = diasRespuestaF3;
 					parameters.location = 1L;
 					parameters.fromDate = LocalDate.now();
-					//parameters.fromDate = DateUtils.convertToLocalDate(fechaObtencionFicheroOrganismo);
 					LocalDate finalDate = festiveService.dateCalculation(parameters, ValueConstants.COD_LOCALIDAD_MADRID);
 					Date lastDateResponse = Date.from(finalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
 
-					//Date lastDateResponse = DateUtils.convertToDate(LocalDate.now().plusDays(diasRespuestaF3));
 					BigDecimal limitResponseDate = ICEDateUtils.dateToBigDecimal(lastDateResponse, ICEDateUtils.FORMAT_yyyyMMdd);
 					controlFicheroEmbargo.setFechaMaximaRespuesta(limitResponseDate);
 	        		

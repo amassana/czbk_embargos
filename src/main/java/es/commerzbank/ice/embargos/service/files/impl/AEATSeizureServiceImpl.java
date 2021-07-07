@@ -208,7 +208,6 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 						parameters.numDaysToAdd = entidadComunicadora.getDiasRespuestaF3()!=null ? entidadComunicadora.getDiasRespuestaF3().intValue() : 0;;
 						parameters.location = 1L;
 						parameters.fromDate = LocalDate.now();
-						//parameters.fromDate = DateUtils.convertToLocalDate(diligenciaFase3.getFechaGeneracionDiligencia());
 						Date finalDate = DateUtils.convertToDate(festiveService.dateCalculation(parameters, ValueConstants.COD_LOCALIDAD_MADRID));
 						BigDecimal limitResponseDate = ICEDateUtils.dateToBigDecimal(finalDate, ICEDateUtils.FORMAT_yyyyMMdd);
 

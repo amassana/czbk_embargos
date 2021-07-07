@@ -7,6 +7,7 @@ import es.commerzbank.ice.comun.lib.service.FestiveService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
+import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
 import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.AEATMapper;
@@ -298,7 +299,13 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 				// Para la Agencia Tributaria la el paso de Embargos a Impuestos se produce
 				// 21 días naturales desde el día siguiente a la realización de la traba (cuando se adeuda la traba).
 				int diasRespuestaF6 = entidadComunicadora.getDiasRespuestaF6() != null ? entidadComunicadora.getDiasRespuestaF6().intValue() : 0;
-				lastDateResponse = Date.from(fechaTraba.plusDays(diasRespuestaF6).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+				FestiveService.ValueDateCalculationParameters parameters = new FestiveService.ValueDateCalculationParameters();
+				parameters.numDaysToAdd = diasRespuestaF6;
+				parameters.location = 1L;
+				parameters.fromDate = LocalDate.now();
+				parameters.calculationType = FestiveService.CalculationType.FIRST_WORKING_DAY;
+				LocalDate finalDate = festiveService.dateCalculation(parameters, ValueConstants.COD_LOCALIDAD_MADRID);
+				lastDateResponse = Date.from(finalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
 			}  else {
 				lastDateResponse = new Date();
 			}
