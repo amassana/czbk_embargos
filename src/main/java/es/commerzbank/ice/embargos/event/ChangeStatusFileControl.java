@@ -1,6 +1,7 @@
 package es.commerzbank.ice.embargos.event;
 
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
 import es.commerzbank.ice.embargos.repository.FileControlRepository;
@@ -31,6 +32,9 @@ public class ChangeStatusFileControl {
 	@Autowired
 	private GeneralParametersService generalParameterService;
 
+	@Autowired
+	private TaskService taskService;
+
 	private static final List<Long> codTipoFichero = Arrays.asList(
 			COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63,
 			COD_TIPO_FICHERO_TRABAS_NORMA63,
@@ -58,24 +62,36 @@ public class ChangeStatusFileControl {
 						estadoCtrlfichero = new EstadoCtrlfichero(
 			                    EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_AEAT_SENT,
 			                    COD_TIPO_FICHERO_TRABAS_AEAT);
+
+						if (controlFichero.getControlFicheroOrigen() != null && controlFichero.getControlFicheroOrigen().getCodTarea() != null)
+							taskService.closeCalendarTask(controlFichero.getControlFicheroOrigen().getCodTarea().longValue());
 					}
 					else if (controlFichero.getTipoFichero().getCodTipoFichero() == COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63)
 					{
 						estadoCtrlfichero = new EstadoCtrlfichero(
 			                    EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_INFORMACION_NORMA63_SENT,
 			                    COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63);
+
+						if (controlFichero.getControlFicheroOrigen() != null && controlFichero.getControlFicheroOrigen().getCodTarea() != null)
+							taskService.closeCalendarTask(controlFichero.getControlFicheroOrigen().getCodTarea().longValue());
 					}
 					else if (controlFichero.getTipoFichero().getCodTipoFichero() == COD_TIPO_FICHERO_TRABAS_NORMA63)
 					{
 						estadoCtrlfichero = new EstadoCtrlfichero(
 			                    EmbargosConstants.COD_ESTADO_CTRLFICHERO_ENVIO_TRABAS_NORMA63_SENT,
 			                    COD_TIPO_FICHERO_TRABAS_NORMA63);
+
+						if (controlFichero.getControlFicheroOrigen() != null && controlFichero.getControlFicheroOrigen().getCodTarea() != null)
+							taskService.closeCalendarTask(controlFichero.getControlFicheroOrigen().getCodTarea().longValue());
 					}
 					else if (controlFichero.getTipoFichero().getCodTipoFichero() == EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63)
 					{
 						estadoCtrlfichero = new EstadoCtrlfichero(
 			                    EmbargosConstants.COD_ESTADO_CTRLFICHERO_FINAL_ENVIADO,
 			                    EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63);
+
+						if (controlFichero.getControlFicheroOrigen() != null && controlFichero.getControlFicheroOrigen().getCodTarea() != null)
+							taskService.closeCalendarTask(controlFichero.getControlFicheroOrigen().getCodTarea().longValue());
 					}
 
 					if (estadoCtrlfichero != null)

@@ -305,22 +305,6 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        controlFicheroPeticion.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 	        controlFicheroPeticion.setFechaGeneracionRespuesta(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 	        fileControlRepository.save(controlFicheroPeticion);
-        
-	        //Cerrar la tarea:
-	        boolean closed = false;
-	        if (controlFicheroPeticion.getCodTarea()!=null) {
-	        	
-	        	Long codTarea = controlFicheroPeticion.getCodTarea().longValue();	        	
-	        	closed = taskService.closeCalendarTask(codTarea);
-		      
-	        	if(!closed) {
-		        	LOG.error("ERROR: No se ha cerrado la Tarea");
-		        	//TODO: lanzar excepcion si no se ha cerrado la tarea
-		        }
-	        } else {
-	        	LOG.error("ERROR al cerrar la tarea: No se ha encontrado el codigo de la Tarea");
-	        	//TODO: lanzar excepcion si no se ha encontrado el codigo de tarea
-	        }
 
 			// Mover a outbox
 			String outboxGenerated = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_OUTBOX);
