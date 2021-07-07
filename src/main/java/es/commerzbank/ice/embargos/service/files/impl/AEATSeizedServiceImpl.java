@@ -416,7 +416,7 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 			// - Se agrega la tarea al calendario:
 			if (tieneTrabasRealizadas) {
 				TaskAndEvent task = new TaskAndEvent();
-				task.setDescription("Fase 6 programada " + controlFicheroEmbargo.getNombreFichero());
+				task.setDescription("Generación Impuestos " + controlFicheroEmbargo.getNombreFichero());
 				task.setDate(lastDateResponse);
 				task.setCodCalendar(1L);
 				task.setType("T");
