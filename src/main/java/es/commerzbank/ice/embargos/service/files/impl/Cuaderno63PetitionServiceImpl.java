@@ -180,14 +180,25 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 				        		informationPetitionRepository.save(peticionInformacion);
 
 			        			//Se guardan todas las cuentas del nif en la tabla PETICION_INFORMACION_CUENTAS:
-				        		for(AccountDTO accountDTO : accountList) {
+								// se preserva la precedencia de Cuaderno63Mapper.setPreloadedBankAccounts
+								for(AccountDTO accountDTO : accountList) {
+									if (EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE.equals(accountDTO.getStatus()) && EmbargosConstants.ISO_MONEDA_EUR.equals(accountDTO.getDivisa())) {
+										PeticionInformacionCuenta peticionInformacionCuenta =
+												informationPetitionBankAccountMapper.toPeticionInformacionCuenta(accountDTO,
+														peticionInformacion.getCodPeticion());
 
-				        			PeticionInformacionCuenta peticionInformacionCuenta =
-				        					informationPetitionBankAccountMapper.toPeticionInformacionCuenta(accountDTO,
-				        							peticionInformacion.getCodPeticion());
+										informationPetitionBankAccountRepository.save(peticionInformacionCuenta);
+									}
+								}
+								for(AccountDTO accountDTO : accountList) {
+									if (!(EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE.equals(accountDTO.getStatus()) && EmbargosConstants.ISO_MONEDA_EUR.equals(accountDTO.getDivisa()))) {
+										PeticionInformacionCuenta peticionInformacionCuenta =
+												informationPetitionBankAccountMapper.toPeticionInformacionCuenta(accountDTO,
+														peticionInformacion.getCodPeticion());
 
-				        			informationPetitionBankAccountRepository.save(peticionInformacionCuenta);
-				        		}
+										informationPetitionBankAccountRepository.save(peticionInformacionCuenta);
+									}
+								}
 			        		}
 		        		}
 	        		}
