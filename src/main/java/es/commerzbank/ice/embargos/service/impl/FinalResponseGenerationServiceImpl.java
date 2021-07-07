@@ -110,10 +110,12 @@ public class FinalResponseGenerationServiceImpl
                 cuentaResultadoEmbargo.setCuentaEmbargo(cuentaEmbargo);
 
                 // Se busca y mapea la cuenta traba relacionada, se obtiene el importe trabado
-                for (CuentaTraba cuentaTraba : traba.getCuentaTrabas()) {
-                    if (cuentaTraba.getCuenta().equals(cuentaEmbargo.getCuenta())) {
-                        cuentaResultadoEmbargo.setCuentaTraba(cuentaTraba);
-                        break;
+                if (traba.getCuentaTrabas() != null) { // No debería ocurrir pero ..
+                    for (CuentaTraba cuentaTraba : traba.getCuentaTrabas()) {
+                        if (cuentaTraba.getCuenta().equals(cuentaEmbargo.getCuenta())) {
+                            cuentaResultadoEmbargo.setCuentaTraba(cuentaTraba);
+                            break;
+                        }
                     }
                 }
 
