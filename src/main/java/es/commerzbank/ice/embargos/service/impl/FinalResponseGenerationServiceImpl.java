@@ -126,9 +126,11 @@ public class FinalResponseGenerationServiceImpl
                 // Se calcula el total levantado - pueden haber varios levantamientos.
                 BigDecimal importeLevantadoCuenta = BigDecimal.ZERO;
                 for (LevantamientoTraba levantamientoTraba : levantamientos) {
-                    for (CuentaLevantamiento cuentaLevantamiento : levantamientoTraba.getCuentaLevantamientos()) {
-                        if (cuentaLevantamiento.getCuenta().equals(cuentaEmbargo.getCuenta())) {
-                            importeLevantadoCuenta = importeLevantadoCuenta.add(cuentaLevantamiento.getImporte());
+                    if (levantamientoTraba.getCuentaLevantamientos() != null) {
+                        for (CuentaLevantamiento cuentaLevantamiento : levantamientoTraba.getCuentaLevantamientos()) {
+                            if (cuentaLevantamiento.getCuenta().equals(cuentaEmbargo.getCuenta())) {
+                                importeLevantadoCuenta = importeLevantadoCuenta.add(cuentaLevantamiento.getImporte());
+                            }
                         }
                     }
                 }
