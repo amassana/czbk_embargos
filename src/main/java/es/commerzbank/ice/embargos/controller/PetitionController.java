@@ -170,9 +170,7 @@ public class PetitionController {
 
 			downloadReportFile.setFileTempPath(generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_TSP_JASPER_TEMP));
 
-			String oficina = officeUtils.getLocalidadUsuario(authentication);
-
-			byte[] data = petitionService.generateF1PettitionRequest(codeFileControl, oficina);
+			byte[] data = petitionService.generateF1PettitionRequest(codeFileControl);
 
 			downloadReportFile.writeFile(data);
 
