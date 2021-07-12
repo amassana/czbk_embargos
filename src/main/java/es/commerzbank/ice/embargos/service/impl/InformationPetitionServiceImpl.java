@@ -270,15 +270,15 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 			Integer orden = null;
 			if (peticionInformacionCuenta.getCuenta().equals(peticionInformacion.getCuenta1()))
 				orden = 1;
-			if (peticionInformacionCuenta.getCuenta().equals(peticionInformacion.getCuenta2()))
+			else if (peticionInformacionCuenta.getCuenta().equals(peticionInformacion.getCuenta2()))
 				orden = 2;
-			if (peticionInformacionCuenta.getCuenta().equals(peticionInformacion.getCuenta3()))
+			else if (peticionInformacionCuenta.getCuenta().equals(peticionInformacion.getCuenta3()))
 				orden = 3;
-			if (peticionInformacionCuenta.getCuenta().equals(peticionInformacion.getCuenta4()))
+			else if (peticionInformacionCuenta.getCuenta().equals(peticionInformacion.getCuenta4()))
 				orden = 4;
-			if (peticionInformacionCuenta.getCuenta().equals(peticionInformacion.getCuenta5()))
+			else if (peticionInformacionCuenta.getCuenta().equals(peticionInformacion.getCuenta5()))
 				orden = 5;
-			if (peticionInformacionCuenta.getCuenta().equals(peticionInformacion.getCuenta6()))
+			else if (peticionInformacionCuenta.getCuenta().equals(peticionInformacion.getCuenta6()))
 				orden = 6;
 
 			if (orden != null) {
