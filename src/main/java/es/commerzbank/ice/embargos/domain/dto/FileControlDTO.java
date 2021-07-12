@@ -26,6 +26,7 @@ public class FileControlDTO {
 	private Boolean hasSeizures;
 	private Boolean hasLiftings;
 	private Boolean hasExecutions;
+	private String associatedFileName;
 	
 	public String getCode() {
 		return code;
@@ -180,5 +181,13 @@ public class FileControlDTO {
 
 	public void setRequestName(String requestName) {
 		this.requestName = requestName;
+	}
+
+	public String getAssociatedFileName() {
+		return associatedFileName;
+	}
+
+	public void setAssociatedFileName(String associatedFileName) {
+		this.associatedFileName = associatedFileName;
 	}
 }
