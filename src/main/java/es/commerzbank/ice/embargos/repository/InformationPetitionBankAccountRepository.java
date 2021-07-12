@@ -10,5 +10,6 @@ import java.util.List;
 public interface InformationPetitionBankAccountRepository extends JpaRepository<PeticionInformacionCuenta, PeticionInformacionCuentaPK>{
 
 	List<PeticionInformacionCuenta> findByPeticionInformacionOrderByOrden(PeticionInformacion peticionInformacion);
-	
+
+	List<PeticionInformacionCuenta> findByPeticionInformacion(PeticionInformacion peticionInformacion);
 }
