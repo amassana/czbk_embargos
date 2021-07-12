@@ -42,6 +42,7 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -180,25 +181,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 				        		informationPetitionRepository.save(peticionInformacion);
 
 			        			//Se guardan todas las cuentas del nif en la tabla PETICION_INFORMACION_CUENTAS:
-								// se preserva la precedencia de Cuaderno63Mapper.setPreloadedBankAccounts
-								for(AccountDTO accountDTO : accountList) {
-									if (EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE.equals(accountDTO.getStatus()) && EmbargosConstants.ISO_MONEDA_EUR.equals(accountDTO.getDivisa())) {
-										PeticionInformacionCuenta peticionInformacionCuenta =
-												informationPetitionBankAccountMapper.toPeticionInformacionCuenta(accountDTO,
-														peticionInformacion.getCodPeticion());
-
-										informationPetitionBankAccountRepository.save(peticionInformacionCuenta);
-									}
-								}
-								for(AccountDTO accountDTO : accountList) {
-									if (!(EmbargosConstants.BANK_ACCOUNT_STATUS_ACTIVE.equals(accountDTO.getStatus()) && EmbargosConstants.ISO_MONEDA_EUR.equals(accountDTO.getDivisa()))) {
-										PeticionInformacionCuenta peticionInformacionCuenta =
-												informationPetitionBankAccountMapper.toPeticionInformacionCuenta(accountDTO,
-														peticionInformacion.getCodPeticion());
-
-										informationPetitionBankAccountRepository.save(peticionInformacionCuenta);
-									}
-								}
+								guardarPeticionCuentas(peticionInformacion, accountList);
 			        		}
 		        		}
 	        		}
@@ -328,4 +311,44 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 
 	}
 
+	private void guardarPeticionCuentas(PeticionInformacion peticionInformacion, List<AccountDTO> accountList)
+	{
+		// se preserva la precedencia de Cuaderno63Mapper.setPreloadedBankAccounts
+		ArrayList<AccountDTO> accountWorkingCopy = new ArrayList(accountList);
+		int maxOrden = Integer.MIN_VALUE;
+		// Se recupera el número de orden preasignado
+		for(AccountDTO accountDTO : accountList) {
+
+			Integer orden = null;
+			if (accountDTO.getAccountNum().equals(peticionInformacion.getCuenta1()))
+				orden = 1;
+			if (accountDTO.getAccountNum().equals(peticionInformacion.getCuenta2()))
+				orden = 2;
+			if (accountDTO.getAccountNum().equals(peticionInformacion.getCuenta3()))
+				orden = 3;
+			if (accountDTO.getAccountNum().equals(peticionInformacion.getCuenta4()))
+				orden = 4;
+			if (accountDTO.getAccountNum().equals(peticionInformacion.getCuenta5()))
+				orden = 5;
+			if (accountDTO.getAccountNum().equals(peticionInformacion.getCuenta6()))
+				orden = 6;
+
+			if (orden != null) {
+				PeticionInformacionCuenta peticionInformacionCuenta =
+						informationPetitionBankAccountMapper.toPeticionInformacionCuenta(accountDTO,
+								peticionInformacion.getCodPeticion(), orden);
+				informationPetitionBankAccountRepository.save(peticionInformacionCuenta);
+				accountWorkingCopy.remove(accountDTO);
+				maxOrden = Integer.max(orden, maxOrden);
+			}
+		}
+		// Cuentas sin preasignar
+		for(AccountDTO accountDTO : accountWorkingCopy) {
+			maxOrden = maxOrden + 1;
+			PeticionInformacionCuenta peticionInformacionCuenta =
+					informationPetitionBankAccountMapper.toPeticionInformacionCuenta(accountDTO,
+							peticionInformacion.getCodPeticion(), maxOrden);
+			informationPetitionBankAccountRepository.save(peticionInformacionCuenta);
+		}
+	}
 }

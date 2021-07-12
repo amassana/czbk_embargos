@@ -1,12 +1,5 @@
 package es.commerzbank.ice.embargos.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import es.commerzbank.ice.embargos.domain.dto.BankAccountDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.PeticionInformacion;
@@ -14,6 +7,12 @@ import es.commerzbank.ice.embargos.domain.entity.PeticionInformacionCuenta;
 import es.commerzbank.ice.embargos.domain.mapper.BankAccountMapper;
 import es.commerzbank.ice.embargos.repository.InformationPetitionBankAccountRepository;
 import es.commerzbank.ice.embargos.service.InformationPetitionBankAccountService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional(transactionManager="transactionManager")
@@ -38,7 +37,7 @@ public class InformationPetitionBankAccountServiceImpl implements InformationPet
 		PeticionInformacion peticionInformacion = new PeticionInformacion();
 		peticionInformacion.setCodPeticion(codPeticionInformacion);
 		
-		List<PeticionInformacionCuenta> peticionInformacionCuentaList = informationPetitionBankAccountRepository.findByPeticionInformacion(peticionInformacion);
+		List<PeticionInformacionCuenta> peticionInformacionCuentaList = informationPetitionBankAccountRepository.findByPeticionInformacionOrderByOrden(peticionInformacion);
 		
 		for (PeticionInformacionCuenta peticionInformacionCuenta : peticionInformacionCuentaList) {
 			
