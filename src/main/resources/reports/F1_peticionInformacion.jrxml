@@ -29,7 +29,8 @@ FROM
 	INNER JOIN PETICION_INFORMACION_CUENTAS pic ON pic.COD_PETICION_INFORMACION = peti.COD_PETICION
 WHERE
 	cf.COD_CONTROL_FICHERO = $P{cod_control_fichero}
-AND pic.CUENTA LIKE $P{PREFIJO_CUENTA}]]>
+AND pic.CUENTA LIKE $P{PREFIJO_CUENTA}
+ORDER BY pic.ORDEN]]>
 	</queryString>
 	<field name="NIF" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="NIF"/>

@@ -25,9 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
 import java.sql.Connection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Service
 @Transactional(transactionManager="transactionManager")
@@ -82,6 +80,8 @@ public class PetitionServiceImpl implements PetitionService{
 	@Override
 	public byte[] generateF1PettitionRequest(Integer codeFileControl) throws Exception {
 		List<Sucursal> sucursales = officeUtils.getSucursalesActivas();
+		Collections.sort(sucursales, Comparator.comparing(Sucursal::getCodSucursal));
+		
 		JasperPrint report = null;
 
 		for (Sucursal sucursal : sucursales) {
