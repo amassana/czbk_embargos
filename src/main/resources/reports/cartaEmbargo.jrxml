@@ -262,7 +262,7 @@ AND ct.importe > 0]]>
 				<text><![CDATA[IMPORTE:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="350" y="-5" width="60" height="15" uuid="9ec3b839-45c8-479b-ac74-34bddf22948e">
+				<reportElement x="350" y="-5" width="70" height="15" uuid="9ec3b839-45c8-479b-ac74-34bddf22948e">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -294,7 +294,7 @@ AND ct.importe > 0]]>
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy", new Locale("es")).format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHA_VALOR}))]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="190" y="10" width="50" height="15" uuid="5fd58984-aac8-49c0-a29c-00f20e135857">
+				<reportElement x="189" y="10" width="50" height="15" uuid="5fd58984-aac8-49c0-a29c-00f20e135857">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[!"EUR".equals($F{DIVISA})]]></printWhenExpression>
 				</reportElement>
@@ -304,7 +304,7 @@ AND ct.importe > 0]]>
 				<text><![CDATA[CAMBIO:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="225" y="10" width="57" height="15" uuid="0f8cc0f0-5f61-4a3c-bed9-19e5adeb273c">
+				<reportElement x="231" y="10" width="57" height="15" uuid="0f8cc0f0-5f61-4a3c-bed9-19e5adeb273c">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[!"EUR".equals($F{DIVISA})]]></printWhenExpression>
 				</reportElement>
@@ -347,7 +347,7 @@ AND ct.importe > 0]]>
 				<textFieldExpression><![CDATA[$F{DIVISA}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="409" y="-5" width="29" height="15" uuid="809ba7ad-f842-4e25-ae8e-e2a606ad80df">
+				<reportElement x="415" y="-5" width="29" height="15" uuid="809ba7ad-f842-4e25-ae8e-e2a606ad80df">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[!"EUR".equals($F{DIVISA})]]></printWhenExpression>
 				</reportElement>
@@ -400,7 +400,7 @@ Sucursal en España]]></text>
 				<textElement>
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA["INFORMACIÓN DEL ORGANISMO EMISOR:\n"+ $F{DATREGCOMDET}+
+				<textFieldExpression><![CDATA["INFORMACIÓN DEL ORGANISMO EMISOR:\n\n"+ $F{DATREGCOMDET}+
 "\n\nAprovechamos la ocasión para saludarles muy atentamente."]]></textFieldExpression>
 			</textField>
 			<staticText>
