@@ -253,7 +253,7 @@ AND ct.importe > 0]]>
 				<textFieldExpression><![CDATA[$F{IBAN}.substring(4,8) +" "+ $F{IBAN}.substring(8,12) +" ** "+ $F{IBAN}.substring(14)]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="14" y="10" width="50" height="15" uuid="e33b1987-aec4-404c-abfb-e38318f3ff34">
+				<reportElement x="303" y="-5" width="50" height="15" uuid="e33b1987-aec4-404c-abfb-e38318f3ff34">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -262,7 +262,7 @@ AND ct.importe > 0]]>
 				<text><![CDATA[IMPORTE:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="57" y="10" width="96" height="15" uuid="9ec3b839-45c8-479b-ac74-34bddf22948e">
+				<reportElement x="337" y="-5" width="96" height="15" uuid="9ec3b839-45c8-479b-ac74-34bddf22948e">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box leftPadding="5"/>
@@ -293,7 +293,7 @@ AND ct.importe > 0]]>
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy", new Locale("es")).format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHA_VALOR}))]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="340" y="10" width="50" height="15" uuid="5fd58984-aac8-49c0-a29c-00f20e135857">
+				<reportElement x="190" y="10" width="50" height="15" uuid="5fd58984-aac8-49c0-a29c-00f20e135857">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[!"EUR".equals($F{DIVISA})]]></printWhenExpression>
 				</reportElement>
@@ -303,7 +303,7 @@ AND ct.importe > 0]]>
 				<text><![CDATA[CAMBIO:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="383" y="10" width="46" height="15" uuid="0f8cc0f0-5f61-4a3c-bed9-19e5adeb273c">
+				<reportElement x="233" y="10" width="46" height="15" uuid="0f8cc0f0-5f61-4a3c-bed9-19e5adeb273c">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[!"EUR".equals($F{DIVISA})]]></printWhenExpression>
 				</reportElement>
@@ -314,7 +314,7 @@ AND ct.importe > 0]]>
 				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.000").format($F{CAMBIO_DIVISA})]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="165" y="10" width="58" height="15" uuid="fcd261e8-5a2e-424d-b9e5-b9e8185b723e">
+				<reportElement x="15" y="10" width="58" height="15" uuid="fcd261e8-5a2e-424d-b9e5-b9e8185b723e">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[!"EUR".equals($F{DIVISA})]]></printWhenExpression>
 				</reportElement>
@@ -324,7 +324,7 @@ AND ct.importe > 0]]>
 				<text><![CDATA[EN DIVISA:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="223" y="10" width="96" height="15" uuid="0acc90ca-69f7-461c-9bc5-98bfabc509c2">
+				<reportElement x="69" y="10" width="57" height="15" uuid="0acc90ca-69f7-461c-9bc5-98bfabc509c2">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[!"EUR".equals($F{DIVISA})]]></printWhenExpression>
 				</reportElement>
@@ -332,7 +332,18 @@ AND ct.importe > 0]]>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTE}.multiply($F{CAMBIO_DIVISA})) +" " + $F{DIVISA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTE}.multiply($F{CAMBIO_DIVISA}))]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="131" y="10" width="29" height="15" uuid="47ee6231-c6a5-43ca-b63e-f86beddad4df">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[!"EUR".equals($F{DIVISA})]]></printWhenExpression>
+				</reportElement>
+				<box leftPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Serif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DIVISA}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
