@@ -12,7 +12,7 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="mm"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<parameter name="COD_TRABA" class="java.lang.Long"/>
+	<parameter name="CODIGO" class="java.lang.Long"/>
 	<parameter name="ENTIDAD" class="java.lang.String"/>
 	<parameter name="logo_image" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="nombre_titular" class="java.lang.String"/>
@@ -23,23 +23,26 @@
 		<![CDATA[SELECT
 	ct.cuenta
 ,	ct.iban
-,	ct.importe AS IMPORTE_TRABA
-,   SUBSTR(ct.cuenta, 13) AS DIVISA_TRABA
+,	ct.importe AS IMPORTE
+,   DIVISA
+,	ct.CAMBIO AS CAMBIO_DIVISA
 ,	ct.fecha_valor AS FECHA_VALOR
-,	t.fecha_traba
+,	t.fecha_traba AS FECHA
 ,	e.NOMBRE
 ,	e.numero_embargo
 ,	e.nif
 ,	e.importe AS IMPORTE_EMBARGO
 ,	e.datregcomdet
+,	ec.PREFIJO_FICHEROS AS ACRONIMO_ENTIDAD
 FROM
 	TRABAS t
 INNER JOIN CUENTA_TRABA ct ON t.cod_traba = ct.cod_traba
 INNER JOIN EMBARGO e ON e.cod_embargo = t.cod_embargo
+INNER JOIN CONTROL_FICHERO cf ON cf.COD_CONTROL_FICHERO = e.COD_CONTROL_FICHERO
+INNER JOIN ENTIDADES_COMUNICADORAS ec ON cf.COD_ENTIDAD_PRESENTADORA = ec.COD_ENTIDAD_PRESENTADORA
 WHERE
-	t.cod_traba = $P{COD_TRABA}
-AND ct.importe > 0
-AND ct.estado_cuenta = 'ACTIVE']]>
+	t.cod_traba = $P{CODIGO}
+AND ct.importe > 0]]>
 	</queryString>
 	<field name="CUENTA" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="CUENTA"/>
@@ -47,14 +50,14 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 	<field name="IBAN" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="IBAN"/>
 	</field>
-	<field name="IMPORTE_TRABA" class="java.math.BigDecimal">
-		<property name="com.jaspersoft.studio.field.label" value="IMPORTE_TRABA"/>
+	<field name="IMPORTE" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="IMPORTE"/>
 	</field>
-	<field name="DIVISA_TRABA" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="DIVISA_TRABA"/>
+	<field name="DIVISA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DIVISA"/>
 	</field>
-	<field name="FECHA_TRABA" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="FECHA_TRABA"/>
+	<field name="FECHA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="FECHA"/>
 	</field>
 	<field name="FECHA_VALOR" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="FECHA_VALOR"/>
@@ -73,6 +76,12 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 	</field>
 	<field name="DATREGCOMDET" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="DATREGCOMDET"/>
+	</field>
+	<field name="ACRONIMO_ENTIDAD" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ACRONIMO_ENTIDAD"/>
+	</field>
+	<field name="CAMBIO_DIVISA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="CAMBIO_DIVISA"/>
 	</field>
 	<variable name="TodayDayHeader" class="java.lang.String">
 		<variableExpression><![CDATA[new java.text.SimpleDateFormat("d' de 'MMMM' de 'yyyy", new Locale("es")).format(new Date())]]></variableExpression>
@@ -96,7 +105,7 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="190" splitType="Stretch">
+		<band height="165" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
 				<reportElement x="10" y="0" width="444" height="42" uuid="6f3da364-5fb4-43ef-b2d3-aed6164d15bb"/>
@@ -106,21 +115,21 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 				<textFieldExpression><![CDATA["NOTIFICACIÓN DE EMBARGO"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="10" y="41" width="418" height="29" uuid="6cfe3568-dc92-4742-9fa0-e2e617286e6e"/>
+				<reportElement x="10" y="41" width="444" height="19" uuid="6cfe3568-dc92-4742-9fa0-e2e617286e6e"/>
 				<textElement>
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Siguiendo instrucciones de "+ $P{ENTIDAD} +" por medio de envio telmático nos ordena el EMBARGO siguiente:"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Siguiendo instrucciones de "+ $F{ACRONIMO_ENTIDAD} +" por medio de envío telemático nos ordena el EMBARGO siguiente:"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="10" y="166" width="418" height="20" uuid="a9a6ff8a-192b-4947-b170-597918b7f8b1"/>
+				<reportElement x="10" y="144" width="418" height="20" uuid="a9a6ff8a-192b-4947-b170-597918b7f8b1"/>
 				<textElement>
 					<font fontName="Serif" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Por lo que procedemos a ADEUDARLE en cuenta los importes siguientes:"]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="95" y="125" width="362" height="15" isPrintWhenDetailOverflows="true" uuid="ece1cb28-9956-46aa-a72e-e916cef95679">
+				<reportElement x="95" y="105" width="362" height="15" isPrintWhenDetailOverflows="true" uuid="ece1cb28-9956-46aa-a72e-e916cef95679">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box leftPadding="5"/>
@@ -130,16 +139,16 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 				<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="15" y="125" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="d26142ec-7eea-4f2f-b9b7-3f5bd6742d98">
+				<reportElement x="15" y="105" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="d26142ec-7eea-4f2f-b9b7-3f5bd6742d98">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<text><![CDATA[NOMBRE]]></text>
+				<text><![CDATA[NOMBRE:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="95" y="140" width="211" height="15" uuid="a43a3362-78dc-4b9f-884a-2a9f606fff29">
+				<reportElement x="95" y="120" width="211" height="15" uuid="a43a3362-78dc-4b9f-884a-2a9f606fff29">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box leftPadding="5"/>
@@ -149,7 +158,7 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTE_EMBARGO}) +" EUROS"]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="95" y="110" width="211" height="15" uuid="59e3a110-ce29-4c78-9cff-9883351360c7">
+				<reportElement x="95" y="90" width="211" height="15" uuid="59e3a110-ce29-4c78-9cff-9883351360c7">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box leftPadding="5"/>
@@ -159,26 +168,26 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 				<textFieldExpression><![CDATA[$F{NIF}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="15" y="110" width="80" height="15" uuid="495213d9-1268-4020-93da-a8a63f8553dc">
+				<reportElement x="15" y="90" width="80" height="15" uuid="495213d9-1268-4020-93da-a8a63f8553dc">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<text><![CDATA[NIF]]></text>
+				<text><![CDATA[NIF/CIF:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="95" y="95" width="300" height="15" uuid="e6962d28-1fc2-4203-bfd4-b26df4566d64">
+				<reportElement x="95" y="75" width="300" height="15" uuid="e6962d28-1fc2-4203-bfd4-b26df4566d64">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box leftPadding="5"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy", new Locale("es")).format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHA_TRABA}))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy", new Locale("es")).format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHA}))]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="95" y="80" width="297" height="15" uuid="66356d28-e745-4f5b-8066-fcdbbc7fb39a">
+				<reportElement x="95" y="60" width="297" height="15" uuid="66356d28-e745-4f5b-8066-fcdbbc7fb39a">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box leftPadding="5"/>
@@ -188,31 +197,31 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 				<textFieldExpression><![CDATA[$F{NUMERO_EMBARGO}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="15" y="95" width="80" height="15" uuid="c15c4e50-1d91-4785-9d6c-80e85fca9910">
+				<reportElement x="15" y="75" width="80" height="15" uuid="c15c4e50-1d91-4785-9d6c-80e85fca9910">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<text><![CDATA[FECHA TRABA]]></text>
+				<text><![CDATA[FECHA TRABA:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="15" y="80" width="80" height="15" uuid="c80b861d-0201-4c45-9f07-9122f121006a">
+				<reportElement x="15" y="60" width="80" height="15" uuid="c80b861d-0201-4c45-9f07-9122f121006a">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<text><![CDATA[DILIGENCIA]]></text>
+				<text><![CDATA[DILIGENCIA:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="15" y="140" width="80" height="15" uuid="a443b086-7a99-443e-bc26-df55757dbefd">
+				<reportElement x="15" y="120" width="80" height="15" uuid="a443b086-7a99-443e-bc26-df55757dbefd">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<text><![CDATA[IMPORTE]]></text>
+				<text><![CDATA[IMPORTE:]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
@@ -222,7 +231,7 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="25" splitType="Stretch">
+		<band height="33" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
 				<reportElement x="15" y="-5" width="54" height="15" uuid="52c90fde-7576-4e12-b120-0d72b6f3edc0">
@@ -231,7 +240,7 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<text><![CDATA[CUENTA]]></text>
+				<text><![CDATA[CUENTA:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement x="56" y="-5" width="134" height="15" uuid="f9af7dee-ca0b-45d7-bd63-1f53631f982a">
@@ -244,23 +253,23 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 				<textFieldExpression><![CDATA[$F{IBAN}.substring(4,8) +" "+ $F{IBAN}.substring(8,12) +" ** "+ $F{IBAN}.substring(14)]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="306" y="-5" width="50" height="15" uuid="e33b1987-aec4-404c-abfb-e38318f3ff34">
+				<reportElement x="14" y="10" width="50" height="15" uuid="e33b1987-aec4-404c-abfb-e38318f3ff34">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<text><![CDATA[IMPORTE]]></text>
+				<text><![CDATA[IMPORTE:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="349" y="-5" width="96" height="15" uuid="9ec3b839-45c8-479b-ac74-34bddf22948e">
+				<reportElement x="57" y="10" width="96" height="15" uuid="9ec3b839-45c8-479b-ac74-34bddf22948e">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box leftPadding="5"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTE_TRABA}) +" " + $F{DIVISA_TRABA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTE}) +" EUR"]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="189" y="-5" width="50" height="15" uuid="031f3f81-053c-4a91-bf50-f74f63ca5e43">
@@ -270,7 +279,7 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<text><![CDATA[F.VALOR]]></text>
+				<text><![CDATA[F.VALOR:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement x="233" y="-5" width="100" height="15" uuid="f448609d-23bc-4ca9-861f-90a3a87ad302">
@@ -283,10 +292,52 @@ AND ct.estado_cuenta = 'ACTIVE']]>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy", new Locale("es")).format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHA_VALOR}))]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="340" y="10" width="50" height="15" uuid="5fd58984-aac8-49c0-a29c-00f20e135857">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[!"EUR".equals($F{DIVISA})]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="10"/>
+				</textElement>
+				<text><![CDATA[CAMBIO:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="383" y="10" width="46" height="15" uuid="0f8cc0f0-5f61-4a3c-bed9-19e5adeb273c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[!"EUR".equals($F{DIVISA})]]></printWhenExpression>
+				</reportElement>
+				<box leftPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Serif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.000").format($F{CAMBIO_DIVISA})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="165" y="10" width="58" height="15" uuid="fcd261e8-5a2e-424d-b9e5-b9e8185b723e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[!"EUR".equals($F{DIVISA})]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="10"/>
+				</textElement>
+				<text><![CDATA[EN DIVISA:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="223" y="10" width="96" height="15" uuid="0acc90ca-69f7-461c-9bc5-98bfabc509c2">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[!"EUR".equals($F{DIVISA})]]></printWhenExpression>
+				</reportElement>
+				<box leftPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Serif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTE}.multiply($F{CAMBIO_DIVISA})) +" " + $F{DIVISA}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="257" splitType="Stretch">
+		<band height="260" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
 				<reportElement x="13" y="147" width="124" height="25" uuid="3f2d065a-c352-46e3-ae34-7bd9d262f0c8"/>
@@ -321,21 +372,21 @@ Sucursal en España]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{nombre_titular} +"\n"+ $P{addres_titular} +"\n"+ $P{codigo_postal_titular} + " - " +  $P{ciudad_titular}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="13" y="227" width="214" height="18" uuid="d53f32da-d299-4f76-93ee-ed85eeb56098"/>
-				<textElement verticalAlignment="Bottom">
-					<font fontName="Serif" size="6"/>
-				</textElement>
-				<text><![CDATA[R.M. Madrid, T. 5464. G 4.553.S.3.L.S.E 110 H. 43.668-C.I.F. W-0041282 E]]></text>
-			</staticText>
 			<textField>
 				<reportElement x="11" y="0" width="418" height="79" uuid="a95711b9-bfc6-4735-a7c8-b5cd6e9c8439"/>
 				<textElement>
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Información del Organismo Emisor: "+ $F{DATREGCOMDET}+
+				<textFieldExpression><![CDATA["INFORMACIÓN DEL ORGANISMO EMISOR:\n"+ $F{DATREGCOMDET}+
 "\n\nAprovechamos la ocasión para saludarles muy atentamente."]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="15" y="220" width="358" height="40" uuid="13b850d0-0d1d-4d98-a59c-28d9468d26bc"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="5"/>
+				</textElement>
+				<text><![CDATA[R.M. Madrid, T. 5464. G 4.553.S.3.L.S.E 110 H. 43.668-C.I.F. W-0041282 E]]></text>
+			</staticText>
 		</band>
 	</pageFooter>
 </jasperReport>

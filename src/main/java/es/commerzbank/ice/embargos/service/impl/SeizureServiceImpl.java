@@ -651,8 +651,8 @@ public class SeizureServiceImpl
 
 		try (Connection conn = oracleDataSourceEmbargos.getEmbargosConnection()) {
 
-			ControlFichero controlFichero = embargo.getControlFichero();
-			EntidadesComunicadora entidadesComunicadora  = controlFichero.getEntidadesComunicadora();
+			//ControlFichero controlFichero = embargo.getControlFichero();
+			//EntidadesComunicadora entidadesComunicadora  = controlFichero.getEntidadesComunicadora();
 
 			Resource report = ResourcesUtil.getFromJasperFolder("cartaEmbargo.jasper");
 			Resource logoRes = es.commerzbank.ice.comun.lib.util.jasper.ResourcesUtil.getImageLogoCommerceResource();
@@ -666,8 +666,8 @@ public class SeizureServiceImpl
 				parameters.put("ciudad_titular", customer.getCity());
 			}
 
-			parameters.put("COD_TRABA", traba.getCodTraba());
-			parameters.put("ENTIDAD", entidadesComunicadora.getDesEntidad());
+			parameters.put("CODIGO", traba.getCodTraba());
+			//parameters.put("ENTIDAD", entidadesComunicadora.getDesEntidad());
 			parameters.put("logo_image", logoRes.getFile().toString());
 
 			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
