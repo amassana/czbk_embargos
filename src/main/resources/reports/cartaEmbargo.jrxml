@@ -262,14 +262,15 @@ AND ct.importe > 0]]>
 				<text><![CDATA[IMPORTE:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="337" y="-5" width="96" height="15" uuid="9ec3b839-45c8-479b-ac74-34bddf22948e">
+				<reportElement x="350" y="-5" width="60" height="15" uuid="9ec3b839-45c8-479b-ac74-34bddf22948e">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box leftPadding="5"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTE}) +" EUR"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTE})]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="189" y="-5" width="50" height="15" uuid="031f3f81-053c-4a91-bf50-f74f63ca5e43">
@@ -303,7 +304,7 @@ AND ct.importe > 0]]>
 				<text><![CDATA[CAMBIO:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="233" y="10" width="46" height="15" uuid="0f8cc0f0-5f61-4a3c-bed9-19e5adeb273c">
+				<reportElement x="225" y="10" width="57" height="15" uuid="0f8cc0f0-5f61-4a3c-bed9-19e5adeb273c">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[!"EUR".equals($F{DIVISA})]]></printWhenExpression>
 				</reportElement>
@@ -344,6 +345,17 @@ AND ct.importe > 0]]>
 					<font fontName="Serif" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DIVISA}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="409" y="-5" width="29" height="15" uuid="809ba7ad-f842-4e25-ae8e-e2a606ad80df">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[!"EUR".equals($F{DIVISA})]]></printWhenExpression>
+				</reportElement>
+				<box leftPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Serif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["EUR"]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
