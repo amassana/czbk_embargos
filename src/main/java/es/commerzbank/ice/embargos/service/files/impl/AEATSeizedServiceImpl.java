@@ -438,6 +438,10 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	        controlFicheroTrabas.setControlFicheroOrigen(controlFicheroEmbargo);
 	        controlFicheroTrabas.setUsuarioUltModificacion(usuarioTramitador);
 	        controlFicheroTrabas.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+			controlFicheroTrabas.setFechaCreacion(controlFicheroEmbargo.getFechaCreacion());
+			controlFicheroTrabas.setFechaComienzoCiclo(controlFicheroEmbargo.getFechaComienzoCiclo());
+			controlFicheroTrabas.setFechaGeneracionRespuesta(controlFicheroEmbargo.getFechaGeneracionRespuesta());
+			controlFicheroTrabas.setFechaMaximaRespuesta(controlFicheroEmbargo.getFechaMaximaRespuesta());
 			fileControlRepository.save(controlFicheroTrabas);
 			
 		} catch (Exception e) {

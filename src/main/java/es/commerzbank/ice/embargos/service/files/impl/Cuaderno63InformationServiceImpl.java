@@ -1,34 +1,6 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-
 import es.commerzbank.ice.comun.lib.file.exchange.FileWriterHelper;
-import org.apache.commons.io.FileUtils;
-import org.beanio.BeanReader;
-import org.beanio.BeanWriter;
-import org.beanio.StreamFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
@@ -52,6 +24,24 @@ import es.commerzbank.ice.embargos.service.files.Cuaderno63InformationService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.EmbargosUtils;
 import es.commerzbank.ice.embargos.utils.ICEDateUtils;
+import org.beanio.BeanReader;
+import org.beanio.BeanWriter;
+import org.beanio.StreamFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationService{
@@ -286,6 +276,10 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        
 	        controlFicheroInformacion.setUsuarioUltModificacion(usuarioTramitador);
 	        controlFicheroInformacion.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+			controlFicheroInformacion.setFechaCreacion(controlFicheroPeticion.getFechaCreacion());
+			controlFicheroInformacion.setFechaComienzoCiclo(controlFicheroPeticion.getFechaComienzoCiclo());
+			controlFicheroInformacion.setFechaGeneracionRespuesta(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+			controlFicheroInformacion.setFechaMaximaRespuesta(controlFicheroPeticion.getFechaMaximaRespuesta());
 	        fileControlRepository.save(controlFicheroInformacion);
 	        
 	        //ACTUALIZACIONES DEL FICHERO DE ENTRADA (controlFicheroPeticion):
