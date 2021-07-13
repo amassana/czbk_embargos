@@ -324,7 +324,7 @@ AND ct.importe > 0]]>
 				<text><![CDATA[EN DIVISA:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="69" y="10" width="57" height="15" uuid="0acc90ca-69f7-461c-9bc5-98bfabc509c2">
+				<reportElement x="69" y="10" width="71" height="15" uuid="0acc90ca-69f7-461c-9bc5-98bfabc509c2">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[!"EUR".equals($F{DIVISA})]]></printWhenExpression>
 				</reportElement>
@@ -335,7 +335,7 @@ AND ct.importe > 0]]>
 				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTE}.multiply($F{CAMBIO_DIVISA}))]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="131" y="10" width="29" height="15" uuid="47ee6231-c6a5-43ca-b63e-f86beddad4df">
+				<reportElement x="139" y="10" width="29" height="15" uuid="47ee6231-c6a5-43ca-b63e-f86beddad4df">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[!"EUR".equals($F{DIVISA})]]></printWhenExpression>
 				</reportElement>
