@@ -347,9 +347,8 @@ AND ct.importe > 0]]>
 				<textFieldExpression><![CDATA[$F{DIVISA}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="415" y="-5" width="29" height="15" uuid="809ba7ad-f842-4e25-ae8e-e2a606ad80df">
+				<reportElement x="416" y="-5" width="29" height="15" uuid="809ba7ad-f842-4e25-ae8e-e2a606ad80df">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<printWhenExpression><![CDATA[!"EUR".equals($F{DIVISA})]]></printWhenExpression>
 				</reportElement>
 				<box leftPadding="5"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
