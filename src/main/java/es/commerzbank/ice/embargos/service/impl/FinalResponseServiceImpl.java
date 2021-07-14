@@ -335,7 +335,7 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 		logger.info("Ejecutando fin de ciclo "+ entidadComunicadora.getDesEntidad() +" fichero F3 "+ codeFileControlFase3 +" F4 "+ ficheroFase4.getCodControlFichero());
 
 		// Generar el contenido del cierre
-		FicheroFinal finalFile = finalResponseGenerationService.calcFinalResult(ficheroFase3, user);
+		FicheroFinal finalFile = finalResponseGenerationService.calcFinalResult(ficheroFase3, tarea, user);
 
 		ControlFichero ficheroFase6 = finalFile.getControlFichero();
 
@@ -456,7 +456,7 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 							// Calcula los datos para realizar el cierre
 							logger.info("Calculando los datos para realizar el cierre para el fichero: " + controlFicheroF3.getCodControlFichero());
 
-							FicheroFinal ficheroFinal = finalResponseGenerationService.calcFinalResult(controlFicheroF3, user);
+							FicheroFinal ficheroFinal = finalResponseGenerationService.calcFinalResult(controlFicheroF3, tarea, user);
 
 							List<ResultadoEmbargo> resultadoEmbargos = finalResponseRepository.findAllByControlFichero(ficheroFinal.getControlFichero());
 
