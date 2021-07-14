@@ -281,7 +281,7 @@ $P!{CUENTA_LEVANTAMIENTO_EXPRESSION})]]>
 				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA["TRABA".equals($F{TIPO}) ? new DecimalFormat("#,##0.00").format($F{IMPORTE}.multiply($F{CAMBIO})) : new DecimalFormat("#,##0.00").format($F{IMPORTE}.multiply(BigDecimal.ONE.divide($F{CAMBIO}, $F{CAMBIO}.scale(), RoundingMode.HALF_UP)))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTE}.multiply($F{CAMBIO}))]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="752" y="2" width="40" height="15" uuid="44c231c9-c33e-4506-b991-a4ba2627c8e7">
