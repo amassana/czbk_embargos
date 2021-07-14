@@ -40,7 +40,7 @@ INNER JOIN cuenta_traba ct ON ct.cod_traba = t.cod_traba
 LEFT OUTER JOIN cuenta_traba_actuacion cta ON cta.cod_actuacion = ct.actuacion
 WHERE
 	cf.cod_control_fichero = (select cod_control_fichero_origen from control_fichero where cod_control_fichero = $P{COD_FILE_CONTROL})
-	and (ct.origen_emb = 'Y' or ct.agregar_a_traba = 'Y')
+	and (ct.origen_emb = 'Y' or ct.agregar_a_traba = 'Y') and ct.importe > 0
 ORDER BY
 	t.cod_traba,
 	ct.COD_CUENTA_TRABA]]>
