@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
+<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="fase4" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="847831ee-2e52-4a67-bcb6-888b478b5de8">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Embargos"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -18,6 +18,7 @@
 ,	e.numero_embargo
 ,	e.nif
 ,	e.NOMBRE
+,	e.IMPORTE as IMPORTE_SOLICITADO
 ,	ct.IBAN
 ,	cre.IMPORTE_NETO
 ,	cta.COD_EXTERNO_ACTUACION
@@ -62,6 +63,9 @@ ORDER BY
 	</field>
 	<field name="IMPORTE_NETO" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="IMPORTE_NETO"/>
+	</field>
+	<field name="IMPORTE_SOLICITADO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="IMPORTE_SOLICITADO"/>
 	</field>
 	<field name="COD_EXTERNO_ACTUACION" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="COD_EXTERNO_ACTUACION"/>
@@ -175,7 +179,7 @@ ORDER BY
 				<box bottomPadding="2">
 					<bottomPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Bottom">
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
 					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[EMBARGO]]></text>
@@ -187,31 +191,31 @@ ORDER BY
 				<box bottomPadding="2">
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Bottom">
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
 					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[NIF]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="146" y="0" width="199" height="21" uuid="448c8f2c-52f7-4d07-bb01-9336dedad2f2">
+				<reportElement x="146" y="0" width="224" height="21" uuid="448c8f2c-52f7-4d07-bb01-9336dedad2f2">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="14cd551a-0484-4f9b-8d1b-b6fa09dfd68e"/>
 				</reportElement>
 				<box bottomPadding="2">
 					<bottomPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Bottom">
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
 					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TITULAR]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="345" y="0" width="168" height="21" uuid="11d7a3d7-50f2-4a5f-b988-86502257df0a">
+				<reportElement x="370" y="0" width="143" height="21" uuid="11d7a3d7-50f2-4a5f-b988-86502257df0a">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6eebb496-2b1b-449a-b62e-eec1608c1e51"/>
 				</reportElement>
 				<box bottomPadding="2">
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Bottom">
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
 					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[IBAN]]></text>
@@ -224,10 +228,10 @@ ORDER BY
 				<box bottomPadding="2">
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Bottom">
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font fontName="Serif" isBold="true"/>
 				</textElement>
-				<text><![CDATA[IMPORTE]]></text>
+				<text><![CDATA[SOLICITADO]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="653" y="0" width="70" height="21" uuid="044009fb-adfc-47c7-b601-727878723cdc">
@@ -237,10 +241,10 @@ ORDER BY
 				<box bottomPadding="2">
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Bottom">
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font fontName="Serif" isBold="true"/>
 				</textElement>
-				<text><![CDATA[TRABADO]]></text>
+				<text><![CDATA[LEVANTADO]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="723" y="0" width="79" height="21" uuid="68d8ac8a-a3b6-40fb-9cb3-96e3f2945f13">
@@ -250,10 +254,10 @@ ORDER BY
 				<box bottomPadding="2">
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Bottom">
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font fontName="Serif" isBold="true"/>
 				</textElement>
-				<text><![CDATA[LEVANTADO]]></text>
+				<text><![CDATA[NETO]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="583" y="0" width="70" height="21" uuid="66abb68d-447d-47bb-82fb-1b1d51597aed">
@@ -263,10 +267,10 @@ ORDER BY
 				<box bottomPadding="2">
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Bottom">
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font fontName="Serif" isBold="true"/>
 				</textElement>
-				<text><![CDATA[CLAVE]]></text>
+				<text><![CDATA[TRABADO]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -285,12 +289,12 @@ ORDER BY
 				<textFieldExpression><![CDATA[$F{NUMERO_EMBARGO}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="146" y="2" width="199" height="15" uuid="fc6b225a-2865-45aa-8787-0bcea0703728">
+				<reportElement x="146" y="2" width="224" height="15" uuid="fc6b225a-2865-45aa-8787-0bcea0703728">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="642a7aec-f048-48fa-99fc-fbe2cb965521"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box leftPadding="0" bottomPadding="2"/>
-				<textElement textAlignment="Right" verticalAlignment="Bottom">
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
 					<font fontName="Serif" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
@@ -304,8 +308,7 @@ ORDER BY
 				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTE_NETO}) +" EUROS"
-]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTE_SOLICITADO})]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="86" y="2" width="60" height="15" uuid="e0040b61-c8b7-4d85-bf91-08c58b635b58">
@@ -319,12 +322,12 @@ ORDER BY
 				<textFieldExpression><![CDATA[$F{NIF}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="345" y="2" width="168" height="15" uuid="c4624946-e65a-4507-ae4c-19a10ff06a45">
+				<reportElement x="370" y="2" width="143" height="15" uuid="c4624946-e65a-4507-ae4c-19a10ff06a45">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="642a7aec-f048-48fa-99fc-fbe2cb965521"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box leftPadding="0" bottomPadding="2"/>
-				<textElement textAlignment="Center" verticalAlignment="Bottom">
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
 					<font fontName="Serif" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{IBAN}]]></textFieldExpression>
@@ -338,7 +341,7 @@ ORDER BY
 				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTE_LEVANTADO})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTE_NETO})]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="653" y="2" width="70" height="15" uuid="4ca01e64-0c99-47d4-9a4c-92aee96fb6f9">
@@ -349,7 +352,7 @@ ORDER BY
 				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTE_TRABADO})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTE_LEVANTADO})]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="583" y="2" width="70" height="15" uuid="799f7b15-aebf-42a2-af06-d97311e28e8e">
@@ -357,10 +360,10 @@ ORDER BY
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box leftPadding="0" bottomPadding="2"/>
-				<textElement textAlignment="Center" verticalAlignment="Bottom">
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{COD_EXTERNO_ACTUACION}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTE_TRABADO})]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -426,7 +429,7 @@ ORDER BY
 				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font fontName="Serif" isBold="true"/>
 				</textElement>
-				<text><![CDATA[TOTAL TRABADO]]></text>
+				<text><![CDATA[TOTAL]]></text>
 			</staticText>
 			<subreport>
 				<reportElement x="381" y="30" width="200" height="70" uuid="a32e3eba-355b-4eda-b2e3-43109e6f7a2f">
