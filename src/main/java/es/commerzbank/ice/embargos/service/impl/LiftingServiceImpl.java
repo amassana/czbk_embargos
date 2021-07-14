@@ -435,7 +435,7 @@ public class LiftingServiceImpl
 				parameters.put("ciudad_titular", customer.getCity());
 			}
 
-			parameters.put("COD_LEVANTAMIENTO", idLifting);
+			parameters.put("CODIGO", idLifting);
 			parameters.put("ENTIDAD", entidadesComunicadora.getDesEntidad());
 			parameters.put("logo_image", logoRes.getFile().toString());
 
