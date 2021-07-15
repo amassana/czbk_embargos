@@ -429,7 +429,7 @@ ORDER BY
 		</band>
 	</pageFooter>
 	<lastPageFooter>
-		<band height="102">
+		<band height="110">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
 				<reportElement x="320" y="1" width="146" height="21" uuid="89008acf-4649-4274-b79e-12401559bece">
@@ -508,7 +508,7 @@ ORDER BY
 				<subreportExpression><![CDATA[$P{SUBREPORT_LEYENDA}]]></subreportExpression>
 			</subreport>
 			<textField>
-				<reportElement x="720" y="0" width="82" height="30" uuid="64088ee1-752c-472a-9194-136eb503d25b"/>
+				<reportElement x="720" y="80" width="82" height="30" uuid="64088ee1-752c-472a-9194-136eb503d25b"/>
 				<textElement>
 					<font fontName="Serif"/>
 				</textElement>
