@@ -457,6 +457,13 @@ ORDER BY
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_LEYENDA}]]></subreportExpression>
 			</subreport>
+			<textField>
+				<reportElement x="719" y="0" width="82" height="30" uuid="935f0a2b-21a7-429d-91f0-aebdb5dd9bb1"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER} + " de "+ $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
 		</band>
 	</lastPageFooter>
 </jasperReport>

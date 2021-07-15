@@ -417,9 +417,10 @@ ORDER BY
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="80" splitType="Stretch">
+		<band height="30" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
-				<reportElement x="720" y="50" width="82" height="30" uuid="b649f815-4064-4989-b413-c1ca27325e54"/>
+				<reportElement x="720" y="0" width="82" height="30" uuid="b649f815-4064-4989-b413-c1ca27325e54"/>
 				<textElement>
 					<font fontName="Serif"/>
 				</textElement>
@@ -427,41 +428,11 @@ ORDER BY
 			</textField>
 		</band>
 	</pageFooter>
-	<summary>
-		<band height="222" splitType="Stretch">
-			<textField pattern="#,##0.00#" isBlankWhenNull="true">
-				<reportElement x="477" y="0" width="116" height="20" uuid="289aea83-2059-456d-aad6-a21b13a94e45"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($V{IMPORTE_TOTAL_TRABADO}) +" EUROS"]]></textFieldExpression>
-			</textField>
-			<subreport>
-				<reportElement x="57" y="40" width="293" height="128" uuid="ef2fcd63-e0d4-4159-8884-1b12bf84d957"/>
-				<subreportParameter name="TIPO_ENTIDAD">
-					<subreportParameterExpression><![CDATA[$F{TIPO_ENTIDAD}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="QUE_MITAD">
-					<subreportParameterExpression><![CDATA["PRIMERA"]]></subreportParameterExpression>
-				</subreportParameter>
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_LEYENDA}]]></subreportExpression>
-			</subreport>
-			<subreport>
-				<reportElement x="350" y="40" width="293" height="128" uuid="1234b329-b466-4e05-94bb-d0a84d08d242">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<subreportParameter name="TIPO_ENTIDAD">
-					<subreportParameterExpression><![CDATA[$F{TIPO_ENTIDAD}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="QUE_MITAD">
-					<subreportParameterExpression><![CDATA["SEGUNDA"]]></subreportParameterExpression>
-				</subreportParameter>
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_LEYENDA}]]></subreportExpression>
-			</subreport>
+	<lastPageFooter>
+		<band height="102">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement x="321" y="0" width="146" height="21" uuid="89008acf-4649-4274-b79e-12401559bece">
+				<reportElement x="320" y="1" width="146" height="21" uuid="89008acf-4649-4274-b79e-12401559bece">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6eebb496-2b1b-449a-b62e-eec1608c1e51"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -476,6 +447,73 @@ ORDER BY
 				</textElement>
 				<text><![CDATA[TOTAL TRABADO]]></text>
 			</staticText>
+			<textField pattern="#,##0.00#" isBlankWhenNull="true">
+				<reportElement x="476" y="2" width="116" height="20" uuid="289aea83-2059-456d-aad6-a21b13a94e45"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($V{IMPORTE_TOTAL_TRABADO}) +" EUROS"]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="0" y="31" width="200" height="70" uuid="ef2fcd63-e0d4-4159-8884-1b12bf84d957">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<subreportParameter name="TIPO_ENTIDAD">
+					<subreportParameterExpression><![CDATA[$F{TIPO_ENTIDAD}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="QUE_PARTE">
+					<subreportParameterExpression><![CDATA[1]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_LEYENDA}]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="200" y="31" width="200" height="70" uuid="1234b329-b466-4e05-94bb-d0a84d08d242">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<subreportParameter name="TIPO_ENTIDAD">
+					<subreportParameterExpression><![CDATA[$F{TIPO_ENTIDAD}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="QUE_PARTE">
+					<subreportParameterExpression><![CDATA[2]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_LEYENDA}]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="400" y="31" width="200" height="70" uuid="74ae84b7-1f89-4146-a27b-516f1eae42d7">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<subreportParameter name="TIPO_ENTIDAD">
+					<subreportParameterExpression><![CDATA[$F{TIPO_ENTIDAD}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="QUE_PARTE">
+					<subreportParameterExpression><![CDATA[3]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_LEYENDA}]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="600" y="31" width="200" height="70" uuid="f5eeae5d-bd20-45a9-829e-5ace7c4af311">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<subreportParameter name="TIPO_ENTIDAD">
+					<subreportParameterExpression><![CDATA[$F{TIPO_ENTIDAD}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="QUE_PARTE">
+					<subreportParameterExpression><![CDATA[4]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_LEYENDA}]]></subreportExpression>
+			</subreport>
+			<textField>
+				<reportElement x="720" y="0" width="82" height="30" uuid="64088ee1-752c-472a-9194-136eb503d25b"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER} + " de "+ $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
 		</band>
-	</summary>
+	</lastPageFooter>
 </jasperReport>
