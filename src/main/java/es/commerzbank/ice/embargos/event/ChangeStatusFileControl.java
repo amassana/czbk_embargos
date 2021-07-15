@@ -96,7 +96,7 @@ public class ChangeStatusFileControl {
 
 					if (estadoCtrlfichero != null)
 					{
-						logger.info("El fichero "+ controlFichero.getCodControlFichero() +" ha sido leído de la carpeta outbox. Cambiando de estado a enviado");
+						logger.info("El fichero "+ controlFichero.getCodControlFichero() +"-"+ controlFichero.getNombreFichero() +" ha sido leído de la carpeta outbox. Cambiando de estado a enviado");
 
 						controlFichero.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
 						controlFichero.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
