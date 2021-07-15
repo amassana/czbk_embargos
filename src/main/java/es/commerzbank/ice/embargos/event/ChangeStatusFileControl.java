@@ -64,7 +64,7 @@ public class ChangeStatusFileControl {
 			                    COD_TIPO_FICHERO_TRABAS_AEAT);
 
 						if (controlFichero.getControlFicheroOrigen() != null && controlFichero.getControlFicheroOrigen().getCodTarea() != null)
-							taskService.closeCalendarTask(controlFichero.getControlFicheroOrigen().getCodTarea().longValue());
+							taskService.closeCalendarTask(controlFichero.getControlFicheroOrigen().getCodTarea().longValue(), controlFichero.getNombreFichero());
 					}
 					else if (controlFichero.getTipoFichero().getCodTipoFichero() == COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63)
 					{
@@ -73,7 +73,7 @@ public class ChangeStatusFileControl {
 			                    COD_TIPO_FICHERO_ENVIO_INFORMACION_NORMA63);
 
 						if (controlFichero.getControlFicheroOrigen() != null && controlFichero.getControlFicheroOrigen().getCodTarea() != null)
-							taskService.closeCalendarTask(controlFichero.getControlFicheroOrigen().getCodTarea().longValue());
+							taskService.closeCalendarTask(controlFichero.getControlFicheroOrigen().getCodTarea().longValue(), controlFichero.getNombreFichero());
 					}
 					else if (controlFichero.getTipoFichero().getCodTipoFichero() == COD_TIPO_FICHERO_TRABAS_NORMA63)
 					{
@@ -82,7 +82,7 @@ public class ChangeStatusFileControl {
 			                    COD_TIPO_FICHERO_TRABAS_NORMA63);
 
 						if (controlFichero.getControlFicheroOrigen() != null && controlFichero.getControlFicheroOrigen().getCodTarea() != null)
-							taskService.closeCalendarTask(controlFichero.getControlFicheroOrigen().getCodTarea().longValue());
+							taskService.closeCalendarTask(controlFichero.getControlFicheroOrigen().getCodTarea().longValue(), controlFichero.getNombreFichero());
 					}
 					else if (controlFichero.getTipoFichero().getCodTipoFichero() == EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63)
 					{
@@ -91,7 +91,7 @@ public class ChangeStatusFileControl {
 			                    EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63);
 
 						if (controlFichero.getControlFicheroOrigen() != null && controlFichero.getControlFicheroOrigen().getCodTarea() != null)
-							taskService.closeCalendarTask(controlFichero.getControlFicheroOrigen().getCodTarea().longValue());
+							taskService.closeCalendarTask(controlFichero.getControlFicheroOrigen().getCodTarea().longValue(), controlFichero.getNombreFichero());
 					}
 
 					if (estadoCtrlfichero != null)
