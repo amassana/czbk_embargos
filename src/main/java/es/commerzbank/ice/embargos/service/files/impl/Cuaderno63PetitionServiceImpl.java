@@ -284,7 +284,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 			fileControlRepository.save(controlFicheroPeticion);
 
 	        // - Se envia correo de la recepcion del fichero
-	        emailService.sendEmailPetitionReceived(petitionFileName);
+	        emailService.sendEmailPetitionReceived(controlFicheroPeticion);
 	        
 		} catch (Exception e) {
 			LOG.error("Error in Cuaderno63 Petition Service", e);
@@ -296,7 +296,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 			*/
 
 			// - Se envia correo del error del parseo del fichero de peticiones:
-			emailService.sendEmailFileParserError(petitionFileName, e.getMessage());
+			emailService.sendEmailFileParserError(controlFicheroPeticion, e.getMessage());
 			
 			throw e;
 

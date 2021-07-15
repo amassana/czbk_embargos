@@ -280,7 +280,7 @@ public class Cuaderno63LiftingServiceImpl
             fileControlRepository.save(controlFicheroLevantamiento);
             
             // - Se envia correo de la recepcion del fichero
-	        emailService.sendEmailPetitionReceived(levFileName);
+	        emailService.sendEmailPetitionReceived(controlFicheroLevantamiento);
         }
         catch (Exception e)
         {
@@ -288,7 +288,7 @@ public class Cuaderno63LiftingServiceImpl
             // TODO error treatment
             
 	        // - Se envia correo del error del parseo del fichero de embargo:
-	        emailService.sendEmailFileParserError(levFileName, e.getMessage()); 
+	        emailService.sendEmailFileParserError(controlFicheroLevantamiento, e.getMessage());
 	        throw e;
             
         }

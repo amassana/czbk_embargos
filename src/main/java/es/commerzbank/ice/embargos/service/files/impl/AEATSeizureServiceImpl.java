@@ -356,7 +356,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 			fileControlRepository.save(controlFicheroEmbargo);
 
             // - Se envia correo de la recepcion del fichero
-	        emailService.sendEmailPetitionReceived(seizureFileName);
+	        emailService.sendEmailPetitionReceived(controlFicheroEmbargo);
 
 		} catch (Exception e) {
 
@@ -370,7 +370,7 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 			*/
 			
 			// - Se envia correo del error del parseo del fichero de embargo:
-			emailService.sendEmailFileParserError(seizureFileName, e.getMessage());
+			emailService.sendEmailFileParserError(controlFicheroEmbargo, e.getMessage());
 			
 			throw e;
 			

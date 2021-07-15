@@ -315,7 +315,7 @@ public class AEATLiftingServiceImpl
 			fileControlRepository.save(controlFicheroLevantamiento);
 			
             // - Se envia correo de la recepcion del fichero
-	        emailService.sendEmailPetitionReceived(levFileName);
+	        emailService.sendEmailPetitionReceived(controlFicheroLevantamiento);
         }
         catch (Exception e)
         {
@@ -323,7 +323,7 @@ public class AEATLiftingServiceImpl
             // TODO error treatment
             
             // - Se envia correo del error del parseo del fichero de levantamiento
-	        emailService.sendEmailFileParserError(levFileName, e.getMessage()); 
+	        emailService.sendEmailFileParserError(controlFicheroLevantamiento, e.getMessage());
 	        throw e;
         }
         finally
