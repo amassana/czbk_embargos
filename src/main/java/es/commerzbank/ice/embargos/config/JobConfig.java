@@ -161,4 +161,24 @@ public class JobConfig {
         trigger.setCronExpression(cronExpression);
         return trigger;
     }
+
+    @Bean
+    public JobDetailFactoryBean jobImportCGPJFestiveFactoryBean() {
+        JobDetailFactoryBean jobDetailFactory = new JobDetailFactoryBean();
+        jobDetailFactory.setJobClass(JobImportCGPJFestive.class);
+        jobDetailFactory.setName(JobImportCGPJ.class.getSimpleName());
+        jobDetailFactory.setDescription("Job de importacion del cgpj festivos");
+        jobDetailFactory.setDurability(true);
+        return jobDetailFactory;
+    }
+
+    @Bean
+    public CronTriggerFactoryBean triggerJobImportCGPJ(JobDetail jobImportCGPJFestiveFactoryBean) {
+        String cronExpression = "0 0 1 * * ?";
+        CronTriggerFactoryBean trigger = new CronTriggerFactoryBean();
+        trigger.setName(jobImportCGPJFestiveFactoryBean.getKey().getName() + "Trigger");
+        trigger.setJobDetail(jobImportCGPJFestiveFactoryBean);
+        trigger.setCronExpression(cronExpression);
+        return trigger;
+    }
 }

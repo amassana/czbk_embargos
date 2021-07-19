@@ -9,7 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
-import es.commerzbank.ice.comun.lib.domain.entity.Festivo;
+import es.commerzbank.ice.comun.lib.domain.dto.Festive;
 import es.commerzbank.ice.embargos.domain.entity.FestivoEmbargo;
 
 @Mapper(componentModel="spring")
@@ -18,9 +18,9 @@ public abstract class FestivoMapper {
 	@Mappings({
 		@Mapping(source = "localidad.codLocalidad", target = "codLocalidad")
 	})
-	public abstract FestivoEmbargo toFestivoEmbargo(Festivo festivo);
+	public abstract FestivoEmbargo toFestivoEmbargo(Festive festivo);
 	
-	public abstract ArrayList<FestivoEmbargo> toFestivoEmbargo(List<Festivo> festivo);
+	public abstract ArrayList<FestivoEmbargo> toFestivoEmbargo(List<Festive> festivo);
 	
 	public Long TimestampToLong(Timestamp timestamp){
 		Long retorno = null;
