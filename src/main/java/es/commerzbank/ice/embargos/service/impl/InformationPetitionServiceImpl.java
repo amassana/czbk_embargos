@@ -4,9 +4,11 @@ import es.commerzbank.ice.embargos.domain.dto.PetitionCaseDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.HPeticionInformacion;
 import es.commerzbank.ice.embargos.domain.entity.PeticionInformacion;
+import es.commerzbank.ice.embargos.domain.entity.PeticionInformacionCuenta;
 import es.commerzbank.ice.embargos.domain.mapper.InformationPetitionAuditMapper;
 import es.commerzbank.ice.embargos.domain.mapper.InformationPetitionMapper;
 import es.commerzbank.ice.embargos.repository.InformationPetitionAuditRepository;
+import es.commerzbank.ice.embargos.repository.InformationPetitionBankAccountRepository;
 import es.commerzbank.ice.embargos.repository.InformationPetitionRepository;
 import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.embargos.service.InformationPetitionService;
@@ -42,6 +44,9 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 	
 	@Autowired
 	private InformationPetitionAuditRepository informationPetitionAuditRepository;
+
+	@Autowired
+	private InformationPetitionBankAccountRepository informationPetitionBankAccountRepository;
 
 	@Override
 	public PetitionCaseDTO getByCodeInformationPetition(Long codeInformationPetition) {
@@ -247,9 +252,52 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
         peticionInformacion.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 		
 		informationPetitionRepository.save(peticionInformacion);
+
+		recalcularOrdenCuentas(peticionInformacion);
 		
 		logger.info("InformationPetitionServiceImpl - savePetitionCase - end");
 		return true;
+	}
+
+	private void recalcularOrdenCuentas(PeticionInformacion peticionInformacion) {
+		List<PeticionInformacionCuenta> cuentasCandidatas = informationPetitionBankAccountRepository.findByPeticionInformacion(peticionInformacion);
+
+		int maxOrden = Integer.MIN_VALUE;
+
+		List<PeticionInformacionCuenta> workingCopy = new ArrayList(cuentasCandidatas);
+
+		for (PeticionInformacionCuenta peticionInformacionCuenta : cuentasCandidatas) {
+			Integer orden = null;
+			if (peticionInformacionCuenta.getCuenta().equals(peticionInformacion.getCuenta1()))
+				orden = 1;
+			else if (peticionInformacionCuenta.getCuenta().equals(peticionInformacion.getCuenta2()))
+				orden = 2;
+			else if (peticionInformacionCuenta.getCuenta().equals(peticionInformacion.getCuenta3()))
+				orden = 3;
+			else if (peticionInformacionCuenta.getCuenta().equals(peticionInformacion.getCuenta4()))
+				orden = 4;
+			else if (peticionInformacionCuenta.getCuenta().equals(peticionInformacion.getCuenta5()))
+				orden = 5;
+			else if (peticionInformacionCuenta.getCuenta().equals(peticionInformacion.getCuenta6()))
+				orden = 6;
+
+			if (orden != null) {
+				maxOrden = Integer.max(orden, maxOrden);
+				workingCopy.remove(peticionInformacionCuenta);
+				if (peticionInformacionCuenta.getOrden() != orden) {
+					peticionInformacionCuenta.setOrden(orden);
+					informationPetitionBankAccountRepository.save(peticionInformacionCuenta);
+				}
+			}
+		}
+
+		for (PeticionInformacionCuenta peticionInformacionCuenta : workingCopy) {
+			maxOrden = maxOrden + 1;
+			if (peticionInformacionCuenta.getOrden() != maxOrden) {
+				peticionInformacionCuenta.setOrden(maxOrden);
+				informationPetitionBankAccountRepository.save(peticionInformacionCuenta);
+			}
+		}
 	}
 
 	@Override

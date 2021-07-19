@@ -180,14 +180,12 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 
 					int diasRespuestaF3 = entidadComunicadora.getDiasRespuestaF3() != null ? entidadComunicadora.getDiasRespuestaF3().intValue() : 0;
 					FestiveService.ValueDateCalculationParameters parameters = new FestiveService.ValueDateCalculationParameters();
-					parameters.numBusinessDays = diasRespuestaF3;
+					parameters.numDaysToAdd = diasRespuestaF3;
 					parameters.location = 1L;
 					parameters.fromDate = LocalDate.now();
-					//parameters.fromDate = DateUtils.convertToLocalDate(fechaObtencionFicheroOrganismo);
 					LocalDate finalDate = festiveService.dateCalculation(parameters, ValueConstants.COD_LOCALIDAD_MADRID);
 					Date lastDateResponse = Date.from(finalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
 
-					//Date lastDateResponse = DateUtils.convertToDate(LocalDate.now().plusDays(diasRespuestaF3));
 					BigDecimal limitResponseDate = ICEDateUtils.dateToBigDecimal(lastDateResponse, ICEDateUtils.FORMAT_yyyyMMdd);
 					controlFicheroEmbargo.setFechaMaximaRespuesta(limitResponseDate);
 	        		
@@ -345,7 +343,7 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
             fileControlRepository.save(controlFicheroEmbargo);
 
             // - Se envia correo de la recepcion del fichero
-	        emailService.sendEmailPetitionReceived(seizureFileName);
+	        emailService.sendEmailPetitionReceived(controlFicheroEmbargo);
 	        
 		} catch (Exception e) {
 			LOG.error("Error in Cuaderno63 Seizure Service", e);
@@ -358,7 +356,7 @@ public class Cuaderno63SeizureServiceImpl implements Cuaderno63SeizureService{
 			*/
 
 			// - Se envia correo del error del parseo del fichero de embargo:
-			emailService.sendEmailFileParserError(seizureFileName, e.getMessage()); 
+			emailService.sendEmailFileParserError(controlFicheroEmbargo, e.getMessage());
 			
 			throw e;
 

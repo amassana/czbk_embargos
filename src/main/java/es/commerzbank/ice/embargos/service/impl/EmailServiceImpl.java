@@ -75,7 +75,7 @@ public class EmailServiceImpl implements EmailService {
 	}
 	
 	@Override
-	public void sendEmailFileParserError(String fileName, String descException) throws ICEException {
+	public void sendEmailFileParserError(ControlFichero controlFichero, String descException) throws ICEException {
 
 		if (!generalParametersService.loadBooleanParameter(ValueConstants.EMAIL_SMTP_ENABLED, true))
 			return;
@@ -91,10 +91,10 @@ public class EmailServiceImpl implements EmailService {
 		String emailAddressFrom = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_EMAIL_FROM);
 		iceEmail.setEmailAddressFrom(emailAddressFrom);
 		
-		iceEmail.setSubject("Error processing the file " + fileName);
+		iceEmail.setSubject("Error processing the file " + controlFichero.getNombreFichero());
 		
 		List<String> paragraphTextList = new ArrayList<>();
-		String paragraph1 = "The following error occurred while processing the file " + fileName + ":";
+		String paragraph1 = "The following error occurred while processing the file " + controlFichero.getNombreFichero() + ":";
 
 		paragraphTextList.add(paragraph1);
 		paragraphTextList.add(descException);
@@ -109,12 +109,12 @@ public class EmailServiceImpl implements EmailService {
 		
 		} catch (Exception e) {
 			
-			logger.error("ERROR al enviar el email de 'Error al procesar el fichero: " + fileName + "'", e);
+			logger.error("ERROR al enviar el email de 'Error al procesar el fichero: " + controlFichero.getNombreFichero() + "'", e);
 		}
 	}
 
 	@Override
-	public void sendEmailPetitionReceived(String fileName) throws ICEException {
+	public void sendEmailPetitionReceived(ControlFichero controlFichero) throws ICEException {
 
 		logger.info("EmailServiceImpl - sendEmailPetitionReceived - start");
 		
@@ -132,11 +132,11 @@ public class EmailServiceImpl implements EmailService {
 		String emailAddressFrom = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_EMAIL_FROM);
 		iceEmail.setEmailAddressFrom(emailAddressFrom);
 		
-		iceEmail.setSubject("Incoming file: " + fileName);
+		iceEmail.setSubject("Incoming file: " + controlFichero.getNombreFichero());
 		
 		List<String> paragraphTextList = new ArrayList<>();
 		
-		paragraphTextList.add("Se ha recibido y procesado correctamente el siguiente fichero: " + fileName);
+		paragraphTextList.add("Se ha recibido y procesado correctamente el siguiente fichero: " + controlFichero.getNombreFichero());
 		
 		iceEmail.setParagraphTextList(paragraphTextList);
 		
@@ -145,14 +145,14 @@ public class EmailServiceImpl implements EmailService {
 		try {
 			clientEmailService.sendEmailWithAttachment(iceEmail);
 		} catch (Exception e) {
-			logger.error("ERROR al enviar el email de 'Fichero recibido: " + fileName + "'", e);
+			logger.error("ERROR al enviar el email de 'Fichero recibido: " + controlFichero.getNombreFichero() + "'", e);
 		}
 		
 		logger.info("EmailServiceImpl - sendEmailPetitionReceived - end");
 	}
 
 	@Override
-	public void sendEmailFileResult(String nombreFichero) throws ICEException {
+	public void sendEmailFileResult(ControlFichero controlFichero) throws ICEException {
 		
 		logger.info("EmailServiceImpl - sendEmailFileResult - start");
 
@@ -170,11 +170,11 @@ public class EmailServiceImpl implements EmailService {
 		String emailAddressFrom = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_EMAIL_FROM);
 		iceEmail.setEmailAddressFrom(emailAddressFrom);
 
-		iceEmail.setSubject("Incoming result file " + nombreFichero);
+		iceEmail.setSubject("Incoming result file " + controlFichero.getNombreFichero());
 
 		List<String> paragraphTextList = new ArrayList<>();
 
-		paragraphTextList.add("Received result file ("+ nombreFichero +").");
+		paragraphTextList.add("Received result file ("+ controlFichero.getNombreFichero() +").");
 			
 		iceEmail.setParagraphTextList(paragraphTextList);
 

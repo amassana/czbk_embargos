@@ -25,6 +25,7 @@ public abstract class CGPJMapper {
         cuentaEmbargo.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
     }
 
+    @BeanMapping(qualifiedByName = "onImportTraba")
     @Mappings({
             @Mapping(source = "accountDTO.accountNum", target = "cuenta"),
             @Mapping(source = "counter", target = "numeroOrdenCuenta"),
@@ -36,6 +37,7 @@ public abstract class CGPJMapper {
     })
     public abstract CuentaTraba generateCuentaTraba(AccountDTO accountDTO, BigDecimal counter);
 
+    @Named("onImportTraba")
     @AfterMapping
     public void generateCuentaTrabaAfterMapping(@MappingTarget CuentaTraba cuentaTraba) {
         EstadoTraba estadoTraba = new EstadoTraba();
@@ -78,5 +80,13 @@ public abstract class CGPJMapper {
 
     public abstract CuentaTrabaCGPJCopy generateCuentaTrabaCGPJCopy(CuentaTraba cuentaTraba);
 
+    @BeanMapping(qualifiedByName = "onRestoreCuentaTraba")
     public abstract CuentaTraba generateCuentaTraba(CuentaTrabaCGPJCopy cuentaTrabaCGPJCopy);
+
+    @Named("onRestoreCuentaTraba")
+    @AfterMapping
+    public void generateCuentaTrabaAfterMapping(@MappingTarget CuentaTraba cuentaTraba, CuentaTrabaCGPJCopy cuentaTrabaCGPJCopy) {
+        // se crea el método para asegurar que no se vincule con el after mapping incorrecto
+        ;
+    }
 }

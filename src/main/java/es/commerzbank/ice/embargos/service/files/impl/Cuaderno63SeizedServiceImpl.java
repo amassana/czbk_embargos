@@ -7,6 +7,7 @@ import es.commerzbank.ice.comun.lib.service.FestiveService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
+import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
 import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.Cuaderno63Mapper;
@@ -322,27 +323,14 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
     				EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_GENERATED,
     				EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_NORMA63);
 	        controlFicheroEmbargo.setEstadoCtrlfichero(estadoCtrlfichero);
+
+	        // Se marca como pendiente el envío de cartas.
+			controlFicheroEmbargo.setIndEnvioCarta(EmbargosConstants.IND_FLAG_NO);
 	        
 	        controlFicheroEmbargo.setUsuarioUltModificacion(usuarioTramitador);
 	        controlFicheroEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 	        controlFicheroEmbargo.setFechaGeneracionRespuesta(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 	        fileControlRepository.save(controlFicheroEmbargo);
-        
-	        //Cerrar la tarea:
-	        boolean closed = false;
-	        if (controlFicheroEmbargo.getCodTarea()!=null) {
-	        	
-	        	Long codTarea = controlFicheroEmbargo.getCodTarea().longValue();	        	
-	        	closed = taskService.closeCalendarTask(codTarea);
-		      
-	        	if(!closed) {
-		        	LOG.error("ERROR: No se ha cerrado la Tarea");
-		        	//TODO: lanzar excepcion si no se ha cerrado la tarea
-		        }
-	        } else {
-	        	LOG.error("ERROR al cerrar la tarea: No se ha encontrado el codigo de la Tarea");
-	        	//TODO: lanzar excepcion si no se ha encontrado el codigo de tarea
-	        }
 
 			// Mover a outbox
 			String outboxGenerated = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_OUTBOX);
@@ -350,7 +338,13 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	        
 			//- Se guarda la fecha maxima de respuesta fase6 (now + dias de margen)
 			int diasRespuestaF6 = entidadComunicadora.getDiasRespuestaF6() != null ? entidadComunicadora.getDiasRespuestaF6().intValue() : 0;
-			Date lastDateResponse = Date.from(LocalDate.now().plusDays(diasRespuestaF6).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+			FestiveService.ValueDateCalculationParameters parameters = new FestiveService.ValueDateCalculationParameters();
+			parameters.numDaysToAdd = diasRespuestaF6;
+			parameters.location = 1L;
+			parameters.fromDate = LocalDate.now();
+			parameters.calculationType = FestiveService.CalculationType.FIRST_WORKING_DAY;
+			LocalDate finalDate = festiveService.dateCalculation(parameters, ValueConstants.COD_LOCALIDAD_MADRID);
+			Date lastDateResponse = Date.from(finalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
 			
 			//CALENDARIO:
 	        // - Se agrega la tarea al calendario:
@@ -375,6 +369,10 @@ public class Cuaderno63SeizedServiceImpl implements Cuaderno63SeizedService{
 	        controlFicheroTrabas.setControlFicheroOrigen(controlFicheroEmbargo);
 	        controlFicheroTrabas.setUsuarioUltModificacion(usuarioTramitador);
 	        controlFicheroTrabas.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+			controlFicheroTrabas.setFechaCreacion(controlFicheroEmbargo.getFechaCreacion());
+			controlFicheroTrabas.setFechaComienzoCiclo(controlFicheroEmbargo.getFechaComienzoCiclo());
+			controlFicheroTrabas.setFechaGeneracionRespuesta(controlFicheroEmbargo.getFechaGeneracionRespuesta());
+			controlFicheroTrabas.setFechaMaximaRespuesta(controlFicheroEmbargo.getFechaMaximaRespuesta());
 			fileControlRepository.save(controlFicheroTrabas);
 			
 		} catch (Exception e) {

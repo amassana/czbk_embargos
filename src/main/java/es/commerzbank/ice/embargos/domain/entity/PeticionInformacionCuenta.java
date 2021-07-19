@@ -1,7 +1,7 @@
 package es.commerzbank.ice.embargos.domain.entity;
 
-import java.io.Serializable;
 import javax.persistence.*;
+import java.io.Serializable;
 
 
 /**
@@ -22,6 +22,9 @@ public class PeticionInformacionCuenta implements Serializable {
 	
 	@Column(name="ESTADO_CUENTA", length=10)
 	private String estadoCuenta;
+
+	@Column(name="ORDEN")
+	private int orden;
 	
 	//bi-directional many-to-one association to PeticionInformacion
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -63,4 +66,11 @@ public class PeticionInformacionCuenta implements Serializable {
 		this.peticionInformacion = peticionInformacion;
 	}
 
+	public int getOrden() {
+		return orden;
+	}
+
+	public void setOrden(int orden) {
+		this.orden = orden;
+	}
 }

@@ -7,6 +7,7 @@ import es.commerzbank.ice.comun.lib.service.FestiveService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.util.ICEException;
+import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import es.commerzbank.ice.embargos.domain.dto.SeizureDTO;
 import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.AEATMapper;
@@ -298,7 +299,13 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 				// Para la Agencia Tributaria la el paso de Embargos a Impuestos se produce
 				// 21 días naturales desde el día siguiente a la realización de la traba (cuando se adeuda la traba).
 				int diasRespuestaF6 = entidadComunicadora.getDiasRespuestaF6() != null ? entidadComunicadora.getDiasRespuestaF6().intValue() : 0;
-				lastDateResponse = Date.from(fechaTraba.plusDays(diasRespuestaF6).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+				FestiveService.ValueDateCalculationParameters parameters = new FestiveService.ValueDateCalculationParameters();
+				parameters.numDaysToAdd = diasRespuestaF6;
+				parameters.location = 1L;
+				parameters.fromDate = LocalDate.now();
+				parameters.calculationType = FestiveService.CalculationType.FIRST_WORKING_DAY;
+				LocalDate finalDate = festiveService.dateCalculation(parameters, ValueConstants.COD_LOCALIDAD_MADRID);
+				lastDateResponse = Date.from(finalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
 			}  else {
 				lastDateResponse = new Date();
 			}
@@ -392,27 +399,14 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	        		EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_GENERATED,
 	        		EmbargosConstants.COD_TIPO_FICHERO_DILIGENCIAS_EMBARGO_AEAT);
 	        controlFicheroEmbargo.setEstadoCtrlfichero(estadoCtrlfichero);
+
+			// Se marca como pendiente el envío de cartas.
+			controlFicheroEmbargo.setIndEnvioCarta(EmbargosConstants.IND_FLAG_NO);
 	        
 	        controlFicheroEmbargo.setUsuarioUltModificacion(usuarioTramitador);
 	        controlFicheroEmbargo.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 	        controlFicheroEmbargo.setFechaGeneracionRespuesta(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
 	        fileControlRepository.save(controlFicheroEmbargo);
-        
-	        //Cerrar la tarea:
-	        boolean closed = false;
-	        if (controlFicheroEmbargo.getCodTarea()!=null) {
-	        	
-	        	Long codTarea = controlFicheroEmbargo.getCodTarea().longValue();	        	
-	        	closed = taskService.closeCalendarTask(codTarea);
-		      
-	        	if(!closed) {
-	        		logger.error("ERROR: No se ha cerrado la Tarea");
-		        	//TODO: lanzar excepcion si no se ha cerrado la tarea
-		        }
-	        } else {
-	        	logger.error("ERROR al cerrar la tarea: No se ha encontrado el codigo de la Tarea");
-	        	//TODO: lanzar excepcion si no se ha encontrado el codigo de tarea
-	        }
 
 	        // Mover a outbox
 			String outboxGenerated = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_AEAT_OUTBOX);
@@ -422,7 +416,7 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 			// - Se agrega la tarea al calendario:
 			if (tieneTrabasRealizadas) {
 				TaskAndEvent task = new TaskAndEvent();
-				task.setDescription("Fase 6 programada " + controlFicheroEmbargo.getNombreFichero());
+				task.setDescription("Generación Impuestos " + controlFicheroEmbargo.getNombreFichero());
 				task.setDate(lastDateResponse);
 				task.setCodCalendar(1L);
 				task.setType("T");
@@ -444,6 +438,10 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 	        controlFicheroTrabas.setControlFicheroOrigen(controlFicheroEmbargo);
 	        controlFicheroTrabas.setUsuarioUltModificacion(usuarioTramitador);
 	        controlFicheroTrabas.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+			controlFicheroTrabas.setFechaCreacion(controlFicheroEmbargo.getFechaCreacion());
+			controlFicheroTrabas.setFechaComienzoCiclo(controlFicheroEmbargo.getFechaComienzoCiclo());
+			controlFicheroTrabas.setFechaGeneracionRespuesta(controlFicheroEmbargo.getFechaGeneracionRespuesta());
+			controlFicheroTrabas.setFechaMaximaRespuesta(controlFicheroEmbargo.getFechaMaximaRespuesta());
 			fileControlRepository.save(controlFicheroTrabas);
 			
 		} catch (Exception e) {

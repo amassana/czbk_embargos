@@ -1,5 +1,7 @@
 package es.commerzbank.ice.embargos.service.impl;
 
+import es.commerzbank.ice.comun.lib.domain.entity.Tarea;
+import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
 import es.commerzbank.ice.embargos.repository.*;
@@ -48,8 +50,11 @@ public class FinalResponseGenerationServiceImpl
     @Autowired
     private FinalFileRepository finalFileRepository;
 
+    @Autowired
+    private TaskService taskService;
+
     @Override
-    public FicheroFinal calcFinalResult(ControlFichero ficheroFase3, String user)
+    public FicheroFinal calcFinalResult(ControlFichero ficheroFase3, Tarea tarea, String user)
         throws Exception
     {
         /* Creación Control Fichero Fase 6 como punto de entrada */
@@ -65,6 +70,10 @@ public class FinalResponseGenerationServiceImpl
         ficheroFase6.setUsuarioUltModificacion(user);
         ficheroFase6.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
         ficheroFase6.setFechaCreacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMdd));
+        ficheroFase6.setControlFicheroOrigen(ficheroFase3.getControlFicheroRespuesta());
+        ficheroFase6.setFechaComienzoCiclo(ficheroFase3.getFechaComienzoCiclo());
+        ficheroFase6.setFechaGeneracionRespuesta(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+        ficheroFase6.setFechaMaximaRespuesta(ICEDateUtils.dateToBigDecimal(tarea.getfTarea(), ICEDateUtils.FORMAT_yyyyMMdd));
         fileControlRepository.save(ficheroFase6);
 
         List<Embargo> embargos = seizureRepository.findAllByControlFichero(ficheroFase3);
@@ -109,10 +118,12 @@ public class FinalResponseGenerationServiceImpl
                 cuentaResultadoEmbargo.setCuentaEmbargo(cuentaEmbargo);
 
                 // Se busca y mapea la cuenta traba relacionada, se obtiene el importe trabado
-                for (CuentaTraba cuentaTraba : traba.getCuentaTrabas()) {
-                    if (cuentaTraba.getCuenta().equals(cuentaEmbargo.getCuenta())) {
-                        cuentaResultadoEmbargo.setCuentaTraba(cuentaTraba);
-                        break;
+                if (traba.getCuentaTrabas() != null) { // No debería ocurrir pero ..
+                    for (CuentaTraba cuentaTraba : traba.getCuentaTrabas()) {
+                        if (cuentaTraba.getCuenta().equals(cuentaEmbargo.getCuenta())) {
+                            cuentaResultadoEmbargo.setCuentaTraba(cuentaTraba);
+                            break;
+                        }
                     }
                 }
 
@@ -123,9 +134,11 @@ public class FinalResponseGenerationServiceImpl
                 // Se calcula el total levantado - pueden haber varios levantamientos.
                 BigDecimal importeLevantadoCuenta = BigDecimal.ZERO;
                 for (LevantamientoTraba levantamientoTraba : levantamientos) {
-                    for (CuentaLevantamiento cuentaLevantamiento : levantamientoTraba.getCuentaLevantamientos()) {
-                        if (cuentaLevantamiento.getCuenta().equals(cuentaEmbargo.getCuenta())) {
-                            importeLevantadoCuenta = importeLevantadoCuenta.add(cuentaLevantamiento.getImporte());
+                    if (levantamientoTraba.getCuentaLevantamientos() != null) {
+                        for (CuentaLevantamiento cuentaLevantamiento : levantamientoTraba.getCuentaLevantamientos()) {
+                            if (cuentaLevantamiento.getCuenta().equals(cuentaEmbargo.getCuenta())) {
+                                importeLevantadoCuenta = importeLevantadoCuenta.add(cuentaLevantamiento.getImporte());
+                            }
                         }
                     }
                 }

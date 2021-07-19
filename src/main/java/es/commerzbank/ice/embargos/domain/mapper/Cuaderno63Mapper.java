@@ -103,7 +103,7 @@ public abstract class Cuaderno63Mapper {
 		//TODO: aplicar la sucursal por defecto?
 		peticionInformacion.setCodSucursal(null);
 		
-		//Se guardaran las primeras cuentas en estado NORMAL del listado de cuentas, hasta un maximo de 6 cuentas:
+		// Se guardaran las primeras cuentas en estado NORMAL y EUR del listado de cuentas, hasta un maximo de 6 cuentas:
 		setPreloadedBankAccounts(peticionInformacion,listBankAccount);
 		
         //Usuario y fecha ultima modificacion:

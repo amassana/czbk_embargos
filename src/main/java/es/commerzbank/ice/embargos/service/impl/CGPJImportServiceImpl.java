@@ -221,8 +221,16 @@ public class CGPJImportServiceImpl
         List<CuentaTrabaCGPJCopy> backupCuentas = cuentaTrabaCGPJCopyRepository.findByTraba(traba);
 
         for (CuentaTrabaCGPJCopy backup : backupCuentas) {
-            if (!seizedRepository.existsById(backup.getCodCuentaTraba())) {
+            boolean found = false;
+            for (CuentaTraba cuentaTraba : traba.getCuentaTrabas()) {
+                if (cuentaTraba.getCodCuentaTraba() == backup.getCodCuentaTraba()) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
                 CuentaTraba cuentaTraba = CGPJMapper.generateCuentaTraba(backup);
+                seizedBankAccountRepository.insertarCuentaTraba(cuentaTraba.getCodCuentaTraba(), cuentaTraba.getTraba().getCodTraba(), cuentaTraba.getEstadoTraba().getCodEstado());
                 seizedBankAccountRepository.save(cuentaTraba);
                 traba.addCuentaTraba(cuentaTraba);
             }

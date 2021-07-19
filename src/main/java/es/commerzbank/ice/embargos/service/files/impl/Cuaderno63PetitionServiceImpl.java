@@ -8,6 +8,7 @@ import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
 import es.commerzbank.ice.comun.lib.util.ICEException;
+import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import es.commerzbank.ice.datawarehouse.domain.dto.AccountDTO;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.embargos.domain.entity.*;
@@ -41,6 +42,7 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -154,13 +156,13 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	        			// ni siquiera en el log;
 					}
 	        		else {
-						LOG.info("Fase1 - aceptado cliente NIF "+ solicitudInformacion.getNifDeudor());
+						LOG.info("Fase1 - incorporando cliente NIF "+ solicitudInformacion.getNifDeudor());
 
 		        		CustomerDTO customerDTO = customerService.findCustomerByNif(solicitudInformacion.getNifDeudor(), false);
 
 		        		// Si existe el cliente:
 		        		if (customerDTO == null) {
-							LOG.info("Fase1 - No se ha encontrado el cliente "+ solicitudInformacion.getNifDeudor());
+							LOG.info("Fase1 - No se ha encontrado el cliente prefiltrado "+ solicitudInformacion.getNifDeudor());
 						}
 		        		else {
 			        		List<AccountDTO> accountList = customerDTO.getBankAccounts();
@@ -179,14 +181,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 				        		informationPetitionRepository.save(peticionInformacion);
 
 			        			//Se guardan todas las cuentas del nif en la tabla PETICION_INFORMACION_CUENTAS:
-				        		for(AccountDTO accountDTO : accountList) {
-
-				        			PeticionInformacionCuenta peticionInformacionCuenta =
-				        					informationPetitionBankAccountMapper.toPeticionInformacionCuenta(accountDTO,
-				        							peticionInformacion.getCodPeticion());
-
-				        			informationPetitionBankAccountRepository.save(peticionInformacionCuenta);
-				        		}
+								guardarPeticionCuentas(peticionInformacion, accountList);
 			        		}
 		        		}
 	        		}
@@ -235,9 +230,14 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 
 			//- Se guarda la fecha maxima de respuesta (now + dias de margen)
 			int diasRespuestaF1 = entidadComunicadora.getDiasRespuestaF1() != null ? entidadComunicadora.getDiasRespuestaF1().intValue() : 0;
-			Date lastDateResponse = Date.from(LocalDate.now().plusDays(diasRespuestaF1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-			
-			//Date lastDateResponse = DateUtils.convertToDate(LocalDate.now().plusDays(diasRespuestaF1));
+			FestiveService.ValueDateCalculationParameters parameters = new FestiveService.ValueDateCalculationParameters();
+			parameters.numDaysToAdd = diasRespuestaF1;
+			parameters.location = 1L;
+			parameters.fromDate = LocalDate.now();
+			parameters.calculationType = FestiveService.CalculationType.FIRST_WORKING_DAY;
+			LocalDate finalDate = festiveService.dateCalculation(parameters, ValueConstants.COD_LOCALIDAD_MADRID);
+			Date lastDateResponse = Date.from(finalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+
 			BigDecimal limitResponseDate = ICEDateUtils.dateToBigDecimal(lastDateResponse, ICEDateUtils.FORMAT_yyyyMMdd);
 			controlFicheroPeticion.setFechaMaximaRespuesta(limitResponseDate);
 
@@ -284,7 +284,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 			fileControlRepository.save(controlFicheroPeticion);
 
 	        // - Se envia correo de la recepcion del fichero
-	        emailService.sendEmailPetitionReceived(petitionFileName);
+	        emailService.sendEmailPetitionReceived(controlFicheroPeticion);
 	        
 		} catch (Exception e) {
 			LOG.error("Error in Cuaderno63 Petition Service", e);
@@ -296,7 +296,7 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 			*/
 
 			// - Se envia correo del error del parseo del fichero de peticiones:
-			emailService.sendEmailFileParserError(petitionFileName, e.getMessage());
+			emailService.sendEmailFileParserError(controlFicheroPeticion, e.getMessage());
 			
 			throw e;
 
@@ -311,4 +311,44 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 
 	}
 
+	private void guardarPeticionCuentas(PeticionInformacion peticionInformacion, List<AccountDTO> accountList)
+	{
+		// se preserva la precedencia de Cuaderno63Mapper.setPreloadedBankAccounts
+		ArrayList<AccountDTO> accountWorkingCopy = new ArrayList(accountList);
+		int maxOrden = Integer.MIN_VALUE;
+		// Se recupera el número de orden preasignado
+		for(AccountDTO accountDTO : accountList) {
+
+			Integer orden = null;
+			if (accountDTO.getAccountNum().equals(peticionInformacion.getCuenta1()))
+				orden = 1;
+			else if (accountDTO.getAccountNum().equals(peticionInformacion.getCuenta2()))
+				orden = 2;
+			else if (accountDTO.getAccountNum().equals(peticionInformacion.getCuenta3()))
+				orden = 3;
+			else if (accountDTO.getAccountNum().equals(peticionInformacion.getCuenta4()))
+				orden = 4;
+			else if (accountDTO.getAccountNum().equals(peticionInformacion.getCuenta5()))
+				orden = 5;
+			else if (accountDTO.getAccountNum().equals(peticionInformacion.getCuenta6()))
+				orden = 6;
+
+			if (orden != null) {
+				PeticionInformacionCuenta peticionInformacionCuenta =
+						informationPetitionBankAccountMapper.toPeticionInformacionCuenta(accountDTO,
+								peticionInformacion.getCodPeticion(), orden);
+				informationPetitionBankAccountRepository.save(peticionInformacionCuenta);
+				accountWorkingCopy.remove(accountDTO);
+				maxOrden = Integer.max(orden, maxOrden);
+			}
+		}
+		// Cuentas sin preasignar
+		for(AccountDTO accountDTO : accountWorkingCopy) {
+			maxOrden = maxOrden + 1;
+			PeticionInformacionCuenta peticionInformacionCuenta =
+					informationPetitionBankAccountMapper.toPeticionInformacionCuenta(accountDTO,
+							peticionInformacion.getCodPeticion(), maxOrden);
+			informationPetitionBankAccountRepository.save(peticionInformacionCuenta);
+		}
+	}
 }

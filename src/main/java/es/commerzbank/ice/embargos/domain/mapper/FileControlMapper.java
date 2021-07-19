@@ -216,5 +216,14 @@ public abstract class FileControlMapper {
 		} catch (Exception e) {
 			fileControlDTO.setRequestName(fileControlDTO.getFileName());
 		}
+
+		if (controlFichero.getControlFicheroRespuesta() != null)
+		{
+			fileControlDTO.setAssociatedFileName(controlFichero.getControlFicheroRespuesta().getNombreFichero());
+		}
+		else if (controlFichero.getControlFicheroOrigen() != null)
+		{
+			fileControlDTO.setAssociatedFileName(controlFichero.getControlFicheroOrigen().getNombreFichero());
+		}
 	}
 }

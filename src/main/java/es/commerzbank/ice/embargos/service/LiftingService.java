@@ -33,4 +33,6 @@ public interface LiftingService {
 
 	boolean updateAccountLiftingStatus(Long idAccount, AccountStatusLiftingDTO accountStatusLifting,
 			String userModif) throws Exception;
+
+    byte[] previewContable(Long codeFileControl) throws Exception;
 }

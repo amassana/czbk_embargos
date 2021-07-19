@@ -86,6 +86,9 @@ public class CGPJServiceImpl
     @Autowired
     private LiftingBankAccountRepository liftingBankAccountRepository;
 
+    @Autowired
+    private FileControlRepository fileControlRepository;
+
     @Override
     public Page<CGPJPetitionDTO> filter(CGPJFiltersDTO filters, Pageable pageable)
     {
@@ -138,6 +141,9 @@ public class CGPJServiceImpl
 
                     predicates.add(criteriaBuilder.lessThanOrEqualTo(root.join(Peticion_.controlFichero).get(ControlFichero_.FECHA_INCORPORACION), data));
                 }
+
+                predicates.add(criteriaBuilder.isNotNull(root.join(Peticion_.controlFichero)
+                                .join(ControlFichero_.estadoCtrlfichero).join(EstadoCtrlfichero_.id).get(EstadoCtrlficheroPK_.COD_ESTADO)));
 
                 return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
             }
@@ -243,7 +249,8 @@ public class CGPJServiceImpl
                     BigDecimal importeRespuesta = BigDecimal.ZERO;
 
                     for (CuentaTraba cuentaTraba : traba.getCuentaTrabas()) {
-                        if (IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba())) {
+                        if (IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba()) &&
+                                cuentaTraba.getImporte() != null && BigDecimal.ZERO.compareTo(cuentaTraba.getImporte()) != 0) {
                             solicitudTraba.setTienePosiciones(IND_FLAG_NO); // TODO si null peta pq el integrador mira al responder si vale S o N
                             solicitudTraba.setEstadoIntTraba(estadoIntTraba);
                             importeRespuesta = importeRespuesta.add(cuentaTraba.getImporte());
@@ -279,6 +286,10 @@ public class CGPJServiceImpl
 
                     solicitudLevantamientoRepository.save(solicitudLevantamiento);
                 }
+
+                ControlFichero controlFicheroPeticion = peticion.getControlFichero();
+                controlFicheroPeticion.setIndEnvioCarta(IND_FLAG_NO);
+                fileControlRepository.save(controlFicheroPeticion);
 
                 peticion.setEstadoIntPeticion(estadoInterno);
                 peticion.setEstadoPrimarioResp(estadoPrimarioResp); // Todos en PROD son 0000

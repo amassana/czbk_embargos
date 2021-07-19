@@ -1,17 +1,22 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
+import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
+import es.commerzbank.ice.comun.lib.service.EventService;
+import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
 import es.commerzbank.ice.comun.lib.util.ICEException;
-
+import es.commerzbank.ice.embargos.domain.entity.*;
+import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
+import es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.EntidadCreditoValidacionFase4;
+import es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.EntidadTransmisoraValidacionFase4;
+import es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.ErroresTrabaValidacionFase4;
+import es.commerzbank.ice.embargos.repository.*;
+import es.commerzbank.ice.embargos.service.EmailService;
+import es.commerzbank.ice.embargos.service.FileControlService;
+import es.commerzbank.ice.embargos.service.files.AEATSeizedResultService;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosUtils;
+import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
@@ -22,31 +27,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
-import es.commerzbank.ice.comun.lib.service.EventService;
-import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
-import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
-import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
-import es.commerzbank.ice.embargos.domain.entity.Embargo;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
-import es.commerzbank.ice.embargos.domain.entity.ErrorTraba;
-import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
-import es.commerzbank.ice.embargos.domain.entity.Traba;
-import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
-import es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.EntidadCreditoValidacionFase4;
-import es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.EntidadTransmisoraValidacionFase4;
-import es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.ErroresTrabaValidacionFase4;
-import es.commerzbank.ice.embargos.repository.ErrorRepository;
-import es.commerzbank.ice.embargos.repository.FileControlRepository;
-import es.commerzbank.ice.embargos.repository.OrderingEntityRepository;
-import es.commerzbank.ice.embargos.repository.SeizedErrorRepository;
-import es.commerzbank.ice.embargos.repository.SeizureRepository;
-import es.commerzbank.ice.embargos.service.EmailService;
-import es.commerzbank.ice.embargos.service.FileControlService;
-import es.commerzbank.ice.embargos.service.files.AEATSeizedResultService;
-import es.commerzbank.ice.embargos.utils.EmbargosConstants;
-import es.commerzbank.ice.embargos.utils.EmbargosUtils;
-import es.commerzbank.ice.embargos.utils.ICEDateUtils;
+import java.io.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
@@ -268,7 +253,7 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 		        			logger.info("Se ha actualizado a Confirmado el estado del embargo en control fichero " +  controlFicheroEmbargo.getNombreFichero());
 	        			}
 	        			
-	        			emailService.sendEmailFileResult(originalName);
+	        			emailService.sendEmailFileResult(controlFicheroErrores);
 	        		}
 	    		} catch (ICEException e) {
 	    			logger.error("Error while sending email for .RES file " + originalName, e);

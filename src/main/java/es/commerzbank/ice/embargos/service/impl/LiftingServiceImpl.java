@@ -6,6 +6,7 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
+import es.commerzbank.ice.comun.lib.util.SQLUtils;
 import es.commerzbank.ice.comun.lib.util.jasper.ReportHelper;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.datawarehouse.service.AccountService;
@@ -13,14 +14,12 @@ import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
 import es.commerzbank.ice.embargos.domain.dto.*;
 import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.*;
-import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.OrdenLevantamientoRetencionFase5;
 import es.commerzbank.ice.embargos.repository.*;
 import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.LiftingService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
-import es.commerzbank.ice.embargos.utils.EmbargosUtils;
 import es.commerzbank.ice.embargos.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.*;
 import org.jfree.util.Log;
@@ -35,8 +34,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -291,10 +288,6 @@ public class LiftingServiceImpl
 			estadoLevantamiento.setCodEstado(Long.valueOf(accountStatusLifting.getCode()));
 			cuentaLevantamiento.setEstadoLevantamiento(estadoLevantamiento);
 
-			if (estadoLevantamiento.getCodEstado() == EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_PENDIENTE_RESPUESTA_CONTABILIZACION) {
-				cuentaLevantamiento.setFechaValor(es.commerzbank.ice.embargos.utils.ICEDateUtils.actualDateToBigDecimal(es.commerzbank.ice.embargos.utils.ICEDateUtils.FORMAT_yyyyMMdd));
-			}
-
 			// Usuario y fecha ultima modificacion de la Traba:
 			BigDecimal fechaActualBigDec = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
 			cuentaLevantamiento.setUsuarioUltModificacion(userModif);
@@ -321,6 +314,34 @@ public class LiftingServiceImpl
 		}
 
 		return true;
+	}
+
+	@Override
+	public byte[] previewContable(Long codeFileControl)
+			throws Exception
+	{
+		HashMap<String, Object> parameters = new HashMap<>();
+
+		try (Connection conn_embargos = oracleDataSourceEmbargos.getEmbargosConnection()) {
+
+			Resource informe = ResourcesUtil.getFromJasperFolder("precontable.jasper");
+			Resource imageLogo = ResourcesUtil.getImageLogoCommerceResource();
+
+			parameters.put("img_param", imageLogo.getFile().toString());
+
+			parameters.put("CUENTA_TRABA_EXPRESSION", SQLUtils.calcInExpression(new ArrayList<>(), "ct.cod_cuenta_traba"));
+
+			List<Long> pendientes = accountingService.levantamientoListaAContabilizar(codeFileControl);
+
+			parameters.put("CUENTA_LEVANTAMIENTO_EXPRESSION", SQLUtils.calcInExpression(pendientes, "cl.COD_CUENTA_LEVANTAMIENTO"));
+			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
+
+			InputStream isInforme = informe.getInputStream();
+			JasperPrint reporteLleno =  JasperFillManager.fillReport(isInforme, parameters, conn_embargos);
+			return JasperExportManager.exportReportToPdf(reporteLleno);
+		} catch (Exception e) {
+			throw new Exception("DB exception while generating the report", e);
+		}
 	}
 	/*
 	@Override
@@ -410,7 +431,7 @@ public class LiftingServiceImpl
 				parameters.put("ciudad_titular", customer.getCity());
 			}
 
-			parameters.put("COD_LEVANTAMIENTO", idLifting);
+			parameters.put("CODIGO", idLifting);
 			parameters.put("ENTIDAD", entidadesComunicadora.getDesEntidad());
 			parameters.put("logo_image", logoRes.getFile().toString());
 
@@ -428,18 +449,18 @@ public class LiftingServiceImpl
 
 	@Override
 	public void generateLiftingLetters(ControlFichero controlFichero) throws Exception {
-		List<Embargo> seizures = seizureRepository.findAllByControlFichero(controlFichero);
+		List<LevantamientoTraba> liftings = liftingRepository.findAllByControlFichero(controlFichero);
 
-		if (seizures != null && seizures.size() > 0)
+		if (liftings != null && liftings.size() > 0)
 		{
 			File temporaryFile = reportHelper.getTemporaryFile("cartas-levantamiento-"+ controlFichero.getCodControlFichero(), ReportHelper.PDF_EXTENSION);
 			PdfDocument outDoc = new PdfDocument(new PdfWriter(temporaryFile));
 
 			int pageCount = 1;
 
-			for (Embargo embargo : seizures)
+			for (LevantamientoTraba levantamiento : liftings)
 			{
-				JasperPrint filledReport = reportLiftingLetterInternal(embargo.getCodEmbargo());
+				JasperPrint filledReport = reportLiftingLetterInternal(levantamiento.getCodLevantamiento());
 
 				if (filledReport != null) {
 					reportHelper.dumpReport(outDoc, filledReport, pageCount);
@@ -464,7 +485,7 @@ public class LiftingServiceImpl
 	@Override
 	@Transactional(transactionManager = "transactionManager", rollbackFor = Exception.class)
 	public boolean manualLifting(LiftingManualDTO liftingManualDTO, String userModif) throws Exception {
-		
+		/*
         try {
             BigDecimal importeMaximoAutomaticoDivisa =
                     generalParametersService.loadBigDecimalParameter(EmbargosConstants.PARAMETRO_EMBARGOS_LEVANTAMIENTO_IMPORTE_MAXIMO_AUTOMATICO_DIVISA);
@@ -612,7 +633,7 @@ public class LiftingServiceImpl
             LOG.error("Error while treating NORMA63 LEV manual", e);
             throw e;
         }
-		
+		*/
 		return true;
 	}
 }

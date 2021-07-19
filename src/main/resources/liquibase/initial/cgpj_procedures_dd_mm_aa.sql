@@ -1,0 +1,23 @@
+CREATE OR REPLACE FUNCTION "DD_MM_AAAA"   (Fecha Number) RETURN VARCHAR2 is
+--esta funcion devuelve con formato dd/mm/aaaa
+--una fecha pasada con formato aaaammdd
+
+    DIA VARCHAR2(2);
+    MES VARCHAR2(2);
+   ANIO VARCHAR2(4);
+   RESULTADO VARCHAR2(18);
+BEGIN
+    RESULTADO:=TO_CHAR(Fecha);
+    DIA:=SUBSTR(RESULTADO,7,2);
+    MES:=SUBSTR(RESULTADO,5,2);
+    ANIO:=SUBSTR(RESULTADO,1,4);
+
+   RESULTADO:=CONCAT(DIA,'/');
+   RESULTADO:=CONCAT(RESULTADO,MES);
+   RESULTADO:=CONCAT(RESULTADO,'/');
+   RESULTADO:=CONCAT(RESULTADO,ANIO);
+
+ return(RESULTADO);
+
+
+end;

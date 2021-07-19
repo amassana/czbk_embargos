@@ -36,7 +36,11 @@ public class OfficeUtils {
         return "Madrid";
     }
 
-    public List<String> getPrefijosSucursales() {
+    public List<String> getPrefijosSucursalesActivas() {
         return officeCService.listarSucursalesActivas().stream().map(Sucursal::getNumeroSucursal).map(BigDecimal::toString).collect(Collectors.toList());
+    }
+
+    public List<Sucursal> getSucursalesActivas() {
+        return officeCService.listarSucursalesActivas();
     }
 }
