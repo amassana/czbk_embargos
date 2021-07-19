@@ -156,13 +156,13 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 	        			// ni siquiera en el log;
 					}
 	        		else {
-						LOG.info("Fase1 - aceptado cliente NIF "+ solicitudInformacion.getNifDeudor());
+						LOG.info("Fase1 - incorporando cliente NIF "+ solicitudInformacion.getNifDeudor());
 
 		        		CustomerDTO customerDTO = customerService.findCustomerByNif(solicitudInformacion.getNifDeudor(), false);
 
 		        		// Si existe el cliente:
 		        		if (customerDTO == null) {
-							LOG.info("Fase1 - No se ha encontrado el cliente "+ solicitudInformacion.getNifDeudor());
+							LOG.info("Fase1 - No se ha encontrado el cliente prefiltrado "+ solicitudInformacion.getNifDeudor());
 						}
 		        		else {
 			        		List<AccountDTO> accountList = customerDTO.getBankAccounts();

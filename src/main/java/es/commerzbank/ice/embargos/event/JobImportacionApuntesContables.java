@@ -59,14 +59,14 @@ public class JobImportacionApuntesContables implements Job
 			}
 		}
 		catch (Exception e) {
-			logger.error("ERROR en JobJustificantesDomi con quartz", e);
+			logger.error("ERROR en public class JobImportacionApuntesContables con quartz", e);
 			JobExecutionException e2 = new JobExecutionException(e);
 	        //fire it again
 			//e2.setRefireImmediately(true);
 	        throw e2;
 		}
 		catch (Throwable t) {
-			logger.error("ERROR Throwable en JobJustificantesDomi con quartz", t);
+			logger.error("ERROR Throwable en public class JobImportacionApuntesContables con quartz", t);
 			JobExecutionException e2 = new JobExecutionException(t);
 	        //fire it again
 			//e2.setRefireImmediately(true);
