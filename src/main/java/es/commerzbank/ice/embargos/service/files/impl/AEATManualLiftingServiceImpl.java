@@ -88,6 +88,7 @@ public class AEATManualLiftingServiceImpl
 
     private void writeEntidadTransmisora(BeanWriter beanWriter) {
         EntidadTransmisora entidadTransmisora = new EntidadTransmisora();
+        entidadTransmisora.setIndicadorRegistro("0");
         entidadTransmisora.setCodigoEntidadTransmisora(EmbargosConstants.CODIGO_NRBE_COMMERZBANK);
         beanWriter.write(EmbargosConstants.RECORD_NAME_AEAT_ENTIDADTRANSMISORA, entidadTransmisora);
     }

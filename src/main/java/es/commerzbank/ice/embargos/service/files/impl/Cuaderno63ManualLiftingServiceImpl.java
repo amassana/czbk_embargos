@@ -42,7 +42,7 @@ public class Cuaderno63ManualLiftingServiceImpl
     {
         String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_NORMA63);
         String tempFolder = generalParametersService.loadStringParameter(PARAMETRO_TEMPFOLDER);
-        String inboxFolder = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_AEAT_INCOMING);
+        String inboxFolder = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_PATH_NORMA63_INCOMING);
 
         Writer writer = null;
         BeanWriter beanWriter = null;
