@@ -12,6 +12,7 @@ import org.beanio.BeanWriter;
 import org.beanio.StreamFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,6 +23,7 @@ import java.util.Map;
 
 import static es.commerzbank.ice.comun.lib.util.ValueConstants.PARAMETRO_TEMPFOLDER;
 
+@Service
 public class AEATManualLiftingServiceImpl
         implements AEATManualLiftingService
 {
