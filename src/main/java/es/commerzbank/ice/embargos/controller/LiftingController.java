@@ -360,22 +360,18 @@ public class LiftingController {
     @ApiOperation(value="Realiza un levantamiento de forma manual.")
     public ResponseEntity<String> manualLifting(Authentication authentication,
     											@RequestBody LiftingManualDTO liftingManualDTO) {
-    	logger.info("LiftingController - levantamiento manual "+ liftingManualDTO.getSender() +" "+ liftingManualDTO.getClients().size());
+    	logger.info("LiftingController - levantamiento manual "+ liftingManualDTO.getEntity().getName() +" "+ liftingManualDTO.getClients().size());
 		ResponseEntity<String> response = null;
 		boolean result = false;
 
 		try {
 			String userModif = authentication.getName();
 
-			result = liftingService.manualLifting(liftingManualDTO, userModif);
+			liftingService.manualLifting(liftingManualDTO, userModif);
 
-			if (result) {
-				response = new ResponseEntity<>(HttpStatus.OK);
-			} else {
-				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			}
-
-		} catch (Exception e) {
+			response = new ResponseEntity<>(HttpStatus.OK);
+		}
+		catch (Exception e) {
 			response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			logger.error("ERROR in manualLifting: ", e);
 		}

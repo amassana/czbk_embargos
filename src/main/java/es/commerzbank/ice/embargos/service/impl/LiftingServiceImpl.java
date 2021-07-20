@@ -19,6 +19,8 @@ import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.CustomerService;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.LiftingService;
+import es.commerzbank.ice.embargos.service.files.AEATManualLiftingService;
+import es.commerzbank.ice.embargos.service.files.Cuaderno63ManualLiftingService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.*;
@@ -91,6 +93,9 @@ public class LiftingServiceImpl
         
     @Autowired
     private OrderingEntityRepository orderingEntityRepository;
+
+	@Autowired
+	private CommunicatingEntityRepository communicatingEntityRepository;
     
     @Autowired
 	private AccountingNoteService accountingNoteService;
@@ -103,6 +108,12 @@ public class LiftingServiceImpl
 
 	@Autowired
 	private FileControlService fileControlService;
+
+	@Autowired
+	private AEATManualLiftingService aeatManualLiftingService;
+
+	@Autowired
+	private Cuaderno63ManualLiftingService cuaderno63ManualLiftingService;
     
 	@Override
 	public List<LiftingDTO> getAllByControlFichero(ControlFichero controlFichero) {
@@ -484,156 +495,42 @@ public class LiftingServiceImpl
 
 	@Override
 	@Transactional(transactionManager = "transactionManager", rollbackFor = Exception.class)
-	public boolean manualLifting(LiftingManualDTO liftingManualDTO, String userModif) throws Exception {
-		/*
-        try {
-            BigDecimal importeMaximoAutomaticoDivisa =
-                    generalParametersService.loadBigDecimalParameter(EmbargosConstants.PARAMETRO_EMBARGOS_LEVANTAMIENTO_IMPORTE_MAXIMO_AUTOMATICO_DIVISA);
+	public void manualLifting(LiftingManualDTO liftingManualDTO, String userModif) throws Exception
+	{
+		Optional<EntidadesComunicadora> comunicatingEntity = communicatingEntityRepository.findById(liftingManualDTO.getEntity().getCodCommunicatingEntity());
 
-    		boolean puedeSerContabilizado = true;
-    		boolean tieneAlgoAContabilizar = false;
-            // almacena las cuentas que se han contabilizado, para su actualización posterior de estado.
-            //List<CuentaLevantamiento> cuentasAContabilizar = new ArrayList<>();
+		if (!comunicatingEntity.isPresent()) {
+			throw new Exception("Entidad comunicadora "+ liftingManualDTO.getEntity().getCodCommunicatingEntity() +" no encontrada");
+		}
 
-            // Agrupa por NIF cada orden de levantamiento generado
-            Map<String, OrdenLevantamientoRetencionFase5> mapOrdenLev = new HashMap<String, OrdenLevantamientoRetencionFase5>();
-            if (liftingManualDTO!=null && liftingManualDTO.getClients()!=null) {
-            	for (ClientLiftingManualDTO clientDTO: liftingManualDTO.getClients()) {
-            		
-            		if (mapOrdenLev.get(clientDTO.getNif())==null) {
-            			OrdenLevantamientoRetencionFase5 ordenLev = new OrdenLevantamientoRetencionFase5();
-            			ordenLev.setNifDeudor(clientDTO.getNif());
-            			ordenLev.setNombreDeudor(clientDTO.getDebtor());
-            			ordenLev.setIdentificadorDeuda(clientDTO.getCodLifting());
-            			ordenLev.setIbanCuenta1(clientDTO.getIban());
-            			ordenLev.setImporteALevantarIban1(new BigDecimal(clientDTO.getAmount().replace(',', '.')));
-            			ordenLev.setFechaEjecucionRetenciones(clientDTO.getDateRetention());
-            			mapOrdenLev.put(clientDTO.getNif(), ordenLev);
-            		}
-            		else {
-            			OrdenLevantamientoRetencionFase5 ordenLev = mapOrdenLev.get(clientDTO.getNif());
-            			if (ordenLev.getIbanCuenta2()==null || ordenLev.getIbanCuenta2().length()==0) {
-            				ordenLev.setIbanCuenta2(clientDTO.getIban());
-                			ordenLev.setImporteALevantarIban2(new BigDecimal(clientDTO.getAmount().replace(',', '.')));
-            			}
-            			else if (ordenLev.getIbanCuenta3()==null || ordenLev.getIbanCuenta3().length()==0) {
-            				ordenLev.setIbanCuenta3(clientDTO.getIban());
-                			ordenLev.setImporteALevantarIban3(new BigDecimal(clientDTO.getAmount().replace(',', '.')));
-            			}
-            			else if (ordenLev.getIbanCuenta4()==null || ordenLev.getIbanCuenta4().length()==0) {
-            				ordenLev.setIbanCuenta4(clientDTO.getIban());
-                			ordenLev.setImporteALevantarIban4(new BigDecimal(clientDTO.getAmount().replace(',', '.')));
-            			}
-            			else if (ordenLev.getIbanCuenta5()==null || ordenLev.getIbanCuenta5().length()==0) {
-            				ordenLev.setIbanCuenta5(clientDTO.getIban());
-                			ordenLev.setImporteALevantarIban5(new BigDecimal(clientDTO.getAmount().replace(',', '.')));
-            			}
-            			else if (ordenLev.getIbanCuenta6()==null || ordenLev.getIbanCuenta6().length()==0) {
-            				ordenLev.setIbanCuenta6(clientDTO.getIban());
-                			ordenLev.setImporteALevantarIban6(new BigDecimal(clientDTO.getAmount().replace(',', '.')));
-            			}
-            			mapOrdenLev.put(clientDTO.getNif(), ordenLev);
-            		}
-            	}
-            }
-            
-            if (mapOrdenLev.size()>0) {
-            	
-            	String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
-                
-                // Inicializar control fichero
-                ControlFichero controlFicheroLevantamiento =
-                        fileControlMapper.generateControlFichero(null, EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63, EmbargosConstants.USER_MANUAL+"_"+date, null);
+		// Se recibe una lista de levantamientos, puede contener nifs repetidos. se reagrupan.
+		Map<String, List<ClientLiftingManualDTO>> ordenesPorCliente = new HashMap<>();
 
-                EntidadesOrdenante entidadOrdenante = orderingEntityRepository.findByNifEntidad(liftingManualDTO.getNif());
-                if (entidadOrdenante!=null) controlFicheroLevantamiento.setEntidadesComunicadora(entidadOrdenante.getEntidadesComunicadora());
-                
-                controlFicheroLevantamiento.setUsuarioUltModificacion(userModif);
-                controlFicheroLevantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
-                controlFicheroLevantamiento.setDescripcion(EmbargosConstants.USER_MANUAL);
-                fileControlRepository.save(controlFicheroLevantamiento);
-            	
-            	for (OrdenLevantamientoRetencionFase5 ordenLev : mapOrdenLev.values()) {
-            		
-                    List<Embargo> embargos = seizureRepository.findAllByNumeroEmbargo(ordenLev.getIdentificadorDeuda());
+		if (liftingManualDTO!=null && liftingManualDTO.getClients()!=null) {
+			for (ClientLiftingManualDTO clientDTO : liftingManualDTO.getClients()) {
 
-                    if (embargos == null || embargos.size() == 0)
-                    {
-                        LOG.info("No embargo found for "+ ordenLev.getIdentificadorDeuda());
-                        // TODO ERROR
-                        continue;
-                    }
+				List<ClientLiftingManualDTO> ordenes = ordenesPorCliente.get(clientDTO.getNif());
 
-                    Embargo embargo = EmbargosUtils.selectEmbargo(embargos);
-
-                    Traba traba = seizedRepository.getByEmbargo(embargo);
-
-                    if (traba == null)
-                    {
-                        LOG.error("Levantamiento not found for embargo "+ embargo.getCodEmbargo() +" code "+ ordenLev.getIdentificadorDeuda());
-                        continue;
-                    }
-
-                    LOG.info("Using traba "+ traba.getCodTraba() +" for embargo "+ embargo.getCodEmbargo() +" code "+ ordenLev.getIdentificadorDeuda());
-
-                    // recuperar account <- razon interna
-                    // recuperar cod traba
-                    // estado contable?
-                    // estado ejecutado?
-                    CustomerDTO customerDTO = customerService.findCustomerByNif(ordenLev.getNifDeudor(), false);
-                    
-                    LevantamientoTraba levantamiento = cuaderno63Mapper.generateLevantamiento(controlFicheroLevantamiento.getCodControlFichero(), ordenLev, traba, customerDTO);
-
-                    levantamiento.setUsuarioUltModificacion(userModif);
-                    liftingRepository.save(levantamiento);
-
-                    for (CuentaLevantamiento cuentaLevantamiento : levantamiento.getCuentaLevantamientos())
-                    {
-                        cuentaLevantamiento.setUsuarioUltModificacion(EmbargosConstants.USER_AUTOMATICO);
-                        cuentaLevantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
-                        liftingBankAccountRepository.save(cuentaLevantamiento);
-
-						if (cuentaLevantamiento.getCuenta().endsWith(EmbargosConstants.ISO_MONEDA_EUR)) {
-							tieneAlgoAContabilizar = true;
-						}
-						else {
-							// Si el contravalor en euros supera el límite..
-							if (importeMaximoAutomaticoDivisa.compareTo(cuentaLevantamiento.getImporte()) <= 0) {
-								LOG.info("El contravalor en euros del levantamiento "+ cuentaLevantamiento.getCodCuentaLevantamiento() +" supera el límite permitido para contabilizar automáticamente.");
-								puedeSerContabilizado = false;
-							}
-							else {
-								tieneAlgoAContabilizar = true;
-							}
-						}
-                    }
-            	}
-
-				EstadoCtrlfichero estadoCtrlfichero = null;
-
-				if (puedeSerContabilizado && tieneAlgoAContabilizar) {
-					estadoCtrlfichero = new EstadoCtrlfichero(
-							EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_AUTOMATIC_ACCOUNTING,
-							EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT);
-				} else {
-					estadoCtrlfichero = new EstadoCtrlfichero(
-							EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED,
-							EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT);
+				if (ordenes == null) {
+					ordenes = new ArrayList<>();
+					ordenesPorCliente.put(clientDTO.getNif(), ordenes);
 				}
 
-				controlFicheroLevantamiento.setEstadoCtrlfichero(estadoCtrlfichero);
+				ordenes.add(clientDTO);
+			}
+		}
 
-                controlFicheroLevantamiento.setUsuarioUltModificacion(userModif);
-                controlFicheroLevantamiento.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
-                fileControlRepository.saveAndFlush(controlFicheroLevantamiento);
-            }
-        }
-        catch (Exception e)
-        {
-            LOG.error("Error while treating NORMA63 LEV manual", e);
-            throw e;
-        }
-		*/
-		return true;
+		if (ordenesPorCliente.size() == 0)
+			throw new Exception("No orders were found");
+
+		if (liftingManualDTO.getEntity().isIndAeat()) {
+			aeatManualLiftingService.crearFicheroLevantamientos(comunicatingEntity.get(), ordenesPorCliente);
+		}
+		else if (liftingManualDTO.getEntity().isIndNorma63()) {
+			cuaderno63ManualLiftingService.crearFicheroLevantamientos(comunicatingEntity.get(), ordenesPorCliente);
+		}
+		else {
+			throw new Exception("Cannot process this entity type");
+		}
 	}
 }

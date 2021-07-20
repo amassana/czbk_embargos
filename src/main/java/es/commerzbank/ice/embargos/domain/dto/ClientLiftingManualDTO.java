@@ -1,6 +1,7 @@
 package es.commerzbank.ice.embargos.domain.dto;
 
-import java.util.Date;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class ClientLiftingManualDTO {
 
@@ -8,9 +9,9 @@ public class ClientLiftingManualDTO {
 	private String debtor;
 	private String codLifting;
 	private String iban;
-	private String amount;
+	private BigDecimal amount;
 	private String type;
-	private Date dateRetention;
+	private LocalDate dateRetention;
 	
 	public String getNif() {
 		return nif;
@@ -36,10 +37,10 @@ public class ClientLiftingManualDTO {
 	public void setIban(String iban) {
 		this.iban = iban;
 	}
-	public String getAmount() {
+	public BigDecimal getAmount() {
 		return amount;
 	}
-	public void setAmount(String amount) {
+	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
 	public String getType() {
@@ -48,10 +49,10 @@ public class ClientLiftingManualDTO {
 	public void setType(String type) {
 		this.type = type;
 	}
-	public Date getDateRetention() {
+	public LocalDate getDateRetention() {
 		return dateRetention;
 	}
-	public void setDateRetention(Date dateRetention) {
+	public void setDateRetention(LocalDate dateRetention) {
 		this.dateRetention = dateRetention;
 	}
 	
