@@ -1,7 +1,12 @@
 package es.commerzbank.ice.embargos.event;
 
-import java.util.List;
-
+import es.commerzbank.ice.comun.lib.domain.entity.Tarea;
+import es.commerzbank.ice.comun.lib.repository.TaskRepo;
+import es.commerzbank.ice.comun.lib.util.ValueConstants;
+import es.commerzbank.ice.embargos.domain.entity.TareasPendiente;
+import es.commerzbank.ice.embargos.domain.mapper.TareasPendienteMapper;
+import es.commerzbank.ice.embargos.repository.TareasPendienteRepo;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,33 +14,13 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import es.commerzbank.ice.comun.lib.domain.entity.Festivo;
-import es.commerzbank.ice.comun.lib.domain.entity.Tarea;
-import es.commerzbank.ice.comun.lib.repository.FestiveRepo;
-import es.commerzbank.ice.comun.lib.repository.TaskRepo;
-import es.commerzbank.ice.comun.lib.util.ValueConstants;
-import es.commerzbank.ice.embargos.domain.entity.FestivoEmbargo;
-import es.commerzbank.ice.embargos.domain.entity.TareasPendiente;
-import es.commerzbank.ice.embargos.domain.mapper.FestivoMapper;
-import es.commerzbank.ice.embargos.domain.mapper.TareasPendienteMapper;
-import es.commerzbank.ice.embargos.repository.FestivoRepo;
-import es.commerzbank.ice.embargos.repository.TareasPendienteRepo;
-import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import java.util.List;
 
 @Service
 @Transactional(transactionManager="transactionManager")
 public class CopiaEmbargosComunes {
 	private static final Logger logger = LoggerFactory.getLogger(CopiaEmbargosComunes.class);
-	
-	@Autowired
-	private FestiveRepo festiveRepo;
-	
-	@Autowired
-	private FestivoMapper festivoMapper;
-	
-	@Autowired
-	private FestivoRepo festivoRepo;
-	
+
 	@Autowired
 	private TareasPendienteRepo tareasPendienteRepo;
 	
@@ -45,24 +30,7 @@ public class CopiaEmbargosComunes {
 	@Autowired
 	private TaskRepo taskRepo;
 
-	// TODO
-	// Rehabilitar cuando CGPJ esté reactivado
-	@Async
-	//@Scheduled(fixedRate = 3600000)
-	public void copiaFestivosToEmbargos() {
-		try {
-			List<Festivo> listaFestivos = festiveRepo.findAll();
-			List<FestivoEmbargo> listaFestivosEmbargo = festivoMapper.toFestivoEmbargo(listaFestivos);
-			festivoRepo.deleteAll();
-			festivoRepo.saveAll(listaFestivosEmbargo);
-			
-		} catch (Exception e) {
-			logger.error("ERROR - CopiaEmbargosComunes - copiaFestivosToEmbargos() ", e);
-		}
-	}
-
-	// TODO
-	// Rehabilitar cuando CGPJ esté reactivado
+	// Rehabilitar / rediseñar si hace falta sincronizar las tareas del cgpj
 	@Async
 	//@Scheduled(fixedRate = 3600000)
 	public void copiaTareasPendientesToComunes() {

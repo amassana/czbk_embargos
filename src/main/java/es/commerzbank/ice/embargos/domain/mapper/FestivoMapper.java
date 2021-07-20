@@ -1,22 +1,21 @@
 package es.commerzbank.ice.embargos.domain.mapper;
 
+import es.commerzbank.ice.comun.lib.domain.dto.Festive;
+import es.commerzbank.ice.embargos.domain.entity.FestivoEmbargo;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
+
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
-
-import es.commerzbank.ice.comun.lib.domain.dto.Festive;
-import es.commerzbank.ice.embargos.domain.entity.FestivoEmbargo;
-
 @Mapper(componentModel="spring")
 public abstract class FestivoMapper {
 
 	@Mappings({
-		@Mapping(source = "localidad.codLocalidad", target = "codLocalidad")
+		@Mapping(source = "location.codLocation", target = "codLocalidad")
 	})
 	public abstract FestivoEmbargo toFestivoEmbargo(Festive festivo);
 	
