@@ -152,16 +152,16 @@ public class AEATManualLiftingServiceImpl
 
     private void writeFinEntidadCredito(BeanWriter beanWriter) {
         FinEntidadCredito finEntidadCredito = new FinEntidadCredito();
-        beanWriter.write(EmbargosConstants.RECORD_NAME_AEAT_ENTIDADCREDITO, finEntidadCredito);
+        beanWriter.write(EmbargosConstants.RECORD_NAME_AEAT_FINENTIDADCREDITO, finEntidadCredito);
     }
 
     private void writeFinEntidadTransmisora(BeanWriter beanWriter) {
         FinEntidadTransmisora finEntidadTransmisora = new FinEntidadTransmisora();
-        beanWriter.write(EmbargosConstants.RECORD_NAME_AEAT_ENTIDADCREDITO, finEntidadTransmisora);
+        beanWriter.write(EmbargosConstants.RECORD_NAME_AEAT_FINENTIDADTRANSMISORA, finEntidadTransmisora);
     }
 
     private void writeRegistroControlEntidadTransmisora(BeanWriter beanWriter) {
         RegistroControlEntidadTransmisora registroControlEntidadTransmisora = new RegistroControlEntidadTransmisora();
-        beanWriter.write(EmbargosConstants.RECORD_NAME_AEAT_ENTIDADCREDITO, registroControlEntidadTransmisora);
+        beanWriter.write(EmbargosConstants.RECORD_NAME_AEAT_REGISTROCONTROLENTIDADTRANSMISORA, registroControlEntidadTransmisora);
     }
 }

@@ -130,19 +130,19 @@ public class Cuaderno63ManualLiftingServiceImpl
             slotDisponible ++;
         }
 
-        beanWriter.write(EmbargosConstants.RECORD_NAME_AEAT_ENTIDADTRANSMISORA, levantamiento);
+        beanWriter.write(EmbargosConstants.RECORD_NAME_ORDENLEVANTAMIENTORETENCION, levantamiento);
     }
 
     private void writeCabeceraEmisor(BeanWriter beanWriter, EntidadesComunicadora entity) {
         CabeceraEmisorFase5 cabeceraEmisor = new CabeceraEmisorFase5();
         cabeceraEmisor.setNifOrganismoEmisor(entity.getNifEntidad());
         cabeceraEmisor.setFechaObtencionFicheroOrganismo(new Date());
-        beanWriter.write(EmbargosConstants.RECORD_NAME_AEAT_ENTIDADTRANSMISORA, cabeceraEmisor);
+        beanWriter.write(EmbargosConstants.RECORD_NAME_CABECERAEMISOR, cabeceraEmisor);
     }
 
     private void writeFinFichero(BeanWriter beanWriter) {
         FinFicheroFase5 finFichero = new FinFicheroFase5();
-        beanWriter.write(EmbargosConstants.RECORD_NAME_AEAT_ENTIDADTRANSMISORA, finFichero);
+        beanWriter.write(EmbargosConstants.RECORD_NAME_FINFICHERO, finFichero);
     }
 
 }
