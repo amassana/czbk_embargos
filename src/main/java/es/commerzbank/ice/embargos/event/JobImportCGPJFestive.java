@@ -37,10 +37,10 @@ public class JobImportCGPJFestive implements Job {
 			
 			FestiveFilter filter = new FestiveFilter();
 			filter.setFestiveDateEnd(formatter.format(LocalDate.of(LocalDate.now().getYear(),12,31)));
-			filter.setFestiveDateStart(formatter.format(LocalDate.of(LocalDate.now().getYear(),1,31)));
+			filter.setFestiveDateStart(formatter.format(LocalDate.of(LocalDate.now().getYear(),1,1)));
 			List<Festive> listaFestivos = festiveService.listAllFestive(filter);
 			List<FestivoEmbargo> listaFestivosEmbargo = festivoMapper.toFestivoEmbargo(listaFestivos);
-			festivoRepo.deleteAllYear(LocalDate.of(LocalDate.now().getYear(),1,31));
+			festivoRepo.deleteAllYear(LocalDate.of(LocalDate.now().getYear(),1,1));
 			festivoRepo.saveAll(listaFestivosEmbargo);
 
 		} catch (Exception e) {
