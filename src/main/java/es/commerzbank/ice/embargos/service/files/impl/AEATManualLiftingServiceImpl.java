@@ -95,13 +95,14 @@ public class AEATManualLiftingServiceImpl
 
     private void writeEntidadCredito(BeanWriter beanWriter, EntidadesComunicadora entity) {
         EntidadCredito entidadCredito = new EntidadCredito();
+        entidadCredito.setIndicadorRegistro("1");
         entidadCredito.setDelegacionAgenciaReceptora(entity.getIdentificadorEntidad());
         beanWriter.write(EmbargosConstants.RECORD_NAME_AEAT_ENTIDADCREDITO, entidadCredito);
     }
 
     private void writeLevantamiento(BeanWriter beanWriter, List<ClientLiftingManualDTO> ordenesCliente) {
         Levantamiento levantamiento = new Levantamiento();
-        //levantamiento.setIndicadorRegistro("");
+        levantamiento.setIndicadorRegistro("2");
         ClientLiftingManualDTO ref = ordenesCliente.get(0);
         levantamiento.setNifDeudor(ref.getNif());
         levantamiento.setNombreDeudor(ref.getDebtor());
@@ -153,16 +154,19 @@ public class AEATManualLiftingServiceImpl
 
     private void writeFinEntidadCredito(BeanWriter beanWriter) {
         FinEntidadCredito finEntidadCredito = new FinEntidadCredito();
+        finEntidadCredito.setIndicadorRegistro("3");
         beanWriter.write(EmbargosConstants.RECORD_NAME_AEAT_FINENTIDADCREDITO, finEntidadCredito);
     }
 
     private void writeFinEntidadTransmisora(BeanWriter beanWriter) {
         FinEntidadTransmisora finEntidadTransmisora = new FinEntidadTransmisora();
+        finEntidadTransmisora.setIndicadorRegistro("8");
         beanWriter.write(EmbargosConstants.RECORD_NAME_AEAT_FINENTIDADTRANSMISORA, finEntidadTransmisora);
     }
 
     private void writeRegistroControlEntidadTransmisora(BeanWriter beanWriter) {
         RegistroControlEntidadTransmisora registroControlEntidadTransmisora = new RegistroControlEntidadTransmisora();
+        registroControlEntidadTransmisora.setIndicadorRegistro("9");
         beanWriter.write(EmbargosConstants.RECORD_NAME_AEAT_REGISTROCONTROLENTIDADTRANSMISORA, registroControlEntidadTransmisora);
     }
 }

@@ -88,7 +88,8 @@ public class Cuaderno63ManualLiftingServiceImpl
 
     private void writeOrdenLevantamientoRetencion(BeanWriter beanWriter, List<ClientLiftingManualDTO> ordenesCliente) {
         OrdenLevantamientoRetencionFase5 levantamiento = new OrdenLevantamientoRetencionFase5();
-
+        levantamiento.setCodigoRegistro(6);
+        
         ClientLiftingManualDTO ref = ordenesCliente.get(0);
 
         levantamiento.setNifDeudor(ref.getNif());
@@ -135,6 +136,7 @@ public class Cuaderno63ManualLiftingServiceImpl
 
     private void writeCabeceraEmisor(BeanWriter beanWriter, EntidadesComunicadora entity) {
         CabeceraEmisorFase5 cabeceraEmisor = new CabeceraEmisorFase5();
+        cabeceraEmisor.setCodigoRegistro(4);
         cabeceraEmisor.setNifOrganismoEmisor(entity.getNifEntidad());
         cabeceraEmisor.setFechaObtencionFicheroOrganismo(new Date());
         beanWriter.write(EmbargosConstants.RECORD_NAME_CABECERAEMISOR, cabeceraEmisor);
@@ -142,6 +144,7 @@ public class Cuaderno63ManualLiftingServiceImpl
 
     private void writeFinFichero(BeanWriter beanWriter) {
         FinFicheroFase5 finFichero = new FinFicheroFase5();
+        finFichero.setCodigoRegistro(8);
         beanWriter.write(EmbargosConstants.RECORD_NAME_FINFICHERO, finFichero);
     }
 
