@@ -175,7 +175,7 @@ public class AEATLiftingServiceImpl
 		            	
 	        			entidadCredito = (EntidadCredito) currentRecord;
 		        		
-		        		String identificadorEntidad = entidadCredito.getDelegacionAgenciaReceptora()!=null ? entidadCredito.getDelegacionAgenciaReceptora() : null;
+		        		String identificadorEntidad = entidadCredito.getDelegacionAgenciaReceptora();
 		        		
 		        		entidadOrdenante = orderingEntityRepository.findByIdentificadorEntidad(identificadorEntidad);
 		        		
