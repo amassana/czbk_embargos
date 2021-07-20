@@ -12,7 +12,7 @@ import es.commerzbank.ice.embargos.domain.entity.FestivoEmbargo;
 public interface FestivoRepo extends JpaRepository<FestivoEmbargo, Long>{
 	
 	@Modifying
-	@Query("delete from FESTIVO f where f.F_FESTIVO <=:valueDate")
+	@Query(value= "delete from FESTIVO f where f.F_FESTIVO >=:valueDate", nativeQuery = true)
 	public default void deleteAllYear(@Param("valueDate") LocalDate creationDateTime) {
 		
 	}
