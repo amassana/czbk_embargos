@@ -1,5 +1,7 @@
 package es.commerzbank.ice.embargos.event;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,13 +33,14 @@ public class JobImportCGPJFestive implements Job {
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		try {
-
+			DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+			
 			FestiveFilter filter = new FestiveFilter();
-			filter.setFestiveDateEnd("");
-			filter.setFestiveDateStart("");
+			filter.setFestiveDateEnd(formatter.format(LocalDate.of(LocalDate.now().getYear(),12,31)));
+			filter.setFestiveDateStart(formatter.format(LocalDate.of(LocalDate.now().getYear(),1,31)));
 			List<Festive> listaFestivos = festiveService.listAllFestive(filter);
 			List<FestivoEmbargo> listaFestivosEmbargo = festivoMapper.toFestivoEmbargo(listaFestivos);
-			festivoRepo.deleteAll(listaFestivosEmbargo);
+			festivoRepo.deleteAllYear(LocalDate.of(LocalDate.now().getYear(),1,31));
 			festivoRepo.saveAll(listaFestivosEmbargo);
 
 		} catch (Exception e) {
