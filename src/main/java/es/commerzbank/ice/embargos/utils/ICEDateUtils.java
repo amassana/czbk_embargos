@@ -1,11 +1,13 @@
 package es.commerzbank.ice.embargos.utils;
 
+import es.commerzbank.ice.comun.lib.typeutils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -27,6 +29,15 @@ public class ICEDateUtils {
 		
 		return new BigDecimal(dateFormated);
 		
+	}
+
+	public static BigDecimal localdateToBigDecimal(LocalDate date, String format) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+
+		String dateFormated = simpleDateFormat.format(DateUtils.convertToDate(date));
+
+		return new BigDecimal(dateFormated);
+
 	}
 	
 	public static BigDecimal actualDateToBigDecimal(String format) {

@@ -40,7 +40,6 @@ import java.io.Reader;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
-import java.util.List;
 
 @Service
 public class AEATLiftingServiceImpl
@@ -188,18 +187,16 @@ public class AEATLiftingServiceImpl
 	                if (EmbargosConstants.RECORD_NAME_AEAT_LEVANTAMIENTO.equals(beanReader.getRecordName()))
 	                {
 	                    Levantamiento levantamientoAEAT = (Levantamiento) currentRecord;
-	
-	                    List<Embargo> embargos = seizureRepository.findAllByNumeroEmbargo(levantamientoAEAT.getNumeroDiligenciaEmbargo());
-	
-	                    if (embargos == null || embargos.size() == 0)
-	                    {
-	                        LOG.error("No embargo found for "+ levantamientoAEAT.getNumeroDiligenciaEmbargo());
-	                        // TODO ERROR
-	                        continue;
-	                    }
-	
-	                    Embargo embargo = EmbargosUtils.selectEmbargo(embargos);
-	
+
+	                    Embargo embargo = EmbargosUtils.selectEmbargo(seizureRepository, entidadOrdenante, new es.commerzbank.ice.embargos.formats.aeat.common.Levantamiento(levantamientoAEAT));
+
+						if (embargo == null)
+						{
+							LOG.error("No embargo found for "+ levantamientoAEAT.getNumeroDiligenciaEmbargo());
+							// TODO ERROR
+							continue;
+						}
+
 	                    Traba traba = seizedRepository.getByEmbargo(embargo);
 	
 	                    if (traba == null)

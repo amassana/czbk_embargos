@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import static es.commerzbank.ice.comun.lib.util.ValueConstants.PARAMETRO_TEMPFOLDER;
+import static es.commerzbank.ice.embargos.utils.EmbargosConstants.TIPO_FICHERO_LEVANTAMIENTOS;
 
 @Service
 public class AEATManualLiftingServiceImpl
@@ -45,7 +46,7 @@ public class AEATManualLiftingServiceImpl
         BeanWriter beanWriter = null;
 
         try {
-            String fileName = "LevManualAEAT_" + RandomStringUtils.randomAlphanumeric(5) + ".tmp";
+            String fileName = "LevManualAEAT_" + RandomStringUtils.randomAlphanumeric(5) +"."+ TIPO_FICHERO_LEVANTAMIENTOS;
             File ficheroSalida = new File(tempFolder, fileName);
 
             writer = new OutputStreamWriter(new FileOutputStream(ficheroSalida), encoding);

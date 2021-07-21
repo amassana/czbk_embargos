@@ -10,6 +10,7 @@ import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.Cuaderno63Mapper;
 import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
+import es.commerzbank.ice.embargos.formats.cuaderno63.common.Levantamiento;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.CabeceraEmisorFase5;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.OrdenLevantamientoRetencionFase5;
 import es.commerzbank.ice.embargos.repository.*;
@@ -160,16 +161,14 @@ public class Cuaderno63LiftingServiceImpl
                 {
                     OrdenLevantamientoRetencionFase5 ordenLevantamientoRetencionFase5 = (OrdenLevantamientoRetencionFase5) currentRecord;
 
-                    List<Embargo> embargos = seizureRepository.findAllByNumeroEmbargo(ordenLevantamientoRetencionFase5.getIdentificadorDeuda());
+                    Embargo embargo = EmbargosUtils.selectEmbargo(seizureRepository, entidadOrdenante, new Levantamiento(ordenLevantamientoRetencionFase5));
 
-                    if (embargos == null || embargos.size() == 0)
+                    if (embargo == null)
                     {
                         LOG.error("No embargo found for "+ ordenLevantamientoRetencionFase5.getIdentificadorDeuda());
                         // TODO ERROR
                         continue;
                     }
-
-                    Embargo embargo = EmbargosUtils.selectEmbargo(embargos);
 
                     Traba traba = seizedRepository.getByEmbargo(embargo);
 
@@ -231,11 +230,11 @@ public class Cuaderno63LiftingServiceImpl
             if (puedeSerContabilizado && tieneAlgoAContabilizar) {
                 estadoCtrlfichero = new EstadoCtrlfichero(
                         EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_PENDING_AUTOMATIC_ACCOUNTING,
-                        EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT);
+                        EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63);
             } else {
                 estadoCtrlfichero = new EstadoCtrlfichero(
                         EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_RECEIVED,
-                        EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_AEAT);
+                        EmbargosConstants.COD_TIPO_FICHERO_LEVANTAMIENTO_TRABAS_NORMA63);
             }
 
             controlFicheroLevantamiento.setEstadoCtrlfichero(estadoCtrlfichero);

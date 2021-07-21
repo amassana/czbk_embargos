@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import static es.commerzbank.ice.comun.lib.util.ValueConstants.PARAMETRO_TEMPFOLDER;
+import static es.commerzbank.ice.embargos.utils.EmbargosConstants.TIPO_FICHERO_LEVANTAMIENTOS;
 
 @Service
 public class Cuaderno63ManualLiftingServiceImpl
@@ -48,7 +49,7 @@ public class Cuaderno63ManualLiftingServiceImpl
         BeanWriter beanWriter = null;
 
         try {
-            String fileName = "LevManualAEAT_" + RandomStringUtils.randomAlphanumeric(5) + ".tmp";
+            String fileName = "LevManualAEAT_" + RandomStringUtils.randomAlphanumeric(5) +"."+ TIPO_FICHERO_LEVANTAMIENTOS;
             File ficheroSalida = new File(tempFolder, fileName);
 
             writer = new OutputStreamWriter(new FileOutputStream(ficheroSalida), encoding);
@@ -89,7 +90,7 @@ public class Cuaderno63ManualLiftingServiceImpl
     private void writeOrdenLevantamientoRetencion(BeanWriter beanWriter, List<ClientLiftingManualDTO> ordenesCliente) {
         OrdenLevantamientoRetencionFase5 levantamiento = new OrdenLevantamientoRetencionFase5();
         levantamiento.setCodigoRegistro(6);
-        
+
         ClientLiftingManualDTO ref = ordenesCliente.get(0);
 
         levantamiento.setNifDeudor(ref.getNif());

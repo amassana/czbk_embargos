@@ -1,13 +1,19 @@
 package es.commerzbank.ice.embargos.utils;
 
+import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
+import es.commerzbank.ice.datawarehouse.domain.dto.PersonType;
+import es.commerzbank.ice.embargos.domain.entity.Embargo;
+import es.commerzbank.ice.embargos.domain.entity.EntidadesOrdenante;
+import es.commerzbank.ice.embargos.domain.entity.PeticionInformacion;
+import es.commerzbank.ice.embargos.formats.common.Levantamiento;
+import es.commerzbank.ice.embargos.repository.SeizureRepository;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
-import es.commerzbank.ice.datawarehouse.domain.dto.PersonType;
-import es.commerzbank.ice.embargos.domain.entity.Embargo;
-import es.commerzbank.ice.embargos.domain.entity.PeticionInformacion;
+import static es.commerzbank.ice.embargos.utils.ICEDateUtils.FORMAT_yyyyMMddHHmmss;
 
 public class EmbargosUtils {
 
@@ -110,19 +116,33 @@ public class EmbargosUtils {
 		return fileFormat;	
 	}
 
-	/* criterio: el embargo más reciente */
-	public static Embargo selectEmbargo(List<Embargo> embargos)
+	/*
+		criterio: el embargo más reciente tal que
+		tenga la fecha de incorporación más reciente
+		con el mismo numero de embargo
+		misma entidad presentadora
+		mismo importe a embargar
+		mismo importe trabado
+	*/
+	public static Embargo selectEmbargo(SeizureRepository seizureRepository, EntidadesOrdenante entidadOrdenante, Levantamiento levantamiento)
 	{
+		BigDecimal fechaDesde = ICEDateUtils.localdateToBigDecimal(LocalDate.now().minusDays(entidadOrdenante.getEntidadesComunicadora().getDiasRespuestaF3().intValue() + entidadOrdenante.getEntidadesComunicadora().getDiasRespuestaF6().intValue() + 1), FORMAT_yyyyMMddHHmmss);
+
+		List<Embargo> embargos = seizureRepository.findAllByNumeroEmbargo(levantamiento.getNumeroEmbargo(), fechaDesde);
+
 		Embargo embargo = null;
 
 		for (Embargo currentEmbargo : embargos)
 		{
-			if (embargo == null) {
-				embargo = currentEmbargo;
-				continue;
+			if (currentEmbargo.getControlFichero().getEntidadesComunicadora().getCodEntidadPresentadora() ==
+				entidadOrdenante.getEntidadesComunicadora().getCodEntidadPresentadora()
+			&&
+					(currentEmbargo.getImporte().compareTo(levantamiento.getImporteTotalAEmbargar()) == 0)
+			&&
+					(currentEmbargo.getTrabas().get(0).getImporteTrabado().compareTo(levantamiento.getImporteTotalTrabado())) == 0)
+			{
+				return currentEmbargo;
 			}
-			if (embargo.getFUltimaModificacion().compareTo(currentEmbargo.getFUltimaModificacion()) == -1)
-				embargo = currentEmbargo;
 		}
 
 		return embargo;

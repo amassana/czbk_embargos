@@ -10,6 +10,7 @@ import es.commerzbank.ice.embargos.domain.mapper.FileControlMapper;
 import es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.EntidadCreditoValidacionFase4;
 import es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.EntidadTransmisoraValidacionFase4;
 import es.commerzbank.ice.embargos.formats.aeat.validaciontrabas.ErroresTrabaValidacionFase4;
+import es.commerzbank.ice.embargos.formats.aeat.common.Levantamiento;
 import es.commerzbank.ice.embargos.repository.*;
 import es.commerzbank.ice.embargos.service.EmailService;
 import es.commerzbank.ice.embargos.service.FileControlService;
@@ -159,13 +160,16 @@ public class AEATSeizedResultServiceImpl implements AEATSeizedResultService{
 		        		erroresTrabaValidacionFase4 = (ErroresTrabaValidacionFase4) record;
 		        		
 		        		//Se obtiene el embargo:
-		        		
-		        		String numeroEmbargo = erroresTrabaValidacionFase4.getNumeroDiligenciaEmbargo();
-		        		
-		        		List<Embargo> embargosList = seizureRepository.findAllByNumeroEmbargo(numeroEmbargo);
 
-		        		Embargo embargo = EmbargosUtils.selectEmbargo(embargosList);
-		        			        		
+		        		Embargo embargo = EmbargosUtils.selectEmbargo(seizureRepository, entidadOrdenante, new Levantamiento(erroresTrabaValidacionFase4));
+
+		        		if (embargo == null)
+						{
+							logger.error("No embargo found for "+ erroresTrabaValidacionFase4.getNumeroDiligenciaEmbargo());
+							// TODO ERROR
+							continue;
+						}
+
 		        		Traba traba = embargo.getTrabas().get(0);
 		        		
 		        		//Guardar los errores de la traba:
