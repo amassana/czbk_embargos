@@ -13,7 +13,7 @@ public interface SeizureRepository extends JpaRepository<Embargo, Long>{
 
 	List<Embargo> findAllByControlFichero(ControlFichero controlFichero);
 
-	@Query(value = "select e from EMBARGO e where e.numeroEmbargo = :numeroEmbargo AND e.controlFichero.fechaIncorporacion >= :fechaIncorporacionDesde ORDER BY e.controlFichero.fechaIncorporacion DESC")
+	@Query(value = "select e from Embargo e where e.numeroEmbargo = :numeroEmbargo AND e.controlFichero.fechaIncorporacion >= :fechaIncorporacionDesde ORDER BY e.controlFichero.fechaIncorporacion DESC")
 	List<Embargo> findAllByNumeroEmbargo(@Param("numeroEmbargo") String numeroEmbargo, @Param("fechaIncorporacionDesde") BigDecimal fechaIncorporacionDesde);
 	
 	@Query(value = "select * from EMBARGO where FECHA_LIMITE_TRABA=TO_CHAR(sysdate,'YYYYMMDD') and COD_ENTIDAD_ORDENANTE=(select COD_ENTIDAD_ORDENANTE from ENTIDADES_ORDENANTES where DES_ENTIDAD='AEAT')", nativeQuery = true)
