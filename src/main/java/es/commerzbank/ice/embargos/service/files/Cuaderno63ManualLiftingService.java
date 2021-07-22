@@ -8,5 +8,5 @@ import java.util.Map;
 
 public interface Cuaderno63ManualLiftingService {
 
-	void crearFicheroLevantamientos(EntidadesComunicadora entity, Map<String, List<ClientLiftingManualDTO>> ordenesPorCliente) throws Exception;
+	String crearFicheroLevantamientos(EntidadesComunicadora entity, Map<String, List<ClientLiftingManualDTO>> ordenesPorCliente) throws Exception;
 }

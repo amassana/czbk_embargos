@@ -38,7 +38,7 @@ public class Cuaderno63ManualLiftingServiceImpl
     private String beanioResource;
 
     @Override
-    public void crearFicheroLevantamientos(EntidadesComunicadora entity, Map<String, List<ClientLiftingManualDTO>> ordenesPorCliente)
+    public String crearFicheroLevantamientos(EntidadesComunicadora entity, Map<String, List<ClientLiftingManualDTO>> ordenesPorCliente)
             throws Exception
     {
         String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_NORMA63);
@@ -49,7 +49,7 @@ public class Cuaderno63ManualLiftingServiceImpl
         BeanWriter beanWriter = null;
 
         try {
-            String fileName = "LevManualAEAT_" + RandomStringUtils.randomAlphanumeric(5) +"."+ TIPO_FICHERO_LEVANTAMIENTOS;
+            String fileName = entity.getPrefijoFicheros() + "_Manual_" + RandomStringUtils.randomAlphanumeric(5) +"."+ TIPO_FICHERO_LEVANTAMIENTOS;
             File ficheroSalida = new File(tempFolder, fileName);
 
             writer = new OutputStreamWriter(new FileOutputStream(ficheroSalida), encoding);
@@ -75,6 +75,8 @@ public class Cuaderno63ManualLiftingServiceImpl
             writer.close();
 
             FileUtils.moveFile(ficheroSalida, new File(inboxFolder, fileName));
+
+            return fileName;
         }
         catch (Exception e) {
             if(writer!=null) {
@@ -96,6 +98,9 @@ public class Cuaderno63ManualLiftingServiceImpl
         levantamiento.setNifDeudor(ref.getNif());
         levantamiento.setIdentificadorDeuda(ref.getCodLifting());
         levantamiento.setCodigoTipoLevantamientoARealizar("Total".equals(ref.getType()) ? "1" : "2");
+
+        levantamiento.setImporteTotalAEmbargar(ref.getRequestedAmount());
+        levantamiento.setImporteTotalRetencionesEfectuadas(ref.getSeizedAmount());
 
         int slotDisponible = 1;
         for (ClientLiftingManualDTO ordenLevantamiento : ordenesCliente) {

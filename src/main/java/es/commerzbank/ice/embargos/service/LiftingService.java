@@ -27,7 +27,7 @@ public interface LiftingService {
 
 	byte[] generateLiftingLetter(Long idLifting) throws Exception;
 	
-	void manualLifting(LiftingManualDTO liftingManualDTO, String userModif) throws Exception;
+	String manualLifting(LiftingManualDTO liftingManualDTO, String userModif) throws Exception;
 
 	void generateLiftingLetters(ControlFichero pendiente) throws Exception;
 

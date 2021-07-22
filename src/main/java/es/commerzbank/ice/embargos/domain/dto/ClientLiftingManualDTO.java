@@ -10,6 +10,8 @@ public class ClientLiftingManualDTO {
 	private String codLifting;
 	private String iban;
 	private BigDecimal amount;
+	private BigDecimal requestedAmount;
+	private BigDecimal seizedAmount;
 	private String type;
 	private LocalDate dateRetention;
 	
@@ -55,5 +57,20 @@ public class ClientLiftingManualDTO {
 	public void setDateRetention(LocalDate dateRetention) {
 		this.dateRetention = dateRetention;
 	}
-	
+
+	public BigDecimal getRequestedAmount() {
+		return requestedAmount;
+	}
+
+	public void setRequestedAmount(BigDecimal requestedAmount) {
+		this.requestedAmount = requestedAmount;
+	}
+
+	public BigDecimal getSeizedAmount() {
+		return seizedAmount;
+	}
+
+	public void setSeizedAmount(BigDecimal seizedAmount) {
+		this.seizedAmount = seizedAmount;
+	}
 }

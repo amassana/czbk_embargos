@@ -495,7 +495,7 @@ public class LiftingServiceImpl
 
 	@Override
 	@Transactional(transactionManager = "transactionManager", rollbackFor = Exception.class)
-	public void manualLifting(LiftingManualDTO liftingManualDTO, String userModif) throws Exception
+	public String manualLifting(LiftingManualDTO liftingManualDTO, String userModif) throws Exception
 	{
 		Optional<EntidadesComunicadora> comunicatingEntity = communicatingEntityRepository.findById(liftingManualDTO.getEntity().getCodCommunicatingEntity());
 
@@ -524,10 +524,10 @@ public class LiftingServiceImpl
 			throw new Exception("No orders were found");
 
 		if (liftingManualDTO.getEntity().isIndAeat()) {
-			aeatManualLiftingService.crearFicheroLevantamientos(comunicatingEntity.get(), ordenesPorCliente);
+			return aeatManualLiftingService.crearFicheroLevantamientos(comunicatingEntity.get(), ordenesPorCliente);
 		}
 		else if (liftingManualDTO.getEntity().isIndNorma63()) {
-			cuaderno63ManualLiftingService.crearFicheroLevantamientos(comunicatingEntity.get(), ordenesPorCliente);
+			return cuaderno63ManualLiftingService.crearFicheroLevantamientos(comunicatingEntity.get(), ordenesPorCliente);
 		}
 		else {
 			throw new Exception("Cannot process this entity type");

@@ -367,9 +367,9 @@ public class LiftingController {
 		try {
 			String userModif = authentication.getName();
 
-			liftingService.manualLifting(liftingManualDTO, userModif);
+			String filename = liftingService.manualLifting(liftingManualDTO, userModif);
 
-			response = new ResponseEntity<>(HttpStatus.OK);
+			response = new ResponseEntity<>(filename, HttpStatus.OK);
 		}
 		catch (Exception e) {
 			response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

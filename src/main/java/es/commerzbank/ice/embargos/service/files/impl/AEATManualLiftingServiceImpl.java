@@ -35,7 +35,7 @@ public class AEATManualLiftingServiceImpl
     private String beanioResource;
 
     @Override
-    public void crearFicheroLevantamientos(EntidadesComunicadora entity, Map<String, List<ClientLiftingManualDTO>> ordenesPorCliente)
+    public String crearFicheroLevantamientos(EntidadesComunicadora entity, Map<String, List<ClientLiftingManualDTO>> ordenesPorCliente)
             throws Exception
     {
         String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT);
@@ -46,7 +46,8 @@ public class AEATManualLiftingServiceImpl
         BeanWriter beanWriter = null;
 
         try {
-            String fileName = "LevManualAEAT_" + RandomStringUtils.randomAlphanumeric(5) +"."+ TIPO_FICHERO_LEVANTAMIENTOS;
+            String fileName = entity.getPrefijoFicheros() + "_Manual_" + RandomStringUtils.randomAlphanumeric(5) +"."+ TIPO_FICHERO_LEVANTAMIENTOS;
+
             File ficheroSalida = new File(tempFolder, fileName);
 
             writer = new OutputStreamWriter(new FileOutputStream(ficheroSalida), encoding);
@@ -75,6 +76,8 @@ public class AEATManualLiftingServiceImpl
             writer.close();
 
             FileUtils.moveFile(ficheroSalida, new File(inboxFolder, fileName));
+
+            return fileName;
         }
         catch (Exception e) {
             if(writer!=null) {
@@ -109,12 +112,14 @@ public class AEATManualLiftingServiceImpl
         levantamiento.setNombreDeudor(ref.getDebtor());
         levantamiento.setNumeroDiligenciaEmbargo(ref.getCodLifting());
         /*
-        levantamiento.setImporteTotalAEmbargar(new BigDecimal("0"));
         levantamiento.setFechaGeneracionDiligencia(new Date());
-        levantamiento.setImporteTotalTrabado(new BigDecimal("0"));
         levantamiento.setFechaTraba(new Date());
         levantamiento.setFechaLimiteIngresoImporteTrabado(new Date());
         */
+
+        levantamiento.setImporteTotalAEmbargar(ref.getRequestedAmount());
+        levantamiento.setImporteTotalTrabado(ref.getSeizedAmount());
+
         int slotDisponible = 1;
         for (ClientLiftingManualDTO ordenLevantamiento : ordenesCliente) {
             if (slotDisponible == 1) {
