@@ -381,9 +381,7 @@ public class LiftingController {
 
 	@GetMapping(value = "/manualLiftingCandidates")
 	@ApiOperation(value="Realiza un levantamiento de forma manual.")
-	public ResponseEntity<List<ManualLiftingDTO>> manualLiftingCandidates(Authentication authentication,
-												@RequestBody LiftingManualDTO liftingManualDTO) {
-		logger.info("LiftingController - levantamiento manual "+ liftingManualDTO.getEntity().getName() +" "+ liftingManualDTO.getClients().size());
+	public ResponseEntity<List<ManualLiftingDTO>> manualLiftingCandidates() {
 		ResponseEntity<List<ManualLiftingDTO>> response = null;
 
 		try {
