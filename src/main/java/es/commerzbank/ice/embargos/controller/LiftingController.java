@@ -391,7 +391,7 @@ public class LiftingController {
 		}
 		catch (Exception e) {
 			response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-			logger.error("ERROR in manualLifting: ", e);
+			logger.error("ERROR in manualLiftingCandidates: ", e);
 		}
 
 		return response;

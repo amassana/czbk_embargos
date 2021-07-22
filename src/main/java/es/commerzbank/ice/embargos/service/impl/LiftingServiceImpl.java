@@ -584,7 +584,7 @@ public class LiftingServiceImpl
 
 					CommunicatingEntity entidadComunicadora = communicatingEntityMapper.toCommunicatingEntity(controlFicheroF4.getEntidadesComunicadora());
 
-					List<SeizureDTO> cases = seizureService.getSeizureListByCodeFileControl(controlFicheroF4.getCodControlFichero());
+					List<SeizureDTO> cases = seizureService.getSeizureListByCodeFileControl(fileControlDTO.getCodeFileOrigin());
 
 					for (SeizureDTO seizureDTO : cases) {
 
