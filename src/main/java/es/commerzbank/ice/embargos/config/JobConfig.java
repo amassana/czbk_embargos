@@ -174,7 +174,7 @@ public class JobConfig {
 
     @Bean
     public CronTriggerFactoryBean triggerJobCGPJFestiveImport(JobDetail jobImportCGPJFestiveFactoryBean) {
-        String cronExpression = "0 3/10 * ? * * *";
+        String cronExpression = "0 */10 * ? * * *";
         CronTriggerFactoryBean trigger = new CronTriggerFactoryBean();
         trigger.setName(jobImportCGPJFestiveFactoryBean.getKey().getName() + "Trigger");
         trigger.setJobDetail(jobImportCGPJFestiveFactoryBean);
