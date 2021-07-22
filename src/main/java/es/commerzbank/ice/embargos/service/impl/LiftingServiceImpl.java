@@ -3,8 +3,10 @@ package es.commerzbank.ice.embargos.service.impl;
 import com.itextpdf.kernel.PdfException;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import es.commerzbank.ice.comun.lib.domain.entity.Tarea;
 import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
 import es.commerzbank.ice.comun.lib.util.SQLUtils;
 import es.commerzbank.ice.comun.lib.util.jasper.ReportHelper;
@@ -15,10 +17,7 @@ import es.commerzbank.ice.embargos.domain.dto.*;
 import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.*;
 import es.commerzbank.ice.embargos.repository.*;
-import es.commerzbank.ice.embargos.service.AccountingService;
-import es.commerzbank.ice.embargos.service.CustomerService;
-import es.commerzbank.ice.embargos.service.FileControlService;
-import es.commerzbank.ice.embargos.service.LiftingService;
+import es.commerzbank.ice.embargos.service.*;
 import es.commerzbank.ice.embargos.service.files.AEATManualLiftingService;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63ManualLiftingService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
@@ -44,7 +43,7 @@ public class LiftingServiceImpl
 		implements LiftingService
 {
 
-	private static final Logger LOG = LoggerFactory.getLogger(LiftingServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(LiftingServiceImpl.class);
 	
 	@Autowired
 	private LiftingMapper liftingMapper;
@@ -101,7 +100,7 @@ public class LiftingServiceImpl
 	private AccountingNoteService accountingNoteService;
 
 	@Autowired
-	AccountService accountService;
+	private AccountService accountService;
 
 	@Autowired
 	private ReportHelper reportHelper;
@@ -114,7 +113,16 @@ public class LiftingServiceImpl
 
 	@Autowired
 	private Cuaderno63ManualLiftingService cuaderno63ManualLiftingService;
-    
+
+	@Autowired
+	private TaskService taskService;
+
+	@Autowired
+	private CommunicatingEntityMapper communicatingEntityMapper;
+
+	@Autowired
+	private SeizureService seizureService;
+
 	@Override
 	public List<LiftingDTO> getAllByControlFichero(ControlFichero controlFichero) {
 		List<LevantamientoTraba> liftingList = liftingRepository.findAllByControlFichero(controlFichero);
@@ -479,7 +487,7 @@ public class LiftingServiceImpl
 				}
 			}
 
-			LOG.info("Se han acumulado "+ outDoc.getNumberOfPages() +" páginas de cartas a enviar");
+			logger.info("Se han acumulado "+ outDoc.getNumberOfPages() +" páginas de cartas a enviar");
 
 			try {
 				// Se prefiere el catch a numPages > 0 por si el outDoc debe igualmente hacer alguna acción en el close.
@@ -532,5 +540,73 @@ public class LiftingServiceImpl
 		else {
 			throw new Exception("Cannot process this entity type");
 		}
+	}
+
+	@Override
+	public List<ManualLiftingDTO> listManualLiftingCandidates() throws Exception {
+		List<ManualLiftingDTO> result = new ArrayList<>(50);
+
+		List<Tarea> tareas = new ArrayList<>();
+		tareas.addAll(taskService.getTaskPendingByExternalIdLike(EmbargosConstants.EXTERNAL_ID_F6_N63));
+		tareas.addAll(taskService.getTaskPendingByExternalIdLike(EmbargosConstants.EXTERNAL_ID_F6_AEAT));
+
+		if (tareas == null || tareas.size() == 0) {
+			logger.info("No se han encontrado candidatos para el levantamiento");
+		}
+		else {
+			for (Tarea tarea : tareas) {
+				try {
+					if (tarea.getExternalId() == null) {
+						logger.error("Tarea " + tarea.getCodTarea() + " sin identificador externo");
+						continue;
+					}
+
+					String[] partes = tarea.getExternalId().split("_");
+
+					if (partes.length != 2) {
+						logger.error(
+								"Formato de identificador externo de la tarea " + tarea.getCodTarea() + " no reconocido: "
+										+ tarea.getExternalId());
+						continue;
+					}
+
+					String codControlFichero = partes[1];
+
+					Optional<ControlFichero> controlFicheroOptF4 = fileControlRepository.findById(Long.parseLong(codControlFichero));
+					if (!controlFicheroOptF4.isPresent()) {
+						logger.error("ControlFichero F4 " + codControlFichero + " no encontrado");
+						continue;
+					}
+
+					ControlFichero controlFicheroF4 = controlFicheroOptF4.get();
+
+					FileControlDTO fileControlDTO = fileControlMapper.toFileControlDTO(controlFicheroF4, null);
+
+					CommunicatingEntity entidadComunicadora = communicatingEntityMapper.toCommunicatingEntity(controlFicheroF4.getEntidadesComunicadora());
+
+					List<SeizureDTO> cases = seizureService.getSeizureListByCodeFileControl(controlFicheroF4.getCodControlFichero());
+
+					for (SeizureDTO seizureDTO : cases) {
+
+						List<SeizedBankAccountDTO> accounts = seizureService.getBankAccountListBySeizure(controlFicheroF4.getCodControlFichero(), Long.valueOf(seizureDTO.getIdSeizure()));
+
+						for (SeizedBankAccountDTO account : accounts) {
+							ManualLiftingDTO manualLiftingDTO = new ManualLiftingDTO();
+
+							manualLiftingDTO.setCommunicatingEntity(entidadComunicadora);
+							manualLiftingDTO.setFileControlDTOF4(fileControlDTO);
+							manualLiftingDTO.setSeizureCase(seizureDTO);
+							manualLiftingDTO.setSeizedBankAccount(account);
+
+							result.add(manualLiftingDTO);
+						}
+					}
+				} catch (Exception e) {
+					logger.error("Error mientras se generaba la lista de levantamientos desde la tarea " + tarea.getCodTarea(), e);
+				}
+			}
+		}
+
+		return result;
 	}
 }

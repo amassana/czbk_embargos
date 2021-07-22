@@ -35,4 +35,6 @@ public interface LiftingService {
 			String userModif) throws Exception;
 
     byte[] previewContable(Long codeFileControl) throws Exception;
+
+	List<ManualLiftingDTO> listManualLiftingCandidates() throws Exception;
 }

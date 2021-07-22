@@ -379,4 +379,24 @@ public class LiftingController {
 		return response;
     }
 
+	@GetMapping(value = "/manualLiftingCandidates")
+	@ApiOperation(value="Realiza un levantamiento de forma manual.")
+	public ResponseEntity<List<ManualLiftingDTO>> manualLiftingCandidates(Authentication authentication,
+												@RequestBody LiftingManualDTO liftingManualDTO) {
+		logger.info("LiftingController - levantamiento manual "+ liftingManualDTO.getEntity().getName() +" "+ liftingManualDTO.getClients().size());
+		ResponseEntity<List<ManualLiftingDTO>> response = null;
+
+		try {
+			List<ManualLiftingDTO> candidates = liftingService.listManualLiftingCandidates();
+
+			response = new ResponseEntity<>(candidates, HttpStatus.OK);
+		}
+		catch (Exception e) {
+			response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			logger.error("ERROR in manualLifting: ", e);
+		}
+
+		return response;
+	}
+
 }
