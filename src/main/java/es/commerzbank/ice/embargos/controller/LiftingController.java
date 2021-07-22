@@ -359,8 +359,8 @@ public class LiftingController {
 	@PostMapping(value = "/manual")
     @ApiOperation(value="Realiza un levantamiento de forma manual.")
     public ResponseEntity<String> manualLifting(Authentication authentication,
-    											@RequestBody LiftingManualDTO liftingManualDTO) {
-    	logger.info("LiftingController - levantamiento manual "+ liftingManualDTO.getEntity().getName() +" "+ liftingManualDTO.getClients().size());
+    											@RequestBody ManualLiftingDTO liftingManualDTO) {
+    	logger.info("LiftingController - levantamiento manual "+ liftingManualDTO.getSeizedBankAccount().getIdSeizedBankAccount());
 		ResponseEntity<String> response = null;
 		boolean result = false;
 

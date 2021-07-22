@@ -503,39 +503,13 @@ public class LiftingServiceImpl
 
 	@Override
 	@Transactional(transactionManager = "transactionManager", rollbackFor = Exception.class)
-	public String manualLifting(LiftingManualDTO liftingManualDTO, String userModif) throws Exception
+	public String manualLifting(ManualLiftingDTO manualLiftingDTO, String userModif) throws Exception
 	{
-		Optional<EntidadesComunicadora> comunicatingEntity = communicatingEntityRepository.findById(liftingManualDTO.getEntity().getCodCommunicatingEntity());
-
-		if (!comunicatingEntity.isPresent()) {
-			throw new Exception("Entidad comunicadora "+ liftingManualDTO.getEntity().getCodCommunicatingEntity() +" no encontrada");
+		if (manualLiftingDTO.getCommunicatingEntity().isIndAeat()) {
+			return aeatManualLiftingService.crearFicheroLevantamientos(manualLiftingDTO);
 		}
-
-		// Se recibe una lista de levantamientos, puede contener nifs repetidos. se reagrupan.
-		Map<String, List<ClientLiftingManualDTO>> ordenesPorCliente = new HashMap<>();
-
-		if (liftingManualDTO!=null && liftingManualDTO.getClients()!=null) {
-			for (ClientLiftingManualDTO clientDTO : liftingManualDTO.getClients()) {
-
-				List<ClientLiftingManualDTO> ordenes = ordenesPorCliente.get(clientDTO.getNif());
-
-				if (ordenes == null) {
-					ordenes = new ArrayList<>();
-					ordenesPorCliente.put(clientDTO.getNif(), ordenes);
-				}
-
-				ordenes.add(clientDTO);
-			}
-		}
-
-		if (ordenesPorCliente.size() == 0)
-			throw new Exception("No orders were found");
-
-		if (liftingManualDTO.getEntity().isIndAeat()) {
-			return aeatManualLiftingService.crearFicheroLevantamientos(comunicatingEntity.get(), ordenesPorCliente);
-		}
-		else if (liftingManualDTO.getEntity().isIndNorma63()) {
-			return cuaderno63ManualLiftingService.crearFicheroLevantamientos(comunicatingEntity.get(), ordenesPorCliente);
+		else if (manualLiftingDTO.getCommunicatingEntity().isIndNorma63()) {
+			return cuaderno63ManualLiftingService.crearFicheroLevantamientos(manualLiftingDTO);
 		}
 		else {
 			throw new Exception("Cannot process this entity type");
@@ -591,14 +565,16 @@ public class LiftingServiceImpl
 						List<SeizedBankAccountDTO> accounts = seizureService.getBankAccountListBySeizure(controlFicheroF4.getCodControlFichero(), Long.valueOf(seizureDTO.getIdSeizure()));
 
 						for (SeizedBankAccountDTO account : accounts) {
-							ManualLiftingDTO manualLiftingDTO = new ManualLiftingDTO();
+							if (account.getAmount() != null && BigDecimal.ZERO.compareTo(account.getAmount()) < 0) {
+								ManualLiftingDTO manualLiftingDTO = new ManualLiftingDTO();
 
-							manualLiftingDTO.setCommunicatingEntity(entidadComunicadora);
-							manualLiftingDTO.setFileControlDTOF4(fileControlDTO);
-							manualLiftingDTO.setSeizureCase(seizureDTO);
-							manualLiftingDTO.setSeizedBankAccount(account);
+								manualLiftingDTO.setCommunicatingEntity(entidadComunicadora);
+								manualLiftingDTO.setFileControlDTOF4(fileControlDTO);
+								manualLiftingDTO.setSeizureCase(seizureDTO);
+								manualLiftingDTO.setSeizedBankAccount(account);
 
-							result.add(manualLiftingDTO);
+								result.add(manualLiftingDTO);
+							}
 						}
 					}
 				} catch (Exception e) {

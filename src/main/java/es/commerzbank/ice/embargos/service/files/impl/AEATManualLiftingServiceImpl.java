@@ -1,9 +1,10 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
-import es.commerzbank.ice.embargos.domain.dto.ClientLiftingManualDTO;
+import es.commerzbank.ice.embargos.domain.dto.ManualLiftingDTO;
 import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
 import es.commerzbank.ice.embargos.formats.aeat.levantamientotrabas.*;
+import es.commerzbank.ice.embargos.repository.CommunicatingEntityRepository;
 import es.commerzbank.ice.embargos.service.files.AEATManualLiftingService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import org.apache.commons.io.FileUtils;
@@ -18,8 +19,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.List;
-import java.util.Map;
 
 import static es.commerzbank.ice.comun.lib.util.ValueConstants.PARAMETRO_TEMPFOLDER;
 import static es.commerzbank.ice.embargos.utils.EmbargosConstants.TIPO_FICHERO_LEVANTAMIENTOS;
@@ -34,8 +33,11 @@ public class AEATManualLiftingServiceImpl
     @Value("${commerzbank.embargos.beanio.config-path.aeat}")
     private String beanioResource;
 
+    @Autowired
+    private CommunicatingEntityRepository communicatingEntityRepository;
+
     @Override
-    public String crearFicheroLevantamientos(EntidadesComunicadora entity, Map<String, List<ClientLiftingManualDTO>> ordenesPorCliente)
+    public String crearFicheroLevantamientos(ManualLiftingDTO manualLiftingDTO)
             throws Exception
     {
         String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_AEAT);
@@ -45,8 +47,10 @@ public class AEATManualLiftingServiceImpl
         Writer writer = null;
         BeanWriter beanWriter = null;
 
+        EntidadesComunicadora entidadComunicadora = communicatingEntityRepository.getOne(manualLiftingDTO.getCommunicatingEntity().getCodCommunicatingEntity());
+
         try {
-            String fileName = entity.getPrefijoFicheros() + "_Manual_" + RandomStringUtils.randomAlphanumeric(5) +"."+ TIPO_FICHERO_LEVANTAMIENTOS;
+            String fileName = manualLiftingDTO.getCommunicatingEntity().getFilePrefix() + "_Manual_" + RandomStringUtils.randomAlphanumeric(5) +"."+ TIPO_FICHERO_LEVANTAMIENTOS;
 
             File ficheroSalida = new File(tempFolder, fileName);
 
@@ -60,11 +64,9 @@ public class AEATManualLiftingServiceImpl
             beanWriter = factory.createWriter(EmbargosConstants.STREAM_NAME_AEAT_LEVANTAMIENTOTRABAS, writer);
 
             writeEntidadTransmisora(beanWriter);
-            writeEntidadCredito(beanWriter, entity);
+            writeEntidadCredito(beanWriter, entidadComunicadora);
 
-            for (List<ClientLiftingManualDTO> ordenesCliente : ordenesPorCliente.values()) {
-                writeLevantamiento(beanWriter, ordenesCliente);
-            }
+            writeLevantamiento(beanWriter, manualLiftingDTO);
 
             writeFinEntidadCredito(beanWriter);
             writeFinEntidadTransmisora(beanWriter);
@@ -104,56 +106,26 @@ public class AEATManualLiftingServiceImpl
         beanWriter.write(EmbargosConstants.RECORD_NAME_AEAT_ENTIDADCREDITO, entidadCredito);
     }
 
-    private void writeLevantamiento(BeanWriter beanWriter, List<ClientLiftingManualDTO> ordenesCliente) {
+    private void writeLevantamiento(BeanWriter beanWriter, ManualLiftingDTO ordenesCliente) {
         Levantamiento levantamiento = new Levantamiento();
         levantamiento.setIndicadorRegistro("2");
-        ClientLiftingManualDTO ref = ordenesCliente.get(0);
-        levantamiento.setNifDeudor(ref.getNif());
-        levantamiento.setNombreDeudor(ref.getDebtor());
-        levantamiento.setNumeroDiligenciaEmbargo(ref.getCodLifting());
+
+        levantamiento.setNifDeudor(ordenesCliente.getSeizureCase().getNIF());
+        levantamiento.setNombreDeudor(ordenesCliente.getSeizureCase().getNameInternal());
+        levantamiento.setNumeroDiligenciaEmbargo(ordenesCliente.getSeizureCase().getSeizureNumber());
         /*
         levantamiento.setFechaGeneracionDiligencia(new Date());
         levantamiento.setFechaTraba(new Date());
         levantamiento.setFechaLimiteIngresoImporteTrabado(new Date());
         */
 
-        levantamiento.setImporteTotalAEmbargar(ref.getRequestedAmount());
-        levantamiento.setImporteTotalTrabado(ref.getSeizedAmount());
+        levantamiento.setImporteTotalAEmbargar(ordenesCliente.getSeizureCase().getRequestedAmount());
+        levantamiento.setImporteTotalTrabado(ordenesCliente.getSeizureCase().getSeizedAmount());
 
-        int slotDisponible = 1;
-        for (ClientLiftingManualDTO ordenLevantamiento : ordenesCliente) {
-            if (slotDisponible == 1) {
-                levantamiento.setCodigoCuentaCliente1(ordenLevantamiento.getIban());
-                levantamiento.setCodigoTipoLevantamientoEmbargoCC1("Total".equals(ordenLevantamiento.getType()) ? "01" : "02");
-                levantamiento.setImporteALevantarCC1(ordenLevantamiento.getAmount());
-            }
-            else if (slotDisponible == 2) {
-                levantamiento.setCodigoCuentaCliente2(ordenLevantamiento.getIban());
-                levantamiento.setCodigoTipoLevantamientoEmbargoCC2("Total".equals(ordenLevantamiento.getType()) ? "01" : "02");
-                levantamiento.setImporteALevantarCC2(ordenLevantamiento.getAmount());
-            }
-            else if (slotDisponible == 3) {
-                levantamiento.setCodigoCuentaCliente3(ordenLevantamiento.getIban());
-                levantamiento.setCodigoTipoLevantamientoEmbargoCC3("Total".equals(ordenLevantamiento.getType()) ? "01" : "02");
-                levantamiento.setImporteALevantarCC3(ordenLevantamiento.getAmount());
-            }
-            else if (slotDisponible == 4) {
-                levantamiento.setCodigoCuentaCliente4(ordenLevantamiento.getIban());
-                levantamiento.setCodigoTipoLevantamientoEmbargoCC4("Total".equals(ordenLevantamiento.getType()) ? "01" : "02");
-                levantamiento.setImporteALevantarCC4(ordenLevantamiento.getAmount());
-            }
-            else if (slotDisponible == 5) {
-                levantamiento.setCodigoCuentaCliente5(ordenLevantamiento.getIban());
-                levantamiento.setCodigoTipoLevantamientoEmbargoCC5("Total".equals(ordenLevantamiento.getType()) ? "01" : "02");
-                levantamiento.setImporteALevantarCC5(ordenLevantamiento.getAmount());
-            }
-            else if (slotDisponible == 6) {
-                levantamiento.setCodigoCuentaCliente6(ordenLevantamiento.getIban());
-                levantamiento.setCodigoTipoLevantamientoEmbargoCC6("Total".equals(ordenLevantamiento.getType()) ? "01" : "02");
-                levantamiento.setImporteALevantarCC6(ordenLevantamiento.getAmount());
-            }
-            slotDisponible ++;
-        }
+        // Se usa el primer slot, aunque no corresponda con el fichero
+        levantamiento.setCodigoCuentaCliente1(ordenesCliente.getSeizedBankAccount().getIban().substring(4));
+        levantamiento.setCodigoTipoLevantamientoEmbargoCC1(ordenesCliente.getLiftedAmount().compareTo(ordenesCliente.getSeizureCase().getSeizedAmount()) == 0 ? "01" : "02");
+        levantamiento.setImporteALevantarCC1(ordenesCliente.getLiftedAmount());
 
         beanWriter.write(EmbargosConstants.RECORD_NAME_AEAT_LEVANTAMIENTO, levantamiento);
     }

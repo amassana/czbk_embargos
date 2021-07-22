@@ -1,8 +1,8 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
-import es.commerzbank.ice.embargos.domain.dto.ClientLiftingManualDTO;
-import es.commerzbank.ice.embargos.domain.entity.EntidadesComunicadora;
+import es.commerzbank.ice.embargos.domain.dto.CommunicatingEntity;
+import es.commerzbank.ice.embargos.domain.dto.ManualLiftingDTO;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.CabeceraEmisorFase5;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.FinFicheroFase5;
 import es.commerzbank.ice.embargos.formats.cuaderno63.fase5.OrdenLevantamientoRetencionFase5;
@@ -21,8 +21,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 import static es.commerzbank.ice.comun.lib.util.ValueConstants.PARAMETRO_TEMPFOLDER;
 import static es.commerzbank.ice.embargos.utils.EmbargosConstants.TIPO_FICHERO_LEVANTAMIENTOS;
@@ -38,7 +36,7 @@ public class Cuaderno63ManualLiftingServiceImpl
     private String beanioResource;
 
     @Override
-    public String crearFicheroLevantamientos(EntidadesComunicadora entity, Map<String, List<ClientLiftingManualDTO>> ordenesPorCliente)
+    public String crearFicheroLevantamientos(ManualLiftingDTO manualLiftingDTO)
             throws Exception
     {
         String encoding = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_FILES_ENCODING_NORMA63);
@@ -49,7 +47,7 @@ public class Cuaderno63ManualLiftingServiceImpl
         BeanWriter beanWriter = null;
 
         try {
-            String fileName = entity.getPrefijoFicheros() + "_Manual_" + RandomStringUtils.randomAlphanumeric(5) +"."+ TIPO_FICHERO_LEVANTAMIENTOS;
+            String fileName = manualLiftingDTO.getCommunicatingEntity().getFilePrefix() + "_Manual_" + RandomStringUtils.randomAlphanumeric(5) +"."+ TIPO_FICHERO_LEVANTAMIENTOS;
             File ficheroSalida = new File(tempFolder, fileName);
 
             writer = new OutputStreamWriter(new FileOutputStream(ficheroSalida), encoding);
@@ -61,11 +59,9 @@ public class Cuaderno63ManualLiftingServiceImpl
 
             beanWriter = factory.createWriter(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE5, writer);
 
-            writeCabeceraEmisor(beanWriter, entity);
+            writeCabeceraEmisor(beanWriter, manualLiftingDTO.getCommunicatingEntity());
 
-            for (List<ClientLiftingManualDTO> ordenesCliente : ordenesPorCliente.values()) {
-                writeOrdenLevantamientoRetencion(beanWriter, ordenesCliente);
-            }
+            writeOrdenLevantamientoRetencion(beanWriter, manualLiftingDTO);
 
             writeFinFichero(beanWriter);
 
@@ -89,61 +85,30 @@ public class Cuaderno63ManualLiftingServiceImpl
         }
     }
 
-    private void writeOrdenLevantamientoRetencion(BeanWriter beanWriter, List<ClientLiftingManualDTO> ordenesCliente) {
+    private void writeOrdenLevantamientoRetencion(BeanWriter beanWriter, ManualLiftingDTO ordenesCliente) {
         OrdenLevantamientoRetencionFase5 levantamiento = new OrdenLevantamientoRetencionFase5();
         levantamiento.setCodigoRegistro(6);
 
-        ClientLiftingManualDTO ref = ordenesCliente.get(0);
+        levantamiento.setNifDeudor(ordenesCliente.getSeizureCase().getNIF());
+        levantamiento.setNombreDeudor(ordenesCliente.getSeizureCase().getNameInternal());
+        levantamiento.setIdentificadorDeuda(ordenesCliente.getSeizureCase().getSeizureNumber());
 
-        levantamiento.setNifDeudor(ref.getNif());
-        levantamiento.setIdentificadorDeuda(ref.getCodLifting());
-        levantamiento.setCodigoTipoLevantamientoARealizar("Total".equals(ref.getType()) ? "1" : "2");
+        levantamiento.setCodigoTipoLevantamientoARealizar(ordenesCliente.getLiftedAmount().compareTo(ordenesCliente.getSeizureCase().getSeizedAmount()) == 0 ? "1" : "2");
 
-        levantamiento.setImporteTotalAEmbargar(ref.getRequestedAmount());
-        levantamiento.setImporteTotalRetencionesEfectuadas(ref.getSeizedAmount());
+        levantamiento.setImporteTotalAEmbargar(ordenesCliente.getSeizureCase().getRequestedAmount());
+        levantamiento.setImporteTotalRetencionesEfectuadas(ordenesCliente.getSeizureCase().getSeizedAmount());
 
-        int slotDisponible = 1;
-        for (ClientLiftingManualDTO ordenLevantamiento : ordenesCliente) {
-            if (slotDisponible == 1) {
-                levantamiento.setIbanCuenta1(ordenLevantamiento.getIban());
-                levantamiento.setCodigoTipoLevantamientoIban1("Total".equals(ordenLevantamiento.getType()) ? "1" : "2");
-                levantamiento.setImporteALevantarIban1(ordenLevantamiento.getAmount());
-            }
-            else if (slotDisponible == 2) {
-                levantamiento.setIbanCuenta2(ordenLevantamiento.getIban());
-                levantamiento.setCodigoTipoLevantamientoIban2("Total".equals(ordenLevantamiento.getType()) ? "1" : "2");
-                levantamiento.setImporteALevantarIban2(ordenLevantamiento.getAmount());
-            }
-            else if (slotDisponible == 3) {
-                levantamiento.setIbanCuenta3(ordenLevantamiento.getIban());
-                levantamiento.setCodigoTipoLevantamientoIban3("Total".equals(ordenLevantamiento.getType()) ? "1" : "2");
-                levantamiento.setImporteALevantarIban3(ordenLevantamiento.getAmount());
-            }
-            else if (slotDisponible == 4) {
-                levantamiento.setIbanCuenta4(ordenLevantamiento.getIban());
-                levantamiento.setCodigoTipoLevantamientoIban4("Total".equals(ordenLevantamiento.getType()) ? "1" : "2");
-                levantamiento.setImporteALevantarIban4(ordenLevantamiento.getAmount());
-            }
-            else if (slotDisponible == 5) {
-                levantamiento.setIbanCuenta5(ordenLevantamiento.getIban());
-                levantamiento.setCodigoTipoLevantamientoIban5("Total".equals(ordenLevantamiento.getType()) ? "1" : "2");
-                levantamiento.setImporteALevantarIban5(ordenLevantamiento.getAmount());
-            }
-            else if (slotDisponible == 6) {
-                levantamiento.setIbanCuenta6(ordenLevantamiento.getIban());
-                levantamiento.setCodigoTipoLevantamientoIban6("Total".equals(ordenLevantamiento.getType()) ? "1" : "2");
-                levantamiento.setImporteALevantarIban6(ordenLevantamiento.getAmount());
-            }
-            slotDisponible ++;
-        }
+        levantamiento.setIbanCuenta1(ordenesCliente.getSeizedBankAccount().getIban());
+        levantamiento.setCodigoTipoLevantamientoIban1(ordenesCliente.getLiftedAmount().compareTo(ordenesCliente.getSeizureCase().getSeizedAmount()) == 0 ? "1" : "2");
+        levantamiento.setImporteALevantarIban1(ordenesCliente.getLiftedAmount());
 
         beanWriter.write(EmbargosConstants.RECORD_NAME_ORDENLEVANTAMIENTORETENCION, levantamiento);
     }
 
-    private void writeCabeceraEmisor(BeanWriter beanWriter, EntidadesComunicadora entity) {
+    private void writeCabeceraEmisor(BeanWriter beanWriter, CommunicatingEntity entity) {
         CabeceraEmisorFase5 cabeceraEmisor = new CabeceraEmisorFase5();
         cabeceraEmisor.setCodigoRegistro(4);
-        cabeceraEmisor.setNifOrganismoEmisor(entity.getNifEntidad());
+        cabeceraEmisor.setNifOrganismoEmisor(entity.getNif());
         cabeceraEmisor.setFechaObtencionFicheroOrganismo(new Date());
         beanWriter.write(EmbargosConstants.RECORD_NAME_CABECERAEMISOR, cabeceraEmisor);
     }
