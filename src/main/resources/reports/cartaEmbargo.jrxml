@@ -34,12 +34,15 @@
 ,	e.importe AS IMPORTE_EMBARGO
 ,	e.datregcomdet
 ,	ec.PREFIJO_FICHEROS AS ACRONIMO_ENTIDAD
+,	EC.IND_CGPJ
+,	sol.NOMBRE_SOLICITANTE
 FROM
 	TRABAS t
 INNER JOIN CUENTA_TRABA ct ON t.cod_traba = ct.cod_traba
 INNER JOIN EMBARGO e ON e.cod_embargo = t.cod_embargo
 INNER JOIN CONTROL_FICHERO cf ON cf.COD_CONTROL_FICHERO = e.COD_CONTROL_FICHERO
 INNER JOIN ENTIDADES_COMUNICADORAS ec ON cf.COD_ENTIDAD_PRESENTADORA = ec.COD_ENTIDAD_PRESENTADORA
+LEFT OUTER JOIN SOLICITUDES_TRABA sol ON sol.COD_TRABA = ct.COD_TRABA
 WHERE
 	t.cod_traba = $P{CODIGO}
 AND ct.importe > 0]]>
@@ -80,6 +83,12 @@ AND ct.importe > 0]]>
 	<field name="ACRONIMO_ENTIDAD" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="ACRONIMO_ENTIDAD"/>
 	</field>
+	<field name="IND_CGPJ" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="IND_CGPJ"/>
+	</field>
+	<field name="NOMBRE_SOLICITANTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NOMBRE_SOLICITANTE"/>
+	</field>
 	<field name="CAMBIO_DIVISA" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="CAMBIO_DIVISA"/>
 	</field>
@@ -119,7 +128,7 @@ AND ct.importe > 0]]>
 				<textElement>
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Siguiendo instrucciones de "+ $F{ACRONIMO_ENTIDAD} +" por medio de envío telemático nos ordena el EMBARGO siguiente:"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Siguiendo instrucciones de "+ ("S".equals($F{IND_CGPJ}) ? $F{NOMBRE_SOLICITANTE} : $F{ACRONIMO_ENTIDAD}) +" por medio de envío telemático nos ordena el EMBARGO siguiente:"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="10" y="144" width="418" height="20" uuid="a9a6ff8a-192b-4947-b170-597918b7f8b1"/>
