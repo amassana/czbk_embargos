@@ -230,7 +230,7 @@ WHERE
 				<textElement rotation="Left">
 					<font size="6"/>
 				</textElement>
-				<text><![CDATA[R. M. Madrid, T. 5.464. G., 4.553. S. 3. L.S.E. 110. H. 43.668 – C.I.F. W-0041282-E]]></text>
+				<text><![CDATA[R. M. Madrid, T. 5.464. G., 4.553. S. 3. L.S.E. 110. H. 43.668 – N.I.F. W-0041282-E]]></text>
 			</staticText>
 		</band>
 	</detail>
@@ -252,7 +252,7 @@ Vorstand / Board of Managing Directors / Junta Directiva: Martin Zielke
 					<font size="6"/>
 				</textElement>
 				<text><![CDATA[R.M. Madrid, T. 5.464. G. 4.553. S. 3 L.S.E. 110. H. 43.668 
-C.I.F. W-0041282 E 
+N.I.F. W-0041282 E
 Commerzbank Aktiengesellschaft, Frankfurt am Main 
 Handelsregister / Registered Office / Registro Mercantil: Amtsgericht 
 Frankfurt am main, HRB 32000]]></text>
