@@ -1,17 +1,11 @@
 package es.commerzbank.ice.embargos;
 
-import java.security.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collections;
-
+import com.google.common.base.Predicates;
+import es.commerzbank.ice.comun.lib.util.GitUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-
-import com.google.common.base.Predicates;
-
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -19,6 +13,11 @@ import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import java.security.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 @SpringBootApplication (
@@ -33,7 +32,8 @@ public class EmbargosApplication {
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
 	public static void main(String[] args) {
-		SpringApplication.run(EmbargosApplication.class, args);
+        GitUtils.printGit();
+	    SpringApplication.run(EmbargosApplication.class, args);
 	}
 
 	@Bean

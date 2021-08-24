@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MidnightClockEvent {
-  @Scheduled(cron = "0 0 0 * * ?")
+  @Scheduled(cron = "@midnight")
   public void midnight() {
     GitUtils.printGit();
   }
