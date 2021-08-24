@@ -320,10 +320,17 @@ public class AccountingServiceImpl
 				//La cuentaTraba no se ha agregado a la Traba:
 				logger.info(logMessage + "no se encuentra agregada a la Traba y no se contabiliza.");
 
-			} else if (cuentaTraba.getEstadoCuenta()==null || BANK_ACCOUNT_STATUS_CANCELLED.equals(cuentaTraba.getEstadoCuenta())){
+			} else if (cuentaTraba.getEstadoCuenta()==null){
 				//La cuenta no esta cancelada:
-				logger.info(logMessage + "no esta cancelada y no se contabiliza.");
-
+				logger.info(logMessage + "no tiene estado no se contabiliza.");
+			}
+			else if (BANK_ACCOUNT_STATUS_CANCELLED.equals(cuentaTraba.getEstadoCuenta())){
+				//La cuenta no esta cancelada:
+				logger.info(logMessage + " esta cancelada y no se contabiliza.");
+			}
+			else if (BANK_ACCOUNT_STATUS_NOTFOUND.equals(cuentaTraba.getEstadoCuenta())){
+				//La cuenta no esta cancelada:
+				logger.info(logMessage + " esta se ha localizado en DWH y no se contabiliza.");
 			} else if (cuentaTraba.getImporte() == null) {
 				logger.info(logMessage + "El importe es nulo.");
 			} else if (cuentaTraba.getImporte() != null && cuentaTraba.getImporte().compareTo(BigDecimal.ZERO) <= 0) {
@@ -796,7 +803,8 @@ public class AccountingServiceImpl
 				} else if (cuentaTraba.getAgregarATraba() == null || !(EmbargosConstants.IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba())
 						|| EmbargosConstants.IND_FLAG_SI.equals(cuentaTraba.getAgregarATraba()))) {
 					;
-				} else if (cuentaTraba.getEstadoCuenta() == null || BANK_ACCOUNT_STATUS_CANCELLED.equals(cuentaTraba.getEstadoCuenta())) {
+				} else if (cuentaTraba.getEstadoCuenta() == null || BANK_ACCOUNT_STATUS_CANCELLED.equals(cuentaTraba.getEstadoCuenta())
+						|| BANK_ACCOUNT_STATUS_NOTFOUND.equals(cuentaTraba.getEstadoCuenta())) {
 					;
 				} else if (cuentaTraba.getImporte() == null) {
 					;
