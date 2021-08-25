@@ -68,6 +68,10 @@ public class ICEDateUtils {
 		return result;
 		
 	}
+
+	public static BigDecimal currentDateTime() {
+		return actualDateToBigDecimal(FORMAT_yyyyMMddHHmmss);
+	}
 	
 	
 }
