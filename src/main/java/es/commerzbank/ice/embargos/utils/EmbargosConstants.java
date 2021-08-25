@@ -106,7 +106,7 @@ public class EmbargosConstants {
 	public static final long COD_ESTADO_CTRLFICHERO_FINAL_ERROR = 0;
 	//delete estados transitorios public static final long COD_ESTADO_CTRLFICHERO_FINAL_GENERANDO = 1;
 	public static final long COD_ESTADO_CTRLFICHERO_FINAL_GENERADO = 2;
-	public static final long COD_ESTADO_CTRLFICHERO_FINAL_ENVIADO = 3;
+	public static final long COD_ESTADO_CTRLFICHERO_FINAL_ENVIADO = 4;
 
 	public static final long COD_ESTADO_CTRLFICHERO_INITIAL_STATUS_DEFAULT = 1;
 	
