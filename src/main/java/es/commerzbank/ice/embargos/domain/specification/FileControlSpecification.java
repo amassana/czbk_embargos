@@ -1,24 +1,22 @@
 package es.commerzbank.ice.embargos.domain.specification;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaBuilder.In;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.springframework.data.jpa.domain.Specification;
-
 import es.commerzbank.ice.embargos.domain.dto.FileControlFiltersDTO;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero_;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlfichero;
 import es.commerzbank.ice.embargos.domain.entity.EstadoCtrlficheroPK;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import org.springframework.data.jpa.domain.Specification;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaBuilder.In;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class FileControlSpecification implements Specification<ControlFichero> {
 
@@ -82,7 +80,7 @@ public class FileControlSpecification implements Specification<ControlFichero> {
 		}
 			
 		if (endDate!=null) {
-			Long endDateLong = Long.parseLong(sdf.format(endDate));
+			Long endDateLong = (Long.parseLong(sdf.format(endDate)) / 1000000) * 1000000 + 235959;
 			predicate = criteriaBuilder.le(root.get(ControlFichero_.FECHA_INCORPORACION), endDateLong);
 			predicates.add(predicate);
 		}
