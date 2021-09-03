@@ -291,6 +291,10 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 			}
 		}
 
+		if (maxOrden == Integer.MIN_VALUE) {
+			maxOrden = 1;
+		}
+
 		for (PeticionInformacionCuenta peticionInformacionCuenta : workingCopy) {
 			maxOrden = maxOrden + 1;
 			if (peticionInformacionCuenta.getOrden() != maxOrden) {
