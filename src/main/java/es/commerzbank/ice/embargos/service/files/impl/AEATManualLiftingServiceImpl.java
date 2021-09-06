@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.Date;
 
 import static es.commerzbank.ice.comun.lib.util.ValueConstants.PARAMETRO_TEMPFOLDER;
 import static es.commerzbank.ice.embargos.utils.EmbargosConstants.TIPO_FICHERO_LEVANTAMIENTOS;
@@ -64,7 +65,7 @@ public class AEATManualLiftingServiceImpl
 
             beanWriter = factory.createWriter(EmbargosConstants.STREAM_NAME_AEAT_LEVANTAMIENTOTRABAS, writer);
 
-            writeEntidadTransmisora(beanWriter);
+            writeEntidadTransmisora(beanWriter, manualLiftingDTO.getFileControlDTOF4().getCreatedDate());
             writeEntidadCredito(beanWriter, entidadComunicadora);
 
             writeLevantamiento(beanWriter, manualLiftingDTO);
@@ -93,10 +94,11 @@ public class AEATManualLiftingServiceImpl
         }
     }
 
-    private void writeEntidadTransmisora(BeanWriter beanWriter) {
+    private void writeEntidadTransmisora(BeanWriter beanWriter, Date fechaInicioCiclo) {
         EntidadTransmisora entidadTransmisora = new EntidadTransmisora();
         entidadTransmisora.setIndicadorRegistro("0");
         entidadTransmisora.setCodigoEntidadTransmisora(EmbargosConstants.CODIGO_NRBE_COMMERZBANK);
+        entidadTransmisora.setFechaInicioCiclo(fechaInicioCiclo);
         beanWriter.write(EmbargosConstants.RECORD_NAME_AEAT_ENTIDADTRANSMISORA, entidadTransmisora);
     }
 

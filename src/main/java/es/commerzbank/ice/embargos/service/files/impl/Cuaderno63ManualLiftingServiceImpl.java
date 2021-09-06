@@ -60,7 +60,7 @@ public class Cuaderno63ManualLiftingServiceImpl
 
             beanWriter = factory.createWriter(EmbargosConstants.STREAM_NAME_CUADERNO63_FASE5, writer);
 
-            writeCabeceraEmisor(beanWriter, manualLiftingDTO.getCommunicatingEntity());
+            writeCabeceraEmisor(beanWriter, manualLiftingDTO.getCommunicatingEntity(), manualLiftingDTO.getFileControlDTOF4().getCreatedDate());
 
             writeOrdenLevantamientoRetencion(beanWriter, manualLiftingDTO);
 
@@ -106,11 +106,11 @@ public class Cuaderno63ManualLiftingServiceImpl
         beanWriter.write(EmbargosConstants.RECORD_NAME_ORDENLEVANTAMIENTORETENCION, levantamiento);
     }
 
-    private void writeCabeceraEmisor(BeanWriter beanWriter, CommunicatingEntity entity) {
+    private void writeCabeceraEmisor(BeanWriter beanWriter, CommunicatingEntity entity, Date fechaInicioCiclo) {
         CabeceraEmisorFase5 cabeceraEmisor = new CabeceraEmisorFase5();
         cabeceraEmisor.setCodigoRegistro(4);
         cabeceraEmisor.setNifOrganismoEmisor(entity.getNif());
-        cabeceraEmisor.setFechaObtencionFicheroOrganismo(new Date());
+        cabeceraEmisor.setFechaObtencionFicheroOrganismo(fechaInicioCiclo);
         beanWriter.write(EmbargosConstants.RECORD_NAME_CABECERAEMISOR, cabeceraEmisor);
     }
 
