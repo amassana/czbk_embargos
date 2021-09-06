@@ -89,6 +89,12 @@ public class CGPJServiceImpl
     @Autowired
     private FileControlRepository fileControlRepository;
 
+    @Autowired
+    private SeizedRepository seizedRepository;
+
+    @Autowired
+    private SeizedBankAccountRepository seizedBankAccountRepository;
+
     @Override
     public Page<CGPJPetitionDTO> filter(CGPJFiltersDTO filters, Pageable pageable)
     {
@@ -230,6 +236,9 @@ public class CGPJServiceImpl
         EstadoIntLevantamiento estadoIntLevantamiento = new EstadoIntLevantamiento();
         estadoIntLevantamiento.setCodEstadoIntLevantamiento(CGPJ_ESTADO_INTERNO_LEVANTAMIENTO_PROCESADO);
 
+        EstadoTraba estadoTraba = new EstadoTraba();
+        estadoTraba.setCodEstado(COD_ESTADO_TRABA_FINALIZADA);
+
         for (String codPeticion : codPeticiones) {
             Optional<Peticion> peticionOpt = petitionRepository.findById(codPeticion);
 
@@ -258,9 +267,19 @@ public class CGPJServiceImpl
                             estadoRespTraba.setCodEstadoRespTraba(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
                             solicitudTraba.setEstadoRespTraba(estadoRespTraba);
 
+                            cuentaTraba.setEstadoTraba(estadoTraba);
+                            cuentaTraba.setUsuarioUltModificacion(username);
+                            cuentaTraba.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+                            seizedBankAccountRepository.save(cuentaTraba);
+
                             cuentaTrabaCGPJCopyRepository.cloneCuentaTraba(traba.getCodTraba());
                         }
                     }
+
+                    traba.setEstadoTraba(estadoTraba);
+                    traba.setUsuarioUltModificacion(username);
+                    traba.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+                    seizedRepository.save(traba);
 
                     solicitudTraba.setImporteRespuesta(CGPJUtils.format(importeRespuesta));
                     solicitudTraba.setUsuarioUltModificacion(username);
