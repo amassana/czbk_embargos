@@ -47,7 +47,8 @@ public class Cuaderno63ManualLiftingServiceImpl
         BeanWriter beanWriter = null;
 
         try {
-            String fileName = manualLiftingDTO.getCommunicatingEntity().getFilePrefix() + "_Manual_" + RandomStringUtils.randomAlphanumeric(5) +"."+ TIPO_FICHERO_LEVANTAMIENTOS;
+            String randomIdentifier = RandomStringUtils.randomAlphanumeric(5);
+            String fileName = manualLiftingDTO.getCommunicatingEntity().getFilePrefix() + "_Manual_" + randomIdentifier +"."+ TIPO_FICHERO_LEVANTAMIENTOS;
             File ficheroSalida = new File(tempFolder, fileName);
 
             writer = new OutputStreamWriter(new FileOutputStream(ficheroSalida), encoding);
@@ -63,7 +64,7 @@ public class Cuaderno63ManualLiftingServiceImpl
 
             writeOrdenLevantamientoRetencion(beanWriter, manualLiftingDTO);
 
-            writeFinFichero(beanWriter);
+            writeFinFichero(beanWriter, randomIdentifier);
 
             beanWriter.flush();
 
@@ -113,9 +114,10 @@ public class Cuaderno63ManualLiftingServiceImpl
         beanWriter.write(EmbargosConstants.RECORD_NAME_CABECERAEMISOR, cabeceraEmisor);
     }
 
-    private void writeFinFichero(BeanWriter beanWriter) {
+    private void writeFinFichero(BeanWriter beanWriter, String randomIdentifier) {
         FinFicheroFase5 finFichero = new FinFicheroFase5();
         finFichero.setCodigoRegistro(8);
+        finFichero.setNombreOrganismoEmisor(randomIdentifier);
         beanWriter.write(EmbargosConstants.RECORD_NAME_FINFICHERO, finFichero);
     }
 

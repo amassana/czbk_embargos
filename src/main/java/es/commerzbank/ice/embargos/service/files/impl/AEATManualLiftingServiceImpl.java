@@ -50,7 +50,8 @@ public class AEATManualLiftingServiceImpl
         EntidadesComunicadora entidadComunicadora = communicatingEntityRepository.getOne(manualLiftingDTO.getCommunicatingEntity().getCodCommunicatingEntity());
 
         try {
-            String fileName = manualLiftingDTO.getCommunicatingEntity().getFilePrefix() + "_Manual_" + RandomStringUtils.randomAlphanumeric(5) +"."+ TIPO_FICHERO_LEVANTAMIENTOS;
+            String randomIdentifier = RandomStringUtils.randomAlphanumeric(5);
+            String fileName = manualLiftingDTO.getCommunicatingEntity().getFilePrefix() + "_Manual_" + randomIdentifier +"."+ TIPO_FICHERO_LEVANTAMIENTOS;
 
             File ficheroSalida = new File(tempFolder, fileName);
 
@@ -70,7 +71,7 @@ public class AEATManualLiftingServiceImpl
 
             writeFinEntidadCredito(beanWriter);
             writeFinEntidadTransmisora(beanWriter);
-            writeRegistroControlEntidadTransmisora(beanWriter);
+            writeRegistroControlEntidadTransmisora(beanWriter, randomIdentifier);
 
             beanWriter.flush();
 
@@ -142,9 +143,11 @@ public class AEATManualLiftingServiceImpl
         beanWriter.write(EmbargosConstants.RECORD_NAME_AEAT_FINENTIDADTRANSMISORA, finEntidadTransmisora);
     }
 
-    private void writeRegistroControlEntidadTransmisora(BeanWriter beanWriter) {
+    private void writeRegistroControlEntidadTransmisora(BeanWriter beanWriter, String randomIdentifier) {
         RegistroControlEntidadTransmisora registroControlEntidadTransmisora = new RegistroControlEntidadTransmisora();
         registroControlEntidadTransmisora.setIndicadorRegistro("9");
+        registroControlEntidadTransmisora.setDelegacionAgenciaReceptora(randomIdentifier.substring(0, 2));
+        registroControlEntidadTransmisora.setCodigoEntidadTransmisora(randomIdentifier.substring(2));
         beanWriter.write(EmbargosConstants.RECORD_NAME_AEAT_REGISTROCONTROLENTIDADTRANSMISORA, registroControlEntidadTransmisora);
     }
 }
