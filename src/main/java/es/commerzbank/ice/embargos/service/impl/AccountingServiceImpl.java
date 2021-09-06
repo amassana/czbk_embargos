@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -651,7 +650,7 @@ public class AccountingServiceImpl
 				throw new Exception("No se encuentra la cuenta traba cuya cuenta sea igual a la cuenta de levantamiento "+ cuentaLevantamiento.getCodCuentaLevantamiento() +" "+ cuentaLevantamiento.getCuenta());
 			}
 			else {
-				BigDecimal cambioInverso = cuentaTraba.getCambio() == null ? null : BigDecimal.ONE.divide(cuentaTraba.getCambio(), cuentaTraba.getCambio().scale(), RoundingMode.HALF_UP);
+				BigDecimal cambioInverso = cuentaTraba.getCambio() == null ? null : cuentaTraba.getCambio();
 
 				if (!cuentaLevantamiento.getCuenta().endsWith(EmbargosConstants.ISO_MONEDA_EUR) && cambioInverso == null) {
 					throw new Exception("No se encuentra el cambio de divisa a aplicar para la cuenta de levantamiento "+ cuentaLevantamiento.getCodCuentaLevantamiento() +" "+ cuentaLevantamiento.getCuenta());
