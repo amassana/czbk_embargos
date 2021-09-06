@@ -18,12 +18,12 @@
 ,	e.numero_embargo
 ,	e.nif
 ,	e.NOMBRE
-,	e.IMPORTE as IMPORTE_SOLICITADO
+,	NVL(e.IMPORTE, 0) as IMPORTE_SOLICITADO
 ,	ct.IBAN
-,	cre.IMPORTE_NETO
+,	NVL(cre.IMPORTE_NETO, 0) AS IMPORTE_NETO
 ,	cta.COD_EXTERNO_ACTUACION
-,	ct.IMPORTE AS IMPORTE_TRABADO
-,	cre.IMPORTE_LEVANTADO
+,	NVL(ct.IMPORTE, 0) AS IMPORTE_TRABADO
+,	NVL(cre.IMPORTE_LEVANTADO, 0) AS IMPORTE_LEVANTADO
 ,	t.FECHA_LIMITE AS FECHA_VENCIMIENTO
 ,	cf.FECHA_CREACION
 ,	cf.NOMBRE_FICHERO
@@ -39,7 +39,7 @@ INNER JOIN trabas t ON t.COD_TRABA = re.COD_TRABA
 WHERE
 	cf.cod_control_fichero = $P{COD_FILE_CONTROL}
 	and (ct.origen_emb = 'Y' or ct.agregar_a_traba = 'Y')
-	and (ct.importe is not null) -- si piden incluir estas cuentas, petará la conversión a decimal de null.
+--	and (ct.importe is not null)
 ORDER BY
 	e.numero_embargo]]>
 	</queryString>
