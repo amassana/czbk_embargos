@@ -2,10 +2,7 @@ package es.commerzbank.ice.embargos.controller;
 
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.jasper.ReportHelper;
-import es.commerzbank.ice.embargos.domain.dto.AccountingPendingDTO;
-import es.commerzbank.ice.embargos.domain.dto.CGPJFiltersDTO;
-import es.commerzbank.ice.embargos.domain.dto.CGPJPetitionDTO;
-import es.commerzbank.ice.embargos.domain.dto.IntegradorRequestStatusDTO;
+import es.commerzbank.ice.embargos.domain.dto.*;
 import es.commerzbank.ice.embargos.service.CGPJService;
 import es.commerzbank.ice.embargos.utils.DownloadReportFile;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
@@ -183,13 +180,13 @@ public class CGPJController {
     }
 
     @PostMapping(value = "/responder")
-    public ResponseEntity<Boolean> responder(Authentication authentication, @RequestBody List<String> peticiones) {
-        ResponseEntity<Boolean> response;
+    public ResponseEntity<CGPJReplyDTO> responder(Authentication authentication, @RequestBody List<String> peticiones) {
+        ResponseEntity<CGPJReplyDTO> response;
 
         try
         {
-            boolean allReplied = service.reply(peticiones, authentication.getName());
-            response = new ResponseEntity<>(allReplied, HttpStatus.OK);
+            CGPJReplyDTO reply = service.reply(peticiones, authentication.getName());
+            response = new ResponseEntity<>(reply, HttpStatus.OK);
         }
         catch (Exception e)
         {
