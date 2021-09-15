@@ -524,7 +524,7 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 		HttpClient httpClient = HttpClients
 				.custom()
 				// ignorar certificado segun ellos es "COBA environment", pero da sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
-				.setSSLSocketFactory(new SSLConnectionSocketFactory(SSLContexts.custom().loadTrustMaterial(null, new TrustSelfSignedStrategy())
+				.setSSLSocketFactory(new SSLConnectionSocketFactory(SSLContexts.custom().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build()))
 				.build();
 		HttpPost request = new HttpPost(uri);
 
