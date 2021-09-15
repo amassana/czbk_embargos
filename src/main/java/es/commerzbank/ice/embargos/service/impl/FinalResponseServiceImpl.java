@@ -32,9 +32,12 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContexts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +51,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.SocketTimeoutException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -512,11 +518,14 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 	}
 
 	private boolean transferEmbargoToTax(ResultadoEmbargo resultadoEmbargo, CuentaResultadoEmbargo cuentaResultadoEmbargo,
-										 String cuentaRecaudacion, String uri, String authorization, String user)
-	{
+										 String cuentaRecaudacion, String uri, String authorization, String user) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
 		boolean result = false;
 
-		HttpClient httpClient = HttpClients.custom().build();
+		HttpClient httpClient = HttpClients
+				.custom()
+				// ignorar certificado segun ellos es "COBA environment", pero da sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+				.setSSLSocketFactory(new SSLConnectionSocketFactory(SSLContexts.custom().loadTrustMaterial(null, new TrustSelfSignedStrategy())
+				.build();
 		HttpPost request = new HttpPost(uri);
 
 		String message = "{\"user\": \"" + user +
