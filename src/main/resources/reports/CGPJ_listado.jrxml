@@ -27,10 +27,10 @@
 ,	solicitudes.DOCUMENTACION
 ,	solicitudes.NOMBRE_COMPLETO_TITULAR
 ,	solicitudes.CODIGO_SOLICITUD
-,	solicitudes.IMPORTE_SOLICITUD
+,	NVL(solicitudes.IMPORTE_SOLICITUD, 0) AS IMPORTE_SOLICITUD
 ,	solicitudes.COD_ESTADO_INTERNO_SOLICITUD
 ,	NVL(solicitudes.DES_ESTADO_INTERNO_SOLICITUD, ' ') AS DES_ESTADO_INTERNO_SOLICITUD
-,	solicitudes.IMPORTE_RESPUESTA
+,	NVL(solicitudes.IMPORTE_RESPUESTA, 0) AS IMPORTE_RESPUESTA
 ,	NVL(solicitudes.COD_ESTADO_RESP, ' ') AS COD_ESTADO_RESP
 ,	NVL(solicitudes.DES_ESTADO_RESP, ' ') AS DES_ESTADO_RESP
 FROM
@@ -416,7 +416,7 @@ WHERE p.COD_PETICION = $P{COD_PETICION}]]>
 				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font fontName="Serif" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format(new java.math.BigDecimal($F{IMPORTE_SOLICITUD}.replaceAll(",",".")))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format(new java.math.BigDecimal($F{IMPORTE_SOLICITUD}.replaceAll("\\.", "").replaceAll(",", ".")))]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="50" y="2" width="80" height="15" uuid="e0040b61-c8b7-4d85-bf91-08c58b635b58">
@@ -450,7 +450,7 @@ WHERE p.COD_PETICION = $P{COD_PETICION}]]>
 				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font fontName="Serif" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format(new java.math.BigDecimal($F{IMPORTE_RESPUESTA}.replaceAll(",",".")))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format(new java.math.BigDecimal($F{IMPORTE_RESPUESTA}.replaceAll("\\.", "").replaceAll(",", ".")))]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="574" y="2" width="158" height="15" uuid="1d6d9ac1-8960-4a5a-91a8-0252d3ddb37a">
