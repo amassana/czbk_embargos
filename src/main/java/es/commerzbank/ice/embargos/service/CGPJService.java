@@ -1,9 +1,6 @@
 package es.commerzbank.ice.embargos.service;
 
-import es.commerzbank.ice.embargos.domain.dto.AccountingPendingDTO;
-import es.commerzbank.ice.embargos.domain.dto.CGPJFiltersDTO;
-import es.commerzbank.ice.embargos.domain.dto.CGPJPetitionDTO;
-import es.commerzbank.ice.embargos.domain.dto.IntegradorRequestStatusDTO;
+import es.commerzbank.ice.embargos.domain.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -23,7 +20,7 @@ public interface CGPJService {
 
     long contabilizar(List<AccountingPendingDTO> pendientes, String username) throws Exception;
 
-    boolean reply(List<String> codPeticion, String username);
+    CGPJReplyDTO reply(List<String> codPeticion, String username);
 
     byte[] informePrecontable(List<AccountingPendingDTO> pendientes)
             throws Exception;

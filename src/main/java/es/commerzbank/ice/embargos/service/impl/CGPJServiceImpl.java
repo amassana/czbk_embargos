@@ -7,10 +7,7 @@ import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
 import es.commerzbank.ice.comun.lib.util.SQLUtils;
 import es.commerzbank.ice.comun.lib.util.jasper.ReportHelper;
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
-import es.commerzbank.ice.embargos.domain.dto.AccountingPendingDTO;
-import es.commerzbank.ice.embargos.domain.dto.CGPJFiltersDTO;
-import es.commerzbank.ice.embargos.domain.dto.CGPJPetitionDTO;
-import es.commerzbank.ice.embargos.domain.dto.IntegradorRequestStatusDTO;
+import es.commerzbank.ice.embargos.domain.dto.*;
 import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.PetitionMapper;
 import es.commerzbank.ice.embargos.repository.*;
@@ -221,8 +218,8 @@ public class CGPJServiceImpl
     }
 
     @Override
-    public boolean reply(List<String> codPeticiones, String username) {
-        boolean allReplied = true;
+    public CGPJReplyDTO reply(List<String> codPeticiones, String username) {
+        CGPJReplyDTO reply = new CGPJReplyDTO();
 
         EstadoIntPeticion estadoInterno = new EstadoIntPeticion();
         estadoInterno.setCodEstadoIntPeticion(CGPJ_ESTADO_INTERNO_SOLICITUD_PENDIENTE_ENVIAR);
@@ -240,11 +237,15 @@ public class CGPJServiceImpl
         estadoTraba.setCodEstado(COD_ESTADO_TRABA_FINALIZADA);
 
         for (String codPeticion : codPeticiones) {
+            CGPJReplyResultDTO currentResponse = new CGPJReplyResultDTO();
+
+            currentResponse.setPetitionCode(codPeticion);
+
             Optional<Peticion> peticionOpt = petitionRepository.findById(codPeticion);
 
             if (!peticionOpt.isPresent()) {
                 logger.error("Peticion de respuesta "+ codPeticion +" no encontrado. skipping...");
-                allReplied = false;
+                currentResponse.setResult("Petición no encontrada");
                 continue;
             }
 
@@ -315,14 +316,16 @@ public class CGPJServiceImpl
                 peticion.setEstadoPrimarioResp(estadoPrimarioResp); // Todos en PROD son 0000
 
                 petitionRepository.save(peticion);
+
+                currentResponse.setResult("Petición respondida");
             }
             catch (Exception e) {
                 logger.error("Excepción procesando la respuesta de la Peticion "+ codPeticion +". Se responden las demás", e);
-                allReplied = false;
+                currentResponse.setResult("Error procesando la respuesta");
             }
         }
 
-        return allReplied;
+        return reply;
     }
 
     private JasperPrint imprimirSEPASolicitud(SolicitudesEjecucion solicitudEjecucion)
