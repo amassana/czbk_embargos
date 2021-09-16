@@ -286,9 +286,9 @@ public class CGPJServiceImpl
                         cuentaTraba.setUsuarioUltModificacion(username);
                         cuentaTraba.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
                         seizedBankAccountRepository.save(cuentaTraba);
-
-                        cuentaTrabaCGPJCopyRepository.cloneCuentaTraba(traba.getCodTraba());
                     }
+                    
+                    cuentaTrabaCGPJCopyRepository.cloneCuentaTraba(traba.getCodTraba());
 
                     traba.setEstadoTraba(estadoTraba);
                     traba.setUsuarioUltModificacion(username);
@@ -343,7 +343,7 @@ public class CGPJServiceImpl
 
     private boolean esInicialYNoEstaRevisadaOContabilizada(Peticion peticion) {
         boolean inicialReplyable = true;
-        
+
 
         for (SolicitudesTraba solicitudTraba : peticion.getSolicitudesTrabas()) {
             Traba traba = solicitudTraba.getTraba();
