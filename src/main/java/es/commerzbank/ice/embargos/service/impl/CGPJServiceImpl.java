@@ -239,6 +239,8 @@ public class CGPJServiceImpl
         for (String codPeticion : codPeticiones) {
             CGPJReplyResultDTO currentResponse = new CGPJReplyResultDTO();
 
+            reply.addResponse(currentResponse);
+
             currentResponse.setPetitionCode(codPeticion);
 
             Optional<Peticion> peticionOpt = petitionRepository.findById(codPeticion);
@@ -287,7 +289,7 @@ public class CGPJServiceImpl
                         cuentaTraba.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
                         seizedBankAccountRepository.save(cuentaTraba);
                     }
-                    
+
                     cuentaTrabaCGPJCopyRepository.cloneCuentaTraba(traba.getCodTraba());
 
                     traba.setEstadoTraba(estadoTraba);

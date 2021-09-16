@@ -1,5 +1,6 @@
 package es.commerzbank.ice.embargos.domain.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CGPJReplyDTO {
@@ -9,7 +10,11 @@ public class CGPJReplyDTO {
         return result;
     }
 
-    public void setResult(List<CGPJReplyResultDTO> result) {
-        this.result = result;
+    public void addResponse(CGPJReplyResultDTO currentResponse) {
+        if (result == null) {
+            result = new ArrayList<>();
+        }
+
+        result.add(currentResponse);
     }
 }
