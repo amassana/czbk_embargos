@@ -249,10 +249,23 @@ public class CGPJServiceImpl
                 continue;
             }
 
+            Peticion peticion = peticionOpt.get();
+
+            if (peticion.getEstadoIntPeticion().getCodEstadoIntPeticion() == CGPJ_ESTADO_INTERNO_INICIAL) {
+                if (esInicialYNoEstaRevisadaOContabilizada(peticion)) {
+                    logger.info("La petición " + codPeticion + " tiene estado Inicial y importes a contabilizar");
+                    currentResponse.setResult("Petición con importes a contabilizar");
+                    continue;
+                }
+            }
+            else if (peticion.getEstadoIntPeticion().getCodEstadoIntPeticion() != CGPJ_ESTADO_INTERNO_PROCESADO) {
+                logger.info("La petición "+ codPeticion +" tiene estado "+ peticion.getEstadoIntPeticion().getCodEstadoIntPeticion() +" y no puede ser respondida");
+                currentResponse.setResult("La Petición no tiene el estado adecuado");
+                continue;
+            }
+
             try {
                 logger.info("Marcando como pendiente de envío la petición "+ codPeticion);
-
-                Peticion peticion = peticionOpt.get();
 
                 for (SolicitudesTraba solicitudTraba : peticion.getSolicitudesTrabas()) {
                     Traba traba = solicitudTraba.getTraba();
@@ -267,14 +280,14 @@ public class CGPJServiceImpl
                             EstadoRespTraba estadoRespTraba = new EstadoRespTraba();
                             estadoRespTraba.setCodEstadoRespTraba(cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion());
                             solicitudTraba.setEstadoRespTraba(estadoRespTraba);
-
-                            cuentaTraba.setEstadoTraba(estadoTraba);
-                            cuentaTraba.setUsuarioUltModificacion(username);
-                            cuentaTraba.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
-                            seizedBankAccountRepository.save(cuentaTraba);
-
-                            cuentaTrabaCGPJCopyRepository.cloneCuentaTraba(traba.getCodTraba());
                         }
+
+                        cuentaTraba.setEstadoTraba(estadoTraba);
+                        cuentaTraba.setUsuarioUltModificacion(username);
+                        cuentaTraba.setFUltimaModificacion(ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss));
+                        seizedBankAccountRepository.save(cuentaTraba);
+
+                        cuentaTrabaCGPJCopyRepository.cloneCuentaTraba(traba.getCodTraba());
                     }
 
                     traba.setEstadoTraba(estadoTraba);
@@ -326,6 +339,25 @@ public class CGPJServiceImpl
         }
 
         return reply;
+    }
+
+    private boolean esInicialYNoEstaRevisadaOContabilizada(Peticion peticion) {
+        boolean inicialReplyable = true;
+        
+
+        for (SolicitudesTraba solicitudTraba : peticion.getSolicitudesTrabas()) {
+            Traba traba = solicitudTraba.getTraba();
+            if (!IND_FLAG_SI.equals(traba.getRevisado())) {
+                inicialReplyable = false;
+                break;
+            }
+            if (traba.getImporteTrabado() != null && BigDecimal.ZERO.compareTo(traba.getImporteTrabado()) != 0) {
+                inicialReplyable = false;
+                break;
+            }
+        }
+
+        return inicialReplyable;
     }
 
     private JasperPrint imprimirSEPASolicitud(SolicitudesEjecucion solicitudEjecucion)
