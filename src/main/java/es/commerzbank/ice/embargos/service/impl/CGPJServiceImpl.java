@@ -254,7 +254,7 @@ public class CGPJServiceImpl
             Peticion peticion = peticionOpt.get();
 
             if (peticion.getEstadoIntPeticion().getCodEstadoIntPeticion() == CGPJ_ESTADO_INTERNO_INICIAL) {
-                if (noSePuedeResponder(peticion)) {
+                if (esInicialYNoEstaRevisadaOContabilizada(peticion)) {
                     logger.info("La petición " + codPeticion + " tiene estado Inicial y importes a contabilizar");
                     currentResponse.setResult("Petición con importes a contabilizar");
                     continue;
@@ -343,7 +343,7 @@ public class CGPJServiceImpl
         return reply;
     }
 
-    private boolean noSePuedeResponder(Peticion peticion) {
+    private boolean esInicialYNoEstaRevisadaOContabilizada(Peticion peticion) {
         boolean inicialReplyable = true;
 
 
