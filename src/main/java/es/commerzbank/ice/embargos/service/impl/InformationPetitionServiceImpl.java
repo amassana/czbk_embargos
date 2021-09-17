@@ -291,8 +291,9 @@ public class InformationPetitionServiceImpl implements InformationPetitionServic
 			}
 		}
 
+		// protección por si no se hubiera inicializado antes
 		if (maxOrden == Integer.MIN_VALUE) {
-			maxOrden = 1;
+			maxOrden = 0;
 		}
 
 		for (PeticionInformacionCuenta peticionInformacionCuenta : workingCopy) {

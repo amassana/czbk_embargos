@@ -342,6 +342,12 @@ public class Cuaderno63PetitionServiceImpl implements Cuaderno63PetitionService{
 				maxOrden = Integer.max(orden, maxOrden);
 			}
 		}
+
+		// protección por si no se hubiera inicializado antes
+		if (maxOrden == Integer.MIN_VALUE) {
+			maxOrden = 0;
+		}
+
 		// Cuentas sin preasignar
 		for(AccountDTO accountDTO : accountWorkingCopy) {
 			maxOrden = maxOrden + 1;
