@@ -42,6 +42,7 @@ INNER JOIN
 WHERE
 	cf.cod_control_fichero = $P{COD_FILE_CONTROL}
 ORDER BY
+	e.nif,
 	lt.cod_levantamiento]]>
 	</queryString>
 	<field name="TIPO_ENTIDAD" class="java.lang.String">

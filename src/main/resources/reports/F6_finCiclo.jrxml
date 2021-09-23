@@ -41,6 +41,7 @@ WHERE
 	and (ct.origen_emb = 'Y' or ct.agregar_a_traba = 'Y')
 --	and (ct.importe is not null)
 ORDER BY
+	e.nif,
 	e.numero_embargo]]>
 	</queryString>
 	<field name="DES_ENTIDAD" class="java.lang.String">

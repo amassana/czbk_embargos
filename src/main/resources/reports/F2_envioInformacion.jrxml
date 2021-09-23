@@ -36,7 +36,10 @@ FROM
 	INNER JOIN CONTROL_FICHERO cf_peticion ON peti.COD_CONTROL_FICHERO = cf_peticion.COD_CONTROL_FICHERO
 	INNER JOIN ENTIDADES_COMUNICADORAS ec ON cf_peticion.COD_ENTIDAD_PRESENTADORA = ec.COD_ENTIDAD_PRESENTADORA
 WHERE
-	cf_peticion.COD_CONTROL_FICHERO IN (SELECT cf_respuesta.cod_control_fichero_origen FROM CONTROL_FICHERO cf_respuesta WHERE cf_respuesta.cod_control_fichero = $P{cod_control_fichero})]]>
+	cf_peticion.COD_CONTROL_FICHERO IN (SELECT cf_respuesta.cod_control_fichero_origen FROM CONTROL_FICHERO cf_respuesta WHERE cf_respuesta.cod_control_fichero = $P{cod_control_fichero})
+ORDER BY
+	peti.NIF
+]]>
 	</queryString>
 	<field name="NIF" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="NIF"/>

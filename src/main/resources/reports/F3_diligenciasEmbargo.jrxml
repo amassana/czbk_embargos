@@ -30,6 +30,7 @@ INNER JOIN CUENTA_EMBARGO ce ON ce.COD_EMBARGO = e.COD_EMBARGO
 WHERE
     cf.cod_control_fichero = $P{COD_FILE_CONTROL}
 ORDER BY
+	e.nif,
     e.cod_embargo]]>
 	</queryString>
 	<field name="DES_ENTIDAD" class="java.lang.String">

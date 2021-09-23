@@ -42,6 +42,7 @@ WHERE
 	cf.cod_control_fichero = (select cod_control_fichero_origen from control_fichero where cod_control_fichero = $P{COD_FILE_CONTROL})
 	and (ct.origen_emb = 'Y' or ct.agregar_a_traba = 'Y')
 ORDER BY
+	e.nif,
 	t.cod_traba,
 	ct.COD_CUENTA_TRABA]]>
 	</queryString>
