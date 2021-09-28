@@ -26,7 +26,7 @@ INNER JOIN embargo e ON e.cod_embargo = t.cod_embargo
 INNER JOIN CUENTA_TRABA ct ON ct.cod_traba = t.cod_traba
 WHERE
 $P!{CUENTA_TRABA_EXPRESSION}
-) UNION
+) UNION ALL
 (SELECT 'LEVANTAMIENTO' AS tipo, e.nif, e.nombre, cl.iban, cl.importe, cl.cambio, cl.cod_Divisa
 FROM
 levantamiento_Traba l
