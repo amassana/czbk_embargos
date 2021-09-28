@@ -42,9 +42,10 @@ WHERE
 	cf.cod_control_fichero = (select cod_control_fichero_origen from control_fichero where cod_control_fichero = $P{COD_FILE_CONTROL})
 	and (ct.origen_emb = 'Y' or ct.agregar_a_traba = 'Y')
 ORDER BY
-	e.nif,
-	t.cod_traba,
-	ct.COD_CUENTA_TRABA]]>
+	e.nif
+,	ct.iban
+,	t.cod_traba
+,	ct.COD_CUENTA_TRABA]]>
 	</queryString>
 	<field name="TIPO_ENTIDAD" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="TIPO_ENTIDAD"/>
