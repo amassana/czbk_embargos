@@ -320,7 +320,7 @@ ORDER BY
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{IBAN}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{NUMERO_EMBARGO}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="591" y="0" width="70" height="15" uuid="fc6b225a-2865-45aa-8787-0bcea0703728">
