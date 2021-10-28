@@ -255,8 +255,8 @@ public class CGPJServiceImpl
 
             if (peticion.getEstadoIntPeticion().getCodEstadoIntPeticion() == CGPJ_ESTADO_INTERNO_INICIAL) {
                 if (esInicialYNoEstaRevisadaOContabilizada(peticion)) {
-                    logger.info("La petición " + codPeticion + " tiene estado Inicial y importes a contabilizar");
-                    currentResponse.setResult("Petición con importes a contabilizar");
+                    logger.info("La petición " + codPeticion + " tiene estado Inicial y importes a revisar o contabilizar");
+                    currentResponse.setResult("Petición con importes a revisar o contabilizar");
                     continue;
                 }
             }
