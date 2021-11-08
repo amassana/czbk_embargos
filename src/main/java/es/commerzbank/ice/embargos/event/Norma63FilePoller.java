@@ -4,6 +4,7 @@ import es.commerzbank.ice.comun.lib.file.exchange.FileProcessor;
 import es.commerzbank.ice.comun.lib.file.exchange.FolderPoller;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
 import es.commerzbank.ice.comun.lib.util.FileUtils;
+import es.commerzbank.ice.comun.lib.util.ICEException;
 import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import es.commerzbank.ice.comun.lib.util.YAMLUtil;
 import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
@@ -128,6 +129,7 @@ public class Norma63FilePoller
                     cuaderno63LiftingService.tratarFicheroLevantamientos(processingFile, originalName, processedFile);
                     break;
                 default:
+                    throw new ICEException("Tipo de fichero de norma 63 no reconocido: "+ processingFile.getName());
             }
 
             LOG.info(pollerName +": "+ originalName +" tratado con éxito");

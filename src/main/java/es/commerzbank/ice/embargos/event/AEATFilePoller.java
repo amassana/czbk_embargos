@@ -192,6 +192,7 @@ public class AEATFilePoller
                     //aeatSeizedResultService.tratarFicheroErrores(processingFile, originalName, processedFile);
                     //break;
                 default:
+                    throw new ICEException("Tipo de fichero de la aeat no reconocido: "+ processingFile.getName());
             }
 
             LOG.info(pollerName +": "+ originalName +" tratado con éxito");
