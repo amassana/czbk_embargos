@@ -25,7 +25,7 @@ trabas t
 INNER JOIN embargo e ON e.cod_embargo = t.cod_embargo
 INNER JOIN CUENTA_TRABA ct ON ct.cod_traba = t.cod_traba
 WHERE
-$P!{CUENTA_TRABA_EXPRESSION}
+($P!{CUENTA_TRABA_EXPRESSION})
 ) UNION ALL
 (SELECT 'LEVANTAMIENTO' AS tipo, e.nif, e.nombre, cl.iban, cl.importe, cl.cambio, cl.cod_Divisa
 FROM
@@ -34,7 +34,7 @@ INNER JOIN trabas t ON t.cod_traba = l.cod_traba
 INNER JOIN embargo e ON e.COD_EMBARGO = t.COD_EMBARGO
 INNER JOIN cuenta_Levantamiento cl ON cl.COD_LEVANTAMIENTO = l.COD_LEVANTAMIENTO
 WHERE
-$P!{CUENTA_LEVANTAMIENTO_EXPRESSION})]]>
+($P!{CUENTA_LEVANTAMIENTO_EXPRESSION}))]]>
 	</queryString>
 	<field name="NIF" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="NIF"/>
