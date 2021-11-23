@@ -122,17 +122,17 @@ AND ct.importe > 0]]>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="180" splitType="Stretch">
+		<band height="210" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
-				<reportElement x="10" y="57" width="444" height="19" uuid="6cfe3568-dc92-4742-9fa0-e2e617286e6e"/>
+				<reportElement x="10" y="57" width="444" height="48" uuid="6cfe3568-dc92-4742-9fa0-e2e617286e6e"/>
 				<textElement>
 					<font fontName="Serif" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Siguiendo instrucciones de "+ ("S".equals($F{IND_CGPJ}) ? $F{NOMBRE_SOLICITANTE} : $F{ACRONIMO_ENTIDAD}) +" por medio de envío telemático nos ordena el EMBARGO siguiente:"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="10" y="160" width="418" height="20" uuid="a9a6ff8a-192b-4947-b170-597918b7f8b1"/>
+				<reportElement x="10" y="190" width="418" height="20" uuid="a9a6ff8a-192b-4947-b170-597918b7f8b1"/>
 				<textElement>
 					<font fontName="Serif" size="10"/>
 				</textElement>
@@ -149,7 +149,7 @@ AND ct.importe > 0]]>
 				<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="15" y="121" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="d26142ec-7eea-4f2f-b9b7-3f5bd6742d98">
+				<reportElement x="15" y="151" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="d26142ec-7eea-4f2f-b9b7-3f5bd6742d98">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -158,7 +158,7 @@ AND ct.importe > 0]]>
 				<text><![CDATA[NOMBRE:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="95" y="136" width="211" height="15" uuid="a43a3362-78dc-4b9f-884a-2a9f606fff29">
+				<reportElement x="95" y="166" width="211" height="15" uuid="a43a3362-78dc-4b9f-884a-2a9f606fff29">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box leftPadding="5"/>
@@ -168,7 +168,7 @@ AND ct.importe > 0]]>
 				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTE_EMBARGO}) +" EUROS"]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="95" y="106" width="211" height="15" uuid="59e3a110-ce29-4c78-9cff-9883351360c7">
+				<reportElement x="95" y="136" width="211" height="15" uuid="59e3a110-ce29-4c78-9cff-9883351360c7">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box leftPadding="5"/>
@@ -178,7 +178,7 @@ AND ct.importe > 0]]>
 				<textFieldExpression><![CDATA[$F{NIF}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="15" y="106" width="80" height="15" uuid="495213d9-1268-4020-93da-a8a63f8553dc">
+				<reportElement x="15" y="136" width="80" height="15" uuid="495213d9-1268-4020-93da-a8a63f8553dc">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -187,7 +187,7 @@ AND ct.importe > 0]]>
 				<text><![CDATA[NIF/CIF:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="95" y="91" width="300" height="15" uuid="e6962d28-1fc2-4203-bfd4-b26df4566d64">
+				<reportElement x="95" y="121" width="300" height="15" uuid="e6962d28-1fc2-4203-bfd4-b26df4566d64">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box leftPadding="5"/>
@@ -197,7 +197,7 @@ AND ct.importe > 0]]>
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy", new Locale("es")).format(new java.text.SimpleDateFormat("yyyyMMdd").parse($F{FECHA}))]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="95" y="76" width="297" height="15" uuid="66356d28-e745-4f5b-8066-fcdbbc7fb39a">
+				<reportElement x="95" y="106" width="297" height="15" uuid="66356d28-e745-4f5b-8066-fcdbbc7fb39a">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box leftPadding="5"/>
@@ -207,7 +207,7 @@ AND ct.importe > 0]]>
 				<textFieldExpression><![CDATA[$F{NUMERO_EMBARGO}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="15" y="91" width="80" height="15" uuid="c15c4e50-1d91-4785-9d6c-80e85fca9910">
+				<reportElement x="15" y="121" width="80" height="15" uuid="c15c4e50-1d91-4785-9d6c-80e85fca9910">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -216,7 +216,7 @@ AND ct.importe > 0]]>
 				<text><![CDATA[FECHA TRABA:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="15" y="76" width="80" height="15" uuid="c80b861d-0201-4c45-9f07-9122f121006a">
+				<reportElement x="15" y="106" width="80" height="15" uuid="c80b861d-0201-4c45-9f07-9122f121006a">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -225,7 +225,7 @@ AND ct.importe > 0]]>
 				<text><![CDATA[DILIGENCIA:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="15" y="136" width="80" height="15" uuid="a443b086-7a99-443e-bc26-df55757dbefd">
+				<reportElement x="15" y="166" width="80" height="15" uuid="a443b086-7a99-443e-bc26-df55757dbefd">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -385,10 +385,10 @@ AND ct.importe > 0]]>
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="260" splitType="Stretch">
+		<band height="193" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement x="13" y="147" width="124" height="25" uuid="3f2d065a-c352-46e3-ae34-7bd9d262f0c8"/>
+				<reportElement x="13" y="80" width="124" height="25" uuid="3f2d065a-c352-46e3-ae34-7bd9d262f0c8"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="9" isBold="true"/>
 				</textElement>
@@ -396,7 +396,7 @@ AND ct.importe > 0]]>
 COMMERZBANK AG]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="13" y="172" width="140" height="25" uuid="a59845b8-286f-4fde-bb7b-c3cbb315b1ec"/>
+				<reportElement x="13" y="105" width="140" height="25" uuid="a59845b8-286f-4fde-bb7b-c3cbb315b1ec"/>
 				<textElement>
 					<font fontName="Serif" size="9" isBold="false"/>
 				</textElement>
@@ -404,14 +404,14 @@ COMMERZBANK AG]]></text>
 Sucursal en España]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="13" y="197" width="143" height="19" uuid="25757d12-7c03-46f1-966d-8a7641580b65"/>
+				<reportElement x="13" y="130" width="143" height="19" uuid="25757d12-7c03-46f1-966d-8a7641580b65"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Serif" size="9" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Esta notificación no precisa firma.]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="11" y="10" width="418" height="79" uuid="a95711b9-bfc6-4735-a7c8-b5cd6e9c8439"/>
+				<reportElement x="9" y="1" width="418" height="79" uuid="a95711b9-bfc6-4735-a7c8-b5cd6e9c8439"/>
 				<textElement>
 					<font fontName="Serif" size="10"/>
 				</textElement>
@@ -419,7 +419,7 @@ Sucursal en España]]></text>
 "\n\nAprovechamos la ocasión para saludarles muy atentamente."]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="15" y="220" width="358" height="40" uuid="13b850d0-0d1d-4d98-a59c-28d9468d26bc"/>
+				<reportElement x="15" y="153" width="358" height="40" uuid="13b850d0-0d1d-4d98-a59c-28d9468d26bc"/>
 				<textElement verticalAlignment="Bottom">
 					<font size="5"/>
 				</textElement>
