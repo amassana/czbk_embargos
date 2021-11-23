@@ -3,7 +3,9 @@ package es.commerzbank.ice.embargos.service.impl;
 import com.itextpdf.kernel.PdfException;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import es.commerzbank.ice.comun.lib.domain.dto.Location;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.service.LocationService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.util.SQLUtils;
 import es.commerzbank.ice.comun.lib.util.jasper.ReportHelper;
@@ -38,6 +40,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 
+import static es.commerzbank.ice.comun.lib.util.ValueConstants.MADRID_PREFIJO_OFICINA;
 import static es.commerzbank.ice.embargos.utils.EmbargosConstants.*;
 
 @Service
@@ -113,6 +116,9 @@ public class SeizureServiceImpl
 
 	@Autowired
 	private AccountingService accountingService;
+
+	@Autowired
+	private LocationService locationService;
 	
 	@Override
 	public List<SeizureDTO> getSeizureListByCodeFileControl(Long codeFileControl) {
@@ -605,7 +611,9 @@ public class SeizureServiceImpl
 	@Override
 	public byte[] reportSeizureLetter(Long idSeizure) throws Exception {
 
-		JasperPrint fillReport = reportSeizureLetterInternal(idSeizure);
+		Location location = locationService.getLocationByOfficePrefix(MADRID_PREFIJO_OFICINA);
+
+		JasperPrint fillReport = reportSeizureLetterInternal(idSeizure, location);
 
 		if (fillReport == null)
 			return null;
@@ -618,7 +626,7 @@ public class SeizureServiceImpl
 		return JasperExportManager.exportReportToPdf(fillReport);
 	}
 
-	private JasperPrint reportSeizureLetterInternal(Long idSeizure) throws Exception {
+	private JasperPrint reportSeizureLetterInternal(Long idSeizure, Location location) throws Exception {
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 
 		Optional<Embargo> optEmbargo = seizureRepository.findById(idSeizure);
@@ -667,6 +675,7 @@ public class SeizureServiceImpl
 			}
 
 			parameters.put("CODIGO", traba.getCodTraba());
+			parameters.put("LOCALIDAD", location.getLocation());
 			//parameters.put("ENTIDAD", entidadesComunicadora.getDesEntidad());
 			parameters.put("logo_image", logoRes.getFile().toString());
 
@@ -756,6 +765,8 @@ public class SeizureServiceImpl
 	public void generateSeizureLetters(ControlFichero controlFichero) throws Exception {
 		List<Embargo> seizures = seizureRepository.findAllByControlFichero(controlFichero);
 
+		Location location = locationService.getLocationByOfficePrefix(MADRID_PREFIJO_OFICINA);
+
 		if (seizures != null && seizures.size() > 0)
 		{
 			File temporaryFile = reportHelper.getTemporaryFile("cartas-embargo-"+ controlFichero.getCodControlFichero(), ReportHelper.PDF_EXTENSION);
@@ -765,7 +776,7 @@ public class SeizureServiceImpl
 
 			for (Embargo embargo : seizures)
 			{
-				JasperPrint filledReport = reportSeizureLetterInternal(embargo.getCodEmbargo());
+				JasperPrint filledReport = reportSeizureLetterInternal(embargo.getCodEmbargo(), location);
 
 				if (filledReport != null) {
 					reportHelper.dumpReport(outDoc, filledReport, pageCount);
