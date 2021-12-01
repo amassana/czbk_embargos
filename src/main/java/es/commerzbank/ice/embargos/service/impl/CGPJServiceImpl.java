@@ -369,7 +369,7 @@ public class CGPJServiceImpl
                 break;
             }
             // 2- O BIEN LA TRABA ESTÁ CONTABILIZADA - ok
-            if (traba.getEstadoTraba().getCodEstado() != EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA) {
+            if (traba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA) {
                 continue;
             }
             // 3- O BIEN ESTÁ PENDIENTE Y TODAS SUS CUENTAS TIENEN UN MOTIVO DEL RECHAZO distinto de 00 - sin actuación 200x trabas
