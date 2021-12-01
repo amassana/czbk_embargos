@@ -374,6 +374,10 @@ public class CGPJServiceImpl
             }
             // 3- O BIEN ESTÁ PENDIENTE Y TODAS SUS CUENTAS TIENEN UN MOTIVO DEL RECHAZO distinto de 00 - sin actuación 200x trabas
             for (CuentaTraba cuenta : traba.getCuentaTrabas()) {
+                if (cuenta.getCuentaTrabaActuacion() == null) {
+                    inicialReplyable = false;
+                    break;
+                }
                 if (
                         CGPJ_MOTIVO_TRABA_SIN_ACTUACION.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
                         ||
