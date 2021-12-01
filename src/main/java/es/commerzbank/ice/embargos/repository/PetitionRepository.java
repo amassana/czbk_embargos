@@ -10,6 +10,9 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
+import static es.commerzbank.ice.embargos.utils.EmbargosConstants.LEVANTAMIENTO_CGPJ_ESTADO_INT_PDTE_CONTA;
+import static es.commerzbank.ice.embargos.utils.EmbargosConstants.LEVANTAMIENTO_CGPJ_ESTADO_RESP_LEV;
+
 public interface PetitionRepository
 	extends JpaRepository<Peticion, String>, JpaSpecificationExecutor<Peticion>
 {
@@ -57,6 +60,8 @@ WHERE ct.COD_ESTADO = 1
 					"INNER JOIN l.cuentaLevantamientos cl " +
 					"WHERE " +
 					"cl.estadoLevantamiento.codEstado = 1" +
-					" AND cl.importe > 0")
+					" AND cl.importe > 0" +
+					" AND sl.estadoIntLevantamiento = "+ LEVANTAMIENTO_CGPJ_ESTADO_INT_PDTE_CONTA +
+					" AND sl.estadoRespLevantamiento = "+ LEVANTAMIENTO_CGPJ_ESTADO_RESP_LEV)
 	List<AccountingPendingDTO> findLevantamientosAccountingPending();
 }

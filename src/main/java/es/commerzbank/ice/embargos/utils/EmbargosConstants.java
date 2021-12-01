@@ -364,4 +364,7 @@ public class EmbargosConstants {
 	public static final String CGPJ_MOTIVO_TRABA_SIN_ACTUACION = "00";
 	public static final String CGPJ_MOTIVO_TRABA_TOTAL = "2000";
 	public static final String CGPJ_MOTIVO_TRABA_PARCIAL = "2001";
+
+    public static final int LEVANTAMIENTO_CGPJ_ESTADO_INT_PDTE_CONTA = 2;
+	public static final int LEVANTAMIENTO_CGPJ_ESTADO_RESP_LEV = 2003;
 }
