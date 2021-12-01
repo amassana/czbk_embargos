@@ -3,9 +3,11 @@ package es.commerzbank.ice.embargos.service.impl;
 import com.itextpdf.kernel.PdfException;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import es.commerzbank.ice.comun.lib.domain.dto.Location;
 import es.commerzbank.ice.comun.lib.domain.entity.Tarea;
 import es.commerzbank.ice.comun.lib.service.AccountingNoteService;
 import es.commerzbank.ice.comun.lib.service.GeneralParametersService;
+import es.commerzbank.ice.comun.lib.service.LocationService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
 import es.commerzbank.ice.comun.lib.util.SQLUtils;
@@ -36,6 +38,8 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.*;
+
+import static es.commerzbank.ice.comun.lib.util.ValueConstants.MADRID_PREFIJO_OFICINA;
 
 @Service
 @Transactional(transactionManager = "transactionManager")
@@ -122,6 +126,9 @@ public class LiftingServiceImpl
 
 	@Autowired
 	private SeizureService seizureService;
+
+	@Autowired
+	private LocationService locationService;
 
 	@Override
 	public List<LiftingDTO> getAllByControlFichero(ControlFichero controlFichero) {
@@ -409,7 +416,9 @@ public class LiftingServiceImpl
 
 	@Override
 	public byte[] generateLiftingLetter(Long idLifting) throws Exception {
-		JasperPrint fillReport = reportLiftingLetterInternal(idLifting);
+		Location location = locationService.getLocationByOfficePrefix(MADRID_PREFIJO_OFICINA);
+
+		JasperPrint fillReport = reportLiftingLetterInternal(idLifting, location);
 
 		if (fillReport == null)
 			return null;
@@ -422,7 +431,7 @@ public class LiftingServiceImpl
 		return JasperExportManager.exportReportToPdf(fillReport);
 	}
 
-	private JasperPrint reportLiftingLetterInternal(Long idLifting) throws Exception {
+	private JasperPrint reportLiftingLetterInternal(Long idLifting, Location location) throws Exception {
 		HashMap<String, Object> parameters = new HashMap<>();
 
 		Optional<LevantamientoTraba> optLevantamiento = liftingRepository.findById(idLifting);
@@ -452,6 +461,7 @@ public class LiftingServiceImpl
 
 			parameters.put("CODIGO", idLifting);
 			parameters.put("ENTIDAD", entidadesComunicadora.getDesEntidad());
+			parameters.put("LOCALIDAD", location.getLocation());
 			parameters.put("logo_image", logoRes.getFile().toString());
 
 			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
@@ -470,6 +480,8 @@ public class LiftingServiceImpl
 	public void generateLiftingLetters(ControlFichero controlFichero) throws Exception {
 		List<LevantamientoTraba> liftings = liftingRepository.findAllByControlFichero(controlFichero);
 
+		Location location = locationService.getLocationByOfficePrefix(MADRID_PREFIJO_OFICINA);
+
 		if (liftings != null && liftings.size() > 0)
 		{
 			File temporaryFile = reportHelper.getTemporaryFile("cartas-levantamiento-"+ controlFichero.getCodControlFichero(), ReportHelper.PDF_EXTENSION);
@@ -479,7 +491,7 @@ public class LiftingServiceImpl
 
 			for (LevantamientoTraba levantamiento : liftings)
 			{
-				JasperPrint filledReport = reportLiftingLetterInternal(levantamiento.getCodLevantamiento());
+				JasperPrint filledReport = reportLiftingLetterInternal(levantamiento.getCodLevantamiento(), location);
 
 				if (filledReport != null) {
 					reportHelper.dumpReport(outDoc, filledReport, pageCount);
