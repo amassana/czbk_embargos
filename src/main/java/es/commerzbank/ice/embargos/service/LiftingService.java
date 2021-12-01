@@ -31,7 +31,7 @@ public interface LiftingService {
 
 	void generateLiftingLetters(ControlFichero pendiente) throws Exception;
 
-	boolean updateAccountLiftingStatus(Long idAccount, AccountStatusLiftingDTO accountStatusLifting,
+	void updateAccountLiftingStatus(Long idAccount, AccountStatusLiftingDTO accountStatusLifting,
 			String userModif) throws Exception;
 
     byte[] previewContable(Long codeFileControl) throws Exception;

@@ -294,52 +294,49 @@ public class LiftingServiceImpl
 	}
 
 	@Override
-	public boolean updateAccountLiftingStatus(Long idAccount, AccountStatusLiftingDTO accountStatusLifting,
+	public void updateAccountLiftingStatus(Long idAccount, AccountStatusLiftingDTO accountStatusLifting,
 			String userModif) throws Exception {
 		
 		//Optional<LevantamientoTraba> levantamientoOpt = liftingRepository.findById(codeLifting);
 		Optional<CuentaLevantamiento> cuentaLevantamientoOpt = liftingBankAccountRepository.findById(idAccount);
 
 		if (!cuentaLevantamientoOpt.isPresent()) {
-			return false;
+			throw new Exception("Cuenta Levantamiento "+ idAccount +" no encontrada");
 		}
 		
-		if (accountStatusLifting != null && accountStatusLifting.getCode() != null) {
-
-			//LevantamientoTraba levantamiento = levantamientoOpt.get();
-			CuentaLevantamiento cuentaLevantamiento = cuentaLevantamientoOpt.get();
-
-			// Actualizar estado:
-			EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
-			estadoLevantamiento.setCodEstado(Long.valueOf(accountStatusLifting.getCode()));
-			cuentaLevantamiento.setEstadoLevantamiento(estadoLevantamiento);
-
-			// Usuario y fecha ultima modificacion de la Traba:
-			BigDecimal fechaActualBigDec = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
-			cuentaLevantamiento.setUsuarioUltModificacion(userModif);
-			cuentaLevantamiento.setFUltimaModificacion(fechaActualBigDec);
-
-			liftingBankAccountRepository.save(cuentaLevantamiento);
-
-			// Si todas las cuentas levantamiento del levantamiento están contabilizadas, avanzar el estado del levantamiento
-			LevantamientoTraba levantamientoTraba = cuentaLevantamiento.getLevantamientoTraba();
-			boolean isAllCuentaLevantamientoContabilizados = true;
-			for(CuentaLevantamiento currentCuentaLevantamiento : levantamientoTraba.getCuentaLevantamientos()) {
-				if (currentCuentaLevantamiento.getEstadoLevantamiento().getCodEstado() != EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_CONTABILIZADO) {
-					isAllCuentaLevantamientoContabilizados = false;
-					break;
-				}
-			}
-
-			if (isAllCuentaLevantamientoContabilizados) {
-				Log.info("Actualizando el levantamiento " + levantamientoTraba.getCodLevantamiento() + " a estado 'Contabilizado'");
-				changeStatus(levantamientoTraba.getCodLevantamiento(), EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_CONTABILIZADO, userModif);
-			}
-		} else {
-			return false;
+		if (accountStatusLifting == null || accountStatusLifting.getCode() != null) {
+			throw new Exception ("accountStatusLifting o accountStatusLifting.getCode() null");
 		}
 
-		return true;
+		//LevantamientoTraba levantamiento = levantamientoOpt.get();
+		CuentaLevantamiento cuentaLevantamiento = cuentaLevantamientoOpt.get();
+
+		// Actualizar estado:
+		EstadoLevantamiento estadoLevantamiento = new EstadoLevantamiento();
+		estadoLevantamiento.setCodEstado(Long.valueOf(accountStatusLifting.getCode()));
+		cuentaLevantamiento.setEstadoLevantamiento(estadoLevantamiento);
+
+		// Usuario y fecha ultima modificacion de la Traba:
+		BigDecimal fechaActualBigDec = ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMddHHmmss);
+		cuentaLevantamiento.setUsuarioUltModificacion(userModif);
+		cuentaLevantamiento.setFUltimaModificacion(fechaActualBigDec);
+
+		liftingBankAccountRepository.save(cuentaLevantamiento);
+
+		// Si todas las cuentas levantamiento del levantamiento están contabilizadas, avanzar el estado del levantamiento
+		LevantamientoTraba levantamientoTraba = cuentaLevantamiento.getLevantamientoTraba();
+		boolean isAllCuentaLevantamientoContabilizados = true;
+		for(CuentaLevantamiento currentCuentaLevantamiento : levantamientoTraba.getCuentaLevantamientos()) {
+			if (currentCuentaLevantamiento.getEstadoLevantamiento().getCodEstado() != EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_CONTABILIZADO) {
+				isAllCuentaLevantamientoContabilizados = false;
+				break;
+			}
+		}
+
+		if (isAllCuentaLevantamientoContabilizados) {
+			Log.info("Actualizando el levantamiento " + levantamientoTraba.getCodLevantamiento() + " a estado 'Contabilizado'");
+			changeStatus(levantamientoTraba.getCodLevantamiento(), EmbargosConstants.COD_ESTADO_LEVANTAMIENTO_CONTABILIZADO, userModif);
+		}
 	}
 
 	@Override

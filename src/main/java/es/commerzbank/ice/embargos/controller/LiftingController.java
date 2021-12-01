@@ -225,19 +225,14 @@ public class LiftingController {
 	{
 		logger.info("LiftingControlle - Actualizando levantamiento "+ codeFileControl +"-"+ codeLifting +" cambiando de estado la cuenta "+ idAccount);
 		ResponseEntity<String> response = null;
-		boolean result = false;
 
 		try {
 
 			String userModif = authentication.getName();
 
-			result = liftingService.updateAccountLiftingStatus(idAccount, accountStatusLifting, userModif);
+			liftingService.updateAccountLiftingStatus(idAccount, accountStatusLifting, userModif);
 
-			if (result) {
-				response = new ResponseEntity<>(HttpStatus.OK);
-			} else {
-				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			}
+			response = new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (Exception e) {
 
