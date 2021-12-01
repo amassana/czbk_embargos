@@ -252,7 +252,7 @@ WHERE
 				<textElement verticalAlignment="Middle">
 					<font fontName="Serif" size="14" isBold="true" isItalic="false" isUnderline="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["NOTIFICACIÓN DE " $P{TIPO}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["NOTIFICACIÓN DE "+ $P{TIPO}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="10" y="-15" width="251" height="21" uuid="cd0b4edc-f551-4c25-9ed4-cc4dbc29e6d7"/>
