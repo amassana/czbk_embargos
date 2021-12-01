@@ -462,6 +462,7 @@ public class LiftingServiceImpl
 			parameters.put("CODIGO", idLifting);
 			parameters.put("ENTIDAD", entidadesComunicadora.getDesEntidad());
 			parameters.put("LOCALIDAD", location.getLocation());
+			parameters.put("TIPO", "LEVANTAMIENTO");
 			parameters.put("logo_image", logoRes.getFile().toString());
 
 			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));

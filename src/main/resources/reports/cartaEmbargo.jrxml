@@ -15,6 +15,7 @@
 	<parameter name="CODIGO" class="java.lang.Long"/>
 	<parameter name="ENTIDAD" class="java.lang.String"/>
 	<parameter name="LOCALIDAD" class="java.lang.String"/>
+	<parameter name="TIPO" class="java.lang.String"/>
 	<parameter name="logo_image" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="nombre_titular" class="java.lang.String"/>
 	<parameter name="addres_titular" class="java.lang.String"/>
@@ -108,7 +109,19 @@ AND ct.importe > 0]]>
 				<imageExpression><![CDATA[$P{logo_image}]]></imageExpression>
 			</image>
 			<textField isBlankWhenNull="true">
-				<reportElement x="243" y="45" width="211" height="51" uuid="786f8ff1-78c6-4e85-bcd1-c453a4b52386">
+				<reportElement x="243" y="45" width="211" height="25" uuid="786f8ff1-78c6-4e85-bcd1-c453a4b52386">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<box leftPadding="5">
+					<pen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font fontName="Serif" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nombre_titular} +"\n"+ $P{addres_titular}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="243" y="68" width="211" height="25" uuid="8d1dc871-c1da-454b-874d-d9938a1b7435">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<box leftPadding="5">
@@ -117,7 +130,7 @@ AND ct.importe > 0]]>
 				<textElement verticalAlignment="Top">
 					<font fontName="Serif" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{nombre_titular} +"\n"+ $P{addres_titular} +"\n"+ $P{codigo_postal_titular} + " - " +  $P{ciudad_titular}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{codigo_postal_titular} + " - " +  $P{ciudad_titular}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -129,14 +142,14 @@ AND ct.importe > 0]]>
 				<textElement>
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Siguiendo instrucciones de "+ ("S".equals($F{IND_CGPJ}) ? $F{NOMBRE_SOLICITANTE} : $F{ACRONIMO_ENTIDAD}) +" por medio de envío telemático nos ordena el EMBARGO siguiente:"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Siguiendo instrucciones de "+ ("S".equals($F{IND_CGPJ}) ? $F{NOMBRE_SOLICITANTE} : $F{ACRONIMO_ENTIDAD}) +" por medio de envío telemático nos ordena el "+ $P{TIPO} +" siguiente:"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="10" y="190" width="418" height="20" uuid="a9a6ff8a-192b-4947-b170-597918b7f8b1"/>
 				<textElement>
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Por lo que procedemos a ADEUDARLE en cuenta los importes siguientes:"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Por lo que procedemos a "+ ("EMBARGO".equals($P{TIPO}) ? "ADEUDARLE" : "ABONARLE") +" en cuenta los importes siguientes:"]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="95" y="151" width="362" height="15" isPrintWhenDetailOverflows="true" uuid="ece1cb28-9956-46aa-a72e-e916cef95679">
@@ -236,9 +249,9 @@ AND ct.importe > 0]]>
 			<textField>
 				<reportElement x="10" y="21" width="384" height="42" uuid="6ea7cb10-75f2-4519-99ec-1c44c605f406"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Serif" size="16" isBold="true" isItalic="false" isUnderline="false"/>
+					<font fontName="Serif" size="14" isBold="true" isItalic="false" isUnderline="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["NOTIFICACIÓN DE EMBARGO"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["NOTIFICACIÓN DE " $P{TIPO}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="10" y="-15" width="251" height="21" uuid="cd0b4edc-f551-4c25-9ed4-cc4dbc29e6d7"/>

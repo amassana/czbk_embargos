@@ -678,6 +678,7 @@ public class SeizureServiceImpl
 			parameters.put("LOCALIDAD", location.getLocation());
 			//parameters.put("ENTIDAD", entidadesComunicadora.getDesEntidad());
 			parameters.put("logo_image", logoRes.getFile().toString());
+			parameters.put("TIPO", "EMBARGO");
 
 			parameters.put(JRParameter.REPORT_LOCALE, new Locale("es", "ES"));
 
