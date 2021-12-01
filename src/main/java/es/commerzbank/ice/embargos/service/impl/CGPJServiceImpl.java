@@ -350,8 +350,10 @@ public class CGPJServiceImpl
         // REVISION DE LOS LEVANTAMIENTOS
         for (SolicitudesLevantamiento solicitudLevantamiento : peticion.getSolicitudesLevantamientos()) {
             LevantamientoTraba levantamiento = solicitudLevantamiento.getLevantamientoTraba();
-            if (levantamiento.getEstadoLevantamiento().getCodEstado() != COD_ESTADO_LEVANTAMIENTO_CONTABILIZADO)
+            if (levantamiento.getEstadoLevantamiento().getCodEstado() != COD_ESTADO_LEVANTAMIENTO_CONTABILIZADO) {
                 inicialReplyable = false;
+                break;
+            }
         }
 
         if (!inicialReplyable) {
@@ -380,6 +382,7 @@ public class CGPJServiceImpl
                         CGPJ_MOTIVO_TRABA_PARCIAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
                 ) {
                     inicialReplyable = false;
+                    break;
                 }
             }
         }
