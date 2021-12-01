@@ -360,4 +360,8 @@ public class EmbargosConstants {
 	public static final Long CGPJ_ESTADO_INTERNO_LEVANTAMIENTO_PROCESADO = 3L;
 
 	public static final String PARAMETRO_CGPJ_EMAIL_PENDIENTE_HORAS = "embargos.cgpj.email.pendienteHoras";
+
+	public static final String CGPJ_MOTIVO_TRABA_SIN_ACTUACION = "00";
+	public static final String CGPJ_MOTIVO_TRABA_TOTAL = "2000";
+	public static final String CGPJ_MOTIVO_TRABA_PARCIAL = "2001";
 }

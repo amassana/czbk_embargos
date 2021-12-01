@@ -14,6 +14,7 @@ import es.commerzbank.ice.embargos.repository.*;
 import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.CGPJService;
 import es.commerzbank.ice.embargos.utils.CGPJUtils;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -254,9 +255,9 @@ public class CGPJServiceImpl
             Peticion peticion = peticionOpt.get();
 
             if (peticion.getEstadoIntPeticion().getCodEstadoIntPeticion() == CGPJ_ESTADO_INTERNO_INICIAL) {
-                if (esInicialYNoEstaRevisadaOContabilizada(peticion)) {
-                    logger.info("La petición " + codPeticion + " tiene estado Inicial y importes a revisar o contabilizar");
-                    currentResponse.setResult("Petición con importes a revisar o contabilizar");
+                if (!puedeResponderInicial(peticion)) {
+                    logger.info("La petición " + codPeticion + " tiene estado Inicial y trabas o levantamientos pendientes de revisión o contabilización");
+                    currentResponse.setResult("Petición con trabas o levantamientos pendientes de revisión o contabilización");
                     continue;
                 }
             }
@@ -343,23 +344,47 @@ public class CGPJServiceImpl
         return reply;
     }
 
-    private boolean esInicialYNoEstaRevisadaOContabilizada(Peticion peticion) {
+    private boolean puedeResponderInicial(Peticion peticion) {
         boolean inicialReplyable = true;
 
+        // REVISION DE LOS LEVANTAMIENTOS
+        for (SolicitudesLevantamiento solicitudLevantamiento : peticion.getSolicitudesLevantamientos()) {
+            LevantamientoTraba levantamiento = solicitudLevantamiento.getLevantamientoTraba();
+            if (levantamiento.getEstadoLevantamiento().getCodEstado() != COD_ESTADO_LEVANTAMIENTO_CONTABILIZADO)
+                inicialReplyable = false;
+        }
 
+        if (!inicialReplyable) {
+            return inicialReplyable;
+        }
+
+        // REVISION DE LAS TRABAS
         for (SolicitudesTraba solicitudTraba : peticion.getSolicitudesTrabas()) {
             Traba traba = solicitudTraba.getTraba();
+            // 1- TODOS DEBEN ESTAR REVISADOS
             if (!IND_FLAG_SI.equals(traba.getRevisado())) {
                 inicialReplyable = false;
                 break;
             }
-            if (traba.getImporteTrabado() != null && BigDecimal.ZERO.compareTo(traba.getImporteTrabado()) != 0) {
-                inicialReplyable = false;
-                break;
+            // 2- O BIEN LA TRABA ESTÁ CONTABILIZADA - ok
+            if (traba.getEstadoTraba().getCodEstado() != EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA) {
+                continue;
+            }
+            // 3- O BIEN ESTÁ PENDIENTE Y TODAS SUS CUENTAS TIENEN UN MOTIVO DEL RECHAZO distinto de 00 - sin actuación 200x trabas
+            for (CuentaTraba cuenta : traba.getCuentaTrabas()) {
+                if (
+                        CGPJ_MOTIVO_TRABA_SIN_ACTUACION.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
+                        ||
+                        CGPJ_MOTIVO_TRABA_TOTAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
+                        ||
+                        CGPJ_MOTIVO_TRABA_PARCIAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
+                ) {
+                    inicialReplyable = false;
+                }
             }
         }
 
-        return !inicialReplyable;
+        return inicialReplyable;
     }
 
     private JasperPrint imprimirSEPASolicitud(SolicitudesEjecucion solicitudEjecucion)
