@@ -223,7 +223,7 @@ public class LiftingController {
 													  @PathVariable("idAccount") Long idAccount,
 													  @RequestBody AccountStatusLiftingDTO accountStatusLifting)
 	{
-		logger.info("SeizureController - Actualizando levantamiento "+ codeFileControl +"-"+ codeLifting +" cambiando de estado la cuenta "+ idAccount);
+		logger.info("LiftingControlle - Actualizando levantamiento "+ codeFileControl +"-"+ codeLifting +" cambiando de estado la cuenta "+ idAccount);
 		ResponseEntity<String> response = null;
 		boolean result = false;
 
@@ -279,7 +279,7 @@ public class LiftingController {
     public ResponseEntity<FileControlDTO> sendAccounting(Authentication authentication,
 														 @PathVariable("codeFileControl") Long codeFileControl)
 	{
-    	logger.info("SeizureController - se contabilizan los levantamientos de "+ codeFileControl);
+    	logger.info("LiftingController - se contabilizan los levantamientos de "+ codeFileControl);
 
     	ResponseEntity<FileControlDTO> response = null;
 		boolean result = false;
