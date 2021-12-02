@@ -302,7 +302,7 @@ WHERE
 				<text><![CDATA[IMPORTE:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="44" y="-5" width="70" height="15" uuid="9ec3b839-45c8-479b-ac74-34bddf22948e">
+				<reportElement x="48" y="-5" width="70" height="15" uuid="9ec3b839-45c8-479b-ac74-34bddf22948e">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -366,7 +366,7 @@ WHERE
 				<text><![CDATA[EN DIVISA:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="44" y="10" width="71" height="15" uuid="0acc90ca-69f7-461c-9bc5-98bfabc509c2">
+				<reportElement x="48" y="10" width="71" height="15" uuid="0acc90ca-69f7-461c-9bc5-98bfabc509c2">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[!"EUR".equals($F{DIVISA})]]></printWhenExpression>
 				</reportElement>
@@ -377,7 +377,7 @@ WHERE
 				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTE}.multiply($F{CAMBIO_DIVISA}))]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="104" y="10" width="29" height="15" uuid="47ee6231-c6a5-43ca-b63e-f86beddad4df">
+				<reportElement x="110" y="10" width="29" height="15" uuid="47ee6231-c6a5-43ca-b63e-f86beddad4df">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[!"EUR".equals($F{DIVISA})]]></printWhenExpression>
 				</reportElement>
@@ -388,7 +388,7 @@ WHERE
 				<textFieldExpression><![CDATA[$F{DIVISA}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="105" y="-5" width="29" height="15" uuid="809ba7ad-f842-4e25-ae8e-e2a606ad80df">
+				<reportElement x="110" y="-5" width="29" height="15" uuid="809ba7ad-f842-4e25-ae8e-e2a606ad80df">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box leftPadding="5"/>
