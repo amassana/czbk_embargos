@@ -197,7 +197,7 @@ public class LiftingController {
 		
 			String userModif = authentication.getName();
 		
-			//result = liftingService.changeStatus(codeLifting, status, userModif);
+			result = liftingService.changeStatus(codeLifting, status, userModif);
 		
 			if (result) {
 				response = new ResponseEntity<>(HttpStatus.OK);
@@ -230,7 +230,7 @@ public class LiftingController {
 
 			String userModif = authentication.getName();
 
-			//liftingService.updateAccountLiftingStatus(idAccount, accountStatusLifting, userModif);
+			liftingService.updateAccountLiftingStatus(idAccount, accountStatusLifting, userModif);
 
 			response = new ResponseEntity<>(HttpStatus.OK);
 
