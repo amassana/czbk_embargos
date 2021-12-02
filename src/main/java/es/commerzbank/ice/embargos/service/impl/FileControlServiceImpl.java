@@ -310,8 +310,10 @@ public class FileControlServiceImpl
 		else if ("LEVANTAMIENTOS".equals(tipoDatos))
 			controlFichero.setCodSubestadoLevantamiento(codFileControlStatus);
 
-		// caso contabilizado, se mira si se puede pasar a procesado
-		if ((!EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneTrabas()) ||
+		// caso contabilizado, se mira si se puede pasar de inicial a procesado
+		if (controlFichero.getPeticiones().get(0).getEstadoIntPeticion().getCodEstadoIntPeticion() == EmbargosConstants.CGPJ_ESTADO_INTERNO_INICIAL
+			&&
+			(!EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneTrabas()) ||
 			(EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneTrabas()) && controlFichero.getCodSubestadoTraba() == EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_TO_SEND))
 			&&
 			(!EmbargosConstants.IND_FLAG_SI.equals(controlFichero.getIndTieneLevantamientos()) ||
