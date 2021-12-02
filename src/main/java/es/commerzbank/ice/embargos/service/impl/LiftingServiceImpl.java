@@ -304,7 +304,7 @@ public class LiftingServiceImpl
 			throw new Exception("Cuenta Levantamiento "+ idAccount +" no encontrada");
 		}
 		
-		if (accountStatusLifting == null || accountStatusLifting.getCode() != null) {
+		if (accountStatusLifting == null || accountStatusLifting.getCode() == null) {
 			throw new Exception ("accountStatusLifting o accountStatusLifting.getCode() null");
 		}
 
