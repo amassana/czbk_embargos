@@ -153,7 +153,7 @@ ORDER BY
 		<band height="26" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement x="14" y="0" width="70" height="21" uuid="ebe44475-36cd-44e5-9849-2d6b5498c8a5">
+				<reportElement x="0" y="0" width="84" height="21" uuid="ebe44475-36cd-44e5-9849-2d6b5498c8a5">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="121150ee-091f-4793-8f41-85d198c3e6c0"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -250,7 +250,7 @@ ORDER BY
 		<band height="18" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField isBlankWhenNull="true">
-				<reportElement x="14" y="0" width="70" height="15" uuid="cae159c1-1a60-4be7-9aae-8d2d82d859b9">
+				<reportElement x="0" y="0" width="84" height="15" uuid="cae159c1-1a60-4be7-9aae-8d2d82d859b9">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="642a7aec-f048-48fa-99fc-fbe2cb965521"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
