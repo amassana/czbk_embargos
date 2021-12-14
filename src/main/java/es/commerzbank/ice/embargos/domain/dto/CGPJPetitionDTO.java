@@ -4,6 +4,7 @@ public class CGPJPetitionDTO {
 	private String petitionCode;
 	private IntegradorRequestStatusDTO status;
 	private FileControlDTO fileControl;
+	private Boolean allSeizuresReviewed;
 
 	public FileControlDTO getFileControl() {
 		return fileControl;
@@ -28,4 +29,12 @@ public class CGPJPetitionDTO {
 	public void setStatus(IntegradorRequestStatusDTO status) {
 		this.status = status;
 	}
+
+    public void setAllSeizuresReviewed(Boolean allSeizuresReviewed) {
+        this.allSeizuresReviewed = allSeizuresReviewed;
+    }
+
+    public Boolean getAllSeizuresReviewed() {
+        return allSeizuresReviewed;
+    }
 }

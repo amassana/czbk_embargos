@@ -103,6 +103,21 @@ public class CGPJServiceImpl
         {
             CGPJPetitionDTO CGPJPetitionDTO = petitionMapper.toCGPJPetitionDTO(peticion);
 
+            if (peticion.getSolicitudesTrabas().size() > 0) {
+                boolean allReviewed = true;
+                
+                for (SolicitudesTraba solicitudTraba : peticion.getSolicitudesTrabas()) {
+                    Traba traba = solicitudTraba.getTraba();
+
+                    if (IND_FLAG_NO.equals(traba.getRevisado())) {
+                        allReviewed = false;
+                        break;
+                    }
+                }
+
+                CGPJPetitionDTO.setAllSeizuresReviewed(allReviewed);
+            }
+
             list.add(CGPJPetitionDTO);
         }
 
