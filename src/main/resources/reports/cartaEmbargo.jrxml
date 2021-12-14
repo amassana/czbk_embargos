@@ -146,7 +146,7 @@ AND ct.importe > 0]]>
 				<textElement>
 					<font fontName="Serif" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Siguiendo instrucciones de "+ ("S".equals($F{IND_CGPJ}) ? $F{NOMBRE_SOLICITANTE} +"(" +$F{IDENTIFICADOR_SOLICITANTE} +")" : $F{ACRONIMO_ENTIDAD}) +" por medio de envío telemático nos ordena el "+ $P{TIPO} +" siguiente:"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Siguiendo instrucciones de "+ ("S".equals($F{IND_CGPJ}) ? $F{NOMBRE_SOLICITANTE} +" (" +$F{IDENTIFICADOR_SOLICITANTE} +")" : $F{ACRONIMO_ENTIDAD}) +" por medio de envío telemático nos ordena el "+ $P{TIPO} +" siguiente:"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="10" y="190" width="418" height="20" uuid="a9a6ff8a-192b-4947-b170-597918b7f8b1"/>
