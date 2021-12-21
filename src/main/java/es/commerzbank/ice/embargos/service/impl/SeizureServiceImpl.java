@@ -370,18 +370,6 @@ public class SeizureServiceImpl
 			embargo.setUsuarioUltModificacion(userModif);
 			embargo.setFUltimaModificacion(fechaActualBigDec);
 
-			boolean isAllTrabasContabilizadas = true;
-			for (Embargo emb : embargo.getControlFichero().getEmbargos()) {
-				Traba currentTraba = emb.getTrabas().get(0);
-				if (currentTraba.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_CONTABILIZADA ||
-						currentTraba.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_FINALIZADA) {
-					; // está contabilizada o finalizada. ok
-				}
-				else {
-					isAllTrabasContabilizadas = false;
-				}
-			}
-
 			//Dependiendo del tipo de fichero:
 			String fileFormat = EmbargosUtils.determineFileFormatByTipoFichero(embargo.getControlFichero().getTipoFichero().getCodTipoFichero());
 
@@ -390,18 +378,22 @@ public class SeizureServiceImpl
 			boolean isCuaderno63 = fileFormat!=null && fileFormat.equals(EmbargosConstants.FILE_FORMAT_NORMA63);
 
 			Long estado = null;
+			boolean isTrabasCompletadas = false;
 
 			if (isCGPJ) {
 				estado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_TO_SEND;
+				isTrabasCompletadas = trabasCompletadas_CGPJ(embargo.getControlFichero());
 			}
 			else if(isAEAT) {
 				estado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_TO_SEND;
+				isTrabasCompletadas = trabasCompletadas_AEAT_N63(embargo.getControlFichero());
 			}
 			else if (isCuaderno63) {
 				estado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_TO_SEND;
+				isTrabasCompletadas = trabasCompletadas_AEAT_N63(embargo.getControlFichero());
 			}
 
-			if (isAllTrabasContabilizadas) {
+			if (isTrabasCompletadas) {
 				fileControlService.updateFileControlStatus(embargo.getControlFichero().getCodControlFichero(), estado,
 						userModif, "TRABAS");
 			}
@@ -413,6 +405,74 @@ public class SeizureServiceImpl
 		}
 
 		return true;
+	}
+
+	private boolean trabasCompletadas_AEAT_N63(ControlFichero cf) {
+		boolean isAllTrabasContabilizadas = true;
+
+		for (Embargo emb : cf.getEmbargos()) {
+			Traba currentTraba = emb.getTrabas().get(0);
+			if (currentTraba.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_CONTABILIZADA ||
+					currentTraba.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_FINALIZADA) {
+				; // está contabilizada o finalizada. ok
+			}
+			else {
+				isAllTrabasContabilizadas = false;
+			}
+		}
+
+		return isAllTrabasContabilizadas;
+	}
+
+	private boolean trabasCompletadas_CGPJ(ControlFichero cf) {
+		/*
+
+		boolean isCompleted = true;
+		//cf.getPeticiones()
+		for (SolicitudesTraba solicitudTraba : peticion.getSolicitudesTrabas()) {
+			Traba traba = solicitudTraba.getTraba();
+			// 1- TODOS DEBEN ESTAR REVISADOS
+			if (!IND_FLAG_SI.equals(traba.getRevisado())) {
+				isCompleted = false;
+				break;
+			}
+			// 2- O BIEN LA TRABA ESTÁ CONTABILIZADA - ok
+			if (traba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA) {
+				continue;
+			}
+			// 3- O BIEN ESTÁ PENDIENTE Y TODAS SUS CUENTAS TIENEN UN MOTIVO DEL RECHAZO distinto de 00 - sin actuación 200x trabas
+			for (CuentaTraba cuenta : traba.getCuentaTrabas()) {
+				if (cuenta.getCuentaTrabaActuacion() == null) {
+					isCompleted = false;
+					break;
+				}
+				if (
+						CGPJ_MOTIVO_TRABA_SIN_ACTUACION.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
+								||
+								CGPJ_MOTIVO_TRABA_TOTAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
+								||
+								CGPJ_MOTIVO_TRABA_PARCIAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
+				) {
+					isCompleted = false;
+					break;
+				}
+			}
+		}*/
+
+		/*
+		for (Embargo emb : cf.getEmbargos()) {
+			Traba currentTraba = emb.getTrabas().get(0);
+			if (currentTraba.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_CONTABILIZADA ||
+					currentTraba.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_FINALIZADA) {
+				; // está contabilizada o finalizada. ok
+			}
+			else {
+				isAllTrabasContabilizadas = false;
+			}
+		}
+*/
+		//return isCompleted;
+		return trabasCompletadas_AEAT_N63(cf);
 	}
 	
 	@Override
