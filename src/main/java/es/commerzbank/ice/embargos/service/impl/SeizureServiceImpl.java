@@ -436,7 +436,7 @@ public class SeizureServiceImpl
 			Traba traba = solicitudTraba.getTraba();
 
 			// 1- SI NO ESTÁ REVISADO, LA TRABA NO ESTÁ COMPLETADA
-			if (!IND_FLAG_SI.equals(traba.getRevisado())) {
+			if (!IND_FLAG_YES.equals(traba.getRevisado())) {
 				isCompleted = false;
 				break;
 			}

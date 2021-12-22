@@ -270,7 +270,7 @@ public class CGPJServiceImpl
 
             if (peticion.getEstadoIntPeticion().getCodEstadoIntPeticion() != CGPJ_ESTADO_INTERNO_PROCESADO) {
                 logger.info("La petición "+ codPeticion +" tiene estado "+ peticion.getEstadoIntPeticion().getCodEstadoIntPeticion() +" y no puede ser respondida");
-                currentResponse.setResult("La Petición no tiene el estado adecuado");
+                currentResponse.setResult("La Petición debe estar Procesada para poder enviar la respuesta");
                 continue;
             }
 
