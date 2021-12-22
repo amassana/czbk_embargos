@@ -338,7 +338,7 @@ public class FileControlServiceImpl
 		// Flag envío carta a NO (indicando pendiente de envío) cuando:
 		// es embargo (aeat o norma63) y el nuevo estado es pendiente de envío
 		// o levantamiento (aeat o norma63) y el nuevo estado es procesado
-		// TODO pendiente CPGJ
+		// CGPJ realiza el envío al Procesar una petición.
 
 		if (
 				// para trabas se hace al tramitar, para evitar que retrocesos y recontabilziaciones reenvíen las cartas.
