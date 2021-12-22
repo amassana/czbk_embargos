@@ -436,7 +436,7 @@ public class SeizureServiceImpl
 			Traba traba = solicitudTraba.getTraba();
 
 			// 1- SI NO ESTÁ REVISADO, LA TRABA NO ESTÁ COMPLETADA
-			if (!IND_FLAG_YES.equals(traba.getRevisado())) {
+			if (!IND_FLAG_SI.equals(traba.getRevisado())) {
 				isCompleted = false;
 				break;
 			}
@@ -452,7 +452,7 @@ public class SeizureServiceImpl
 			boolean tieneAlgunaCuentaRechazadaConMotivo = false;
 			boolean tieneCuentasPendientesDeContabilizacion = false;
 			for (CuentaTraba cuenta : traba.getCuentaTrabas()) {
-				if (IND_FLAG_SI.equals(cuenta.getAgregarATraba())) {
+				if (IND_FLAG_YES.equals(cuenta.getAgregarATraba())) {
 					tieneAlgunaCuentaRevisada = true;
 					if (CGPJ_MOTIVO_TRABA_TOTAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
 						||
