@@ -331,6 +331,7 @@ public class CGPJServiceImpl
                 }
 
                 ControlFichero controlFicheroPeticion = peticion.getControlFichero();
+                controlFicheroPeticion.setIndProcesado(IND_FLAG_SI);
                 controlFicheroPeticion.setIndEnvioCarta(IND_FLAG_NO);
                 controlFicheroPeticion.setFechaGeneracionRespuesta(es.commerzbank.ice.embargos.utils.ICEDateUtils.currentDateTime());
                 fileControlRepository.save(controlFicheroPeticion);
