@@ -14,6 +14,7 @@ import es.commerzbank.ice.embargos.repository.*;
 import es.commerzbank.ice.embargos.service.AccountingService;
 import es.commerzbank.ice.embargos.service.CGPJService;
 import es.commerzbank.ice.embargos.utils.CGPJUtils;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -274,6 +275,12 @@ public class CGPJServiceImpl
                 continue;
             }
 
+            if (tieneCasosSinRevisar(peticion)) {
+                logger.info("La petición "+ codPeticion +" tiene casos sin revisar");
+                currentResponse.setResult("La Petición tiene casos sin revisar");
+                continue;
+            }
+
             try {
                 logger.info("Marcando como pendiente de envío la petición "+ codPeticion);
 
@@ -350,6 +357,22 @@ public class CGPJServiceImpl
         }
 
         return reply;
+    }
+
+    private boolean tieneCasosSinRevisar(Peticion peticion) {
+        boolean todosCasosRevisados = true;
+
+        // REVISION DE LAS TRABAS
+        for (SolicitudesTraba solicitudTraba : peticion.getSolicitudesTrabas()) {
+            Traba traba = solicitudTraba.getTraba();
+            // 1- TODOS DEBEN ESTAR REVISADOS
+            if (!IND_FLAG_SI.equals(traba.getRevisado())) {
+                todosCasosRevisados = false;
+                break;
+            }
+        }
+
+        return todosCasosRevisados;
     }
 
     private JasperPrint imprimirSEPASolicitud(SolicitudesEjecucion solicitudEjecucion)
