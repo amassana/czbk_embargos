@@ -14,6 +14,7 @@ import es.commerzbank.ice.comun.lib.util.SQLUtils;
 import es.commerzbank.ice.comun.lib.util.jasper.ReportHelper;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.datawarehouse.service.AccountService;
+import es.commerzbank.ice.datawarehouse.util.DWHUtils;
 import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
 import es.commerzbank.ice.embargos.domain.dto.*;
 import es.commerzbank.ice.embargos.domain.entity.*;
@@ -449,11 +450,8 @@ public class LiftingServiceImpl
 
 			CustomerDTO customer = accountService.getCustomerByNIF(levantamiento.getTraba().getEmbargo().getNif());
 
-			if (customer != null) { // se permite un preview aunque no haya la dirección
-				parameters.put("nombre_titular", customer.getName());
-				parameters.put("addres_titular", customer.getAddress());
-				parameters.put("codigo_postal_titular", customer.getPostalCode());
-				parameters.put("ciudad_titular", customer.getCity());
+			if (customer != null) {
+				parameters.put("DESTINATARIO", DWHUtils.getDestinatario(customer));
 			}
 
 			parameters.put("CODIGO", idLifting);

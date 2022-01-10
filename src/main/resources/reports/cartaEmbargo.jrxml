@@ -17,10 +17,7 @@
 	<parameter name="LOCALIDAD" class="java.lang.String"/>
 	<parameter name="TIPO" class="java.lang.String"/>
 	<parameter name="logo_image" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="nombre_titular" class="java.lang.String"/>
-	<parameter name="addres_titular" class="java.lang.String"/>
-	<parameter name="codigo_postal_titular" class="java.lang.String"/>
-	<parameter name="ciudad_titular" class="java.lang.String"/>
+	<parameter name="DESTINATARIO" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[SELECT
 	ct.cuenta
@@ -113,19 +110,7 @@ AND ct.importe > 0]]>
 				<imageExpression><![CDATA[$P{logo_image}]]></imageExpression>
 			</image>
 			<textField isBlankWhenNull="true">
-				<reportElement x="243" y="45" width="211" height="25" uuid="786f8ff1-78c6-4e85-bcd1-c453a4b52386">
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<box leftPadding="5">
-					<pen lineWidth="0.0"/>
-				</box>
-				<textElement verticalAlignment="Top">
-					<font fontName="Serif" size="9" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{nombre_titular} +"\n"+ $P{addres_titular}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="243" y="68" width="211" height="25" uuid="8d1dc871-c1da-454b-874d-d9938a1b7435">
+				<reportElement x="243" y="45" width="211" height="51" uuid="786f8ff1-78c6-4e85-bcd1-c453a4b52386">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<box leftPadding="5">
@@ -134,7 +119,7 @@ AND ct.importe > 0]]>
 				<textElement verticalAlignment="Top">
 					<font fontName="Serif" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{codigo_postal_titular} + " - " +  $P{ciudad_titular}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{DESTINATARIO}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
