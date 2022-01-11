@@ -49,7 +49,7 @@ public abstract class  SeizedBankAccountMapper {
 		if (seizedBankAccountDTO.getAmount()!=null) {
 			cuentaTraba.setImporte(seizedBankAccountDTO.getAmount());
 		}		
-		if (seizedBankAccountDTO.getSeizureAction()!=null && seizedBankAccountDTO.getSeizureAction().getCode()!=null) {
+		if (seizedBankAccountDTO.getSeizureAction()!=null) {
 			CuentaTrabaActuacion cuentaTrabaActuacion = new CuentaTrabaActuacion();
 			cuentaTrabaActuacion.setCodActuacion(seizedBankAccountDTO.getSeizureAction().getCode());
 			cuentaTraba.setCuentaTrabaActuacion(cuentaTrabaActuacion);
