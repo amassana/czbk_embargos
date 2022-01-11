@@ -48,11 +48,18 @@ public abstract class  SeizedBankAccountMapper {
 			
 		if (seizedBankAccountDTO.getAmount()!=null) {
 			cuentaTraba.setImporte(seizedBankAccountDTO.getAmount());
-		}		
-		if (seizedBankAccountDTO.getSeizureAction()!=null) {
-			CuentaTrabaActuacion cuentaTrabaActuacion = new CuentaTrabaActuacion();
-			cuentaTrabaActuacion.setCodActuacion(seizedBankAccountDTO.getSeizureAction().getCode());
-			cuentaTraba.setCuentaTrabaActuacion(cuentaTrabaActuacion);
+		}
+		if (seizedBankAccountDTO.getSeizureAction()==null) {
+			cuentaTraba.setCuentaTrabaActuacion(null);
+		}
+		else {
+			if (seizedBankAccountDTO.getSeizureAction().getCode() == null)
+				cuentaTraba.setCuentaTrabaActuacion(null);
+			else {
+				CuentaTrabaActuacion cuentaTrabaActuacion = new CuentaTrabaActuacion();
+				cuentaTrabaActuacion.setCodActuacion(seizedBankAccountDTO.getSeizureAction().getCode());
+				cuentaTraba.setCuentaTrabaActuacion(cuentaTrabaActuacion);
+			}
 		}
 		if (seizedBankAccountDTO.getFxRate()!=null) {
 			cuentaTraba.setCambio(seizedBankAccountDTO.getFxRate());
