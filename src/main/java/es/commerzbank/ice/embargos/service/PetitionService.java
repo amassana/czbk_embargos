@@ -10,4 +10,8 @@ public interface PetitionService {
 	public byte[] generateF2PettitionResponse(Integer codeFileControl, String oficina) throws Exception;
 
 	void changeStatus(Peticion peticion, Long cgpjEstadoInternoProcesado);
+
+	void synchPetitionStatus(Peticion peticion);
+
+	void revertStatusToInitial(Peticion peticion);
 }

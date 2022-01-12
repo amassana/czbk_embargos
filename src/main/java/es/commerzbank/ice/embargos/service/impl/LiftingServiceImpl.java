@@ -25,6 +25,7 @@ import es.commerzbank.ice.embargos.service.*;
 import es.commerzbank.ice.embargos.service.files.AEATManualLiftingService;
 import es.commerzbank.ice.embargos.service.files.Cuaderno63ManualLiftingService;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
+import es.commerzbank.ice.embargos.utils.EmbargosUtils;
 import es.commerzbank.ice.embargos.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.*;
 import org.jfree.util.Log;
@@ -131,6 +132,9 @@ public class LiftingServiceImpl
 
 	@Autowired
 	private LocationService locationService;
+
+	@Autowired
+	private PetitionService petitionService;
 
 	@Override
 	public List<LiftingDTO> getAllByControlFichero(ControlFichero controlFichero) {
@@ -282,8 +286,16 @@ public class LiftingServiceImpl
 
 					Long estado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_LEVANTAMIENTO_ACCOUNTED;
 
-					fileControlService.updateFileControlStatus(levantamiento.getControlFichero().getCodControlFichero(), estado,
+					fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(), estado,
 							userName, "LEVANTAMIENTOS");
+
+					//Dependiendo del tipo de fichero:
+					String fileFormat = EmbargosUtils.determineFileFormatByTipoFichero(controlFichero.getTipoFichero().getCodTipoFichero());
+
+					boolean isCGPJ = fileFormat!=null && fileFormat.equals(EmbargosConstants.FILE_FORMAT_CGPJ);
+					if (isCGPJ) {
+						petitionService.synchPetitionStatus(controlFichero.getPeticiones().get(0));
+					}
 
 					taskService.completeTaskByExternalId("LEV_"+ levantamiento.getControlFichero().getCodControlFichero(), userName);
 				}

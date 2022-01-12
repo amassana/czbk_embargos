@@ -17,10 +17,7 @@ import es.commerzbank.ice.embargos.domain.dto.*;
 import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.*;
 import es.commerzbank.ice.embargos.repository.*;
-import es.commerzbank.ice.embargos.service.AccountingService;
-import es.commerzbank.ice.embargos.service.FileControlService;
-import es.commerzbank.ice.embargos.service.FinalResponseGenerationService;
-import es.commerzbank.ice.embargos.service.SeizureService;
+import es.commerzbank.ice.embargos.service.*;
 import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.EmbargosUtils;
 import es.commerzbank.ice.embargos.utils.ICEDateUtils;
@@ -120,6 +117,9 @@ public class SeizureServiceImpl
 
 	@Autowired
 	private LocationService locationService;
+
+	@Autowired
+	private PetitionService petitionService;
 	
 	@Override
 	public List<SeizureDTO> getSeizureListByCodeFileControl(Long codeFileControl) {
@@ -294,7 +294,9 @@ public class SeizureServiceImpl
 		
 		seizedRepository.save(traba);
 		
-		//Estado de la cuenta traba:
+		/*
+			Grabar la propia actualización
+		 */
 		EstadoTraba estadoTraba = new EstadoTraba();
 		estadoTraba.setCodEstado(codEstado);
 
@@ -307,25 +309,44 @@ public class SeizureServiceImpl
 								
 		seizedBankAccountRepository.save(cuentaTraba);
 
-		boolean isAllCuentaTrabasContabilizadas = true;
-		for(CuentaTraba cuentaTr : traba.getCuentaTrabas()) {
-			if (cuentaTr.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_CONTABILIZADA ||
-					cuentaTr.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_FINALIZADA) {
-				; // está contabilizada o finalizada. ok
-			}
-			else {
-				isAllCuentaTrabasContabilizadas = false;
-			}
-		}
+		/*
+			Si todas las cuentas del caso están completadas, avanzar el estado del caso.
+		 */
+		String fileFormat = EmbargosUtils.determineFileFormatByTipoFichero(embargo.getControlFichero().getTipoFichero().getCodTipoFichero());
 
-		if (isAllCuentaTrabasContabilizadas) {
-			logger.info("Todas las cuentas de la traba " + traba.getCodTraba() + " se han tratado. Cambiando el estado a contabilizada");
+		boolean isCGPJ = fileFormat!=null && fileFormat.equals(EmbargosConstants.FILE_FORMAT_CGPJ);
+		boolean isAEAT = fileFormat!=null && fileFormat.equals(EmbargosConstants.FILE_FORMAT_AEAT);
+		boolean isCuaderno63 = fileFormat!=null && fileFormat.equals(EmbargosConstants.FILE_FORMAT_NORMA63);
+
+		if (isCGPJ) {
+			boolean isTrabasCompletadas = isTrabaCompletada_CGPJ(traba);
 
 			SeizureStatusDTO seizureStatusDTO = new SeizureStatusDTO();
-			seizureStatusDTO.setCode(String.valueOf(COD_ESTADO_TRABA_CONTABILIZADA));
+
+			if (!isTrabasCompletadas)
+				seizureStatusDTO.setCode(String.valueOf(COD_ESTADO_TRABA_PENDIENTE));
+			else {
+				if (algunaCuentaTieneTraba(traba))
+					seizureStatusDTO.setCode(String.valueOf(COD_ESTADO_TRABA_CONTABILIZADA));
+				else
+					seizureStatusDTO.setCode(String.valueOf(COD_ESTADO_TRABA_FINALIZADA));
+			}
 
 			this.updateSeizureStatus(traba.getCodTraba(), seizureStatusDTO, userModif);
 		}
+		else if(isAEAT || isCuaderno63) {
+			boolean isTrabasCompletadas = isTrabaCompletada_AEAT_N63(embargo.getTrabas().get(0));
+
+			if (isTrabasCompletadas) {
+				logger.info("Todas las cuentas de la traba " + traba.getCodTraba() + " se han tratado. Cambiando el estado a contabilizada");
+
+				SeizureStatusDTO seizureStatusDTO = new SeizureStatusDTO();
+				seizureStatusDTO.setCode(String.valueOf(COD_ESTADO_TRABA_CONTABILIZADA));
+
+				this.updateSeizureStatus(traba.getCodTraba(), seizureStatusDTO, userModif);
+			}
+		}
+
 		return true;
 	}
 	/*
@@ -383,20 +404,24 @@ public class SeizureServiceImpl
 
 			if (isCGPJ) {
 				estado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_TO_SEND;
-				isTrabasCompletadas = trabasCompletadas_CGPJ(embargo.getControlFichero());
+				isTrabasCompletadas = isAllTrabasCompletadas_CGPJ(embargo.getControlFichero());
 			}
 			else if(isAEAT) {
 				estado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_AEAT_PENDING_TO_SEND;
-				isTrabasCompletadas = trabasCompletadas_AEAT_N63(embargo.getControlFichero());
+				isTrabasCompletadas = isAllTrabasCompletadas_AEAT_N63(embargo.getControlFichero());
 			}
 			else if (isCuaderno63) {
 				estado = EmbargosConstants.COD_ESTADO_CTRLFICHERO_DILIGENCIAS_EMBARGO_NORMA63_PENDING_TO_SEND;
-				isTrabasCompletadas = trabasCompletadas_AEAT_N63(embargo.getControlFichero());
+				isTrabasCompletadas = isAllTrabasCompletadas_AEAT_N63(embargo.getControlFichero());
 			}
 
 			if (isTrabasCompletadas) {
 				fileControlService.updateFileControlStatus(embargo.getControlFichero().getCodControlFichero(), estado,
 						userModif, "TRABAS");
+
+				if (isCGPJ) {
+					petitionService.synchPetitionStatus(embargo.getControlFichero().getPeticiones().get(0));
+				}
 			}
 
 			seizedRepository.save(traba);
@@ -408,24 +433,35 @@ public class SeizureServiceImpl
 		return true;
 	}
 
-	private boolean trabasCompletadas_AEAT_N63(ControlFichero cf) {
-		boolean isAllTrabasContabilizadas = true;
+	private boolean isAllTrabasCompletadas_AEAT_N63(ControlFichero cf) {
+		boolean isAllTrabasCompletadas = true;
 
 		for (Embargo emb : cf.getEmbargos()) {
 			Traba currentTraba = emb.getTrabas().get(0);
-			if (currentTraba.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_CONTABILIZADA ||
-					currentTraba.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_FINALIZADA) {
-				; // está contabilizada o finalizada. ok
+			if (!isTrabaCompletada_AEAT_N63(currentTraba)) {
+				isAllTrabasCompletadas = false;
+				break;
 			}
-			else {
-				isAllTrabasContabilizadas = false;
-			}
+		}
+
+		return isAllTrabasCompletadas;
+	}
+
+	private boolean isTrabaCompletada_AEAT_N63(Traba traba) {
+		boolean isAllTrabasContabilizadas = true;
+
+		if (traba.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_CONTABILIZADA ||
+				traba.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_FINALIZADA) {
+			; // está contabilizada o finalizada. ok
+		}
+		else {
+			isAllTrabasContabilizadas = false;
 		}
 
 		return isAllTrabasContabilizadas;
 	}
 
-	private boolean trabasCompletadas_CGPJ(ControlFichero cf) {
+	private boolean isAllTrabasCompletadas_CGPJ(ControlFichero cf) {
 		boolean isCompleted = true;
 
 		if (cf.getPeticiones() == null || cf.getPeticiones().size() != 1) {
@@ -436,15 +472,27 @@ public class SeizureServiceImpl
 		for (SolicitudesTraba solicitudTraba : cf.getPeticiones().get(0).getSolicitudesTrabas()) {
 			Traba traba = solicitudTraba.getTraba();
 
-			// 1- SI NO ESTÁ REVISADO, LA TRABA NO ESTÁ COMPLETADA
-			if (!IND_FLAG_SI.equals(traba.getRevisado())) {
+			if (!isTrabaCompletada_CGPJ(traba)) {
 				isCompleted = false;
 				break;
 			}
-			// 2- SI LA TRABA ESTÁ CONTABILIZADA, ENTONCES ES CORRECTO
-			if (traba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA) {
-				continue;
-			}
+		}
+
+		return isCompleted;
+	}
+
+	private boolean isTrabaCompletada_CGPJ(Traba traba) {
+		boolean isCompleted = true;
+
+		// 1- SI NO ESTÁ REVISADO, LA TRABA NO ESTÁ COMPLETADA
+		if (!IND_FLAG_SI.equals(traba.getRevisado())) {
+			isCompleted = false;
+		}
+		// 2- SI LA TRABA ESTÁ CONTABILIZADA, ENTONCES ES CORRECTO
+		else if (traba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA) {
+			;
+		}
+		else {
 			// 3- MIRAMOS SUS CUENTAS. O BIEN ESTÁ PENDIENTE Y TODAS SUS CUENTAS TIENEN UN MOTIVO DEL RECHAZO distinto de 00 - sin actuación 200x trabas
 			// 3.a- debe tener alguna cuenta revisada
 			// 3.b- no debe tener cuentas pendientes de contabilización
@@ -456,14 +504,13 @@ public class SeizureServiceImpl
 				if (IND_FLAG_YES.equals(cuenta.getAgregarATraba())) {
 					tieneAlgunaCuentaRevisada = true;
 					if (CGPJ_MOTIVO_TRABA_TOTAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
-						||
+							||
 							CGPJ_MOTIVO_TRABA_PARCIAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
 					) {
 						if (cuenta.getEstadoTraba().getCodEstado() != COD_ESTADO_TRABA_CONTABILIZADA) {
 							tieneCuentasPendientesDeContabilizacion = true;
 						}
-					}
-					else {
+					} else {
 						if (cuenta.getCuentaTrabaActuacion().getCodExternoActuacion() != null) {
 							tieneAlgunaCuentaRechazadaConMotivo = true;
 						}
@@ -472,19 +519,32 @@ public class SeizureServiceImpl
 			}
 			if (!tieneAlgunaCuentaRevisada) {
 				isCompleted = false;
-				break;
 			}
 			if (tieneCuentasPendientesDeContabilizacion) {
 				isCompleted = false;
-				break;
 			}
 			if (!tieneAlgunaCuentaRechazadaConMotivo) {
 				isCompleted = false;
-				break;
 			}
 		}
 
 		return isCompleted;
+	}
+
+	private boolean algunaCuentaTieneTraba(Traba traba) {
+		boolean aTrabar = false;
+
+		for (CuentaTraba cuenta : traba.getCuentaTrabas()) {
+			if (CGPJ_MOTIVO_TRABA_TOTAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
+					||
+				CGPJ_MOTIVO_TRABA_PARCIAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
+			) {
+				aTrabar = true;
+				break;
+			}
+		}
+
+		return aTrabar;
 	}
 	
 	@Override
@@ -565,14 +625,13 @@ public class SeizureServiceImpl
 		}
 
 		fileControlService.updateFileControlStatus(controlFichero.getCodControlFichero(), estadoCtrlfichero.getId().getCodEstado(), userName, "TRABAS");
+
 		/*
-		controlFichero.setEstadoCtrlfichero(estadoCtrlfichero);
-
-		controlFichero.setUsuarioUltModificacion(userName);
-		controlFichero.setFUltimaModificacion(fechaActualBigDec);
-
-		fileControlService.saveFileControlTransaction(controlFichero);
-		*/
+			Si es del Consejo y la petición estaba Procesada, se revierte a Inicial
+		 */
+		if (FILE_FORMAT_CGPJ.equals(tipoEntidad)) {
+			petitionService.revertStatusToInitial(controlFichero.getPeticiones().get(0));
+		}
 
 		//Se actualiza el estado del idSeizure a Pendiente
 		EstadoTraba estadoTraba = new EstadoTraba();

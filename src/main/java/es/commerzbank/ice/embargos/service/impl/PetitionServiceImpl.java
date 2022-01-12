@@ -5,14 +5,13 @@ import es.commerzbank.ice.embargos.config.OracleDataSourceEmbargosConfig;
 import es.commerzbank.ice.embargos.domain.dto.FileControlDTO;
 import es.commerzbank.ice.embargos.domain.dto.PetitionCaseDTO;
 import es.commerzbank.ice.embargos.domain.dto.PetitionDTO;
-import es.commerzbank.ice.embargos.domain.entity.ControlFichero;
-import es.commerzbank.ice.embargos.domain.entity.EstadoIntPeticion;
-import es.commerzbank.ice.embargos.domain.entity.Peticion;
+import es.commerzbank.ice.embargos.domain.entity.*;
 import es.commerzbank.ice.embargos.domain.mapper.PetitionMapper;
 import es.commerzbank.ice.embargos.repository.PetitionRepository;
 import es.commerzbank.ice.embargos.service.FileControlService;
 import es.commerzbank.ice.embargos.service.InformationPetitionService;
 import es.commerzbank.ice.embargos.service.PetitionService;
+import es.commerzbank.ice.embargos.utils.EmbargosConstants;
 import es.commerzbank.ice.embargos.utils.OfficeUtils;
 import es.commerzbank.ice.embargos.utils.ResourcesUtil;
 import net.sf.jasperreports.engine.*;
@@ -26,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.util.*;
+
+import static es.commerzbank.ice.embargos.utils.EmbargosConstants.*;
 
 @Service
 @Transactional(transactionManager="transactionManager")
@@ -168,5 +169,67 @@ public class PetitionServiceImpl implements PetitionService{
 		estadoInterno.setCodEstadoIntPeticion(cgpjEstadoInternoProcesado);
 		peticion.setEstadoIntPeticion(estadoInterno);
 		petitionRepository.save(peticion);
+	}
+
+	@Override
+	public void synchPetitionStatus(Peticion peticion)
+	{
+		boolean isPetitionCompleted = isPetitionCompleted(peticion);
+
+		if (peticion.getEstadoIntPeticion().getCodEstadoIntPeticion() == CGPJ_ESTADO_INTERNO_PROCESADO && !isPetitionCompleted)
+		{
+			EstadoIntPeticion estadoInterno = new EstadoIntPeticion();
+			estadoInterno.setCodEstadoIntPeticion(CGPJ_ESTADO_INTERNO_INICIAL);
+			peticion.setEstadoIntPeticion(estadoInterno);
+			petitionRepository.save(peticion);
+		}
+		else if (peticion.getEstadoIntPeticion().getCodEstadoIntPeticion() == CGPJ_ESTADO_INTERNO_INICIAL && isPetitionCompleted)
+		{
+			EstadoIntPeticion estadoInterno = new EstadoIntPeticion();
+			estadoInterno.setCodEstadoIntPeticion(CGPJ_ESTADO_INTERNO_PROCESADO);
+			peticion.setEstadoIntPeticion(estadoInterno);
+			petitionRepository.save(peticion);
+		}
+	}
+
+	@Override
+	public void revertStatusToInitial(Peticion peticion) {
+		if (peticion.getEstadoIntPeticion().getCodEstadoIntPeticion() == CGPJ_ESTADO_INTERNO_PROCESADO) {
+			EstadoIntPeticion estadoInterno = new EstadoIntPeticion();
+			estadoInterno.setCodEstadoIntPeticion(CGPJ_ESTADO_INTERNO_INICIAL);
+			peticion.setEstadoIntPeticion(estadoInterno);
+			petitionRepository.save(peticion);
+		}
+	}
+
+	private boolean isPetitionCompleted(Peticion peticion) {
+		boolean isCompleted = true;
+
+		// REVISION DE LOS LEVANTAMIENTOS
+		for (SolicitudesLevantamiento solicitudLevantamiento : peticion.getSolicitudesLevantamientos()) {
+			LevantamientoTraba levantamiento = solicitudLevantamiento.getLevantamientoTraba();
+			if (levantamiento.getEstadoLevantamiento().getCodEstado() != COD_ESTADO_LEVANTAMIENTO_CONTABILIZADO) {
+				isCompleted = false;
+				break;
+			}
+		}
+
+		// REVISION DE LAS TRABAS
+		for (SolicitudesTraba solicitudTraba : peticion.getSolicitudesTrabas()) {
+			Traba traba = solicitudTraba.getTraba();
+			// 1- TODOS DEBEN ESTAR REVISADOS
+			if (!IND_FLAG_SI.equals(traba.getRevisado())) {
+				isCompleted = false;
+				break;
+			}
+			// 2- O BIEN LA TRABA ESTÁ CONTABILIZADA O FINALIZADA
+			if (traba.getEstadoTraba().getCodEstado() != EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA
+			&& traba.getEstadoTraba().getCodEstado() != COD_ESTADO_TRABA_FINALIZADA) {
+				isCompleted = false;
+				break;
+			}
+		}
+
+		return isCompleted;
 	}
 }

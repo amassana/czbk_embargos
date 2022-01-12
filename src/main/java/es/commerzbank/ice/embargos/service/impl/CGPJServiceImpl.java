@@ -270,14 +270,8 @@ public class CGPJServiceImpl
             Peticion peticion = peticionOpt.get();
 
             if (peticion.getEstadoIntPeticion().getCodEstadoIntPeticion() != CGPJ_ESTADO_INTERNO_PROCESADO) {
-                logger.info("La petición "+ codPeticion +" tiene estado "+ peticion.getEstadoIntPeticion().getCodEstadoIntPeticion() +" y no puede ser respondida");
-                currentResponse.setResult("La Petición debe estar Procesada para poder enviar la respuesta");
-                continue;
-            }
-
-            if (tieneCasosSinRevisar(peticion)) {
-                logger.info("La petición "+ codPeticion +" tiene casos sin revisar");
-                currentResponse.setResult("La Petición tiene casos sin revisar");
+                logger.info("La Petición debe estar Procesada para poder enviar la respondida");
+                currentResponse.setResult("La Petición debe estar Procesada para poder enviar la respondida");
                 continue;
             }
 
@@ -357,22 +351,6 @@ public class CGPJServiceImpl
         }
 
         return reply;
-    }
-
-    private boolean tieneCasosSinRevisar(Peticion peticion) {
-        boolean todosCasosRevisados = true;
-
-        // REVISION DE LAS TRABAS
-        for (SolicitudesTraba solicitudTraba : peticion.getSolicitudesTrabas()) {
-            Traba traba = solicitudTraba.getTraba();
-            // 1- TODOS DEBEN ESTAR REVISADOS
-            if (!IND_FLAG_SI.equals(traba.getRevisado())) {
-                todosCasosRevisados = false;
-                break;
-            }
-        }
-
-        return todosCasosRevisados;
     }
 
     private JasperPrint imprimirSEPASolicitud(SolicitudesEjecucion solicitudEjecucion)
