@@ -166,8 +166,7 @@ public class Cuaderno63LiftingServiceImpl
                     if (embargo == null)
                     {
                         LOG.error("No embargo found for "+ ordenLevantamientoRetencionFase5.getIdentificadorDeuda());
-                        // TODO ERROR
-                        continue;
+                        throw new Exception("No embargo found for "+ ordenLevantamientoRetencionFase5.getIdentificadorDeuda());
                     }
 
                     Traba traba = seizedRepository.getByEmbargo(embargo);
@@ -175,7 +174,7 @@ public class Cuaderno63LiftingServiceImpl
                     if (traba == null)
                     {
                         LOG.error("Traba not found for embargo "+ embargo.getCodEmbargo() +" code "+ ordenLevantamientoRetencionFase5.getIdentificadorDeuda());
-                        continue;
+                        throw new Exception("Traba not found for embargo "+ embargo.getCodEmbargo() +" code "+ ordenLevantamientoRetencionFase5.getIdentificadorDeuda());
                     }
 
                     LOG.info("Using traba "+ traba.getCodTraba() +" for embargo "+ embargo.getCodEmbargo() +" code "+ ordenLevantamientoRetencionFase5.getIdentificadorDeuda());

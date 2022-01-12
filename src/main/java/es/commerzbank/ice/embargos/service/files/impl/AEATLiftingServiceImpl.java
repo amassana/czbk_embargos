@@ -189,16 +189,15 @@ public class AEATLiftingServiceImpl
 						if (embargo == null)
 						{
 							LOG.error("No embargo found for "+ levantamientoAEAT.getNumeroDiligenciaEmbargo());
-							// TODO ERROR
-							continue;
+							throw new Exception("No embargo found for "+ levantamientoAEAT.getNumeroDiligenciaEmbargo());
 						}
 
 	                    Traba traba = seizedRepository.getByEmbargo(embargo);
 	
 	                    if (traba == null)
 	                    {
-	                        LOG.error("Traba not found for embargo "+ embargo.getCodEmbargo() +" code "+ levantamientoAEAT.getNumeroDiligenciaEmbargo());
-	                        continue;
+							LOG.error("Traba not found for embargo "+ embargo.getCodEmbargo() +" code "+ levantamientoAEAT.getNumeroDiligenciaEmbargo());
+							throw new Exception("Traba not found for embargo "+ embargo.getCodEmbargo() +" code "+ levantamientoAEAT.getNumeroDiligenciaEmbargo());
 	                    }
 	
 	                    LOG.info("Using traba "+ traba.getCodTraba() +" for embargo "+ embargo.getCodEmbargo() +" code "+ levantamientoAEAT.getNumeroDiligenciaEmbargo());
