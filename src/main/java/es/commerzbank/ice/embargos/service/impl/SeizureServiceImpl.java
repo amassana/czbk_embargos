@@ -503,15 +503,15 @@ public class SeizureServiceImpl
 			for (CuentaTraba cuenta : traba.getCuentaTrabas()) {
 				if (IND_FLAG_YES.equals(cuenta.getAgregarATraba())) {
 					tieneAlgunaCuentaRevisada = true;
-					if (CGPJ_MOTIVO_TRABA_TOTAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
-							||
-							CGPJ_MOTIVO_TRABA_PARCIAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
-					) {
-						if (cuenta.getEstadoTraba().getCodEstado() != COD_ESTADO_TRABA_CONTABILIZADA) {
-							tieneCuentasPendientesDeContabilizacion = true;
-						}
-					} else {
-						if (cuenta.getCuentaTrabaActuacion().getCodExternoActuacion() != null) {
+					if (cuenta.getCuentaTrabaActuacion() != null) {
+						if (CGPJ_MOTIVO_TRABA_TOTAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
+								||
+								CGPJ_MOTIVO_TRABA_PARCIAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
+						) {
+							if (cuenta.getEstadoTraba().getCodEstado() != COD_ESTADO_TRABA_CONTABILIZADA) {
+								tieneCuentasPendientesDeContabilizacion = true;
+							}
+						} else {
 							tieneAlgunaCuentaRechazadaConMotivo = true;
 						}
 					}
@@ -535,10 +535,11 @@ public class SeizureServiceImpl
 		boolean aTrabar = false;
 
 		for (CuentaTraba cuenta : traba.getCuentaTrabas()) {
-			if (CGPJ_MOTIVO_TRABA_TOTAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
+			if (cuenta.getCuentaTrabaActuacion() != null &&
+			 (CGPJ_MOTIVO_TRABA_TOTAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
 					||
 				CGPJ_MOTIVO_TRABA_PARCIAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
-			) {
+			)) {
 				aTrabar = true;
 				break;
 			}
