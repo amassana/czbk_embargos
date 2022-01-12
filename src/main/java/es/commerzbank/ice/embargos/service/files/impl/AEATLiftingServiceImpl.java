@@ -49,10 +49,6 @@ public class AEATLiftingServiceImpl
 
     @Value("${commerzbank.embargos.beanio.config-path.aeat}")
     String pathFileConfigAEAT;
-
-    //@Value("${commerzbank.embargos.beanio.config-path.aeat}")
-    // TODO
-    BigDecimal limiteAutomatico = new BigDecimal(50000);
     
     @Autowired
 	private FileControlRepository fileControlRepository;
@@ -289,6 +285,7 @@ public class AEATLiftingServiceImpl
 	        task.setStatus("P");
 	        task.setIndActive(true);
 	        task.setApplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
+	        task.setExternalId("LEV_"+ controlFicheroLevantamiento.getCodControlFichero());
 	        Long codTarea = taskService.addCalendarTask(task);
 	        
             // Se crea el evento

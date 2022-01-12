@@ -11,6 +11,7 @@ import es.commerzbank.ice.comun.lib.service.LocationService;
 import es.commerzbank.ice.comun.lib.service.TaskService;
 import es.commerzbank.ice.comun.lib.typeutils.ICEDateUtils;
 import es.commerzbank.ice.comun.lib.util.SQLUtils;
+import es.commerzbank.ice.comun.lib.util.ValueConstants;
 import es.commerzbank.ice.comun.lib.util.jasper.ReportHelper;
 import es.commerzbank.ice.datawarehouse.domain.dto.CustomerDTO;
 import es.commerzbank.ice.datawarehouse.service.AccountService;
@@ -283,6 +284,8 @@ public class LiftingServiceImpl
 
 					fileControlService.updateFileControlStatus(levantamiento.getControlFichero().getCodControlFichero(), estado,
 							userName, "LEVANTAMIENTOS");
+
+					taskService.completeTaskByExternalId("LEV_"+ levantamiento.getControlFichero().getCodControlFichero(), userName);
 				}
 
 				response = true;

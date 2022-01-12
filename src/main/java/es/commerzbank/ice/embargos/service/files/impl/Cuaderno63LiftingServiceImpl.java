@@ -256,6 +256,7 @@ public class Cuaderno63LiftingServiceImpl
 	        task.setStatus("P");
 	        task.setIndActive(true);
 	        task.setApplication(EmbargosConstants.ID_APLICACION_EMBARGOS);
+	        task.setExternalId("LEV_"+ controlFicheroLevantamiento.getCodControlFichero());
 	        Long codTarea = taskService.addCalendarTask(task);
 	        
 	        // Se crea el evento
