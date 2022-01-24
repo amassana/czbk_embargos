@@ -16,7 +16,6 @@ import es.commerzbank.ice.embargos.domain.entity.TareasPendiente;
 public abstract class TareasPendienteMapper {
 
 	@Mappings({
-		@Mapping(source = "codSucursal", target = "sucursal.codSucursal"),
 		@Mapping(source = "fechaTopeRealizacion", target = "fTarea"),
 		@Mapping(target = "estado", expression = "java(tareasPendiente.getEstadoPorDefecto())"),
 		@Mapping(target = "accion", expression = "java(tareasPendiente.getAccionPorDefecto())"),

@@ -1,6 +1,5 @@
 package es.commerzbank.ice.embargos.service.files.impl;
 
-import es.commerzbank.ice.comun.lib.domain.dto.Element;
 import es.commerzbank.ice.comun.lib.domain.dto.TaskAndEvent;
 import es.commerzbank.ice.comun.lib.service.EventService;
 import es.commerzbank.ice.comun.lib.service.FestiveService;
@@ -325,10 +324,6 @@ public class AEATSeizureServiceImpl implements AEATSeizureService{
 	        task.setDate(ICEDateUtils.bigDecimalToDate(controlFicheroEmbargo.getFechaMaximaRespuesta(), ICEDateUtils.FORMAT_yyyyMMdd));
 	        task.setCodCalendar(1L);
 	        task.setType("T");
-	        Element office = new Element();
-	        office.setCode(1L);
-	        task.setOffice(office);
-	        //
 	        task.setAction("0");
 	        task.setStatus("P");
 	        task.setIndActive(true);
