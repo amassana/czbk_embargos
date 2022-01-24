@@ -484,46 +484,44 @@ public class SeizureServiceImpl
 	private boolean isTrabaCompletada_CGPJ(Traba traba) {
 		boolean isCompleted = true;
 
-		// 1- SI NO ESTÁ REVISADO, LA TRABA NO ESTÁ COMPLETADA
+		// SI NO ESTÁ REVISADO, LA TRABA NO ESTÁ COMPLETADA
 		if (!IND_FLAG_SI.equals(traba.getRevisado())) {
 			isCompleted = false;
 		}
-		// 2- SI LA TRABA ESTÁ CONTABILIZADA, ENTONCES ES CORRECTO
-		else if (traba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA) {
+		// SI ESTÁ PENDIENTE DE CONTABILIDAD, NO ESTÁ COMPLETADA
+		else if (traba.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_ENVIADA_A_CONTABILIDAD) {
+			isCompleted = false;
+		}
+		// 2- SI LA TRABA ESTÁ CONTABILIZADA O FINALIZADA, SÍ ESTÁ FINALIZADA
+		else if (traba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA
+		||
+				traba.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_FINALIZADA) {
 			;
 		}
-		else {
-			// 3- MIRAMOS SUS CUENTAS. O BIEN ESTÁ PENDIENTE Y TODAS SUS CUENTAS TIENEN UN MOTIVO DEL RECHAZO distinto de 00 - sin actuación 200x trabas
-			// 3.a- debe tener alguna cuenta revisada
-			// 3.b- no debe tener cuentas pendientes de contabilización
-			// 3.c- en las cuentas revisadas, debe tener en alguna el motivo de rechazo seteado
+		// SI ESTÁ PENDIENTE Y ESTÁ REVISADA DEBERÍA ESTAR COMPLETADA (CHECK VÍA FRONT)
+		// SE REFUERZA EL CHECK AQUÍ.
+		// DEBE TENER CUENTAS REVISADAS Y CON MOTIVO DE RECHAZO PARA PODER COMPLETAR
+		else if (traba.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_PENDIENTE) {
 			boolean tieneAlgunaCuentaRevisada = false;
-			boolean tieneAlgunaCuentaRechazadaConMotivo = false;
-			boolean tieneCuentasPendientesDeContabilizacion = false;
 			for (CuentaTraba cuenta : traba.getCuentaTrabas()) {
 				if (IND_FLAG_YES.equals(cuenta.getAgregarATraba())) {
 					tieneAlgunaCuentaRevisada = true;
-					if (cuenta.getCuentaTrabaActuacion() != null) {
-						if (CGPJ_MOTIVO_TRABA_TOTAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
+					if (cuenta.getCuentaTrabaActuacion() == null) {
+						isCompleted = false;
+						break;
+					}
+					else if (CGPJ_MOTIVO_TRABA_TOTAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
 								||
 								CGPJ_MOTIVO_TRABA_PARCIAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
 						) {
-							if (cuenta.getEstadoTraba().getCodEstado() != COD_ESTADO_TRABA_CONTABILIZADA) {
-								tieneCuentasPendientesDeContabilizacion = true;
-							}
-						} else {
-							tieneAlgunaCuentaRechazadaConMotivo = true;
-						}
+						isCompleted = false;
+						break;
 					}
 				}
 			}
-			if (!tieneAlgunaCuentaRevisada) {
-				isCompleted = false;
-			}
-			if (tieneCuentasPendientesDeContabilizacion) {
-				isCompleted = false;
-			}
-			if (!tieneAlgunaCuentaRechazadaConMotivo) {
+
+			if (!tieneAlgunaCuentaRevisada)
+			{
 				isCompleted = false;
 			}
 		}
