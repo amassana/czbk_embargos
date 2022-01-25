@@ -277,7 +277,6 @@ public class SeizureServiceImpl
 		return true;
 	}
 	
-	
 	@Override
 	public boolean updateSeizedBankStatus(CuentaTraba cuentaTraba, Long codEstado, String userModif) throws Exception {
 		Traba traba = cuentaTraba.getTraba();
@@ -318,26 +317,18 @@ public class SeizureServiceImpl
 		boolean isAEAT = fileFormat!=null && fileFormat.equals(EmbargosConstants.FILE_FORMAT_AEAT);
 		boolean isCuaderno63 = fileFormat!=null && fileFormat.equals(EmbargosConstants.FILE_FORMAT_NORMA63);
 
-		if (isCGPJ) {
-			boolean isTrabasCompletadas = isTrabaCompletada_CGPJ(traba);
+		if (isAEAT || isCuaderno63) {
+			if (isTrabaCompletada_AEAT_N63(traba)) {
+				logger.info("Todas las cuentas de la traba " + traba.getCodTraba() + " se han tratado. Cambiando el estado a contabilizada");
 
-			SeizureStatusDTO seizureStatusDTO = new SeizureStatusDTO();
+				SeizureStatusDTO seizureStatusDTO = new SeizureStatusDTO();
+				seizureStatusDTO.setCode(String.valueOf(COD_ESTADO_TRABA_CONTABILIZADA));
 
-			if (!isTrabasCompletadas)
-				seizureStatusDTO.setCode(String.valueOf(COD_ESTADO_TRABA_PENDIENTE));
-			else {
-				if (algunaCuentaTieneTraba(traba))
-					seizureStatusDTO.setCode(String.valueOf(COD_ESTADO_TRABA_CONTABILIZADA));
-				else
-					seizureStatusDTO.setCode(String.valueOf(COD_ESTADO_TRABA_FINALIZADA));
+				this.updateSeizureStatus(traba.getCodTraba(), seizureStatusDTO, userModif);
 			}
-
-			this.updateSeizureStatus(traba.getCodTraba(), seizureStatusDTO, userModif);
 		}
-		else if(isAEAT || isCuaderno63) {
-			boolean isTrabasCompletadas = isTrabaCompletada_AEAT_N63(embargo.getTrabas().get(0));
-
-			if (isTrabasCompletadas) {
+		else if (isCGPJ) {
+			if (isTrabaCompletada_CGPJ(traba)) {
 				logger.info("Todas las cuentas de la traba " + traba.getCodTraba() + " se han tratado. Cambiando el estado a contabilizada");
 
 				SeizureStatusDTO seizureStatusDTO = new SeizureStatusDTO();
@@ -448,17 +439,45 @@ public class SeizureServiceImpl
 	}
 
 	private boolean isTrabaCompletada_AEAT_N63(Traba traba) {
-		boolean isAllTrabasContabilizadas = true;
+		boolean isAllCuentasCompletadas = true;
 
-		if (traba.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_CONTABILIZADA ||
-				traba.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_FINALIZADA) {
-			; // está contabilizada o finalizada. ok
-		}
-		else {
-			isAllTrabasContabilizadas = false;
+		boolean hasAggregadas = false;
+		for (CuentaTraba cuenta : traba.getCuentaTrabas()) {
+			if (IND_FLAG_YES.equals(cuenta.getAgregarATraba())) {
+				hasAggregadas = true;
+				if (cuenta.getEstadoTraba().getCodEstado() != COD_ESTADO_TRABA_CONTABILIZADA && cuenta.getEstadoTraba().getCodEstado() != COD_ESTADO_TRABA_FINALIZADA) {
+					isAllCuentasCompletadas = false;
+				}
+			}
 		}
 
-		return isAllTrabasContabilizadas;
+		return hasAggregadas && isAllCuentasCompletadas;
+	}
+
+	private boolean isTrabaCompletada_CGPJ(Traba traba)
+	{
+		boolean isAllCuentasCompletadas = true;
+		boolean allIncludedHaveRejectionCause = true;
+
+		boolean hasAggregadas = false;
+		for (CuentaTraba cuenta : traba.getCuentaTrabas()) {
+			if (IND_FLAG_YES.equals(cuenta.getAgregarATraba())) {
+				hasAggregadas = true;
+				if (cuenta.getEstadoTraba().getCodEstado() != COD_ESTADO_TRABA_CONTABILIZADA && cuenta.getEstadoTraba().getCodEstado() != COD_ESTADO_TRABA_FINALIZADA) {
+					isAllCuentasCompletadas = false;
+				}
+				else if (cuenta.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_PENDIENTE) {
+					if (cuenta.getCuentaTrabaActuacion() == null ||
+							CGPJ_MOTIVO_TRABA_TOTAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
+									||
+									CGPJ_MOTIVO_TRABA_PARCIAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())) {
+						allIncludedHaveRejectionCause = false;
+					}
+				}
+			}
+		}
+
+		return (hasAggregadas && isAllCuentasCompletadas) || allIncludedHaveRejectionCause;
 	}
 
 	private boolean isAllTrabasCompletadas_CGPJ(ControlFichero cf) {
@@ -481,62 +500,18 @@ public class SeizureServiceImpl
 		return isCompleted;
 	}
 
-	private boolean isTrabaCompletada_CGPJ(Traba traba) {
-		boolean isCompleted = true;
-
-		// SI NO ESTÁ REVISADO, LA TRABA NO ESTÁ COMPLETADA
-		if (!IND_FLAG_SI.equals(traba.getRevisado())) {
-			isCompleted = false;
-		}
-		// SI ESTÁ PENDIENTE DE CONTABILIDAD, NO ESTÁ COMPLETADA
-		else if (traba.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_ENVIADA_A_CONTABILIDAD) {
-			isCompleted = false;
-		}
-		// 2- SI LA TRABA ESTÁ CONTABILIZADA O FINALIZADA, SÍ ESTÁ FINALIZADA
-		else if (traba.getEstadoTraba().getCodEstado() == EmbargosConstants.COD_ESTADO_TRABA_CONTABILIZADA
-		||
-				traba.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_FINALIZADA) {
-			;
-		}
-		// SI ESTÁ PENDIENTE Y ESTÁ REVISADA DEBERÍA ESTAR COMPLETADA (CHECK VÍA FRONT)
-		// SE REFUERZA EL CHECK AQUÍ.
-		// DEBE TENER CUENTAS REVISADAS Y CON MOTIVO DE RECHAZO PARA PODER COMPLETAR
-		else if (traba.getEstadoTraba().getCodEstado() == COD_ESTADO_TRABA_PENDIENTE) {
-			boolean tieneAlgunaCuentaRevisada = false;
-			for (CuentaTraba cuenta : traba.getCuentaTrabas()) {
-				if (IND_FLAG_YES.equals(cuenta.getAgregarATraba())) {
-					tieneAlgunaCuentaRevisada = true;
-					if (cuenta.getCuentaTrabaActuacion() == null) {
-						isCompleted = false;
-						break;
-					}
-					else if (CGPJ_MOTIVO_TRABA_TOTAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
-								||
-								CGPJ_MOTIVO_TRABA_PARCIAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
-						) {
-						isCompleted = false;
-						break;
-					}
-				}
-			}
-
-			if (!tieneAlgunaCuentaRevisada)
-			{
-				isCompleted = false;
-			}
-		}
-
-		return isCompleted;
-	}
-
 	private boolean algunaCuentaTieneTraba(Traba traba) {
 		boolean aTrabar = false;
 
 		for (CuentaTraba cuenta : traba.getCuentaTrabas()) {
 			if (cuenta.getCuentaTrabaActuacion() != null &&
 			 (CGPJ_MOTIVO_TRABA_TOTAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
-					||
-				CGPJ_MOTIVO_TRABA_PARCIAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
+					 ||
+					 CGPJ_MOTIVO_TRABA_PARCIAL.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
+					 ||
+					 AEAT_TRABA.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
+					 ||
+					 N63_TRABA.equals(cuenta.getCuentaTrabaActuacion().getCodExternoActuacion())
 			)) {
 				aTrabar = true;
 				break;

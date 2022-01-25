@@ -30,7 +30,7 @@ public class CopiaEmbargosComunes {
 	@Autowired
 	private TaskRepo taskRepo;
 
-	// Rehabilitar / rediseñar si hace falta sincronizar las tareas del cgpj
+	// Rehabilitar / rediseñar si hace falta sincronizar las tareas del cgpj. Si no es necesario, dejar sin ejecutar y acabar borrando.
 	@Async
 	//@Scheduled(fixedRate = 3600000)
 	public void copiaTareasPendientesToComunes() {
