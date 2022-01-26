@@ -660,8 +660,8 @@ public abstract class Cuaderno63Mapper {
 		
 		for (CuentaTraba cuentaTraba : cuentaTrabaOrderedList) {
 			if (EmbargosConstants.IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba())) {
-				
-				String claveSeguridad = EmbargosUtils.generateClaveSeguridad(cuentaTraba.getIban());
+
+				String claveSeguridad = getCodigoSeguridad(traba, cuentaTraba);
 				
 				String resultadoRetencion = cuentaTraba.getCuentaTrabaActuacion() != null ? 
 						cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion() : null;
@@ -709,6 +709,23 @@ public abstract class Cuaderno63Mapper {
 				cont++;
 			}
 		}
+	}
+
+	private String getCodigoSeguridad(Traba traba, CuentaTraba cuentaTraba) {
+		String codSeguridad = null;
+		Embargo embargo = traba.getEmbargo();
+		for (CuentaEmbargo cuentaEmbargo: embargo.getCuentaEmbargos()) {
+			if (cuentaTraba.getCuenta() != null && cuentaTraba.getCuenta().equals(cuentaEmbargo.getCuenta())) {
+				if (cuentaEmbargo.getClaveSeguridad() != null) {
+					codSeguridad = cuentaEmbargo.getClaveSeguridad();
+				}
+			}
+		}
+		if (codSeguridad == null) {
+			codSeguridad = EmbargosUtils.generateClaveSeguridad(cuentaTraba.getIban());
+		}
+
+		return codSeguridad;
 	}
 	
 	@Mappings({
@@ -898,7 +915,7 @@ public abstract class Cuaderno63Mapper {
 		for (CuentaTraba cuentaTraba : cuentaTrabaOrderedList) {
 			if (EmbargosConstants.IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba())) {
 
-				String claveSeguridad = EmbargosUtils.generateClaveSeguridad(cuentaTraba.getIban());
+				String claveSeguridad = getCodigoSeguridad(traba, cuentaTraba);
 
 				String resultadoRetencion = cuentaTraba.getCuentaTrabaActuacion() != null ?
 						cuentaTraba.getCuentaTrabaActuacion().getCodExternoActuacion() : null;
