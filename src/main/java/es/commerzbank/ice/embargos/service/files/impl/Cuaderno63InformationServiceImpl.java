@@ -142,10 +142,12 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        //Para determinar el nombre del fichero de salida (Informacion):
 	        // - se obtiene el prefijo indicado a partir de la entidad comunicadora:
 	        String prefijoFichero = "";
+	        String codigoINE = "";
 	        if (controlFicheroPeticion.getEntidadesComunicadora()!=null) {
 		        Optional<EntidadesComunicadora> entidadComunicadoraOpt = communicatingEntityRepository.findById(controlFicheroPeticion.getEntidadesComunicadora().getCodEntidadPresentadora());
 		        if (entidadComunicadoraOpt.isPresent()) {
 		        	prefijoFichero = entidadComunicadoraOpt.get().getPrefijoFicheros();
+		        	codigoINE = entidadComunicadoraOpt.get().getCodigoIne();
 				}
 	        }
 	        // - se obtiene la fecha local actual:
@@ -236,11 +238,11 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        		String nifOrganismoEmisor = cabeceraEmisorFase1.getNifOrganismoEmisor();
 	        		
 	        		entidadComunicadora = communicatingEntityRepository.findByNifEntidad(nifOrganismoEmisor);
-	        		
-	        		Date fechaObtencionFicheroEntidadDeDeposito = new Date();
+
+	        		Date fechaObtencionFicheroEntidadDeDeposito = ICEDateUtils.bigDecimalToDate(controlFicheroPeticion.getFechaIncorporacion(), ICEDateUtils.FORMAT_yyyyMMdd);
 	        		
 	        		CabeceraEmisorFase2 cabeceraEmisorFase2 = cuaderno63Mapper.generateCabeceraEmisorFase2(cabeceraEmisorFase1, 
-	        				fechaObtencionFicheroEntidadDeDeposito);
+	        				fechaObtencionFicheroEntidadDeDeposito, codigoINE);
 	        		
 	        		beanWriter.write(EmbargosConstants.RECORD_NAME_CABECERAEMISOR, cabeceraEmisorFase2);
 	        		
@@ -249,7 +251,7 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        		
 	        		FinFicheroFase1 finFicheroFase1 = (FinFicheroFase1) record;
 	        		
-	        		FinFicheroFase2 finFicheroFase2 = cuaderno63Mapper.generateFinFicheroFase2(finFicheroFase1);
+	        		FinFicheroFase2 finFicheroFase2 = cuaderno63Mapper.generateFinFicheroFase2(finFicheroFase1, codigoINE);
 	        		
 	        		beanWriter.write(EmbargosConstants.RECORD_NAME_FINFICHERO, finFicheroFase2);
 	        	}

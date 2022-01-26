@@ -211,8 +211,11 @@ public abstract class Cuaderno63Mapper {
 			}
 		}
 	}
-	
-	public abstract CabeceraEmisorFase2 generateCabeceraEmisorFase2(CabeceraEmisorFase1 cabeceraEmisorFase1, Date fechaObtencionFicheroEntidadDeDeposito);
+	@Mappings({
+			@Mapping(target = "fase", constant = ""+EmbargosConstants.COD_FASE_2),
+			@Mapping(target = "codigoINEOrganismoEmisor", source="codigoINE"),
+	})
+	public abstract CabeceraEmisorFase2 generateCabeceraEmisorFase2(CabeceraEmisorFase1 cabeceraEmisorFase1, Date fechaObtencionFicheroEntidadDeDeposito, String codigoINE);
 
 
 	// Se hacen los defaults a 0 de los IBAN y las claves de seguridad. No se puede hacer en beanio
@@ -267,8 +270,11 @@ public abstract class Cuaderno63Mapper {
 	})
 	public abstract RespuestaSolicitudInformacionFase2 generateRespuestaSolicitudInformacionFase2_noCliente(SolicitudInformacionFase1 solicitudInformacionFase1,
 																								  PeticionInformacion peticionInformacion);
-	
-	public abstract FinFicheroFase2 generateFinFicheroFase2(FinFicheroFase1 finFicheroFase1); 
+
+	@Mappings({
+			@Mapping(target = "codigoINEOrganismoEmisor", source="codigoINE"),
+	})
+	public abstract FinFicheroFase2 generateFinFicheroFase2(FinFicheroFase1 finFicheroFase1, String codigoINE);
 	
 	@Mappings({
 		@Mapping(source = "ordenEjecucionEmbargo.nifDeudor", target = "nif"),
@@ -654,7 +660,7 @@ public abstract class Cuaderno63Mapper {
 		
 		for (CuentaTraba cuentaTraba : cuentaTrabaOrderedList) {
 			if (EmbargosConstants.IND_FLAG_YES.equals(cuentaTraba.getAgregarATraba())) {
-			
+				
 				String claveSeguridad = EmbargosUtils.generateClaveSeguridad(cuentaTraba.getIban());
 				
 				String resultadoRetencion = cuentaTraba.getCuentaTrabaActuacion() != null ? 
