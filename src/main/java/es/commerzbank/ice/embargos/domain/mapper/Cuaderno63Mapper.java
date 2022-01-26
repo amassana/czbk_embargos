@@ -978,9 +978,11 @@ public abstract class Cuaderno63Mapper {
 		CuentaResultadoEmbargo cuentaResultadoEmbargo = null;
 
 		for (CuentaResultadoEmbargo cuentaResultadoEmbargoActual : resultadoEmbargo.getCuentaResultadoEmbargos()) {
-			if (cuentaTraba.getCodCuentaTraba() == (cuentaResultadoEmbargoActual.getCuentaTraba().getCodCuentaTraba())) {
-				cuentaResultadoEmbargo = cuentaResultadoEmbargoActual;
-				break;
+			if (cuentaResultadoEmbargoActual.getCuentaTraba() != null) {
+				if (cuentaTraba.getCodCuentaTraba() == (cuentaResultadoEmbargoActual.getCuentaTraba().getCodCuentaTraba())) {
+					cuentaResultadoEmbargo = cuentaResultadoEmbargoActual;
+					break;
+				}
 			}
 		}
 
