@@ -378,8 +378,9 @@ public abstract class AEATMapper {
 		if (traba.getFechaTraba()!=null) {
 			trabaFase4.setFechaTraba(ICEDateUtils.bigDecimalToDate(traba.getFechaTraba(), ICEDateUtils.FORMAT_yyyyMMdd));
 		}
-		
-		if (traba.getFechaLimite() != null && lastDateResponse != null) {
+
+		// poner la fecha de la traba si efectivamente hay traba.
+		if (traba.getFechaLimite() != null && lastDateResponse != null && traba.getImporteTrabado() != null && BigDecimal.ZERO.compareTo(traba.getImporteTrabado()) != 0) {
 			trabaFase4.setFechaLimiteIngresoImporteTrabado(aeatFileDateFormat.format(lastDateResponse));
 		}
 		
