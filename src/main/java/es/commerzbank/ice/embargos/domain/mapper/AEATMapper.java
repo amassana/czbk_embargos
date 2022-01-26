@@ -13,6 +13,8 @@ import es.commerzbank.ice.embargos.utils.ICEDateUtils;
 import org.mapstruct.*;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,7 +23,10 @@ import java.util.Map;
 @Mapper(componentModel="spring")
 public abstract class AEATMapper {
 	LevantamientoHelperMapper levantamientoHelperMapper = new LevantamientoHelperMapper();
-	
+
+	private static final SimpleDateFormat aeatFileDateFormat = new SimpleDateFormat("yyyyMMdd");
+	private static final String AEAT_BLANK_DATE = "00000000";
+
 	@Mappings({
 		@Mapping(source = "diligenciaFase3.nifDeudor", target = "nif"),
 		@Mapping(source = "diligenciaFase3.nombreDeudor", target = "nombre"),
@@ -375,8 +380,11 @@ public abstract class AEATMapper {
 			trabaFase4.setFechaTraba(ICEDateUtils.bigDecimalToDate(traba.getFechaTraba(), ICEDateUtils.FORMAT_yyyyMMdd));
 		}
 		
-		if (traba.getFechaLimite()!=null) {
-			trabaFase4.setFechaLimiteIngresoImporteTrabado(lastDateResponse);
+		if (traba.getFechaLimite() != null && lastDateResponse != null) {
+			trabaFase4.setFechaLimiteIngresoImporteTrabado(aeatFileDateFormat.format(lastDateResponse));
+		}
+		else {
+			trabaFase4.setFechaLimiteIngresoImporteTrabado(AEAT_BLANK_DATE);
 		}
 		
 		if (embargo.getFechaGeneracion()!=null) {

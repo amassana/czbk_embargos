@@ -23,7 +23,7 @@ public class TrabaFase4 {
 	private BigDecimal importeTotalTrabado;
 	private String indicadorExisteMasCuentas;
 	private Date fechaTraba;
-	private Date fechaLimiteIngresoImporteTrabado;
+	private String fechaLimiteIngresoImporteTrabado;
 	private String codigoCuentaCliente1;
 	private String codigoResultadoTrabaCC1;
 	private BigDecimal importeTrabadoCC1;
@@ -152,10 +152,10 @@ public class TrabaFase4 {
 	public void setFechaTraba(Date fechaTraba) {
 		this.fechaTraba = fechaTraba;
 	}
-	public Date getFechaLimiteIngresoImporteTrabado() {
+	public String getFechaLimiteIngresoImporteTrabado() {
 		return fechaLimiteIngresoImporteTrabado;
 	}
-	public void setFechaLimiteIngresoImporteTrabado(Date fechaLimiteIngresoImporteTrabado) {
+	public void setFechaLimiteIngresoImporteTrabado(String fechaLimiteIngresoImporteTrabado) {
 		this.fechaLimiteIngresoImporteTrabado = fechaLimiteIngresoImporteTrabado;
 	}
 	public String getCodigoCuentaCliente1() {

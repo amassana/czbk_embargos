@@ -152,7 +152,7 @@
 			<field name="indicadorExisteMasCuentas" length="1" padding="0" default="0" />
 			<field name="fechaTraba" type="date" length="8" format="yyyyMMdd" />
 			<field name="fechaLimiteIngresoImporteTrabado" type="date" length="8"
-				format="yyyyMMdd" default="00000000"/>
+				format="yyyyMMdd" />
 			<field name="codigoCuentaCliente1" length="20" padding="0" default="0" />
 			<field name="codigoResultadoTrabaCC1" length="2" padding="0" default="0" />
 			<field name="importeTrabadoCC1" typeHandler="importe" length="15" default="0"/>
