@@ -25,7 +25,6 @@ public abstract class AEATMapper {
 	LevantamientoHelperMapper levantamientoHelperMapper = new LevantamientoHelperMapper();
 
 	private static final SimpleDateFormat aeatFileDateFormat = new SimpleDateFormat("yyyyMMdd");
-	private static final String AEAT_BLANK_DATE = "00000000";
 
 	@Mappings({
 		@Mapping(source = "diligenciaFase3.nifDeudor", target = "nif"),
@@ -382,9 +381,6 @@ public abstract class AEATMapper {
 		
 		if (traba.getFechaLimite() != null && lastDateResponse != null) {
 			trabaFase4.setFechaLimiteIngresoImporteTrabado(aeatFileDateFormat.format(lastDateResponse));
-		}
-		else {
-			trabaFase4.setFechaLimiteIngresoImporteTrabado(AEAT_BLANK_DATE);
 		}
 		
 		if (embargo.getFechaGeneracion()!=null) {
