@@ -305,8 +305,6 @@ public class AEATSeizedServiceImpl implements AEATSeizedService{
 				parameters.calculationType = FestiveService.CalculationType.FIRST_WORKING_DAY;
 				LocalDate finalDate = festiveService.dateCalculation(parameters, ValueConstants.COD_LOCALIDAD_MADRID);
 				lastDateResponse = Date.from(finalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-			}  else {
-				lastDateResponse = new Date();
 			}
 
 	        for (Embargo embargo : embargoList) {
