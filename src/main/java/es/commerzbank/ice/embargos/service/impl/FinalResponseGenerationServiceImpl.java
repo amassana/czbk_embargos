@@ -120,9 +120,11 @@ public class FinalResponseGenerationServiceImpl
                 // Se busca y mapea la cuenta traba relacionada, se obtiene el importe trabado
                 if (traba.getCuentaTrabas() != null) { // No debería ocurrir pero ..
                     for (CuentaTraba cuentaTraba : traba.getCuentaTrabas()) {
-                        if (cuentaTraba.getCuenta().equals(cuentaEmbargo.getCuenta())) {
-                            cuentaResultadoEmbargo.setCuentaTraba(cuentaTraba);
-                            break;
+                        if (cuentaTraba.getCuenta() != null) {
+                            if (cuentaTraba.getCuenta().equals(cuentaEmbargo.getCuenta())) {
+                                cuentaResultadoEmbargo.setCuentaTraba(cuentaTraba);
+                                break;
+                            }
                         }
                     }
                 }
