@@ -161,7 +161,7 @@ public class AEATFilePoller
 	        	        	}
 	        	        }
                 	} catch (Exception e) {
-                		LOG.error("No es tracta d'un arxiu de embargos, per tant serà un arxiu de resposta: " + originalName);
+                		LOG.error("No es tracta d'un arxiu de embargos, per tant serà un arxiu de resposta: " + originalName, e);
             		} finally {
             			if(reader!=null) {
             				reader.close();
