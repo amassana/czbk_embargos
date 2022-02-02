@@ -194,7 +194,7 @@ public class EmbargosConstants {
 	public static final String ISO_MONEDA_EUR = "EUR";
 	
 	public static final String BANK_ACCOUNT_STATUS_ACTIVE = "ACTIVE";
-	public static final String BANK_ACCOUNT_STATUS_BLOQUED = "BLOQUED";
+	public static final String BANK_ACCOUNT_STATUS_BLOCKED = "BLOCKED";
 	public static final String BANK_ACCOUNT_STATUS_CANCELLED = "CANCELLED";
 	public static final String BANK_ACCOUNT_STATUS_NOTFOUND = "NOTFOUND";
 	
