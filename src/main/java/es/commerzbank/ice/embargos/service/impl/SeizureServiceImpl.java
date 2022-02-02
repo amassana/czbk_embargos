@@ -274,6 +274,24 @@ public class SeizureServiceImpl
 			}
 		}
 
+		// Si es del consejo y todo está completado, marcar trabas completadas e intentar pasar a procesado - else a inicial
+		Optional<ControlFichero> controlFicheroOpt = fileControlRepository.findById(codeFileControl);
+		if (controlFicheroOpt.isPresent()) {
+			ControlFichero controlFichero = controlFicheroOpt.get();
+			String fileFormat = EmbargosUtils.determineFileFormatByTipoFichero(controlFichero.getTipoFichero().getCodTipoFichero());
+			boolean isCGPJ = fileFormat!=null && fileFormat.equals(EmbargosConstants.FILE_FORMAT_CGPJ);
+			if (isCGPJ) {
+				Long newStatus = null;
+				if (isAllTrabasCompletadas_CGPJ(controlFichero)) {
+					newStatus = COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_PENDING_TO_SEND;
+				}
+				else {
+					newStatus = COD_ESTADO_CTRLFICHERO_PETICION_CGPJ_RECEIVED;
+				}
+				fileControlService.changeCGPJStatus(controlFichero, newStatus, "TRABAS");
+			}
+		}
+
 		return true;
 	}
 	
@@ -456,6 +474,9 @@ public class SeizureServiceImpl
 
 	private boolean isTrabaCompletada_CGPJ(Traba traba)
 	{
+		if (!IND_FLAG_SI.equals(traba.getRevisado()))
+			return false;
+
 		boolean isAllCuentasCompletadas = true;
 		boolean allIncludedHaveRejectionCause = true;
 

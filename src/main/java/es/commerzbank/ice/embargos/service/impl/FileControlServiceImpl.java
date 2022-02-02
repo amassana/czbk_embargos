@@ -299,7 +299,8 @@ public class FileControlServiceImpl
 		return true;
 	}
 
-	private void changeCGPJStatus(ControlFichero controlFichero, Long codFileControlStatus, String tipoDatos) throws Exception {
+	@Override
+	public void changeCGPJStatus(ControlFichero controlFichero, Long codFileControlStatus, String tipoDatos) throws Exception {
 
 		if (controlFichero.getPeticiones() == null || controlFichero.getPeticiones().size() != 1) {
 			throw new Exception("No se puede cambiar el estado del fichero por no tener una petición asociada");
