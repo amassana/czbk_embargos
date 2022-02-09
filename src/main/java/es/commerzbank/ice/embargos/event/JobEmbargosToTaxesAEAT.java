@@ -18,12 +18,12 @@ import org.springframework.stereotype.Component;
 @Component
 @DisallowConcurrentExecution
 @PersistJobDataAfterExecution
-public class JobTransferToTax implements Job {
+public class JobEmbargosToTaxesAEAT implements Job {
 
-	private static final Logger logger = LoggerFactory.getLogger(JobTransferToTax.class);
+	private static final Logger logger = LoggerFactory.getLogger(JobEmbargosToTaxesAEAT.class);
 	
 	// Este job obtiene todos los embargos cuyo código empiece por AEAT, con fecha de vencimiento igual a la fecha actual 
-	// y genera un impuesto para cada uno de ellos.
+	// y le calcula su cierre. Un job a parte se encarga de la transferencia a Impuestos
 	
 	@Autowired
 	private GeneralParametersService generalParametersService;
@@ -37,7 +37,7 @@ public class JobTransferToTax implements Job {
 	@Override
     public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		try {
-			logger.debug("Inicio JobTransferToTax con quartz");
+			logger.debug("Inicio JobCalcSummaryAEAT con quartz");
 			
 			User user = null;
 			String token = null;
@@ -47,20 +47,20 @@ public class JobTransferToTax implements Job {
 			if (usuario!=null) user = UserMapper.toUser(usuario);
 			if (user!=null) token = Token.buildJWToken(user, user.getPerfil());
 			
-			if (token!=null) finalResponseService.jobTransferToTax(token, userStr);
-			else logger.error("JobTransferToTax - No se ha podido generar el token para el usuario " + userStr);
+			if (token!=null) finalResponseService.sendEmbargosAsTaxes(token, userStr);
+			else logger.error("JobCalcSummaryAEAT - No se ha podido generar el token para el usuario " + userStr);
 
-			logger.debug("Fin JobTransferToTax con quartz");
+			logger.debug("Fin JobCalcSummaryAEAT con quartz");
 		}
 		catch (Exception e) {
-			logger.error("ERROR en JobTransferToTax con quartz", e);
+			logger.error("ERROR en JobCalcSummaryAEAT con quartz", e);
 			JobExecutionException e2 = new JobExecutionException(e);
 	        //fire it again
 			//e2.setRefireImmediately(true);
 	        throw e2;
 		}
 		catch (Throwable t) {
-			logger.error("ERROR Throwable en JobTransferToTax con quartz", t);
+			logger.error("ERROR Throwable en JobCalcSummaryAEAT con quartz", t);
 			JobExecutionException e2 = new JobExecutionException(t);
 	        //fire it again
 			//e2.setRefireImmediately(true);

@@ -59,8 +59,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 
-import static es.commerzbank.ice.embargos.utils.EmbargosConstants.CODIGO_NRBE_COMMERZBANK;
-import static es.commerzbank.ice.embargos.utils.EmbargosConstants.COD_ESTADO_CONTABILIZACION_PENDIENTE_ENVIO_A_CONTABILIDAD;
+import static es.commerzbank.ice.embargos.utils.EmbargosConstants.*;
 
 @Service
 @Transactional(transactionManager = "transactionManager")
@@ -417,17 +416,16 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 	}
 
 	@Override
-	public boolean jobTransferToTax(String authorization, String user) throws ICEException {
+	public boolean sendEmbargosAsTaxes(String authorization, String user) {
 		// TODO: OBTENER EL IMPORTE DE LA TABLA resultado_embargo del campo total_neto
-
 		try {
 			List<Tarea> tareas = taskService.getTareasPendientesByExternalIdLike(EmbargosConstants.EXTERNAL_ID_F6_AEAT);
 
 			if (tareas!=null && tareas.size()>0) {
 				logger.info("Se han encontrado "+ tareas.size() +" tareas de F6 AEAT pendientes cuya fecha de expiración es hoy o anterior.");
-				String uri = generalParametersService.loadStringParameter(ValueConstants.PARAMETRO_TSP_DOMINIO) + generalParametersService.loadStringParameter(EmbargosConstants.ENDPOINT_EMBARGOS_TO_TAX);
-				String oficinaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA);
+
 				String cuentaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);
+				String uri = generalParametersService.loadStringParameter(ValueConstants.PARAMETRO_TSP_DOMINIO) + generalParametersService.loadStringParameter(EmbargosConstants.ENDPOINT_EMBARGOS_TO_TAX);
 
 				for (Tarea tarea : tareas) {
 					try {
@@ -459,35 +457,29 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 						if (controlFicheroF4!=null && controlFicheroF4.getControlFicheroOrigen()!=null) {
 							controlFicheroF3 = controlFicheroF4.getControlFicheroOrigen();
 
-							// Calcula los datos para realizar el cierre
-							logger.info("Calculando los datos para realizar el cierre para el fichero: " + controlFicheroF3.getCodControlFichero());
+							Optional<FicheroFinal> ficheroFinalOptional = finalFileRepository.findByCodFicheroDiligenciasEquals(controlFicheroF3.getCodControlFichero());
 
-							FicheroFinal ficheroFinal = finalResponseGenerationService.calcFinalResult(controlFicheroF3, tarea, user);
+							FicheroFinal ficheroFinal = null;
 
-							List<ResultadoEmbargo> resultadoEmbargos = finalResponseRepository.findAllByControlFichero(ficheroFinal.getControlFichero());
+							if (ficheroFinalOptional.isPresent()) { // La tarea está completada pero hay impuestos a traspasar
+								ficheroFinal = ficheroFinalOptional.get();
+							}
+							else {
+								// Calcula los datos para realizar el cierre
+								logger.info("Calculando los datos para realizar el cierre para el fichero: " + controlFicheroF3.getCodControlFichero());
 
-							for (ResultadoEmbargo resultadoEmbargo : resultadoEmbargos)
-							{
-								logger.info("Traspasando el resultado embargo cod " + resultadoEmbargo.getCodResultadoEmbargo() + " embargo "+
-										resultadoEmbargo.getEmbargo().getNumeroEmbargo() +" a impuesto");
-
-								for (CuentaResultadoEmbargo cuentaResultadoEmbargo : resultadoEmbargo.getCuentaResultadoEmbargos())
-								{
-									if (BigDecimal.ZERO.compareTo(cuentaResultadoEmbargo.getImporteNeto()) < 0) {
-										logger.info("Cargando en " + cuentaResultadoEmbargo.getCodCuentaResultadoEmbargo() + " cuenta " +
-												cuentaResultadoEmbargo.getCuentaTraba().getCuenta() +" importe "+ cuentaResultadoEmbargo.getImporteNeto());
-										boolean result = transferEmbargoToTax(resultadoEmbargo, cuentaResultadoEmbargo, cuentaRecaudacion, uri, authorization, user);
-										if (!result) {
-											logger.error("Error cargando en " + cuentaResultadoEmbargo.getCodCuentaResultadoEmbargo() + " cuenta " +
-													cuentaResultadoEmbargo.getCuentaTraba().getCuenta() +" importe "+ cuentaResultadoEmbargo.getImporteNeto());
-										}
-									}
-								}
+								ficheroFinal = finalResponseGenerationService.calcFinalResult(controlFicheroF3, tarea, user);
 							}
 
-							tarea.setEstado(ValueConstants.STATUS_TASK_FINISH);
-							tarea.setfTarea(new Timestamp(new Date().getTime()));
-							taskRepo.save(tarea);
+							// ya sea por creación reciente o porque la tarea no estaba completada, hace falta crear impuestos:
+
+							boolean allTaxesCreated = sendFinalFileTaxes(ficheroFinal, uri, authorization, user, cuentaRecaudacion);
+
+							if (allTaxesCreated) {
+								tarea.setEstado(ValueConstants.STATUS_TASK_FINISH);
+								tarea.setfTarea(new Timestamp(new Date().getTime()));
+								taskRepo.save(tarea);
+							}
 						}
 						else {
 							logger.error("ControlFichero F3 origen de " + codControlFichero + " no encontrado");
@@ -504,10 +496,50 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 			}
 
 		} catch (Exception e) {
-			logger.error("ERROR in jobTransferToTax: ", e);
+			logger.error("ERROR in jobCalcSummaryAEAT: ", e);
 		}
 
 		return true;
+	}
+
+	private boolean sendFinalFileTaxes(FicheroFinal ficheroFinal, String uri, String authorization, String user, String cuentaRecaudacion)
+	{
+		boolean allTaxesCreated = true;
+
+		List<ResultadoEmbargo> resultadoEmbargos = finalResponseRepository.findAllByControlFichero(ficheroFinal.getControlFichero());
+
+		for (ResultadoEmbargo resultadoEmbargo : resultadoEmbargos)
+		{
+			logger.info("Traspasando el resultado embargo cod " + resultadoEmbargo.getCodResultadoEmbargo() + " embargo "+
+					resultadoEmbargo.getEmbargo().getNumeroEmbargo() +" a impuesto");
+
+			for (CuentaResultadoEmbargo cuentaResultadoEmbargo : resultadoEmbargo.getCuentaResultadoEmbargos())
+			{
+				try {
+					if (IND_FLAG_NO.equals(resultadoEmbargo.getIndComunicado()) && BigDecimal.ZERO.compareTo(cuentaResultadoEmbargo.getImporteNeto()) < 0) {
+						logger.info("Cargando en " + cuentaResultadoEmbargo.getCodCuentaResultadoEmbargo() + " cuenta " +
+								cuentaResultadoEmbargo.getCuentaTraba().getCuenta() + " importe " + cuentaResultadoEmbargo.getImporteNeto());
+
+						boolean result = transferEmbargoToTax(resultadoEmbargo, cuentaResultadoEmbargo, cuentaRecaudacion, uri, authorization, user);
+
+						if (!result) {
+							allTaxesCreated = false;
+							logger.error("Error cargando en " + cuentaResultadoEmbargo.getCodCuentaResultadoEmbargo() + " cuenta " +
+									cuentaResultadoEmbargo.getCuentaTraba().getCuenta() + " importe " + cuentaResultadoEmbargo.getImporteNeto());
+						}
+						else {
+							resultadoEmbargo.setIndComunicado(IND_FLAG_SI);
+							finalResponseRepository.save(resultadoEmbargo);
+						}
+					}
+				} catch (Exception e) {
+					logger.error("Error creando un impuesto para el resultado embargo "+ resultadoEmbargo.getCodResultadoEmbargo(), e);
+					allTaxesCreated = false;
+				}
+			}
+		}
+
+		return allTaxesCreated;
 	}
 
 	@Override

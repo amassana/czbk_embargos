@@ -34,9 +34,12 @@ public class ResultadoEmbargo implements Serializable {
 
 	@Column(name="F_ULTIMA_MODIFICACION", precision=14)
 	private BigDecimal fUltimaModificacion;
-	
+
 	@Column(name="USUARIO_ULT_MODIFICACION", length=10)
 	private String usuarioUltModificacion;
+
+	@Column(name="IND_COMUNICADO", length=1)
+	private String indComunicado;
 	
 	//bi-directional many-to-one association to CuentaResultadoEmbargo
 	@OneToMany(mappedBy="resultadoEmbargo")
@@ -159,4 +162,11 @@ public class ResultadoEmbargo implements Serializable {
 		this.usuarioUltModificacion = usuarioUltModificacion;
 	}
 
+	public String getIndComunicado() {
+		return indComunicado;
+	}
+
+	public void setIndComunicado(String indComunicado) {
+		this.indComunicado = indComunicado;
+	}
 }

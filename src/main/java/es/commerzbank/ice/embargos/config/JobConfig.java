@@ -20,10 +20,10 @@ public class JobConfig {
     //<editor-fold desc="JOBS">
 
     @Bean
-    public JobDetailFactoryBean job1() {
+    public JobDetailFactoryBean jobCalcSummaryAEAT() {
         JobDetailFactoryBean jobDetailFactory = new JobDetailFactoryBean();
-        jobDetailFactory.setJobClass(JobTransferToTax.class);
-        jobDetailFactory.setName(JobTransferToTax.class.getSimpleName());
+        jobDetailFactory.setJobClass(JobEmbargosToTaxesAEAT.class);
+        jobDetailFactory.setName(JobEmbargosToTaxesAEAT.class.getSimpleName());
         jobDetailFactory.setDescription("Job de traspaso de embargos a impuestos");
         jobDetailFactory.setDurability(true);
         return jobDetailFactory;
@@ -34,7 +34,7 @@ public class JobConfig {
     //<editor-fold desc="TRIGGERS">
     
     @Bean
-    public CronTriggerFactoryBean trigger1(JobDetail job1) {
+    public CronTriggerFactoryBean trigger1(JobDetail jobCalcSummaryAEAT) {
     	String cronExpression = null;
     	try {
 			cronExpression = generalParametersService.loadStringParameter(EmbargosConstants.CRON_JOB_EMBARGOS_TO_TAX);
@@ -44,8 +44,8 @@ public class JobConfig {
 		}
     	
         CronTriggerFactoryBean trigger = new CronTriggerFactoryBean();
-        trigger.setName(job1.getKey().getName() + "Trigger");
-        trigger.setJobDetail(job1);
+        trigger.setName(jobCalcSummaryAEAT.getKey().getName() + "Trigger");
+        trigger.setJobDetail(jobCalcSummaryAEAT);
         trigger.setCronExpression(cronExpression);
         return trigger;           
     }

@@ -42,9 +42,6 @@ public class FinalResponseGenerationServiceImpl
     private FinalResponseRepository finalResponseRepository;
 
     @Autowired
-    private SeizureSummaryRepository seizureSummaryRepository;
-
-    @Autowired
     private SeizureSummaryBankAccountRepository seizureSummaryBankAccountRepository;
 
     @Autowired
@@ -57,13 +54,23 @@ public class FinalResponseGenerationServiceImpl
     public FicheroFinal calcFinalResult(ControlFichero ficheroFase3, Tarea tarea, String user)
         throws Exception
     {
+        boolean isAEAT = EmbargosConstants.IND_FLAG_SI.equals(ficheroFase3.getEntidadesComunicadora().getIndFormatoAeat());
+
+        Long tipoFichero;
+        if (isAEAT) {
+            tipoFichero = EmbargosConstants.COD_TIPO_FICHERO_FICHERO_FINAL_AEAT_INTERNAL;
+        }
+        else {
+            tipoFichero = EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63;
+        }
+
         /* Creación Control Fichero Fase 6 como punto de entrada */
         String fileNameFinal = ficheroFase3.getEntidadesComunicadora().getPrefijoFicheros() +"_"+ ICEDateUtils.actualDateToBigDecimal(ICEDateUtils.FORMAT_yyyyMMdd) +"."+ EmbargosConstants.TIPO_FICHERO_FINAL;
 
         logger.info("Cerrando el ciclo de embargos "+ ficheroFase3.getCodControlFichero() +" Nombre fichero cerrado "+ fileNameFinal);
 
         ControlFichero ficheroFase6 =
-                fileControlMapper.generateControlFichero(null, EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63, fileNameFinal, null);
+                fileControlMapper.generateControlFichero(null, tipoFichero, fileNameFinal, null);
         ficheroFase6.setEntidadesComunicadora(ficheroFase3.getEntidadesComunicadora());
         List<ResultadoEmbargo> resultadosEmbargos = new ArrayList<>(50);
         ficheroFase6.setResultadoEmbargos(resultadosEmbargos);
@@ -99,6 +106,10 @@ public class FinalResponseGenerationServiceImpl
             resultadoEmbargo.setTraba(traba);
             resultadoEmbargo.setEmbargo(embargo);
             resultadoEmbargo.setControlFichero(ficheroFase6);
+
+            if (isAEAT) {
+                resultadoEmbargo.setIndComunicado(EmbargosConstants.IND_FLAG_NO);
+            }
 
             // Se calcula el resumen para cada cuenta
             List<CuentaResultadoEmbargo> cuentasResultadoEmbargo = new ArrayList<>(6);
@@ -189,7 +200,7 @@ public class FinalResponseGenerationServiceImpl
             logger.info("Importe levantado embargo: "+ importeLevantadoEmbargo +" Importe neto embargo: "+ importeNetoEmbargo);
 
             // Se persiste en el repositorio
-            seizureSummaryRepository.save(resultadoEmbargo);
+            finalResponseRepository.save(resultadoEmbargo);
 
             for (CuentaResultadoEmbargo cuentaResultadoEmbargo : cuentasResultadoEmbargo) {
                 cuentaResultadoEmbargo.setResultadoEmbargo(resultadoEmbargo);
@@ -237,13 +248,13 @@ public class FinalResponseGenerationServiceImpl
         if (EmbargosConstants.IND_FLAG_SI.equals(ficheroFase3.getEntidadesComunicadora().getIndFormatoAeat())) {
             EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
                     EmbargosConstants.COD_ESTADO_CTRLFICHERO_FINAL_AEAT_GENERADO,
-                    EmbargosConstants.COD_TIPO_FICHERO_FICHERO_FINAL_AEAT_INTERNAL);
+                    tipoFichero);
             ficheroFase6.setEstadoCtrlfichero(estadoCtrlfichero);
         }
         else if (EmbargosConstants.IND_FLAG_SI.equals(ficheroFase3.getEntidadesComunicadora().getIndNorma63())) {
             EstadoCtrlfichero estadoCtrlfichero = new EstadoCtrlfichero(
                     EmbargosConstants.COD_ESTADO_CTRLFICHERO_FINAL_AEAT_PENDIENTE_FICHERO,
-                    EmbargosConstants.COD_TIPO_FICHERO_COM_RESULTADO_FINAL_NORMA63);
+                    tipoFichero);
             ficheroFase6.setEstadoCtrlfichero(estadoCtrlfichero);
         }
 
