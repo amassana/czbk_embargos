@@ -196,4 +196,22 @@ public class CGPJController {
 
         return response;
     }
+
+    @PostMapping(value = "/reenviar")
+    public ResponseEntity<CGPJReplyDTO> reenviar(@RequestBody List<String> peticiones) {
+        ResponseEntity<CGPJReplyDTO> response;
+
+        try
+        {
+            CGPJReplyDTO reply = service.redeliver(peticiones);
+            response = new ResponseEntity<>(reply, HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            logger.error("Error al responder CGPJ", e);
+        }
+
+        return response;
+    }
 }

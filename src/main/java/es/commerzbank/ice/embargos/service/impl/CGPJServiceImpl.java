@@ -425,4 +425,52 @@ public class CGPJServiceImpl
             throw new Exception("DB exception while generating the report", e);
         }
     }
+
+    @Override
+    public CGPJReplyDTO redeliver(List<String> codPeticiones) {
+        CGPJReplyDTO reply = new CGPJReplyDTO();
+
+        EstadoIntPeticion estadoInterno = new EstadoIntPeticion();
+        estadoInterno.setCodEstadoIntPeticion(CGPJ_ESTADO_INTERNO_SOLICITUD_PENDIENTE_ENVIAR);
+
+        for (String codPeticion : codPeticiones) {
+            CGPJReplyResultDTO currentResponse = new CGPJReplyResultDTO();
+
+            reply.addResponse(currentResponse);
+
+            currentResponse.setPetitionCode(codPeticion);
+
+            Optional<Peticion> peticionOpt = petitionRepository.findById(codPeticion);
+
+            if (!peticionOpt.isPresent()) {
+                logger.error("Peticion de respuesta "+ codPeticion +" no encontrado. skipping...");
+                currentResponse.setResult("Petición no encontrada");
+                continue;
+            }
+
+            Peticion peticion = peticionOpt.get();
+
+            if (peticion.getEstadoIntPeticion().getCodEstadoIntPeticion() != CGPJ_ESTADO_INTERNO_SOLICITUD_ERROR_DE_TRANSMISION) {
+                logger.info("La Petición debe estar en error de transmision para poder enviar la reenviada");
+                currentResponse.setResult("La Petición debe estar en error de transmision para poder enviar la reenviada");
+                continue;
+            }
+
+            try {
+                logger.info("Marcando como pendiente de envío la petición "+ codPeticion);
+
+                peticion.setEstadoIntPeticion(estadoInterno);
+
+                petitionRepository.save(peticion);
+
+                currentResponse.setResult("Petición marcada como pendiente de envío");
+            }
+            catch (Exception e) {
+                logger.error("Excepción reenviando la respuesta de la Peticion "+ codPeticion +". Se reenvían las demás", e);
+                currentResponse.setResult("Error reenviando la respuesta");
+            }
+        }
+
+        return reply;
+    }
 }
