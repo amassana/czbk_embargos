@@ -1,49 +1,49 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
     <changeSet author="aniol.massana (generated)" id="1611851242566-1">
-        <createSequence sequenceName="AUDITORIA_SEQ" startValue="1013561"/>
+        <createSequence sequenceName="AUDITORIA_SEQ" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-2">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_APODERADOS" startValue="100000"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="200000" sequenceName="SEC_APODERADOS" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-3">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_CONTROL_FICHERO" startValue="100000"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="300000" sequenceName="SEC_CONTROL_FICHERO" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-4">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_CUENTA_EMBARGO" startValue="100000"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="400000" sequenceName="SEC_CUENTA_EMBARGO" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-5">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="0" sequenceName="SEC_CUENTA_LEVANTAMIENTO" startValue="100000"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="500000" sequenceName="SEC_CUENTA_LEVANTAMIENTO" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-6">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="0" sequenceName="SEC_CUENTA_RESULTADO_EMBARGO" startValue="100000"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="600000" sequenceName="SEC_CUENTA_RESULTADO_EMBARGO" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-7">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_CUENTA_TRABA" startValue="100000"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="700000" sequenceName="SEC_CUENTA_TRABA" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-8">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_EMBARGO" startValue="100000"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="800000" sequenceName="SEC_EMBARGO" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-9">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_ENTIDADES_ORDENANTES" startValue="100000"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="900000" sequenceName="SEC_ENTIDADES_ORDENANTES" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-10">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_ERROR_TRABA" startValue="100000"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="1000000" sequenceName="SEC_ERROR_TRABA" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-11">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_FICHERO_FINAL" startValue="100000"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="1100000" sequenceName="SEC_FICHERO_FINAL" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-12">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="0" sequenceName="SEC_LEVANTAMIENTO_TRABA" startValue="100000"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="1200000" sequenceName="SEC_LEVANTAMIENTO_TRABA" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-13">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_PETICION_INFORMACION" startValue="100000"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="1300000" sequenceName="SEC_PETICION_INFORMACION" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-14">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="0" sequenceName="SEC_RESULTADO_EMBARGO" startValue="100000"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="1400000" sequenceName="SEC_RESULTADO_EMBARGO" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-16">
-        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="100000" sequenceName="SEC_TRABAS" startValue="100000"/>
+        <createSequence cacheSize="0" maxValue="9999999999999999999999999999" minValue="1500000" sequenceName="SEC_TRABAS" startValue="100000"/>
     </changeSet>
     <changeSet author="aniol.massana (generated)" id="1611851242566-17">
         <createTable tableName="APODERADOS">
