@@ -381,7 +381,7 @@ ORDER BY
 				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font fontName="Serif"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTETRABADO})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{IMPORTETRABADOCUENTA} == null ? BigDecimal.ZERO : $F{IMPORTETRABADOCUENTA})]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="83" y="0" width="70" height="15" uuid="f05cfdc1-6ea6-4dbf-bbc8-31a85e7f4bfc">
