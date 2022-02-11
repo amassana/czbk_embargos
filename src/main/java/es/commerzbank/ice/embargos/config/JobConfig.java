@@ -19,8 +19,8 @@ public class JobConfig {
 	
     //<editor-fold desc="JOBS">
 
-    @Bean
-    public JobDetailFactoryBean jobCalcSummaryAEAT() {
+    @Bean //jobEmbargosToTaxesAEAT
+    public JobDetailFactoryBean jobEmbargosToTaxesAEAT() {
         JobDetailFactoryBean jobDetailFactory = new JobDetailFactoryBean();
         jobDetailFactory.setJobClass(JobEmbargosToTaxesAEAT.class);
         jobDetailFactory.setName(JobEmbargosToTaxesAEAT.class.getSimpleName());
@@ -34,7 +34,7 @@ public class JobConfig {
     //<editor-fold desc="TRIGGERS">
     
     @Bean
-    public CronTriggerFactoryBean trigger1(JobDetail jobCalcSummaryAEAT) {
+    public CronTriggerFactoryBean trigger1(JobDetail jobEmbargosToTaxesAEAT) {
     	String cronExpression = null;
     	try {
 			cronExpression = generalParametersService.loadStringParameter(EmbargosConstants.CRON_JOB_EMBARGOS_TO_TAX);
@@ -44,8 +44,8 @@ public class JobConfig {
 		}
     	
         CronTriggerFactoryBean trigger = new CronTriggerFactoryBean();
-        trigger.setName(jobCalcSummaryAEAT.getKey().getName() + "Trigger");
-        trigger.setJobDetail(jobCalcSummaryAEAT);
+        trigger.setName(jobEmbargosToTaxesAEAT.getKey().getName() + "Trigger");
+        trigger.setJobDetail(jobEmbargosToTaxesAEAT);
         trigger.setCronExpression(cronExpression);
         return trigger;           
     }

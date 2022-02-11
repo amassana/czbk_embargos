@@ -66,5 +66,6 @@
     <include file="2021/20210707_PeticionCuentas_Orden.xml" relativeToChangelogFile="true" />
 
     <include file="2022/20220111_cgpj_sin_actuacion_eliminado.xml" relativeToChangelogFile="true" />
+    <include file="2022/20220209_resultado_traba_ind_comunicado.xml" relativeToChangelogFile="true" />
 
 </databaseChangeLog>

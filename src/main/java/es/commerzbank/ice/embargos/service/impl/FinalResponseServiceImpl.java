@@ -510,33 +510,26 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 
 		for (ResultadoEmbargo resultadoEmbargo : resultadoEmbargos)
 		{
-			logger.info("Traspasando el resultado embargo cod " + resultadoEmbargo.getCodResultadoEmbargo() + " embargo "+
-					resultadoEmbargo.getEmbargo().getNumeroEmbargo() +" a impuesto");
+			try {
+				if (IND_FLAG_NO.equals(resultadoEmbargo.getIndComunicado()) && BigDecimal.ZERO.compareTo(resultadoEmbargo.getTotalNeto()) < 0) {
+					logger.info("Traspasando el resultado embargo cod " + resultadoEmbargo.getCodResultadoEmbargo() + " embargo " +
+							resultadoEmbargo.getEmbargo().getNumeroEmbargo() + " a impuesto, importe " + resultadoEmbargo.getTotalNeto());
 
-			for (CuentaResultadoEmbargo cuentaResultadoEmbargo : resultadoEmbargo.getCuentaResultadoEmbargos())
-			{
-				try {
-					if (IND_FLAG_NO.equals(resultadoEmbargo.getIndComunicado()) && BigDecimal.ZERO.compareTo(cuentaResultadoEmbargo.getImporteNeto()) < 0) {
-						logger.info("Cargando en " + cuentaResultadoEmbargo.getCodCuentaResultadoEmbargo() + " cuenta " +
-								cuentaResultadoEmbargo.getCuentaTraba().getCuenta() + " importe " + cuentaResultadoEmbargo.getImporteNeto());
+					boolean result = transferEmbargoToTax(resultadoEmbargo, cuentaRecaudacion, uri, authorization, user);
 
-						boolean result = transferEmbargoToTax(resultadoEmbargo, cuentaResultadoEmbargo, cuentaRecaudacion, uri, authorization, user);
-
-						if (!result) {
-							allTaxesCreated = false;
-							logger.error("Error cargando en " + cuentaResultadoEmbargo.getCodCuentaResultadoEmbargo() + " cuenta " +
-									cuentaResultadoEmbargo.getCuentaTraba().getCuenta() + " importe " + cuentaResultadoEmbargo.getImporteNeto());
-						}
-						else {
-							resultadoEmbargo.setIndComunicado(IND_FLAG_SI);
-							finalResponseRepository.save(resultadoEmbargo);
-						}
+					if (!result) {
+						allTaxesCreated = false;
+						logger.error("Error cargando en " + resultadoEmbargo.getCodResultadoEmbargo());
+					} else {
+						resultadoEmbargo.setIndComunicado(IND_FLAG_SI);
+						finalResponseRepository.save(resultadoEmbargo);
 					}
-				} catch (Exception e) {
+				}
+			}
+			catch (Exception e) {
 					logger.error("Error creando un impuesto para el resultado embargo "+ resultadoEmbargo.getCodResultadoEmbargo(), e);
 					allTaxesCreated = false;
 				}
-			}
 		}
 
 		return allTaxesCreated;
@@ -549,8 +542,8 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 		return finalFileRepository.findByEstadoContabilizacionEquals(estadoContabilizacion);
 	}
 
-	private boolean transferEmbargoToTax(ResultadoEmbargo resultadoEmbargo, CuentaResultadoEmbargo cuentaResultadoEmbargo,
-										 String cuentaRecaudacion, String uri, String authorization, String user) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+	private boolean transferEmbargoToTax(ResultadoEmbargo resultadoEmbargo,
+										 String cuentaRecaudacion, String uri, String authorization, String user) throws Exception {
 		boolean result = false;
 
 		HttpClient httpClient = HttpClients
@@ -565,31 +558,21 @@ public class FinalResponseServiceImpl implements FinalResponseService {
 				"\", \"cuenta\": \"" + cuentaRecaudacion +
 				"\", \"nif\": \"" + resultadoEmbargo.getEmbargo().getNif() +
 				"\", \"sucursal\": \"" + EmbargosConstants.SUCURSAL_CREACION_IMPUESTOS +
-				"\", \"importe\": \"" + cuentaResultadoEmbargo.getImporteNeto() +
+				"\", \"importe\": \"" + resultadoEmbargo.getTotalNeto() +
 				"\", \"numEmbargo\": \"" + resultadoEmbargo.getEmbargo().getNumeroEmbargo() + "\"}";
 
 		request.setEntity(new StringEntity(message, ContentType.create(MimeTypeUtils.APPLICATION_JSON_VALUE, Charsets.UTF_8)));
 
-		try {
-			request.setHeader("Content-Type", "application/json");
-			request.setHeader("Authorization", authorization);
+		request.setHeader("Content-Type", "application/json");
+		request.setHeader("Authorization", authorization);
 
-			HttpResponse response = null;
-			try {
-				response = httpClient.execute(request);
-			} catch (ConnectTimeoutException | SocketTimeoutException ex) {
-				logger.error("Error comunicacions timeout ", ex);
-			} catch (IOException ex) {
-				logger.error("Error comunicacions ", ex);
-			}
+		HttpResponse response = null;
 
-			int statusCode = response.getStatusLine().getStatusCode();
-			if (statusCode == HttpStatus.SC_OK) {
-				result = true;
-			}
+		response = httpClient.execute(request);
 
-		} catch (Exception e) {
-			logger.error("ERROR transferEmbargoToTax para cod cuenta resultado " + cuentaResultadoEmbargo.getCodCuentaResultadoEmbargo(), e);
+		int statusCode = response.getStatusLine().getStatusCode();
+		if (statusCode == HttpStatus.SC_OK) {
+			result = true;
 		}
 
 		return result;

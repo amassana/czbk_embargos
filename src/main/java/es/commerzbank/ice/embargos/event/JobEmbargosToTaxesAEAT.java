@@ -37,7 +37,7 @@ public class JobEmbargosToTaxesAEAT implements Job {
 	@Override
     public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		try {
-			logger.debug("Inicio JobCalcSummaryAEAT con quartz");
+			logger.debug("Inicio JobEmbargosToTaxesAEAT con quartz");
 			
 			User user = null;
 			String token = null;
@@ -48,19 +48,19 @@ public class JobEmbargosToTaxesAEAT implements Job {
 			if (user!=null) token = Token.buildJWToken(user, user.getPerfil());
 			
 			if (token!=null) finalResponseService.sendEmbargosAsTaxes(token, userStr);
-			else logger.error("JobCalcSummaryAEAT - No se ha podido generar el token para el usuario " + userStr);
+			else logger.error("JobEmbargosToTaxesAEAT - No se ha podido generar el token para el usuario " + userStr);
 
-			logger.debug("Fin JobCalcSummaryAEAT con quartz");
+			logger.debug("Fin JobEmbargosToTaxesAEAT con quartz");
 		}
 		catch (Exception e) {
-			logger.error("ERROR en JobCalcSummaryAEAT con quartz", e);
+			logger.error("ERROR en JobEmbargosToTaxesAEAT con quartz", e);
 			JobExecutionException e2 = new JobExecutionException(e);
 	        //fire it again
 			//e2.setRefireImmediately(true);
 	        throw e2;
 		}
 		catch (Throwable t) {
-			logger.error("ERROR Throwable en JobCalcSummaryAEAT con quartz", t);
+			logger.error("ERROR Throwable en JobEmbargosToTaxesAEAT con quartz", t);
 			JobExecutionException e2 = new JobExecutionException(t);
 	        //fire it again
 			//e2.setRefireImmediately(true);
