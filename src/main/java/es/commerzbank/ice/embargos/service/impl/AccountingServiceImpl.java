@@ -88,6 +88,11 @@ public class AccountingServiceImpl
 	@Override
 	@Transactional(transactionManager="transactionManager")
 	public void embargoContabilizar(Long codeFileControl, String userName) throws ICEException, Exception {
+
+		if (generalParametersService.loadBooleanParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_SKIP, false)) {
+			logger.info("sendAccountingSeizure - skipped");
+			return;
+		}
 	
 		logger.info("sendAccountingSeizure - start "+ codeFileControl);
 		
@@ -210,6 +215,11 @@ public class AccountingServiceImpl
 	public long CGPJContabilizar(List<AccountingPendingDTO> pendientes, String userName)
 			throws Exception
 	{
+		if (generalParametersService.loadBooleanParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_SKIP, false)) {
+			logger.info("CGPJContabilizar - skipped");
+			return -1L;
+		}
+
 		String oficinaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA);
 		String cuentaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);
 		String cuentaIntercambioDivisas = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_INTERCAMBIO_DIVISAS);
@@ -494,6 +504,11 @@ public class AccountingServiceImpl
 	public void extornoContabilizar(ControlFichero controlFichero, Traba traba, CuentaTraba cuentaTraba, String userName)
 		throws Exception
 	{
+		if (generalParametersService.loadBooleanParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_SKIP, false)) {
+			logger.info("extornoContabilizar - skipped");
+			return;
+		}
+
 		String oficinaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_OFICINA);
 		String cuentaRecaudacion = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_RECAUDACION_CUENTA);
 		String cuentaIntercambioDivisas = generalParametersService.loadStringParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CUENTA_INTERCAMBIO_DIVISAS);
@@ -566,6 +581,11 @@ public class AccountingServiceImpl
 	@Override
 	@Transactional(transactionManager="transactionManager")
 	public void levantamientoContabilizar(Long codeFileControl, String username) throws Exception {
+		if (generalParametersService.loadBooleanParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_SKIP, false)) {
+			logger.info("levantamientoContabilizar - skipped");
+			return;
+		}
+
 		Optional<ControlFichero> fileControlOpt = fileControlRepository.findById(codeFileControl);
 
 		if(!fileControlOpt.isPresent())
@@ -718,6 +738,11 @@ public class AccountingServiceImpl
 	public void ficheroFinalContabilizar(FicheroFinal ficheroFinal, String userName)
 		throws Exception
 	{
+		if (generalParametersService.loadBooleanParameter(EmbargosConstants.PARAMETRO_EMBARGOS_CONTABILIZACION_SKIP, false)) {
+			logger.info("ficheroFinalContabilizar - skipped");
+			return;
+		}
+
 		if (BigDecimal.ZERO.compareTo(ficheroFinal.getImporte()) >= 0)
 		{	// protección adicional, aunque no debería entrar aquí por el estado de contabilización
 			logger.info("Fichero final "+ ficheroFinal.getControlFichero().getCodControlFichero() +" sin importe a contabilizar.");

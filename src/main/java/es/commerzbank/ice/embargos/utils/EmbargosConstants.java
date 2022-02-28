@@ -236,6 +236,7 @@ public class EmbargosConstants {
 	public static final String PARAMETRO_EMBARGOS_CONTABILIZACION_FASE3_CALLBACK = "embargos.contabilizacion.fase3.callback";
 	public static final String PARAMETRO_EMBARGOS_CONTABILIZACION_FASE5_CALLBACK = "embargos.contabilizacion.fase5.callback";
 	public static final String PARAMETRO_EMBARGOS_CONTABILIZACION_FASE6_CALLBACK = "embargos.contabilizacion.fase6.callback";
+	public static final String PARAMETRO_EMBARGOS_CONTABILIZACION_SKIP = "embargos.contabilizacion.skip";
 	public static final String PARAMETRO_EMBARGOS_LEVANTAMIENTO_IMPORTE_MAXIMO_AUTOMATICO_DIVISA = "embargos.levantamiento.importeMaximoAutomaticoDivisa";
 	
 	//Tabla Apoderados
