@@ -2,6 +2,5 @@
 "0000","Petición procesada totalmente"
 "0001","Petición no procesada"
 "0002","Error general"
-"0003","Petición caducada"
-"0004","Petición recibida y pendiente de ser procesada"
+"0004","Petición caducada"
 "0005","Petición ya recibida anteriormente"
