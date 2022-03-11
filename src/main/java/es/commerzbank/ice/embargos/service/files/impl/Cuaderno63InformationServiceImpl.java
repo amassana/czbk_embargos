@@ -239,7 +239,7 @@ public class Cuaderno63InformationServiceImpl implements Cuaderno63InformationSe
 	        		
 	        		entidadComunicadora = communicatingEntityRepository.findByNifEntidad(nifOrganismoEmisor);
 
-	        		Date fechaObtencionFicheroEntidadDeDeposito = ICEDateUtils.bigDecimalToDate(controlFicheroPeticion.getFechaIncorporacion(), ICEDateUtils.FORMAT_yyyyMMdd);
+	        		Date fechaObtencionFicheroEntidadDeDeposito = ICEDateUtils.bigDecimalToDate(controlFicheroPeticion.getFechaIncorporacion(), ICEDateUtils.FORMAT_yyyyMMddHHmmss);
 	        		
 	        		CabeceraEmisorFase2 cabeceraEmisorFase2 = cuaderno63Mapper.generateCabeceraEmisorFase2(cabeceraEmisorFase1, 
 	        				fechaObtencionFicheroEntidadDeDeposito, codigoINE);
