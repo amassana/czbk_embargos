@@ -714,7 +714,7 @@ public class AccountingServiceImpl
 			accountingNote.setCodCurrency(cuentaLevantamiento.getCodDivisa());
 			accountingNote.setDebitAccount(debitAccount);
 			accountingNote.setCreditAccount(creditAccount);
-			accountingNote.setDebitValueDate(new Date());
+			accountingNote.setDebitValueDate(ICEDateUtils.bigDecimalToDate(cuentaLevantamiento.getFechaValor(), ICEDateUtils.FORMAT_yyyyMMdd));
 			accountingNote.setCreditValueDate(ICEDateUtils.bigDecimalToDate(cuentaLevantamiento.getFechaValor(), ICEDateUtils.FORMAT_yyyyMMdd));
 			accountingNote.setExecutionDate(new Date());
 			accountingNote.setReference1(reference1);
